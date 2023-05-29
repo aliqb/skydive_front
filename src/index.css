@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@font-face{
+    src: url("assets/IRANSansWeb.ttf");
+    font-family: "IRANSansWeb";
+}
+
+@layer base{
+    html,body{
+        font-family: "IRANSansWeb";
+    }
+}
+
+@layer components{
+    .ltr{
+        direction: ltr;
+    }
+}
