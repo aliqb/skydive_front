@@ -16,4 +16,7 @@
     .ltr{
         direction: ltr;
     }
+    input, textarea{
+        outline: none;
+    }
 }

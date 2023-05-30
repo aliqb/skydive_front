@@ -1,20 +1,29 @@
 import { Button } from "flowbite-react";
-import { FormEvent, useRef } from "react";
-interface UsernameLoginProps  {
-  onUserNameSubmit:(username: string)=>void;
-  username?: string 
+import { FormEvent, useRef, useState } from "react";
+interface UsernameLoginProps {
+  onUserNameSubmit: (username: string) => void;
+  username?: string;
 }
-const UsernameLogin : React.FC<UsernameLoginProps> = (props) =>{
-  const usernameInput = useRef<HTMLInputElement>(null);
-  function onSubmit(event: FormEvent){
+const UsernameLogin: React.FC<UsernameLoginProps> = (props) => {
+  const [username, setUsername] = useState<string>('')
+  const [submitted, setSubmitted] = useState<boolean>(false);
+  function onChangeUsername(event: FormEvent){
+    const input :string = (event.target as HTMLInputElement).value
+    setUsername(input)
+  }
+  function onSubmit(event: FormEvent) {
     event.preventDefault();
-    props.onUserNameSubmit(usernameInput.current?.value || '')
+    setSubmitted(true)
+    if(!username){
+      return
+    }
+    props.onUserNameSubmit(username);
   }
   return (
     <form onSubmit={onSubmit} className="p-8">
       <h1 className="mb-6 text-lg font-semibold">ورود</h1>
       <div className="flex w-full gap-1">
-        <div className="relative w-full mb-6">
+        <div className="relative w-full mb-0">
           <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -33,11 +42,12 @@ const UsernameLogin : React.FC<UsernameLoginProps> = (props) =>{
           </div>
           <input
             type="text"
-            defaultValue={props.username}
+            value={username}
+            onInput={onChangeUsername}
             id="input-group-1"
-            ref={usernameInput}
-            className="ltr placeholder:text-right w-full h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block pr-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pl-40"
-            placeholder="ایمیل با موبایل یا نام کاربری"
+            className={`${submitted && !username ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'} ltr placeholder:text-right w-full h-10 bg-gray-50 border  text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block pr-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pl-40`}
+            placeholder="نام کاربری"
+            
           />
           <div className="absolute left-0 h-10 top-0.5 py-1 pl-3 w-32">
             <div className="bg-gray-300 h-4/5 top-0.5 absolute -right-6 w-px"></div>
@@ -48,10 +58,10 @@ const UsernameLogin : React.FC<UsernameLoginProps> = (props) =>{
           <Button type="submit" color="success" className="rounded-sm">
             ورود
           </Button>
-          {/* <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-sm text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">ورود</button> */}
         </div>
       </div>
-      <div className="flex items-center gap-2">
+      {submitted && !username && <p className="text-red-600 text-sm pr-2">لطفا نام کاربری خود را وارد کنید.</p>}
+      <div className="flex items-center gap-2 mt-6  ">
         <p>حساب کاربری ندارید؟ ثبت نام کنید: </p>
         <Button color="success" className="rounded-sm">
           ایجاد حساب کاربری
@@ -59,6 +69,6 @@ const UsernameLogin : React.FC<UsernameLoginProps> = (props) =>{
       </div>
     </form>
   );
-}
+};
 
-export default UsernameLogin
+export default UsernameLogin;

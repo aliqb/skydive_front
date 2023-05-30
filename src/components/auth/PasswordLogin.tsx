@@ -1,20 +1,32 @@
 import { Button } from "flowbite-react";
 import { FormEvent, useState } from "react";
 
-interface PasswordLoginProps{
-  onPasswordSubmit:()=>void;
-  onReturn:()=>void
+interface PasswordLoginProps {
+  onPasswordSubmit: (password: string) => void;
+  onReturn: () => void;
 }
 
-const  PasswordLogin : React.FC<PasswordLoginProps> =(props) =>{
+const PasswordLogin: React.FC<PasswordLoginProps> = (props) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [password, setPassword] = useState<string>("");
+  const [submitted, setSubmitted] = useState<boolean>(false);
+
   function toggleShowPassword() {
     setShowPassword((showPassword) => !showPassword);
   }
 
-  function onSubmit(event: FormEvent){
+  function onPasswordChange(evenet: FormEvent) {
+    const input: string = (evenet.target as HTMLInputElement).value;
+    setPassword(input);
+  }
+
+  function onSubmit(event: FormEvent) {
     event.preventDefault();
-    props.onPasswordSubmit();
+    setSubmitted(true);
+    if (!password) {
+      return;
+    }
+    props.onPasswordSubmit(password);
   }
 
   const showPasswordIcon: JSX.Element = (
@@ -76,9 +88,11 @@ const  PasswordLogin : React.FC<PasswordLoginProps> =(props) =>{
       <form onSubmit={onSubmit} className="p-8 pt-4 border-b">
         <p className="mb-6 text-lg font-semibold">رمز عبور خود را وارد کنید.</p>
         <div className="flex w-full gap-1">
-          <div className="relative w-full mb-6">
+          <div className="relative w-full mb-0">
             <input
               type={showPassword ? "text" : "password"}
+              value={password}
+              onInput={onPasswordChange}
               id="input-group-1"
               className="ltr text-lg placeholder:text-right w-full h-10 bg-gray-50 border border-gray-300 text-gray-900  rounded-sm focus:ring-blue-500 focus:border-blue-500 block pr-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pl-48"
             />
@@ -101,6 +115,11 @@ const  PasswordLogin : React.FC<PasswordLoginProps> =(props) =>{
             {/* <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-sm text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">ورود</button> */}
           </div>
         </div>
+        {submitted  && (
+          <p className="text-red-600 text-sm pr-2">
+            لطفا رمز عبور خود را وارد کنید.
+          </p>
+        )}
       </form>
       <button className="flex items-center w-full h-full px-8 py-4">
         <svg
@@ -119,6 +138,6 @@ const  PasswordLogin : React.FC<PasswordLoginProps> =(props) =>{
       </button>
     </section>
   );
-}
+};
 
-export default PasswordLogin
+export default PasswordLogin;

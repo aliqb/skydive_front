@@ -9,8 +9,8 @@ export default function LoginPage() {
     setLoginState('password')
   }
 
-  function onPasswordSubmit(){
-    console.log('submit')
+  function onPasswordSubmit(password: string){
+    console.log(password)
   }
 
   function onReturnToUsername(){
