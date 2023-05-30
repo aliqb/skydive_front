@@ -1,8 +1,18 @@
 import { Button } from "flowbite-react";
-
-export default function Login() {
+import { FormEvent, useRef } from "react";
+interface UsernameLoginProps  {
+  onUserNameSubmit:(username: string)=>void;
+  username?: string 
+}
+const UsernameLogin : React.FC<UsernameLoginProps> = (props) =>{
+  const usernameInput = useRef<HTMLInputElement>(null);
+  function onSubmit(event: FormEvent){
+    event.preventDefault();
+    props.onUserNameSubmit(usernameInput.current?.value || '')
+  }
   return (
-    <form>
+    <form onSubmit={onSubmit} className="p-8">
+      <h1 className="mb-6 text-lg font-semibold">ورود</h1>
       <div className="flex w-full gap-1">
         <div className="relative w-full mb-6">
           <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -23,7 +33,9 @@ export default function Login() {
           </div>
           <input
             type="text"
+            defaultValue={props.username}
             id="input-group-1"
+            ref={usernameInput}
             className="ltr placeholder:text-right w-full h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block pr-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pl-40"
             placeholder="ایمیل با موبایل یا نام کاربری"
           />
@@ -33,7 +45,7 @@ export default function Login() {
           </div>
         </div>
         <div>
-          <Button color="success" className="rounded-sm">
+          <Button type="submit" color="success" className="rounded-sm">
             ورود
           </Button>
           {/* <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-sm text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">ورود</button> */}
@@ -48,3 +60,5 @@ export default function Login() {
     </form>
   );
 }
+
+export default UsernameLogin

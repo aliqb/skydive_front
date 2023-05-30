@@ -1,7 +1,7 @@
 
 import "./App.css";
 import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
-import Login from "./pages/Auth/pages/Login";
+import LoginPage from "./pages/Auth/pages/LoginPage";
 import AuthContainer from "./pages/Auth/AuthContainer";
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
     <Router>
       <Routes>
         <Route Component={AuthContainer} path="auth">
-          <Route Component={Login} path=""></Route>
+          <Route Component={LoginPage} path=""></Route>
         </Route>
       </Routes>
     </Router>
