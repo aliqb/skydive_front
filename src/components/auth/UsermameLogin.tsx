@@ -1,5 +1,5 @@
-import { Button } from "flowbite-react";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useState } from "react";
+import SDButton from "../shared/Button";
 interface UsernameLoginProps {
   onUserNameSubmit: (username: string) => void;
   username?: string;
@@ -55,17 +55,15 @@ const UsernameLogin: React.FC<UsernameLoginProps> = (props) => {
           </div>
         </div>
         <div>
-          <Button type="submit" color="success" className="rounded-sm">
-            ورود
-          </Button>
+          <SDButton type="submit" color="success"  >ورود</SDButton>
         </div>
       </div>
       {submitted && !username && <p className="text-red-600 text-sm pr-2">لطفا نام کاربری خود را وارد کنید.</p>}
       <div className="flex items-center gap-2 mt-6  ">
         <p>حساب کاربری ندارید؟ ثبت نام کنید: </p>
-        <Button color="success" className="rounded-sm">
+        <SDButton color="success" className="rounded-sm">
           ایجاد حساب کاربری
-        </Button>
+        </SDButton>
       </div>
     </form>
   );
