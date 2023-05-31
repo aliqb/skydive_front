@@ -1,12 +1,8 @@
+import SDButton from "../../../components/shared/Button";
 import { FormEvent, useState } from "react";
-import SDButton from "../shared/Button";
+import BackButton from "../../../components/shared/BackButton";
 
-interface PasswordLoginProps {
-  onPasswordSubmit: (password: string) => void;
-  onReturn: () => void;
-}
-
-const PasswordLogin: React.FC<PasswordLoginProps> = (props) => {
+const PasswordLoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
   const [submitted, setSubmitted] = useState<boolean>(false);
@@ -26,7 +22,7 @@ const PasswordLogin: React.FC<PasswordLoginProps> = (props) => {
     if (!password) {
       return;
     }
-    props.onPasswordSubmit(password);
+    //   props.onPasswordSubmit(password);
   }
 
   const showPasswordIcon: JSX.Element = (
@@ -70,21 +66,7 @@ const PasswordLogin: React.FC<PasswordLoginProps> = (props) => {
 
   return (
     <section>
-      <button onClick={props.onReturn} className="pt-8 pr-8 flex">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            fillRule="evenodd"
-            d="M16.72 7.72a.75.75 0 011.06 0l3.75 3.75a.75.75 0 010 1.06l-3.75 3.75a.75.75 0 11-1.06-1.06l2.47-2.47H3a.75.75 0 010-1.5h16.19l-2.47-2.47a.75.75 0 010-1.06z"
-            clipRule="evenodd"
-          />
-        </svg>
-        <span>بازگشت</span>
-      </button>
+      <BackButton />
       <form onSubmit={onSubmit} className="p-8 pt-4 border-b">
         <p className="mb-6 text-lg font-semibold">رمز عبور خود را وارد کنید.</p>
         <div className="flex w-full gap-1">
@@ -94,7 +76,11 @@ const PasswordLogin: React.FC<PasswordLoginProps> = (props) => {
               value={password}
               onInput={onPasswordChange}
               id="input-group-1"
-              className="ltr text-lg placeholder:text-right w-full h-10 bg-gray-50 border border-gray-300 text-gray-900  rounded-sm focus:ring-blue-500 focus:border-blue-500 block pr-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pl-48"
+              className={`${
+                submitted && !password
+                  ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                  : "border-gray-300 focus:border-blue-500"
+              } ltr placeholder:text-right w-full h-10 bg-gray-50 border  text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block pr-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pl-40`}
             />
             <button
               type="button"
@@ -115,7 +101,7 @@ const PasswordLogin: React.FC<PasswordLoginProps> = (props) => {
             {/* <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-sm text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">ورود</button> */}
           </div>
         </div>
-        {submitted  && (
+        {submitted && (
           <p className="text-red-600 text-sm pr-2">
             لطفا رمز عبور خود را وارد کنید.
           </p>
@@ -140,4 +126,4 @@ const PasswordLogin: React.FC<PasswordLoginProps> = (props) => {
   );
 };
 
-export default PasswordLogin;
+export default PasswordLoginPage;

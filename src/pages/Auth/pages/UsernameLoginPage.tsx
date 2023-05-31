@@ -1,23 +1,21 @@
+import { useNavigate } from "react-router-dom";
 import { FormEvent, useState } from "react";
-import SDButton from "../shared/Button";
-interface UsernameLoginProps {
-  onUserNameSubmit: (username: string) => void;
-  username?: string;
-}
-const UsernameLogin: React.FC<UsernameLoginProps> = (props) => {
-  const [username, setUsername] = useState<string>('')
+import SDButton from "../../../components/shared/Button";
+export default function UsernameLoginPage() {
+  const [username, setUsername] = useState<string>("");
   const [submitted, setSubmitted] = useState<boolean>(false);
-  function onChangeUsername(event: FormEvent){
-    const input :string = (event.target as HTMLInputElement).value
-    setUsername(input)
+  const navigate = useNavigate();
+  function onChangeUsername(event: FormEvent) {
+    const input: string = (event.target as HTMLInputElement).value;
+    setUsername(input);
   }
   function onSubmit(event: FormEvent) {
     event.preventDefault();
-    setSubmitted(true)
-    if(!username){
-      return
+    setSubmitted(true);
+    if (!username) {
+      return;
     }
-    props.onUserNameSubmit(username);
+    navigate('password',{state:{username}})
   }
   return (
     <form onSubmit={onSubmit} className="p-8">
@@ -45,9 +43,12 @@ const UsernameLogin: React.FC<UsernameLoginProps> = (props) => {
             value={username}
             onInput={onChangeUsername}
             id="input-group-1"
-            className={`${submitted && !username ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'} ltr placeholder:text-right w-full h-10 bg-gray-50 border  text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block pr-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pl-40`}
+            className={`${
+              submitted && !username
+                ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                : "border-gray-300 focus:border-blue-500"
+            } ltr placeholder:text-right w-full h-10 bg-gray-50 border  text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block pr-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pl-40`}
             placeholder="نام کاربری"
-            
           />
           <div className="absolute left-0 h-10 top-0.5 py-1 pl-3 w-32">
             <div className="bg-gray-300 h-4/5 top-0.5 absolute -right-6 w-px"></div>
@@ -55,10 +56,16 @@ const UsernameLogin: React.FC<UsernameLoginProps> = (props) => {
           </div>
         </div>
         <div>
-          <SDButton type="submit" color="success"  >ورود</SDButton>
+          <SDButton type="submit" color="success">
+            ورود
+          </SDButton>
         </div>
       </div>
-      {submitted && !username && <p className="text-red-600 text-sm pr-2">لطفا نام کاربری خود را وارد کنید.</p>}
+      {submitted && !username && (
+        <p className="text-red-600 text-sm pr-2">
+          لطفا نام کاربری خود را وارد کنید.
+        </p>
+      )}
       <div className="flex items-center gap-2 mt-6  ">
         <p>حساب کاربری ندارید؟ ثبت نام کنید: </p>
         <SDButton color="success" className="rounded-sm">
@@ -67,6 +74,4 @@ const UsernameLogin: React.FC<UsernameLoginProps> = (props) => {
       </div>
     </form>
   );
-};
-
-export default UsernameLogin;
+}
