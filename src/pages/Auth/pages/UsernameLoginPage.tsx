@@ -1,13 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import { FormEvent, useState } from "react";
 import SDButton from "../../../components/shared/Button";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
+import { authActions } from "../../../store/auth";
 export default function UsernameLoginPage() {
-  const [username, setUsername] = useState<string>("");
+  const username = useAppSelector(state=>state.auth.enteredUsername);
+  const dispatch = useAppDispatch()
   const [submitted, setSubmitted] = useState<boolean>(false);
   const navigate = useNavigate();
   function onChangeUsername(event: FormEvent) {
     const input: string = (event.target as HTMLInputElement).value;
-    setUsername(input);
+    dispatch(authActions.setUsername(input));
   }
   function onSubmit(event: FormEvent) {
     event.preventDefault();

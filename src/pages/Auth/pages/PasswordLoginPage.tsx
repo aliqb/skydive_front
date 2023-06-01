@@ -1,11 +1,21 @@
 import SDButton from "../../../components/shared/Button";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import BackButton from "../../../components/shared/BackButton";
+import { useAppSelector } from "../../../hooks/reduxHooks";
+import { useNavigate } from "react-router-dom";
 
 const PasswordLoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const enteredUsername = useAppSelector(state=>state.auth.enteredUsername)
+  const navigate = useNavigate()
+
+  useEffect(()=>{
+    if (!enteredUsername){
+      navigate('/auth')
+    }
+  },[enteredUsername,navigate])
 
   function toggleShowPassword() {
     setShowPassword((showPassword) => !showPassword);
