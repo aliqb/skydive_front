@@ -2,7 +2,7 @@ import SDButton from "../../../components/shared/Button";
 import { FormEvent, useState, useEffect } from "react";
 import BackButton from "../../../components/shared/BackButton";
 import { useAppSelector } from "../../../hooks/reduxHooks";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const PasswordLoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -32,7 +32,6 @@ const PasswordLoginPage: React.FC = () => {
     if (!password) {
       return;
     }
-    //   props.onPasswordSubmit(password);
   }
 
   const showPasswordIcon: JSX.Element = (
@@ -90,7 +89,7 @@ const PasswordLoginPage: React.FC = () => {
                 submitted && !password
                   ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                   : "border-gray-300 focus:border-blue-500"
-              } ltr placeholder:text-right w-full h-10 bg-gray-50 border  text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block pr-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pl-40`}
+              } ltr placeholder:text-right w-full h-10 bg-gray-50 border  text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block pr-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pl-48`}
             />
             <button
               type="button"
@@ -117,7 +116,7 @@ const PasswordLoginPage: React.FC = () => {
           </p>
         )}
       </form>
-      <button className="flex items-center w-full h-full px-8 py-4">
+      <Link to="../otp" className="flex items-center w-full h-full px-8 py-4">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -131,7 +130,7 @@ const PasswordLoginPage: React.FC = () => {
           />
         </svg>
         <p>ارسال کد یک بار مصرف از طریق پیامک</p>
-      </button>
+      </Link>
     </section>
   );
 };
