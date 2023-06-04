@@ -8,14 +8,14 @@ const PasswordLoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
   const [submitted, setSubmitted] = useState<boolean>(false);
-  const enteredUsername = useAppSelector(state=>state.auth.enteredUsername)
-  const navigate = useNavigate()
+  const enteredUsername = useAppSelector((state) => state.auth.enteredUsername);
+  const navigate = useNavigate();
 
-  useEffect(()=>{
-    if (!enteredUsername){
-      navigate('/auth')
+  useEffect(() => {
+    if (!enteredUsername) {
+      navigate("/auth");
     }
-  },[enteredUsername,navigate])
+  }, [enteredUsername, navigate]);
 
   function toggleShowPassword() {
     setShowPassword((showPassword) => !showPassword);
@@ -78,7 +78,7 @@ const PasswordLoginPage: React.FC = () => {
       <BackButton />
       <form onSubmit={onSubmit} className="p-8 pt-4 border-b">
         <p className="mb-6 text-lg font-semibold">رمز عبور خود را وارد کنید.</p>
-        <div className="flex w-full gap-1">
+        <div className="flex w-full gap-1 flex-wrap sm:flex-nowrap">
           <div className="relative w-full mb-0">
             <input
               type={showPassword ? "text" : "password"}
@@ -89,25 +89,26 @@ const PasswordLoginPage: React.FC = () => {
                 submitted && !password
                   ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                   : "border-gray-300 focus:border-blue-500"
-              } ltr placeholder:text-right w-full h-10 bg-gray-50 border  text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block pr-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pl-48`}
+              } ltr placeholder:text-right w-full h-10 bg-gray-50 border  text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block pr-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pl-40`}
             />
             <button
               type="button"
               onClick={toggleShowPassword}
-              className="absolute inset-y-0  flex items-center left-40 pr-3 "
+              className="absolute inset-y-0  flex items-center left-32"
             >
               {showPassword ? hidePasswordIcon : showPasswordIcon}
             </button>
-            <div className="absolute left-0 h-10 top-0.5 py-1 pl-3 w-32">
-              <div className="bg-gray-300 h-4/5 top-0.5 absolute -right-6 w-px"></div>
-              <a>فراموش کردید؟</a>
+            <div className="absolute left-0 h-10 top-0.5 py-1 pl-3 w-28">
+              <div className="bg-gray-300 h-4/5 top-0.5 absolute -right-3 w-px"></div>
+              <Link className="text-primary" to="../forget-password">
+                فراموش کردید؟
+              </Link>
             </div>
           </div>
-          <div>
-            <SDButton type="submit" color="success" className="rounded-sm">
+          <div className="w-full sm:w-auto mt-2 sm:mt-0">
+            <SDButton className="w-full" type="submit" color="success">
               ورود
             </SDButton>
-            {/* <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-sm text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">ورود</button> */}
           </div>
         </div>
         {submitted && (

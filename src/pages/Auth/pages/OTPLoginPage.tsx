@@ -27,10 +27,7 @@ const OTPLoginPage: React.FC = () => {
     <section className="w-full">
       <BackButton />
       <form className="p-8 pt-4 border-b">
-        <p className="mb-6 text-lg font-semibold">
-          کد فرستاده شده برای تست را وارد کنید.
-        </p>
-        <OTPBox condLength={6} onFinish={onFinish} durationSeconds={10} onRefresh={onOTPRefresh} />
+        <OTPBox condLength={6} onFinish={onFinish} phone="09374949025" durationSeconds={60} onRefresh={onOTPRefresh} />
       </form>
       <Link
         to="../password"

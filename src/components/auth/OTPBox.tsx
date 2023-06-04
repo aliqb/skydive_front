@@ -4,11 +4,13 @@ import Timer from "../shared/Timer";
 interface OTPInputProp {
   condLength: number;
   durationSeconds: number;
+  phone: string;
   onFinish(code: string): void;
-  onRefresh():void;
+  onRefresh(): void;
 }
 
 const OTPBox: React.FC<OTPInputProp> = (props) => {
+  const phone = `${props.phone.slice(0,4)}*****${props.phone.slice(-2)}`
   const [code, setCode] = useState<string>("");
   const [canRefresh, setCanRefresh] = useState<boolean>(false);
 
@@ -32,32 +34,41 @@ const OTPBox: React.FC<OTPInputProp> = (props) => {
     setCode(value);
   }
 
-  function onTimerEnd(){
-    console.log('timer end')
-    setCanRefresh(true)
+  function onTimerEnd() {
+    console.log("timer end");
+    setCanRefresh(true);
   }
 
-  function handleRefresh(){
-    setCode('');
+  function handleRefresh() {
+    setCode("");
     props.onRefresh();
     setCanRefresh(false);
   }
 
   return (
-    <div className="flex flex-col items-center">
-      <OtpInput
-        value={code}
-        onChange={handleChange}
-        numInputs={props.condLength}
-        renderSeparator={<span className="p-1"></span>}
-        renderInput={renderInput}
-        containerStyle="ltr justify-center w-full mb-3"
-      />
-      <div className="text-sm">
-        { canRefresh ? 
-            <button type="button" onClick={handleRefresh}>ارسال مجدد</button>
-        :
-         <Timer durationSeconds={props.durationSeconds} onEnd={onTimerEnd} />}
+    <div>
+      <p className="mb-6 text-lg font-semibold">
+        کد فرستاده شده برای <span dir="auto">{phone}</span> را وارد کنید.
+      </p>
+      <div className="flex flex-col items-center">
+        <OtpInput
+          value={code}
+          onChange={handleChange}
+          numInputs={props.condLength}
+          renderSeparator={<span className="p-1"></span>}
+          renderInput={renderInput}
+          containerStyle="ltr justify-center w-full mb-3"
+          shouldAutoFocus={true}
+        />
+        <div className="text-sm">
+          {canRefresh ? (
+            <button className="text-primary" type="button" onClick={handleRefresh}>
+              ارسال مجدد
+            </button>
+          ) : (
+            <Timer durationSeconds={props.durationSeconds} onEnd={onTimerEnd} />
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+import colors from 'tailwindcss/colors'
 export default {
   content: [
     "./index.html",
@@ -7,7 +8,14 @@ export default {
     'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}'
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: {
+          ...colors.amber,
+          DEFAULT: 'rgb(191 115 0)'
+        }
+      },
+    },
   },
   plugins: [
     import('flowbite/plugin')

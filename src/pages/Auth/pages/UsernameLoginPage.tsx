@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FormEvent, useState } from "react";
 import SDButton from "../../../components/shared/Button";
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
@@ -23,7 +23,7 @@ export default function UsernameLoginPage() {
   return (
     <form onSubmit={onSubmit} className="p-8">
       <h1 className="mb-6 text-lg font-semibold">ورود</h1>
-      <div className="flex w-full gap-1">
+      <div className="flex w-full gap-1 flex-wrap sm:flex-nowrap">
         <div className="relative w-full mb-0">
           <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
             <svg
@@ -50,16 +50,16 @@ export default function UsernameLoginPage() {
               submitted && !username
                 ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                 : "border-gray-300 focus:border-blue-500"
-            } ltr placeholder:text-right w-full h-10 bg-gray-50 border  text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block pr-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pl-40`}
+            } ltr placeholder:text-right w-full h-10 bg-gray-50 border  text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block pr-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pl-36`}
             placeholder="نام کاربری"
           />
-          <div className="absolute left-0 h-10 top-0.5 py-1 pl-3 w-32">
-            <div className="bg-gray-300 h-4/5 top-0.5 absolute -right-6 w-px"></div>
-            <a>فراموش کردید؟</a>
+          <div className="absolute left-0 h-10 top-0.5 py-1 pl-3 w-28">
+            <div className="bg-gray-300 h-4/5 top-0.5 absolute -right-4 w-px"></div>
+            <Link className="text-primary" to="forget-password">فراموش کردید؟</Link>
           </div>
         </div>
-        <div>
-          <SDButton type="submit" color="success">
+        <div className="w-full sm:w-auto mt-2 sm:mt-0">
+          <SDButton className="w-full" type="submit" color="success">
             ورود
           </SDButton>
         </div>
@@ -69,9 +69,9 @@ export default function UsernameLoginPage() {
           لطفا نام کاربری خود را وارد کنید.
         </p>
       )}
-      <div className="flex items-center gap-2 mt-6  ">
+      <div className="flex flex-wrap items-center gap-2 mt-6  ">
         <p>حساب کاربری ندارید؟ ثبت نام کنید: </p>
-        <SDButton color="success" className="rounded-sm">
+        <SDButton color="success" className="rounded-sm w-full sm:w-auto">
           ایجاد حساب کاربری
         </SDButton>
       </div>
