@@ -43,7 +43,7 @@ const ForgetPasswordFirstPage: React.FC = () => {
           </div>
           <input
             {...register("phone", {
-              required: "لطفا شماره مبایل خود را وارد کنید.",
+              required: "لطفا شماره موبایل خود را وارد کنید.",
               pattern: {
                 value: /(\+98|0|0098)9\d{9}$/,
                 message: "فرمت شماره موبایل صحیح نیست.",

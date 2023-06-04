@@ -4,8 +4,8 @@ import SDButton from "../../../components/shared/Button";
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { authActions } from "../../../store/auth";
 export default function UsernameLoginPage() {
-  const username = useAppSelector(state=>state.auth.enteredUsername);
-  const dispatch = useAppDispatch()
+  const username = useAppSelector((state) => state.auth.enteredUsername);
+  const dispatch = useAppDispatch();
   const [submitted, setSubmitted] = useState<boolean>(false);
   const navigate = useNavigate();
   function onChangeUsername(event: FormEvent) {
@@ -18,7 +18,7 @@ export default function UsernameLoginPage() {
     if (!username) {
       return;
     }
-    navigate('password',{state:{username}})
+    navigate("password", { state: { username } });
   }
   return (
     <form onSubmit={onSubmit} className="p-8">
@@ -55,7 +55,9 @@ export default function UsernameLoginPage() {
           />
           <div className="absolute left-0 h-10 top-0.5 py-1 pl-3 w-28">
             <div className="bg-gray-300 h-4/5 top-0.5 absolute -right-4 w-px"></div>
-            <Link className="text-primary" to="forget-password">فراموش کردید؟</Link>
+            <Link className="text-primary" to="forget-password">
+              فراموش کردید؟
+            </Link>
           </div>
         </div>
         <div className="w-full sm:w-auto mt-2 sm:mt-0">
@@ -71,9 +73,11 @@ export default function UsernameLoginPage() {
       )}
       <div className="flex flex-wrap items-center gap-2 mt-6  ">
         <p>حساب کاربری ندارید؟ ثبت نام کنید: </p>
-        <SDButton color="success" className="rounded-sm w-full sm:w-auto">
-          ایجاد حساب کاربری
-        </SDButton>
+        <Link to="singup" className="w-full xs:w-auto">
+          <SDButton color="success" className="w-full" >
+            ایجاد حساب کاربری
+          </SDButton>
+        </Link>
       </div>
     </form>
   );

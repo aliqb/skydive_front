@@ -48,7 +48,7 @@ const OTPBox: React.FC<OTPInputProp> = (props) => {
   return (
     <div>
       <p className="mb-6 text-lg font-semibold">
-        کد فرستاده شده برای <span dir="auto">{phone}</span> را وارد کنید.
+        کد فرستاده شده برای <span dir="auto">({phone})</span> را وارد کنید.
       </p>
       <div className="flex flex-col items-center">
         <OtpInput
