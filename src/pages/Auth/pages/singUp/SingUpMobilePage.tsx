@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import SDButton from "../../../../components/shared/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ChangeEvent, useState } from "react";
 
 const SignUpMobilePage: React.FC = () => {
@@ -12,7 +12,11 @@ const SignUpMobilePage: React.FC = () => {
     mode: "onTouched",
   });
 
+
+
   const [acceptRules, setAcceptRules] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   function onChangeAcceptance(evenet: ChangeEvent<HTMLInputElement>) {
     setAcceptRules(!!evenet.target.value);
@@ -20,6 +24,7 @@ const SignUpMobilePage: React.FC = () => {
 
   function onSubmit(data: { phone: string }) {
     console.log(data, acceptRules);
+    navigate('personal')
   }
 
   return (

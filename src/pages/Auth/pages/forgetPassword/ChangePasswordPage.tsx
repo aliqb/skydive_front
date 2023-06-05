@@ -39,6 +39,7 @@ const ChangePasswordPage: React.FC = () => {
               },
             })}
             id="password"
+            invalid={!!errors.password}
           />
           {errors.password?.message && (
             <p className="text-red-600 text-sm pr-2 mt-2">
@@ -58,6 +59,7 @@ const ChangePasswordPage: React.FC = () => {
                 "تکرار رمز عبور با رمز عبور مطابقت ندارد.",
             })}
             id="repeatPassword"
+            invalid={!!errors.repeatPassword}
           />
           {errors.repeatPassword?.message && (
             <p className="text-red-600 text-sm pr-2 mt-2">

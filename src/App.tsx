@@ -13,6 +13,7 @@ import ForgetPasswordFirstPage from "./pages/Auth/pages/forgetPassword/ForgetPas
 import ForgetPasswordOtpPage from "./pages/Auth/pages/forgetPassword/ForgetPasswordOtpPage";
 import ChangePasswordPage from "./pages/Auth/pages/forgetPassword/ChangePasswordPage";
 import SignUpMobilePage from "./pages/Auth/pages/singUp/SingUpMobilePage";
+import SingUpPersonaPage from "./pages/Auth/pages/singUp/SingnUpPersonalPage";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
           </Route>
           <Route Component={() => <Outlet></Outlet>} path="singup">
             <Route Component={SignUpMobilePage} path=""></Route>
+            <Route Component={SingUpPersonaPage} path="personal"></Route>
           </Route>
         </Route>
       </Routes>
