@@ -15,11 +15,13 @@ import ChangePasswordPage from "./pages/Auth/pages/forgetPassword/ChangePassword
 import SignUpMobilePage from "./pages/Auth/pages/singUp/SingUpMobilePage";
 import SingUpPersonaPage from "./pages/Auth/pages/singUp/SingnUpPersonalPage";
 import SingUpUserInfoPage from "./pages/Auth/pages/singUp/SignUpUserInfoPage";
+import UserPanelContainer from "./pages/userPanel/UserPanelContainer";
 
 function App() {
   return (
     <Router>
       <Routes>
+        <Route Component={UserPanelContainer} path=""></Route>
         <Route Component={AuthContainer} path="auth">
           <Route Component={UsernameLoginPage} path=""></Route>
           <Route Component={PasswordLoginPage} path="password"></Route>

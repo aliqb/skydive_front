@@ -1,4 +1,4 @@
-import { Button, ButtonProps, CustomFlowbiteTheme, DeepPartial, FlowbiteButtonTheme } from "flowbite-react";
+import { Button, ButtonProps, DeepPartial, FlowbiteButtonTheme } from "flowbite-react";
 interface SDButtonProps extends ButtonProps{
     children?: React.ReactNode;
 }
