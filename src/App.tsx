@@ -14,6 +14,7 @@ import ForgetPasswordOtpPage from "./pages/Auth/pages/forgetPassword/ForgetPassw
 import ChangePasswordPage from "./pages/Auth/pages/forgetPassword/ChangePasswordPage";
 import SignUpMobilePage from "./pages/Auth/pages/singUp/SingUpMobilePage";
 import SingUpPersonaPage from "./pages/Auth/pages/singUp/SingnUpPersonalPage";
+import SingUpUserInfoPage from "./pages/Auth/pages/singUp/SignUpUserInfoPage";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route Component={() => <Outlet></Outlet>} path="singup">
             <Route Component={SignUpMobilePage} path=""></Route>
             <Route Component={SingUpPersonaPage} path="personal"></Route>
+            <Route Component={SingUpUserInfoPage} path="user-info"></Route>
           </Route>
         </Route>
       </Routes>

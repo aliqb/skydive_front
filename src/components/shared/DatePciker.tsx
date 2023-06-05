@@ -17,7 +17,6 @@ const SDDatepicker: React.FC<SDDatePcikerProps> = (props) => {
   delete datePickerPropsTemp.control;
   delete datePickerPropsTemp.required;
   delete datePickerPropsTemp.onChange
-  const datePickerProps : DatePickerProps = {...datePickerPropsTemp}
   function formaDateObject(date: DateObject): string {
     if (!date) {
       return "";
@@ -50,7 +49,7 @@ const SDDatepicker: React.FC<SDDatePcikerProps> = (props) => {
           : { validate: validateDate }
       } //optional
       render={({
-        field: { onChange, name, value },
+        field: { onChange, value },
         //   fieldState: { invalid, isDirty }, //optional
         formState: { errors }, //optional, but necessary if you want to show an error message
       }) => (

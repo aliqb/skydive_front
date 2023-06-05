@@ -26,7 +26,7 @@ const ChangePasswordPage: React.FC = () => {
     <section className="w-full">
       <form className="p-8 pt-4" onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <SDLabel className="text-slate-500" htmlFor="password">
+          <SDLabel  htmlFor="password">
             رمز عبور مورد نظر خود را وارد کنید.
           </SDLabel>
           <PasswordInput
