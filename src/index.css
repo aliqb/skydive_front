@@ -1,22 +1,49 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@font-face{
-    src: url("assets/IRANSansWeb.ttf");
+@font-face {
+  src: url("assets/IRANSansWeb.ttf");
+  font-family: "IRANSansWeb";
+}
+
+@layer base {
+
+  html,
+  body {
     font-family: "IRANSansWeb";
+  }
+  /* width */
+  ::-webkit-scrollbar {
+    width: 6px;
+    margin: 10px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0);
+    border: none;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-400;
+    border: 2px solid rgba(0,0,0,0);
+    border-radius: 9px;
+    
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-500;
+  }
 }
 
-@layer base{
-    html,body{
-        font-family: "IRANSansWeb";
-    }
-}
-
-@layer components{
-    .ltr{
-        direction: ltr;
-    }
-    input, textarea{
-        outline: none;
-    }
+@layer components {
+  .ltr {
+    direction: ltr;
+  }
+  input,
+  textarea {
+    outline: none;
+  }
 }
