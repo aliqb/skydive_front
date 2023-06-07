@@ -53,7 +53,7 @@ const SignUpMobilePage: React.FC = () => {
               required: "لطفا شماره موبایل خود را وارد کنید.",
               pattern: {
                 value: /(\+98|0|0098)9\d{9}$/,
-                message: "فرمت شماره موبایل صحیح نیست.",
+                message: "شماره موبایل صحیح نیست.",
               },
             })}
             type="text"
