@@ -5,7 +5,7 @@ import UserSideber from "../../components/userPanel/UserSidebar"
 
 const UserPanelContainer: React.FC = ()=>{
     return(
-        <PanelShell header={UserHeader} sidebar={UserSideber} mainContinerClassName="bg-slate-100 p-6" sidBarContainerClassName="bg-white">
+        <PanelShell header={UserHeader} sidebar={UserSideber} mainContinerClassName="bg-slate-100 p-2  xs:p-6" sidBarContainerClassName="bg-white">
             <Outlet></Outlet>
         </PanelShell>
     )
