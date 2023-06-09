@@ -5,11 +5,12 @@ import persian_fa from "react-date-object/locales/persian_fa";
 import persian_en from "react-date-object/locales/persian_en";
 import DatePicker, { DateObject } from "react-multi-date-picker";
 type DatePickerFinalProps = CalendarProps & DatePickerProps
-interface SDDatePcikerProps extends DatePickerFinalProps {
+interface SDDatePcikerProps extends Omit<DatePickerFinalProps,'onChange'> {
   name: string;
   control?: Control<any>;
   required?: boolean;
-  manualInvalid?:boolean
+  manualInvalid?:boolean;
+  onChange?:(value:string)=>void;
 }
 
 const SDDatepicker: React.FC<SDDatePcikerProps> = (props) => {
@@ -25,7 +26,7 @@ const SDDatepicker: React.FC<SDDatePcikerProps> = (props) => {
     return date.format("YYYY/MM/DD");
   }
 
-  function validateDate(value: string) {
+  function validateDate(value: string):string | boolean {
     const message = "تاریخ درست نیست.";
     if (!/\d{4}\/\d{2}\/\d{2}/.test(value)) {
       return message;
@@ -39,6 +40,17 @@ const SDDatepicker: React.FC<SDDatePcikerProps> = (props) => {
     }
     return true;
   }
+
+  function handleChangeWithoutForm(date: DateObject){
+    let dateString  = formaDateObject(date);
+    const validation = validateDate(dateString);
+    if (validation !== true){
+      dateString = ''
+    }
+    props.onChange && props.onChange(dateString)
+  }
+
+
   return props.control ? (
     <Controller
       control={props.control}
@@ -70,14 +82,14 @@ const SDDatepicker: React.FC<SDDatePcikerProps> = (props) => {
               errors[props.name]
                 ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                 : "border-gray-300 focus:border-blue-500"
-            }  placeholder:text-right w-full h-10 bg-gray-50 border  text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block  p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+            } ${props.inputClass || ''}  placeholder:text-right w-full h-10 bg-gray-50 border  text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block  p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
           />
         </>
       )}
     />
   ) : (
     <DatePicker
-      onChange={props.onChange}
+      onChange={handleChangeWithoutForm}
       value={props.value}
       name={props.name}
       id={props.id}
@@ -88,9 +100,9 @@ const SDDatepicker: React.FC<SDDatePcikerProps> = (props) => {
       containerClassName="w-full"
       inputClass={`${
         props.manualInvalid
-          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+          ? "!border-red-500 focus:ring-red-500 focus:border-red-500"
           : "border-gray-300 focus:border-blue-500"
-      }  placeholder:text-right w-full h-10 bg-gray-50 border  text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block  p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+      } ${props.inputClass || ''} placeholder:text-right w-full h-10 bg-gray-50 border  text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block  p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
     />
   );
 };

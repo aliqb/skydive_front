@@ -17,11 +17,11 @@ const AccountInfo: React.FC = () => {
     mode: "onTouched",
   });
   return (
-    <div>
+    <div className="flex flex-col items-center">
       <div className="flex flex-col items-center mb-10">
         <div className="flex gap-4 mb-3">
           <p className="text-slate-500">وضعیت حساب کاربری</p>
-          <p className="font-semibold text-red-600">در انتظار تأیید</p>
+          <p className="font-semibold text-orange-500">در انتظار تأیید</p>
           <SDTooltip
             content="باید تایید شود."
             trigger="hover"
@@ -48,7 +48,7 @@ const AccountInfo: React.FC = () => {
           <p className="font-semibold">همراه با مربی</p>
         </div>
       </div>
-      <form className="flex flex-wrap">
+      <form className="flex flex-wrap max-w-2xl">
         <div className="mb-6 w-full sm:w-1/2 sm:pl-12">
           <SDLabel htmlFor="userId">کد کاربری</SDLabel>
           <SDTextInput value={"asd"} disabled={true} type="text" id="userId" />

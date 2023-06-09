@@ -1,6 +1,7 @@
 import SDCard from "../../../components/shared/Card";
 import { SDTabs } from "../../../components/shared/Tabs";
 import AccountInfo from "../../../components/userPanel/Account/AccountInfo";
+import Documents from "../../../components/userPanel/Account/Documnets";
 import PersonalInfo from "../../../components/userPanel/Account/PersonalInfo";
 
 const Account: React.FC = () => {
@@ -17,18 +18,8 @@ const Account: React.FC = () => {
           <SDTabs.Item title="اطلاعات شخصی">
               <PersonalInfo />
           </SDTabs.Item>
-          <SDTabs.Item title="Settings">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              <p>
-                This is some placeholder content the
-                <span className="font-medium text-gray-800 dark:text-white">
-                  Settings tab's associated content
-                </span>
-                . Clicking another tab will toggle the visibility of this one
-                for the next. The tab JavaScript swaps classes to control the
-                content visibility and styling.
-              </p>
-            </p>
+          <SDTabs.Item title="مدارک ارسالی">
+            <Documents />
           </SDTabs.Item>
         </SDTabs.Group>
       </SDCard>
