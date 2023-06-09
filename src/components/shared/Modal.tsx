@@ -1,16 +1,18 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import SDCard from "./Card";
 
 
 interface ModalProps{
     children: ReactNode;
-    onClose?:()=>void;
+    onClose:()=>void;
     show:boolean;
     closeOnBackDrop?: boolean;
+    containerClass?: string;
 }
 
 interface ModalBodyProps{
+    containerClass?: string;
     children: ReactNode;
 }
 
@@ -27,26 +29,32 @@ const BackDrop : React.FC<BackDropProps> = (props) => {
 
 const ModalBody : React.FC<ModalBodyProps> = (props) => {
   return (
-    <SDCard className={`z-30 fixed  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white w-32`}>
+    <SDCard className={` ${props.containerClass} z-30 fixed  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white w-4/5 xs:w-auto`}>
         {props.children}
     </SDCard>
   );
 };
-const SDModal : React.FC<ModalProps> = ({children,show:propsShow,closeOnBackDrop=true,onClose}) => {
+const SDModal : React.FC<ModalProps> = ({children,show:propsShow,closeOnBackDrop=true,onClose, containerClass}) => {
     const [show, setShow] = useState<boolean>(propsShow);
+    // console.log('prop',propsShow,show)
     function onBackDropClick(){
         if(closeOnBackDrop){
+            console.log('onnn')
             if(onClose){
                 onClose()
             }
             setShow(false);
         }
     }
+    useEffect(()=>{
+        console.log('effect',propsShow)
+        setShow(propsShow)
+    },[propsShow])
   return (
     <>
       {show && createPortal(<BackDrop onClick={onBackDropClick}  ></BackDrop>, document.getElementById("backdrop")!)}
       {show && createPortal(
-        <ModalBody    
+        <ModalBody containerClass={containerClass}  
         >
             {children}
         </ModalBody>,
