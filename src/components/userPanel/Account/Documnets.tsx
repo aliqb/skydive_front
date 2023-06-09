@@ -1,4 +1,5 @@
 import SDButton from "../../shared/Button";
+import SDModal from "../../shared/Modal";
 import DocumentItem from "./DocumentsItem";
 import { useState } from "react"
 
@@ -14,6 +15,9 @@ const Documents: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center">
+        <SDModal show={true}>
+            test
+        </SDModal>
       <div className="max-w-2xl mx-auto w-full">
         <p className="text-slate-500">
           جهت تکمیل ثبت نام مدارک زیر الزامی است.
