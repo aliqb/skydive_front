@@ -1,12 +1,9 @@
 import { Dropdown } from "flowbite-react";
-import HumbergetButton from "../shared/HumbergerButtom";
+import HumbergerButton from "../shared/HumbergerButtom";
 import { ShellElement } from "../shared/PanelShell";
 import SDDropdown, { DropDownItem } from "../shared/Dropdown";
 
 const UserHeader: React.FC = (props) => {
-  function test() {
-    console.log("test");
-  }
   const dropdownItems: DropDownItem[] = [
     {
       title: "حساب کاربری",

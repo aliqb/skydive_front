@@ -1,6 +1,11 @@
 import { ShellElement } from "./PanelShell";
 
-const HumbergetButton: React.FC<ShellElement> = (props) => {
+interface HumbergerButtonProps extends ShellElement{
+  className?: string;
+}
+
+
+const HumbergerButton: React.FC<HumbergerButtonProps> = (props) => {
   return (
     <button onClick={props.toggleMenu} className="mr-5">
       {
@@ -10,7 +15,7 @@ const HumbergetButton: React.FC<ShellElement> = (props) => {
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="w-10 h-10"
+          className={`${props.className || ''}  w-10 h-10`}
         >
           <path
             strokeLinecap="round"
@@ -22,4 +27,4 @@ const HumbergetButton: React.FC<ShellElement> = (props) => {
     </button>
   );
 };
-export default HumbergetButton;
+export default HumbergerButton;

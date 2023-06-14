@@ -18,6 +18,8 @@ import SingUpUserInfoPage from "./pages/Auth/pages/singUp/SignUpUserInfoPage";
 import UserPanelContainer from "./pages/userPanel/UserPanelContainer";
 import Home from "./pages/userPanel/pages/Home";
 import Account from "./pages/userPanel/pages/Account";
+import AdminPanelContainer from "./pages/adminPanel/AdminPanelContainer";
+import Cartable from "./pages/adminPanel/pages/Cartable";
 
 function App() {
   return (
@@ -32,24 +34,18 @@ function App() {
           <Route Component={PasswordLoginPage} path="password"></Route>
           <Route Component={OTPLOginPage} path="otp"></Route>
           <Route Component={() => <Outlet></Outlet>} path="forget-password">
-            <Route
-              Component={ForgetPasswordFirstPage}
-              path=""
-            ></Route>
-            <Route
-              Component={ForgetPasswordOtpPage}
-              path="otp"
-            ></Route>
-            <Route
-              Component={ChangePasswordPage}
-              path="change"
-            ></Route>
+            <Route Component={ForgetPasswordFirstPage} path=""></Route>
+            <Route Component={ForgetPasswordOtpPage} path="otp"></Route>
+            <Route Component={ChangePasswordPage} path="change"></Route>
           </Route>
           <Route Component={() => <Outlet></Outlet>} path="singup">
             <Route Component={SignUpMobilePage} path=""></Route>
             <Route Component={SingUpPersonaPage} path="personal"></Route>
             <Route Component={SingUpUserInfoPage} path="user-info"></Route>
           </Route>
+        </Route>
+        <Route Component={AdminPanelContainer} path="admin">
+          <Route Component={Cartable} path=""></Route>
         </Route>
       </Routes>
     </Router>

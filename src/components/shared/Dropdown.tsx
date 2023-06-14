@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 
 interface SDDropdownProps {
   items: DropDownItem[];
-  children: React.ReactNode
+  children: React.ReactNode;
   buttonClassName?: string;
+  chevronClassName?: string;
 }
 
 const SDDropdown: React.FC<SDDropdownProps> = (props) => {
@@ -54,7 +55,7 @@ const SDDropdown: React.FC<SDDropdownProps> = (props) => {
       >
         {props.children}
         <svg
-          className="w-4 h-4 mr-2"
+          className={`${props.chevronClassName || ''} w-4 h-4 mr-2`}
           aria-hidden="true"
           fill="none"
           stroke="currentColor"
