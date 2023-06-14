@@ -3,13 +3,15 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 interface AuthState{
     enteredUsername: string,
     isAuthenticated: boolean,
-    enteredPhone: string
+    enteredPhone: string,
+    token: string
 }
 
 const initialState : AuthState = {
     enteredUsername: '',
     isAuthenticated: false,
-    enteredPhone: ''
+    enteredPhone: '',
+    token: ''
 }
 
 const authSlice = createSlice({
@@ -22,6 +24,9 @@ const authSlice = createSlice({
         setMobile:(state, action: PayloadAction<string>)=>{
             state.enteredPhone = action.payload
         },
+        setToken:(state,action: PayloadAction<string>)=>{
+            state.token = action.payload;
+        }
     }
 })
 

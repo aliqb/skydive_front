@@ -2,6 +2,9 @@ import { useForm } from "react-hook-form";
 import SDButton from "../../../../components/shared/Button";
 import { Link, useNavigate } from "react-router-dom";
 import { ChangeEvent, useState } from "react";
+import useAPi from "../../../../hooks/useApi";
+import { useAppDispatch } from "../../../../hooks/reduxHooks";
+import { authActions } from "../../../../store/auth";
 
 const SignUpMobilePage: React.FC = () => {
   const {
@@ -12,6 +15,8 @@ const SignUpMobilePage: React.FC = () => {
     mode: "onTouched",
   });
 
+  const {sendRequest,isPending} = useAPi<{body:string, id: number, title:string, userId:number}>()
+  const dispatch = useAppDispatch();
 
 
   const [acceptRules, setAcceptRules] = useState<boolean>(false);
@@ -24,8 +29,12 @@ const SignUpMobilePage: React.FC = () => {
 
   function onSubmit(data: { phone: string }) {
     console.log(data, acceptRules);
-    navigate('personal')
+    sendRequest({
+      url:'/posts',
+    },(data)=>console.log('in comp',data))
+    // navigate('personal')
   }
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-8 w-full">
