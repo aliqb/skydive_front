@@ -20,8 +20,23 @@ import Home from "./pages/userPanel/pages/Home";
 import Account from "./pages/userPanel/pages/Account";
 import AdminPanelContainer from "./pages/adminPanel/AdminPanelContainer";
 import Cartable from "./pages/adminPanel/pages/Cartable";
+import SignUpPasswordOtpPage from "./pages/Auth/pages/singUp/SignUpOtpPage";
+import { useEffect } from "react";
+import { AuthData } from "./models/auth";
+import { useAppDispatch, useAppSelector } from "./hooks/reduxHooks";
+import { authActions } from "./store/auth";
+
 
 function App() {
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector(state=>state.auth.isAuthenticated);
+  // useEffect(()=>{
+  //   const authDataJson = localStorage.getItem('authData');
+  //   if(authDataJson){
+  //     const authData : AuthData = JSON.parse(authDataJson);
+  //     dispatch(authActions.setToken(authData))
+  //   }
+  // },[dispatch])
   return (
     <Router>
       <Routes>
@@ -38,8 +53,9 @@ function App() {
             <Route Component={ForgetPasswordOtpPage} path="otp"></Route>
             <Route Component={ChangePasswordPage} path="change"></Route>
           </Route>
-          <Route Component={() => <Outlet></Outlet>} path="singup">
+          <Route Component={() => <Outlet></Outlet>} path="signup">
             <Route Component={SignUpMobilePage} path=""></Route>
+            <Route Component={SignUpPasswordOtpPage} path="otp"></Route>
             <Route Component={SingUpPersonaPage} path="personal"></Route>
             <Route Component={SingUpUserInfoPage} path="user-info"></Route>
           </Route>

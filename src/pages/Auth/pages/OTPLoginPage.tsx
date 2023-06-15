@@ -19,7 +19,7 @@ const OTPLoginPage: React.FC = () => {
   }
 
   function onOTPRefresh(){
-    console.log('refresh')
+    return new Promise<any>((resolve)=>{resolve(1)})
   }
 
 
