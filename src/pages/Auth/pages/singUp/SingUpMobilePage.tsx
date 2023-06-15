@@ -6,6 +6,7 @@ import useAPi from "../../../../hooks/useApi";
 import { useAppDispatch } from "../../../../hooks/reduxHooks";
 import { authActions } from "../../../../store/auth";
 import { BaseResponse } from "../../../../models/shared";
+import SDSpinner from "../../../../components/shared/Spinner";
 
 const SignUpMobilePage: React.FC = () => {
   const {
@@ -18,14 +19,16 @@ const SignUpMobilePage: React.FC = () => {
 
   const {
     sendRequest,
-    isPending,
     errors: apiErrors,
   } = useAPi<{ phone: string }, BaseResponse<string>>();
-  
+
   const { sendRequest: sendOtpRequest, errors: otpErrors } = useAPi<
     { phone: string },
     BaseResponse<null>
   >();
+
+  const [finalPending, setFinalPending] = useState<boolean>(false)
+
   const dispatch = useAppDispatch();
 
   const [acceptRules, setAcceptRules] = useState<boolean>(false);
@@ -47,7 +50,10 @@ const SignUpMobilePage: React.FC = () => {
         method: "post",
         data: { phone: phone },
       },
-      () => navigateToNextPage()
+      () => {
+        setFinalPending(false);
+        navigateToNextPage()
+      }
     );
   }
 
@@ -56,6 +62,7 @@ const SignUpMobilePage: React.FC = () => {
       return;
     }
     console.log(data, acceptRules);
+    setFinalPending(true)
     sendRequest(
       {
         url: "/users/register",
@@ -111,7 +118,8 @@ const SignUpMobilePage: React.FC = () => {
           />
         </div>
         <div className="">
-          <SDButton className="w-full" type="submit" color="success">
+          <SDButton className="w-full" type="submit" color="success" disabled={finalPending}>
+            {(finalPending) && <SDSpinner />}
             ادامه
           </SDButton>
         </div>

@@ -9,6 +9,7 @@ import { UserSecurityInformation } from "../../../../models/auth";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../../hooks/reduxHooks";
 import SDAlert from "../../../../components/shared/Alert";
+import SDSpinner from "../../../../components/shared/Spinner";
 interface UserInfoFormData {
   username: string;
   password: string;
@@ -136,7 +137,8 @@ const SingUpUserInfoPage: React.FC = () => {
           )}
         </div>
         <div>
-          <SDButton type="submit" color="success" className="w-full">
+          <SDButton type="submit" color="success" className="w-full" disabled={isPending}>
+          {isPending &&  <SDSpinner />}
             ثبت اطلاعات
           </SDButton>
         </div>

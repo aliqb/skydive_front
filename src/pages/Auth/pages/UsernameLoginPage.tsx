@@ -4,6 +4,7 @@ import SDButton from "../../../components/shared/Button";
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { authActions } from "../../../store/auth";
 import useAPi from "../../../hooks/useApi";
+import SDSpinner from "../../../components/shared/Spinner";
 export default function UsernameLoginPage() {
   const username = useAppSelector((state) => state.auth.enteredUsername);
   const dispatch = useAppDispatch();
@@ -67,8 +68,9 @@ export default function UsernameLoginPage() {
             </Link>
           </div>
         </div>
-        <div className="w-full sm:w-auto mt-2 sm:mt-0">
-          <SDButton className="w-full" type="submit" color="success">
+        <div className="w-full sm:w-auto mt-2 sm:mt-0" >
+          <SDButton className="w-full" type="submit" color="success" disabled={isPending}>
+          {isPending &&  <SDSpinner />}
             ورود
           </SDButton>
         </div>

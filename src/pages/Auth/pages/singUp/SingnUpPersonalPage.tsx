@@ -7,10 +7,15 @@ import { useNavigate } from "react-router-dom";
 import useAPi from "../../../../hooks/useApi";
 import { UserPersonalInfo } from "../../../../models/shared";
 import SDAlert from "../../../../components/shared/Alert";
+import SDSpinner from "../../../../components/shared/Spinner";
 
 const SingUpPersonaPage: React.FC = () => {
   const navigate = useNavigate();
-  const {sendRequest, errors:apiErrors, isPending} = useAPi<UserPersonalInfo>()
+  const {
+    sendRequest,
+    errors: apiErrors,
+    isPending,
+  } = useAPi<UserPersonalInfo>();
   const {
     register,
     formState: { errors },
@@ -20,18 +25,20 @@ const SingUpPersonaPage: React.FC = () => {
     mode: "onTouched",
   });
 
-  function navigateToNextPage(){
-    console.log('wa')
+  function navigateToNextPage() {
+    console.log("wa");
     navigate("../user-info");
-
   }
 
   function onSubmit(data: UserPersonalInfo) {
-    sendRequest({
-      url: '/Users/UserPersonalInformationCompletion/true',
-      data: data,
-      method: 'post'
-    },()=>navigateToNextPage())
+    sendRequest(
+      {
+        url: "/Users/UserPersonalInformationCompletion/true",
+        data: data,
+        method: "post",
+      },
+      () => navigateToNextPage()
+    );
   }
 
   return (
@@ -117,7 +124,8 @@ const SingUpPersonaPage: React.FC = () => {
           )}
         </div>
         <div>
-          <SDButton type="submit" color="success" className="w-full">
+          <SDButton type="submit" color="success" className="w-full" disabled={isPending}>
+            {isPending && <SDSpinner />}
             مرحله بعد
           </SDButton>
         </div>
