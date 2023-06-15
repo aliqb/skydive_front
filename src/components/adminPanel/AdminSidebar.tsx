@@ -22,7 +22,7 @@ const AdminSideber: React.FC<ShellElement> = () => {
           />
         </svg>
       ),
-      path: "",
+      path: "cartable",
     },
     {
       title: "رویداد ها",
@@ -42,7 +42,7 @@ const AdminSideber: React.FC<ShellElement> = () => {
           />
         </svg>
       ),
-      path: "",
+      path: "events",
     },
     {
       title: "مدیریت اعضا",
@@ -62,7 +62,7 @@ const AdminSideber: React.FC<ShellElement> = () => {
           />
         </svg>
       ),
-      path: "",
+      path: "users",
     },
     {
       title: "گزارشها",
@@ -82,7 +82,7 @@ const AdminSideber: React.FC<ShellElement> = () => {
           />
         </svg>
       ),
-      path: "",
+      path: "reports",
     },
     {
       title: "ارسال پیام ",
@@ -102,7 +102,7 @@ const AdminSideber: React.FC<ShellElement> = () => {
           />
         </svg>
       ),
-      path: "",
+      path: "sendMessage",
     },
     {
       title: "تنظیمات",
@@ -127,7 +127,7 @@ const AdminSideber: React.FC<ShellElement> = () => {
           />
         </svg>
       ),
-      path: "",
+      path: "settings",
     },
   ];
   return (
