@@ -7,7 +7,7 @@ export interface HomeLinkProps {
 
 const HomeLink: React.FC<HomeLinkProps> = (props) => {
   return (
-    <div className="w-1/2  p-1 my-1 min-w-fit">
+    <div className="p-1 my-1 min-w-fit w-1/2 flex justify-center">
       <Link to={props.href} className="inline-flex gap-2" >
         <BsAirplaneEngines size="1.5rem"></BsAirplaneEngines>
         <span>{props.tilte}</span>

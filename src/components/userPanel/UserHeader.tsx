@@ -1,9 +1,12 @@
-import { Dropdown } from "flowbite-react";
-import HumbergerButton from "../shared/HumbergerButtom";
-import { ShellElement } from "../shared/PanelShell";
+import { useAppSelector } from "../../hooks/reduxHooks";
+import { authActions } from "../../store/auth";
 import SDDropdown, { DropDownItem } from "../shared/Dropdown";
+import { useDispatch } from "react-redux";
 
-const UserHeader: React.FC = (props) => {
+const UserHeader: React.FC = () => {
+  const name = useAppSelector(state=>state.auth.name);
+  const dispatch = useDispatch();
+  // const navigate = use
   const dropdownItems: DropDownItem[] = [
     {
       title: "حساب کاربری",
@@ -28,7 +31,7 @@ const UserHeader: React.FC = (props) => {
     {
       title: "خروج",
       mode: "Button",
-      onClick: (event) => console.log("ttttt"),
+      onClick: logOut,
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -47,11 +50,15 @@ const UserHeader: React.FC = (props) => {
       ),
     },
   ];
+
+  function logOut(){
+    dispatch(authActions.logOut());
+  }
   return (
     <div className="bg-primary-500 h-[60px] flex items-center">
       <div className="mr-auto ml-12">
         <SDDropdown items={dropdownItems}>
-          <span>حسن محمدی</span>
+          <span>{name}</span>
         </SDDropdown>
       </div>
     </div>

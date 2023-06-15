@@ -17,3 +17,16 @@ export interface UserPersonalInfo {
   nationalcode: string;
   birthDate: string;
 }
+
+export interface UserGeneralInfo {
+  code: string;
+  userName: string;
+  mobile: string;
+  userStatus: string;
+  userType: string;
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  firstName: string;
+  lastName: string;
+}

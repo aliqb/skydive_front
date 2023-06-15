@@ -4,11 +4,14 @@ import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { useEffect } from "react";
 import { AuthData } from "../../models/auth";
 import { authActions } from "../../store/auth";
+import useAPi from "../../hooks/useApi";
+import { BaseResponse, UserGeneralInfo } from "../../models/shared";
 
 const UserPanelContainer: React.FC = () => {
   const navigate = useNavigate();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const dispatch = useAppDispatch();
+  const {sendRequest} = useAPi<null,BaseResponse<UserGeneralInfo>>();
   // useEffect(()=>{
   //   console.log('auth',isAuthenticated)
   //   if(!isAuthenticated){
@@ -16,7 +19,7 @@ const UserPanelContainer: React.FC = () => {
   //   }
   // },[isAuthenticated,navigate])
   useEffect(() => {
-    console.log('fuck',isAuthenticated )
+    console.log('in eff',isAuthenticated)
     if (!isAuthenticated) {
       const authDataJson = localStorage.getItem("authData");
       if (authDataJson) {
@@ -25,8 +28,14 @@ const UserPanelContainer: React.FC = () => {
       }else{
         navigate('/auth')
       }
+      return
     }
-  }, [isAuthenticated, navigate]);
+    sendRequest({
+      url:'/Users/GetUserInformation'
+    },(response)=>{
+      dispatch(authActions.setUserGenralInfo(response.content))
+    })
+  }, [isAuthenticated, navigate,dispatch,sendRequest]);
   return (
     <>
       <UserHeader></UserHeader>
