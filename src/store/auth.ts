@@ -33,6 +33,7 @@ const authSlice = createSlice({
             localStorage.setItem('authData',JSON.stringify(action.payload))
             state.token = action.payload.authToken;
             state.refreshToken = action.payload.refreshToken;
+            state.isAuthenticated = true;
         },
         signUpPhone:(state,action:PayloadAction<{id:string, phone:string}>)=>{
             state.enteredPhone = action.payload.phone;

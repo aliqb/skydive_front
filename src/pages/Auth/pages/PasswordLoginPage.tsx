@@ -1,8 +1,13 @@
 import SDButton from "../../../components/shared/Button";
 import { FormEvent, useState, useEffect } from "react";
 import BackButton from "../../../components/shared/BackButton";
-import { useAppSelector } from "../../../hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { Link, useNavigate } from "react-router-dom";
+import useAPi from "../../../hooks/useApi";
+import { AuthData } from "../../../models/auth";
+import SDAlert from "../../../components/shared/Alert";
+import { authActions } from "../../../store/auth";
+import { BaseResponse } from "../../../models/shared";
 
 const PasswordLoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -10,6 +15,8 @@ const PasswordLoginPage: React.FC = () => {
   const [submitted, setSubmitted] = useState<boolean>(false);
   const enteredUsername = useAppSelector((state) => state.auth.enteredUsername);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const {sendRequest, errors, isPending} = useAPi<{username:string,password:string},BaseResponse<AuthData>>()
 
   useEffect(() => {
     if (!enteredUsername) {
@@ -32,6 +39,14 @@ const PasswordLoginPage: React.FC = () => {
     if (!password) {
       return;
     }
+    sendRequest({
+      url:'/Users/Login',
+      method:'post',
+      data:{username: enteredUsername, password: password}
+    },(response)=>{
+      dispatch(authActions.setToken(response.content))
+      navigate('/')
+    })
   }
 
   const showPasswordIcon: JSX.Element = (
@@ -77,6 +92,11 @@ const PasswordLoginPage: React.FC = () => {
     <section>
       <BackButton />
       <form onSubmit={onSubmit} className="p-8 pt-4 border-b">
+      {errors && (
+        <SDAlert color="red" className="my-2">
+          {errors.message}
+        </SDAlert>
+      )}
         <p className="mb-6 text-lg font-semibold">رمز عبور خود را وارد کنید.</p>
         <div className="flex w-full gap-1 flex-wrap sm:flex-nowrap">
           <div className="relative w-full mb-0">
@@ -111,7 +131,7 @@ const PasswordLoginPage: React.FC = () => {
             </SDButton>
           </div>
         </div>
-        {submitted && (
+        {submitted && !password && (
           <p className="text-red-600 text-sm pr-2">
             لطفا رمز عبور خود را وارد کنید.
           </p>

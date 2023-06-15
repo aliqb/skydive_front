@@ -3,11 +3,13 @@ import { FormEvent, useState } from "react";
 import SDButton from "../../../components/shared/Button";
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { authActions } from "../../../store/auth";
+import useAPi from "../../../hooks/useApi";
 export default function UsernameLoginPage() {
   const username = useAppSelector((state) => state.auth.enteredUsername);
   const dispatch = useAppDispatch();
   const [submitted, setSubmitted] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { sendRequest, errors, isPending } = useAPi();
   function onChangeUsername(event: FormEvent) {
     const input: string = (event.target as HTMLInputElement).value;
     dispatch(authActions.setUsername(input));
@@ -18,7 +20,12 @@ export default function UsernameLoginPage() {
     if (!username) {
       return;
     }
-    navigate("password", { state: { username } });
+    sendRequest(
+      {
+        url: `/Users/CheckUserExistence/${username}`,
+      },
+      () => navigate("password", { state: { username } })
+    );
   }
   return (
     <form onSubmit={onSubmit} className="p-8">
@@ -71,10 +78,15 @@ export default function UsernameLoginPage() {
           لطفا نام کاربری خود را وارد کنید.
         </p>
       )}
+      {errors && (
+        <p className="text-red-600 text-sm pr-2">
+          {errors.message}
+        </p>
+      )}
       <div className="flex flex-wrap items-center gap-2 mt-6  ">
         <p>حساب کاربری ندارید؟ ثبت نام کنید: </p>
         <Link to="signup" className="w-full xs:w-auto">
-          <SDButton color="success" className="w-full" >
+          <SDButton color="success" className="w-full">
             ایجاد حساب کاربری
           </SDButton>
         </Link>
