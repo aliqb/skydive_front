@@ -4,30 +4,35 @@ import SDTextInput from "../../../../components/shared/TextInput";
 import SDButton from "../../../../components/shared/Button";
 import SDDatepicker from "../../../../components/shared/DatePciker";
 import { useNavigate } from "react-router-dom";
-interface PersonaFormData {
-  nationalId: string;
-  firstName: string;
-  lastName: string;
-  birthDate: string;
-}
+import useAPi from "../../../../hooks/useApi";
+import { UserPersonalInfo } from "../../../../models/shared";
+import SDAlert from "../../../../components/shared/Alert";
+
 const SingUpPersonaPage: React.FC = () => {
-
-    const navigate = useNavigate();
-
+  const navigate = useNavigate();
+  const {sendRequest, errors:apiErrors, isPending} = useAPi<UserPersonalInfo>()
   const {
     register,
     formState: { errors },
     handleSubmit,
     control,
-  } = useForm<PersonaFormData>({
+  } = useForm<UserPersonalInfo>({
     mode: "onTouched",
   });
 
-  function onSubmit(data: PersonaFormData) {
-    console.log(data);
-    navigate('../user-info')
+  function navigateToNextPage(){
+    console.log('wa')
+    navigate("../user-info");
+
   }
 
+  function onSubmit(data: UserPersonalInfo) {
+    sendRequest({
+      url: '/Users/UserPersonalInformationCompletion/true',
+      data: data,
+      method: 'post'
+    },()=>navigateToNextPage())
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-8 w-full">
@@ -37,11 +42,16 @@ const SingUpPersonaPage: React.FC = () => {
           برای تکمیل ثبت نام، اطلاعات خود را کامل کنید.
         </p>
       </div>
+      {apiErrors && (
+        <SDAlert color="red" className="my-2">
+          {apiErrors.message}
+        </SDAlert>
+      )}
       <div>
         <div className="mb-4">
-          <SDLabel htmlFor="nationalId">کد ملی</SDLabel>
+          <SDLabel htmlFor="nationalcode">کد ملی</SDLabel>
           <SDTextInput
-            {...register("nationalId", {
+            {...register("nationalcode", {
               required: "فیلد الزامی است.",
               pattern: {
                 value: /^\d{10}$/,
@@ -49,13 +59,13 @@ const SingUpPersonaPage: React.FC = () => {
               },
             })}
             type="text"
-            id="nationalId"
+            id="nationalcode"
             maxLength={10}
-            invalid={!!errors.nationalId}
+            invalid={!!errors.nationalcode}
           />
-          {errors.nationalId?.message && (
+          {errors.nationalcode?.message && (
             <p className="text-red-600 text-sm pr-2 mt-2">
-              {errors.nationalId.message}
+              {errors.nationalcode.message}
             </p>
           )}
         </div>

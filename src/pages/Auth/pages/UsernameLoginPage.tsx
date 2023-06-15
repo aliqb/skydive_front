@@ -73,7 +73,7 @@ export default function UsernameLoginPage() {
       )}
       <div className="flex flex-wrap items-center gap-2 mt-6  ">
         <p>حساب کاربری ندارید؟ ثبت نام کنید: </p>
-        <Link to="singup" className="w-full xs:w-auto">
+        <Link to="signup" className="w-full xs:w-auto">
           <SDButton color="success" className="w-full" >
             ایجاد حساب کاربری
           </SDButton>

@@ -6,20 +6,20 @@ interface OTPInputProp {
   durationSeconds: number;
   phone: string;
   onFinish(code: string): void;
-  onRefresh(): void;
+  onRefresh: () => Promise<any>;
 }
 
 const OTPBox: React.FC<OTPInputProp> = (props) => {
-  const phone = `${props.phone.slice(0,4)}*****${props.phone.slice(-2)}`
+  const phone = `${props.phone.slice(0, -7)}*****${props.phone.slice(-2)}`;
   const [code, setCode] = useState<string>("");
   const [canRefresh, setCanRefresh] = useState<boolean>(false);
 
-  useEffect(() => {
-    console.log('otp code')
-    if (code.length === props.condLength) {
-      props.onFinish(code);
-    }
-  }, [code, props]);
+  // useEffect(() => {
+  //   console.log('otp code')
+  //   if (code.length === props.condLength) {
+  //     props.onFinish(code);
+  //   }
+  // }, [code, props]);
 
   function renderInput(props: any) {
     return (
@@ -33,6 +33,9 @@ const OTPBox: React.FC<OTPInputProp> = (props) => {
   function handleChange(value: string) {
     console.log(value);
     setCode(value);
+    if (value.length === props.condLength) {
+      props.onFinish(value);
+    }
   }
 
   function onTimerEnd() {
@@ -42,8 +45,9 @@ const OTPBox: React.FC<OTPInputProp> = (props) => {
 
   function handleRefresh() {
     setCode("");
-    props.onRefresh();
-    setCanRefresh(false);
+    props.onRefresh().then((response) => {
+      setCanRefresh(false);
+    });
   }
 
   return (
@@ -63,7 +67,11 @@ const OTPBox: React.FC<OTPInputProp> = (props) => {
         />
         <div className="text-sm">
           {canRefresh ? (
-            <button className="text-primary" type="button" onClick={handleRefresh}>
+            <button
+              className="text-primary"
+              type="button"
+              onClick={handleRefresh}
+            >
               ارسال مجدد
             </button>
           ) : (
