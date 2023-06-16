@@ -1,4 +1,4 @@
-import { DeepPartial, FlowbiteTabTheme, Tabs, TabsProps, TabsRef, useTheme } from "flowbite-react";
+import { DeepPartial, FlowbiteTabTheme, Tabs, TabsProps, TabsRef } from "flowbite-react";
 import { TabItem } from "flowbite-react/lib/esm/components/Tab/TabItem";
 import { forwardRef, ForwardedRef } from "react";
 const SDTabComponent: React.FC<TabsProps> = forwardRef(
@@ -23,7 +23,7 @@ const SDTabComponent: React.FC<TabsProps> = forwardRef(
         },
       },
     };
-    return <Tabs.Group {...props} theme={theme}>{props.children}</Tabs.Group>;
+    return <Tabs.Group ref={ref} {...props} theme={theme}>{props.children}</Tabs.Group>;
   }
 );
 

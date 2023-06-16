@@ -19,6 +19,7 @@ const ForgetPasswordOtpPage: React.FC = () => {
 
   function onOTPRefresh() {
     console.log("refresh");
+    return new Promise((resolve)=>resolve(5))
   }
 
   return (

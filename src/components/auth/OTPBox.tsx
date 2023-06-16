@@ -1,5 +1,5 @@
 import OtpInput from "react-otp-input";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import Timer from "../shared/Timer";
 interface OTPInputProp {
   condLength: number;
@@ -45,7 +45,7 @@ const OTPBox: React.FC<OTPInputProp> = (props) => {
 
   function handleRefresh() {
     setCode("");
-    props.onRefresh().then((response) => {
+    props.onRefresh().then(() => {
       setCanRefresh(false);
     });
   }

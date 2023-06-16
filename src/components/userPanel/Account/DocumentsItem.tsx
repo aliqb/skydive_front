@@ -1,4 +1,3 @@
-import { DateObject } from "react-multi-date-picker";
 import SDDatepicker from "../../shared/DatePciker";
 import SDLabel from "../../shared/Label";
 import LabeledFileInput from "../../shared/LabeledFileInput";
@@ -15,10 +14,10 @@ interface DocumentItem {
 
 const DocumentItem: React.FC<DocumentItem> = ({
   title,
-  status,
+  // status,
   withDate = false,
   defualtExpireDate = "",
-  onChange,
+  // onChange,
   validation,
 }) => {
   const [expireDate, setExpireDate] = useState<string>(defualtExpireDate);

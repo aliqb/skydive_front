@@ -9,10 +9,10 @@ interface AccountInfoFormData {
 }
 const AccountInfo: React.FC = () => {
   const {
-    register,
+    // register,
     formState: { errors },
-    handleSubmit,
-    watch,
+    // handleSubmit,
+    // watch,
   } = useForm<AccountInfoFormData>({
     mode: "onTouched",
   });

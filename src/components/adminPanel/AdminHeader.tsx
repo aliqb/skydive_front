@@ -7,7 +7,7 @@ const AdminHeader: React.FC<ShellElement> = (props) => {
     {
       title: "خروج",
       mode: "Button",
-      onClick: (event) => console.log("ttttt"),
+      onClick: () => console.log("ttttt"),
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"

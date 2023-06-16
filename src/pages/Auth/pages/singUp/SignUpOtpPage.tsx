@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import OTPBox from "../../../../components/auth/OTPBox";
-import BackButton from "../../../../components/shared/BackButton";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/reduxHooks";
 import { useEffect } from 'react'
 import useAPi, { axiosIntance } from "../../../../hooks/useApi";
@@ -11,7 +10,7 @@ import { authActions } from "../../../../store/auth";
 const SignUpPasswordOtpPage: React.FC = () => {
   const phone = useAppSelector((state) => state.auth.enteredPhone);
   const dispatch = useAppDispatch();
-  const {sendRequest, isPending,errors} = useAPi<{phone:string, code: string},BaseResponse<AuthData>>();
+  const {sendRequest,errors} = useAPi<{phone:string, code: string},BaseResponse<AuthData>>();
   const navigate = useNavigate();
   useEffect(() => {
     if (!phone) {

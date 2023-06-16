@@ -1,6 +1,5 @@
 import useConfirm from "../../../hooks/useConfirm";
 import SDButton from "../../shared/Button";
-import SDModal from "../../shared/Modal";
 import DocumentItem from "./DocumentsItem";
 import { useState } from "react";
 
