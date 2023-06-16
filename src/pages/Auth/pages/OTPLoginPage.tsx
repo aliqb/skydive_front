@@ -1,33 +1,67 @@
 import BackButton from "../../../components/shared/BackButton";
-import {  useEffect } from "react";
-import { useAppSelector } from "../../../hooks/reduxHooks";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { Link, useNavigate } from "react-router-dom";
 import OTPBox from "../../../components/auth/OTPBox";
+import useAPi, { axiosIntance } from "../../../hooks/useApi";
+import { BaseResponse } from "../../../models/shared";
+import { AuthData } from "../../../models/auth";
+import { authActions } from "../../../store/auth";
 
 const OTPLoginPage: React.FC = () => {
+  const enteredPhone = useAppSelector((state) => state.auth.enteredPhone);
   const enteredUsername = useAppSelector((state) => state.auth.enteredUsername);
-
+  const { sendRequest, errors } = useAPi<
+    { username: string; code: string },
+    BaseResponse<AuthData>
+  >();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!enteredUsername) {
+    if (!enteredPhone) {
       navigate("/auth");
     }
-  }, [enteredUsername, navigate]);
+  }, [enteredPhone, navigate]);
 
   function onFinish(code: string): void {
-    console.log('finish',code);
+    sendRequest(
+      {
+        url: "/Users/OtpLogin",
+        method: "post",
+        data: {
+          username: enteredUsername,
+          code: code,
+        },
+      },
+      (response) => {
+        dispatch(authActions.setToken(response.content));
+        navigate("/");
+      }
+    );
   }
 
-  function onOTPRefresh(){
-    return new Promise<any>((resolve)=>{resolve(1)})
+  function onOTPRefresh() {
+    return axiosIntance.post("/Users/OtpRequest", {
+      username: enteredUsername,
+    });
   }
-
 
   return (
     <section className="w-full">
       <BackButton />
       <form className="p-8 pt-4 border-b">
-        <OTPBox condLength={6} onFinish={onFinish} phone="09374949025" durationSeconds={60} onRefresh={onOTPRefresh} />
+        <OTPBox
+          condLength={6}
+          onFinish={onFinish}
+          phone={enteredPhone}
+          durationSeconds={60}
+          onRefresh={onOTPRefresh}
+        />
+        {errors && (
+          <p className="text-red-600 text-sm pr-2 mt-2 text-center">
+            {errors.message}
+          </p>
+        )}
       </form>
       <Link
         to="../password"
