@@ -5,6 +5,8 @@ import { ChangeEvent, useState } from "react";
 import useAPi from "../../../../hooks/useApi";
 import { useAppDispatch } from "../../../../hooks/reduxHooks";
 import { authActions } from "../../../../store/auth";
+import { BaseResponse } from "../../../../models/shared";
+import SDSpinner from "../../../../components/shared/Spinner";
 
 const SignUpMobilePage: React.FC = () => {
   const {
@@ -15,9 +17,19 @@ const SignUpMobilePage: React.FC = () => {
     mode: "onTouched",
   });
 
-  const {sendRequest,isPending} = useAPi<{body:string, id: number, title:string, userId:number}>()
-  const dispatch = useAppDispatch();
+  const {
+    sendRequest,
+    errors: apiErrors,
+  } = useAPi<{ phone: string }, BaseResponse<string>>();
 
+  const { sendRequest: sendOtpRequest, errors: otpErrors } = useAPi<
+    { phone: string },
+    BaseResponse<null>
+  >();
+
+  const [finalPending, setFinalPending] = useState<boolean>(false)
+
+  const dispatch = useAppDispatch();
 
   const [acceptRules, setAcceptRules] = useState<boolean>(false);
 
@@ -27,14 +39,44 @@ const SignUpMobilePage: React.FC = () => {
     setAcceptRules(!!evenet.target.value);
   }
 
-  function onSubmit(data: { phone: string }) {
-    console.log(data, acceptRules);
-    sendRequest({
-      url:'/posts',
-    },(data)=>console.log('in comp',data))
-    // navigate('personal')
+  function navigateToNextPage() {
+    navigate("otp");
   }
 
+  function requestOtp(phone: string) {
+    sendOtpRequest(
+      {
+        url: "/Users/OtpRequest",
+        method: "post",
+        data: { phone: phone },
+      },
+      () => {
+        setFinalPending(false);
+        navigateToNextPage()
+      }
+    );
+  }
+
+  function onSubmit(data: { phone: string }) {
+    if (!acceptRules) {
+      return;
+    }
+    console.log(data, acceptRules);
+    setFinalPending(true)
+    sendRequest(
+      {
+        url: "/users/register",
+        method: "post",
+        data: data,
+      },
+      (reponse) => {
+        dispatch(
+          authActions.signUpPhone({ phone: data.phone, id: reponse.content })
+        );
+        requestOtp(data.phone);
+      }
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-8 w-full">
@@ -76,7 +118,8 @@ const SignUpMobilePage: React.FC = () => {
           />
         </div>
         <div className="">
-          <SDButton className="w-full" type="submit" color="success">
+          <SDButton className="w-full" type="submit" color="success" disabled={finalPending}>
+            {(finalPending) && <SDSpinner />}
             ادامه
           </SDButton>
         </div>
@@ -104,9 +147,20 @@ const SignUpMobilePage: React.FC = () => {
       {errors.phone?.message && (
         <p className="text-red-600 text-sm pr-2 mt-2">{errors.phone.message}</p>
       )}
-      {(isSubmitted && !acceptRules) && (
-        <p className="text-red-600 text-sm pr-2 mt-2">برای ایجاد حساب کاربری باید قوانین را بپذیرید.</p>
+      {isSubmitted && !acceptRules && (
+        <p className="text-red-600 text-sm pr-2 mt-2">
+          برای ایجاد حساب کاربری باید قوانین را بپذیرید.
+        </p>
       )}
+
+      {apiErrors && (
+        <p className="text-red-600 text-sm pr-2 mt-2">{apiErrors.message}</p>
+      )}
+
+      {otpErrors && (
+        <p className="text-red-600 text-sm pr-2 mt-2">{otpErrors.message}</p>
+      )}
+
       <div className="flex items-center gap-2 mt-6 justify-center ">
         <p>حساب کاربری دارید؟</p>
         <Link to="../">

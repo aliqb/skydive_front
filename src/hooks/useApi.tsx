@@ -1,32 +1,39 @@
-import axios, {AxiosRequestConfig} from "axios";
+import axios, {AxiosError, AxiosRequestConfig, AxiosResponse} from "axios";
 import { useCallback, useState, useEffect } from "react"
 import { useAppSelector } from "./reduxHooks";
-const axiosIntance = axios.create({
-    baseURL: 'https://jsonplaceholder.typicode.com'
+import { BaseResponse } from "../models/shared";
+export const axiosIntance = axios.create({
+    baseURL: 'http://app-api.bestskydive.ir/api'
 })
-export default function useAPi<T>(){
+export default function useAPi<T,R=BaseResponse<any>,ErrorType={message: string}>(){
     const [isPending, setIsPending] = useState<boolean>(false);
-    const [errors,setErrors] = useState(null);
-    const [data,setData] = useState<T|null>(null);
+    const [errors,setErrors] = useState<ErrorType| undefined>(undefined);
+    const [data,setData] = useState<R|null>(null);
     const token = useAppSelector(state=>state.auth.token)
-    const  sendRequest = useCallback(async function(config:AxiosRequestConfig<T>,applyData?: (data:T)=>void){
+    const  sendRequest = useCallback(async function(config:AxiosRequestConfig<T>,applyData?: (data:R)=>void){
         setIsPending(true)
          try {
-            const response = await axiosIntance.request<T>(config);
+            const response = await axiosIntance.request<T, AxiosResponse<R>>(config);
             console.log(response)
             setData(response.data)
             if(applyData){
                 applyData(response.data)
             }
-         } catch (error: any) {
-            console.log(error)
-            setErrors(error)
+         } catch (error) {
+            const axiosError : AxiosError<ErrorType> = (error as AxiosError<ErrorType>)
+            console.log(axiosError)
+            setErrors(axiosError.response?.data)
          }finally{
             setIsPending(false)
          }
     },[])
+    // useEffect(()=>{
+    //     console.log('f',token)
+    //     axiosIntance.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    // },[])
     useEffect(()=>{
-        axiosIntance.defaults.headers.common['Authorization'] = token
+        console.log('fc',token)
+        axiosIntance.defaults.headers.common['Authorization'] = `Bearer ${token}`
     },[token])
     return {isPending, errors, sendRequest,data}
 }

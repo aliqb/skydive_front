@@ -3,7 +3,13 @@ import SDLabel from "../../../../components/shared/Label";
 import SDTextInput from "../../../../components/shared/TextInput";
 import SDButton from "../../../../components/shared/Button";
 import PasswordInput from "../../../../components/shared/PasswordInput";
-import {useRef} from 'react'
+import { useRef } from "react";
+import useAPi from "../../../../hooks/useApi";
+import { UserSecurityInformation } from "../../../../models/auth";
+import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../../../hooks/reduxHooks";
+import SDAlert from "../../../../components/shared/Alert";
+import SDSpinner from "../../../../components/shared/Spinner";
 interface UserInfoFormData {
   username: string;
   password: string;
@@ -14,17 +20,37 @@ const SingUpUserInfoPage: React.FC = () => {
     register,
     formState: { errors },
     handleSubmit,
-    watch
+    watch,
   } = useForm<UserInfoFormData>({
     mode: "onTouched",
   });
 
+  const userId = useAppSelector((state) => state.auth.userId);
+
+  const {
+    sendRequest,
+    errors: apiErrors,
+    isPending,
+  } = useAPi<UserSecurityInformation>();
+
+  const navigate = useNavigate();
+
   const passwordRef = useRef<string | undefined>();
   passwordRef.current = watch("password", "");
 
-
   function onSubmit(data: UserInfoFormData) {
-    console.log(data);
+    sendRequest(
+      {
+        url: "/Users/UserSecurityInformationCompletion",
+        method: "post",
+        data: {
+          id: userId,
+          username: data.username,
+          password: data.password,
+        },
+      },
+      () => navigate("/")
+    );
   }
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-8 w-full">
@@ -34,6 +60,11 @@ const SingUpUserInfoPage: React.FC = () => {
           برای تکمیل ثبت نام، اطلاعات خود را کامل کنید.
         </p>
       </div>
+      {apiErrors && (
+        <SDAlert color="red" className="my-2">
+          {apiErrors.message}
+        </SDAlert>
+      )}
       <div>
         <div className="mb-6">
           <SDLabel htmlFor="nationalId">نام کاربری</SDLabel>
@@ -64,7 +95,7 @@ const SingUpUserInfoPage: React.FC = () => {
           )}
         </div>
         <div className="mb-6">
-          <SDLabel  htmlFor="password">
+          <SDLabel htmlFor="password">
             رمز عبور مورد نظر خود را وارد کنید.
           </SDLabel>
           <PasswordInput
@@ -106,7 +137,8 @@ const SingUpUserInfoPage: React.FC = () => {
           )}
         </div>
         <div>
-          <SDButton type="submit" color="success" className="w-full">
+          <SDButton type="submit" color="success" className="w-full" disabled={isPending}>
+          {isPending &&  <SDSpinner />}
             ثبت اطلاعات
           </SDButton>
         </div>
