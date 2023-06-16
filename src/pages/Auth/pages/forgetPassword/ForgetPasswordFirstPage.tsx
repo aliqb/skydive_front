@@ -2,21 +2,35 @@ import BackButton from "../../../../components/shared/BackButton";
 import SDButton from "../../../../components/shared/Button";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../../hooks/reduxHooks";
+import { useAppDispatch } from "../../../../hooks/reduxHooks";
 import { authActions } from "../../../../store/auth";
+import useAPi from "../../../../hooks/useApi";
+import { OTPRequest, OTPResponse } from "../../../../models/auth";
+import SDSpinner from "../../../../components/shared/Spinner";
 const ForgetPasswordFirstPage: React.FC = () => {
   const navigate = useNavigate();
-  const mobile = useAppSelector(state=>state.auth.enteredPhone)
   const dispatch = useAppDispatch();
+  const {
+    sendRequest,
+    isPending,
+    errors: apiErrors,
+  } = useAPi<OTPRequest, OTPResponse>();
   const {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm<{ phone: string }>({ mode: "onTouched", defaultValues:{phone: mobile} });
+  } = useForm<{ phone: string }>({ mode: "onTouched" });
   function onSubmit(data: { phone: string }) {
     const phone = data.phone;
-    dispatch(authActions.setMobile(phone))
-    navigate('otp')
+    dispatch(authActions.setMobile(phone));
+    sendRequest(
+      {
+        url: "/Users/OtpRequest",
+        method: "post",
+        data: { username: phone },
+      },
+      () => navigate("otp")
+    );
     return;
   }
 
@@ -64,7 +78,18 @@ const ForgetPasswordFirstPage: React.FC = () => {
             {errors.phone.message}
           </p>
         )}
-        <SDButton type="submit" className="w-full mt-3" color="primary">
+        {apiErrors && (
+          <p className="text-red-600 text-sm pr-2 mt-2">
+            {apiErrors.message}
+          </p>
+        )}
+        <SDButton
+          type="submit"
+          className="w-full mt-3"
+          color="primary"
+          disabled={isPending}
+        >
+          {isPending && <SDSpinner></SDSpinner>}
           بازیابی رمز عبور
         </SDButton>
       </form>

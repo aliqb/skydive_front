@@ -1,3 +1,5 @@
+import { BaseResponse } from "./shared";
+
 export interface AuthData {
   tokenType: string;
   authToken: string
@@ -11,3 +13,9 @@ export interface UserSecurityInformation{
     username: string;
     password: string;
 }
+
+export interface OTPRequest{
+  username: string;
+}
+
+export type OTPResponse = BaseResponse<string>

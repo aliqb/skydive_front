@@ -58,6 +58,8 @@ const authSlice = createSlice({
       state.token = "";
       state.refreshToken = "";
       state.isAuthenticated = false;
+      state.enteredPhone = "";
+      state.enteredUsername = "";
     },
     setUserGenralInfo:(state, action: PayloadAction<UserGeneralInfo>)=>{
         state.name = `${action.payload.firstName} ${action.payload.lastName}`;

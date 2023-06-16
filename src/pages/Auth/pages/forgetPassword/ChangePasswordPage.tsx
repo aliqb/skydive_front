@@ -3,6 +3,10 @@ import SDLabel from "../../../../components/shared/Label";
 import { useForm } from "react-hook-form";
 import PasswordInput from "../../../../components/shared/PasswordInput";
 import SDButton from "../../../../components/shared/Button";
+import useAPi from "../../../../hooks/useApi";
+import { useNavigate } from "react-router-dom";
+import SDSpinner from "../../../../components/shared/Spinner";
+import SDAlert from "../../../../components/shared/Alert";
 interface ChangePasswordFormData {
   password: string;
   repeatPassword: string;
@@ -15,18 +19,39 @@ const ChangePasswordPage: React.FC = () => {
     watch,
   } = useForm<ChangePasswordFormData>({ mode: "onTouched" });
 
-  const passwordRef = useRef<string | undefined>();
+  const {
+    sendRequest,
+    errors: apiErrors,
+    isPending,
+  } = useAPi<{ password: string }>();
+  const navigate = useNavigate();
 
+  const passwordRef = useRef<string | undefined>();
   passwordRef.current = watch("password", "");
+
   function onSubmit(data: ChangePasswordFormData) {
-    console.log(data);
+    sendRequest(
+      {
+        url: "/Users/ResetPassword",
+        method: "put",
+        data: { password: data.password },
+      },
+      () => {
+        navigate("/");
+      }
+    );
   }
 
   return (
     <section className="w-full">
       <form className="p-8 pt-4" onSubmit={handleSubmit(onSubmit)}>
+        {apiErrors && (
+          <SDAlert color="red" className="my-3">
+            {apiErrors.message}
+          </SDAlert>
+        )}
         <div>
-          <SDLabel  htmlFor="password">
+          <SDLabel htmlFor="password">
             رمز عبور مورد نظر خود را وارد کنید.
           </SDLabel>
           <PasswordInput
@@ -49,7 +74,7 @@ const ChangePasswordPage: React.FC = () => {
         </div>
         <div className="mt-6">
           <SDLabel htmlFor="repeatPassword">
-            رمز عبور مورد نظر خود را وارد کنید.
+            رمز عبور مورد نظر خود را مجدد وارد کنید.
           </SDLabel>
           <PasswordInput
             {...register("repeatPassword", {
@@ -67,7 +92,15 @@ const ChangePasswordPage: React.FC = () => {
             </p>
           )}
         </div>
-        <SDButton className="mt-4 w-full" color="primary" type="submit">تغییر رمزعبور</SDButton>
+        <SDButton
+          className="mt-4 w-full"
+          color="primary"
+          type="submit"
+          disabled={isPending}
+        >
+          {isPending && <SDSpinner />}
+          تغییر رمزعبور
+        </SDButton>
       </form>
     </section>
   );
