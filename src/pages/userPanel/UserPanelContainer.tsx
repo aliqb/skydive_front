@@ -5,7 +5,6 @@ const UserPanelContainer: React.FC = () => {
   return (
     <>
       <UserHeader></UserHeader>
-      <Link to="auth">ff</Link>
       {<Outlet></Outlet> }
     </>
   );
