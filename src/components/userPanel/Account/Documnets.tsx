@@ -12,6 +12,7 @@ import SDSpinner from "../../shared/Spinner";
 
 interface DocumentsProp {
   onSubmit: () => Promise<void>;
+  isPending: boolean;
 }
 
 const Documents: React.FC<DocumentsProp> = (props) => {
@@ -20,27 +21,15 @@ const Documents: React.FC<DocumentsProp> = (props) => {
     null,
     BaseResponse<DocumentsList>
   >();
-  const [isPending, setIsPending] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
 
   async function onSubmit() {
-    setIsPending(true);
     setIsSubmitted(true);
     await props.onSubmit();
-    setIsPending(false)
   }
 
-  useEffect(() => {
-    getDcouments(
-      {
-        url: "/Users/GetUserDocument",
-      },
-      (response) => {
-        dispatch(accoutnActions.setDocuments(response.content));
-      }
-    );
-  }, []);
+
 
   return (
     <>
@@ -77,9 +66,9 @@ const Documents: React.FC<DocumentsProp> = (props) => {
               type="submit"
               className="basis-full xs:basis-1/3 xs:max-w-[200px]"
               onClick={onSubmit}
-              disabled={isPending}
+              disabled={props.isPending}
             >
-              {isPending && <SDSpinner />}
+              {props.isPending && <SDSpinner />}
               ذخیره
             </SDButton>
           </div>

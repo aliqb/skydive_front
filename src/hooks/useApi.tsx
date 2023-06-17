@@ -10,7 +10,7 @@ export default function useAPi<T,R=BaseResponse<any>,ErrorType={message: string}
     const [errors,setErrors] = useState<ErrorType| undefined>(undefined);
     const [data,setData] = useState<R|null>(null);
     const token = useAppSelector(state=>state.auth.token)
-    const  sendRequest = useCallback(async function(config:AxiosRequestConfig<T>,applyData?: (data:R)=>void){
+    const  sendRequest = useCallback(async function(config:AxiosRequestConfig<T>,applyData?: (data:R)=>void,onError?:(error:ErrorType|undefined)=>void){
         setIsPending(true)
          try {
             const response = await axiosIntance.request<T, AxiosResponse<R>>(config);
@@ -20,8 +20,10 @@ export default function useAPi<T,R=BaseResponse<any>,ErrorType={message: string}
             }
          } catch (error) {
             const axiosError : AxiosError<ErrorType> = (error as AxiosError<ErrorType>)
-            console.log(axiosError)
             setErrors(axiosError.response?.data)
+            if(onError){
+                onError(axiosError.response?.data)
+            }
          }finally{
             setIsPending(false)
          }

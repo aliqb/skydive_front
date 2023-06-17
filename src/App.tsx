@@ -21,7 +21,7 @@ import Account from "./pages/userPanel/pages/Account";
 import AdminPanelContainer from "./pages/adminPanel/AdminPanelContainer";
 import Cartable from "./pages/adminPanel/pages/Cartable";
 import SignUpPasswordOtpPage from "./pages/Auth/pages/singUp/SignUpOtpPage";
-
+import { ToastContainer } from "react-toastify";
 
 function App() {
   // useEffect(()=>{
@@ -32,33 +32,43 @@ function App() {
   //   }
   // },[dispatch])
   return (
-    <Router>
-      <Routes>
-        <Route Component={UserPanelContainer} path="">
-          <Route Component={Home} path=""></Route>
-          <Route Component={Account} path="account"></Route>
-        </Route>
-        <Route Component={AuthContainer} path="auth">
-          <Route Component={UsernameLoginPage} path=""></Route>
-          <Route Component={PasswordLoginPage} path="password"></Route>
-          <Route Component={OTPLOginPage} path="otp"></Route>
-          <Route Component={() => <Outlet></Outlet>} path="forget-password">
-            <Route Component={ForgetPasswordFirstPage} path=""></Route>
-            <Route Component={ForgetPasswordOtpPage} path="otp"></Route>
-            <Route Component={ChangePasswordPage} path="change"></Route>
+    <>
+      <ToastContainer
+        rtl
+        theme="colored"
+        position="top-left"
+        icon={false}
+        closeButton={false}
+      />
+
+      <Router>
+        <Routes>
+          <Route Component={UserPanelContainer} path="">
+            <Route Component={Home} path=""></Route>
+            <Route Component={Account} path="account"></Route>
           </Route>
-          <Route Component={() => <Outlet></Outlet>} path="signup">
-            <Route Component={SignUpMobilePage} path=""></Route>
-            <Route Component={SignUpPasswordOtpPage} path="otp"></Route>
-            <Route Component={SingUpPersonaPage} path="personal"></Route>
-            <Route Component={SingUpUserInfoPage} path="user-info"></Route>
+          <Route Component={AuthContainer} path="auth">
+            <Route Component={UsernameLoginPage} path=""></Route>
+            <Route Component={PasswordLoginPage} path="password"></Route>
+            <Route Component={OTPLOginPage} path="otp"></Route>
+            <Route Component={() => <Outlet></Outlet>} path="forget-password">
+              <Route Component={ForgetPasswordFirstPage} path=""></Route>
+              <Route Component={ForgetPasswordOtpPage} path="otp"></Route>
+              <Route Component={ChangePasswordPage} path="change"></Route>
+            </Route>
+            <Route Component={() => <Outlet></Outlet>} path="signup">
+              <Route Component={SignUpMobilePage} path=""></Route>
+              <Route Component={SignUpPasswordOtpPage} path="otp"></Route>
+              <Route Component={SingUpPersonaPage} path="personal"></Route>
+              <Route Component={SingUpUserInfoPage} path="user-info"></Route>
+            </Route>
           </Route>
-        </Route>
-        <Route Component={AdminPanelContainer} path="admin">
-          <Route Component={Cartable} path=""></Route>
-        </Route>
-      </Routes>
-    </Router>
+          <Route Component={AdminPanelContainer} path="admin">
+            <Route Component={Cartable} path=""></Route>
+          </Route>
+        </Routes>
+      </Router>
+    </>
   );
 }
 
