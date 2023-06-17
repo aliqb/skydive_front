@@ -20,26 +20,33 @@ export class City {
   }
 }
 
-export interface DocumentItem{
-    fileId: string;
-    expirationDate?: string;
-    status?: string;
-    statusDisplay?: string;
+export interface DocumentItem {
+  fileId: string;
+  expirationDate?: string;
+  status?: string;
+  statusDisplay?: string;
 }
 
-export interface PersonalInfoEditRequest extends Omit<UserPersonalInfo,'id'>{
-    medicalDocument?: DocumentItem;
-    logBookDocument?: DocumentItem;
-    attorneyDocument?: DocumentItem;
-    nationalCardDocument?: DocumentItem;
+export interface PersonalInfoEditRequest extends Omit<UserPersonalInfo, "id"> {
+  medicalDocument?: DocumentItem;
+  logBookDocument?: DocumentItem;
+  attorneyDocument?: DocumentItem;
+  nationalCardDocument?: DocumentItem;
 }
 
-export interface DocumentsList{
+export interface DocumentsList {
   medicalDocument: DocumentItem;
   logBookDocument: DocumentItem;
   attorneyDocument: DocumentItem;
   nationalCardDocument: DocumentItem;
-  id: string
-  createdAt: string
-  updatedAt: string
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const  DocumnetStatus = {
+  NOT_LOADED : "NotLoaded",
+  PENDING : "Pending",
+  EXPIRED : "Expired",
+  CONFIRMED : "Confirmed",
 }
