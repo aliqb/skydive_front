@@ -47,7 +47,6 @@ const SDModal : React.FC<ModalProps> = ({children,show:propsShow,closeOnBackDrop
         }
     }
     useEffect(()=>{
-        console.log('effect',propsShow)
         setShow(propsShow)
     },[propsShow])
   return (

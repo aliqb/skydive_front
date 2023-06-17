@@ -2,10 +2,10 @@ import React from "react";
 import Grid from "../../../components/shared/Grid";
 import SDButton from "../../../components/shared/Button";
 import SDDatepicker from "../../../components/shared/DatePicker";
-import SDLabel from "../../../components/shared/Label";
+import useAPi from "../../../hooks/useApi";
 
 const UserManagement: React.FC = () => {
-  const students = [
+  const data = [
     { کدکاربر: 1, name: "Kate", age: 25, favFruit: "🍏" },
     { کدکاربر: 2, name: "Tom", age: 23, favFruit: "🍌" },
     { کدکاربر: 3, name: "Ann", age: 26, favFruit: "🍊" },
@@ -16,6 +16,8 @@ const UserManagement: React.FC = () => {
     { کدکاربر: 4, name: "Jack", age: 21, favFruit: "🍒" },
     { کدکاربر: 4, name: "Jack", age: 21, favFruit: "🍒" },
   ];
+  const { sendRequest, errors, isPending } = useAPi();
+
   return (
     <>
       <div className="flex justify-between mt-12">
@@ -62,7 +64,7 @@ const UserManagement: React.FC = () => {
         </div>
       </div>
       <div className="mt-6">
-        <Grid data={students} />
+        <Grid data={data} />
       </div>
     </>
   );
