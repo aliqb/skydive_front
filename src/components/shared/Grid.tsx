@@ -15,7 +15,7 @@ const Grid: React.FC<GridProps> = ({ data }) => {
             <Table.HeadCell key={column}>{column}</Table.HeadCell>
           ))}
           <Table.HeadCell>
-            <span className="sr-only">Edit</span>
+            <span className="sr-only">ویرایش</span>
           </Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
@@ -37,7 +37,7 @@ const Grid: React.FC<GridProps> = ({ data }) => {
                   className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
                   href="/tables"
                 >
-                  <p>Edit</p>
+                  <p>ویرایش</p>
                 </a>
               </Table.Cell>
             </Table.Row>

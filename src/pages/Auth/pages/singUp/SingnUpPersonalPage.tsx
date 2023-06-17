@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import SDLabel from "../../../../components/shared/Label";
 import SDTextInput from "../../../../components/shared/TextInput";
 import SDButton from "../../../../components/shared/Button";
-import SDDatepicker from "../../../../components/shared/DatePciker";
+import SDDatepicker from "../../../../components/shared/DatePicker";
 import { useNavigate } from "react-router-dom";
 import useAPi from "../../../../hooks/useApi";
 import { UserPersonalInfo } from "../../../../models/shared";

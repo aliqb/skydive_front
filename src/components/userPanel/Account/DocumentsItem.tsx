@@ -1,5 +1,5 @@
 import { DateObject } from "react-multi-date-picker";
-import SDDatepicker from "../../shared/DatePciker";
+import SDDatepicker from "../../shared/DatePicker";
 import SDLabel from "../../shared/Label";
 import LabeledFileInput from "../../shared/LabeledFileInput";
 import { useState } from "react";
