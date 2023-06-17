@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AuthData } from "../models/auth";
-import { UserGeneralInfo } from "../models/shared";
+import { AuthData } from "../models/auth.models";
+import { UserGeneralInfo } from "../models/shared.models";
 
 interface AuthState {
   enteredUsername: string;
@@ -13,6 +13,8 @@ interface AuthState {
   userStatus: string;
   userType: string;
   username: string;
+  code: string;
+  mobile: string;
 }
 
 const initialState: AuthState = {
@@ -25,8 +27,9 @@ const initialState: AuthState = {
   userStatus: '',
   userType: '',
   name: '',
-  username: ''
-
+  username: '',
+  code: '',
+  mobile: ''
 };
 
 const authSlice = createSlice({
@@ -52,20 +55,23 @@ const authSlice = createSlice({
       state.enteredPhone = action.payload.phone;
       state.userId = action.payload.id;
     },
-    logOut: (state) => {
-      console.log("here");
+    logOut: () => {
       localStorage.removeItem("authData");
-      state.token = "";
-      state.refreshToken = "";
-      state.isAuthenticated = false;
-      state.enteredPhone = "";
-      state.enteredUsername = "";
+      // state.token = "";
+      // state.refreshToken = "";
+      // state.isAuthenticated = false;
+      // state.enteredPhone = "";
+      // state.enteredUsername = "";
+      // state.code =""
+      return {...initialState}
     },
     setUserGenralInfo:(state, action: PayloadAction<UserGeneralInfo>)=>{
         state.name = `${action.payload.firstName} ${action.payload.lastName}`;
         state.userStatus = action.payload.userStatus;
         state.userType = action.payload.userType;
         state.username = action.payload.userName;
+        state.code = action.payload.code;
+        state.mobile = action.payload.mobile;
     }
   },
 });

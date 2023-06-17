@@ -1,4 +1,4 @@
-import { BaseResponse } from "./shared";
+import { BaseResponse } from "./shared.models";
 
 export interface AuthData {
   tokenType: string;

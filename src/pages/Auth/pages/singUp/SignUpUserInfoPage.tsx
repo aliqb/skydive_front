@@ -5,7 +5,7 @@ import SDButton from "../../../../components/shared/Button";
 import PasswordInput from "../../../../components/shared/PasswordInput";
 import { useRef } from "react";
 import useAPi from "../../../../hooks/useApi";
-import { UserSecurityInformation } from "../../../../models/auth";
+import { UserSecurityInformation } from "../../../../models/auth.models";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../../hooks/reduxHooks";
 import SDAlert from "../../../../components/shared/Alert";

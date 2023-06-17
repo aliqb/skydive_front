@@ -31,7 +31,6 @@ const OTPBox: React.FC<OTPInputProp> = (props) => {
   }
 
   function handleChange(value: string) {
-    console.log(value);
     setCode(value);
     if (value.length === props.condLength) {
       props.onFinish(value);
@@ -39,7 +38,6 @@ const OTPBox: React.FC<OTPInputProp> = (props) => {
   }
 
   function onTimerEnd() {
-    console.log("timer end");
     setCanRefresh(true);
   }
 

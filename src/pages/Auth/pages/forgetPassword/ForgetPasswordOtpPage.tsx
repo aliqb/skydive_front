@@ -4,8 +4,8 @@ import BackButton from "../../../../components/shared/BackButton";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/reduxHooks";
 import { useEffect } from "react";
 import useAPi, { axiosIntance } from "../../../../hooks/useApi";
-import { BaseResponse } from "../../../../models/shared";
-import { AuthData } from "../../../../models/auth";
+import { BaseResponse } from "../../../../models/shared.models";
+import { AuthData } from "../../../../models/auth.models";
 import { authActions } from "../../../../store/auth";
 
 const ForgetPasswordOtpPage: React.FC = () => {
@@ -23,7 +23,6 @@ const ForgetPasswordOtpPage: React.FC = () => {
   }, [phone, navigate]);
 
   function onFinish(code: string): void {
-    console.log("finish", code);
     sendRequest({
       url: '/Users/OtpRequestConfirmation',
       method:'post',

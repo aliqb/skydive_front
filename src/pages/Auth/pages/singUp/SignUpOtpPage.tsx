@@ -3,8 +3,8 @@ import OTPBox from "../../../../components/auth/OTPBox";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/reduxHooks";
 import { useEffect } from 'react'
 import useAPi, { axiosIntance } from "../../../../hooks/useApi";
-import { BaseResponse } from "../../../../models/shared";
-import { AuthData } from "../../../../models/auth";
+import { BaseResponse } from "../../../../models/shared.models";
+import { AuthData } from "../../../../models/auth.models";
 import { authActions } from "../../../../store/auth";
 
 const SignUpPasswordOtpPage: React.FC = () => {

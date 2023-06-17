@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import SDLabel from "../../shared/Label";
 import SDTextInput from "../../shared/TextInput";
 import SDTooltip from "../../shared/Tooltip";
+import { useAppSelector } from "../../../hooks/reduxHooks";
 interface AccountInfoFormData {
   username: string;
   password: string;
@@ -16,6 +17,9 @@ const AccountInfo: React.FC = () => {
   } = useForm<AccountInfoFormData>({
     mode: "onTouched",
   });
+
+  const authState = useAppSelector(state=>state.auth);
+
   return (
     <div className="flex flex-col items-center">
       <div className="flex flex-col items-center mb-10">
@@ -45,13 +49,13 @@ const AccountInfo: React.FC = () => {
         </div>
         <div className="flex gap-4">
           <p className="text-slate-500">نوع حساب کاربری</p>
-          <p className="font-semibold">همراه با مربی</p>
+          <p className="font-semibold">{authState.userType}</p>
         </div>
       </div>
       <form className="flex flex-wrap max-w-2xl">
         <div className="mb-6 w-full sm:w-1/2 sm:pl-12">
           <SDLabel htmlFor="userId">کد کاربری</SDLabel>
-          <SDTextInput value={"asd"} disabled={true} type="text" id="userId" />
+          <SDTextInput value={authState.code} disabled={true} type="text" id="userId" />
         </div>
         <div className="mb-6 w-full sm:w-1/2 sm:pl-12">
           <SDLabel htmlFor="username">نام کاربری</SDLabel>
@@ -75,6 +79,7 @@ const AccountInfo: React.FC = () => {
             id="username"
             disabled={true}
             invalid={!!errors.username}
+            value={authState.username}
           />
           {errors.username?.message && (
             <p className="text-red-600 text-sm pr-2 mt-2">
@@ -119,6 +124,7 @@ const AccountInfo: React.FC = () => {
             //   },
             // })}
             disabled={true}
+            value={authState.mobile}
             id="nationalId"
           />
           {errors.phone?.message && (

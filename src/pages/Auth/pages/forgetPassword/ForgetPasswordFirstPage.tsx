@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../../../hooks/reduxHooks";
 import { authActions } from "../../../../store/auth";
 import useAPi from "../../../../hooks/useApi";
-import { OTPRequest, OTPResponse } from "../../../../models/auth";
+import { OTPRequest, OTPResponse } from "../../../../models/auth.models";
 import SDSpinner from "../../../../components/shared/Spinner";
 const ForgetPasswordFirstPage: React.FC = () => {
   const navigate = useNavigate();

@@ -1,32 +1,35 @@
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
+import { UserDocumentsFieldType, accoutnActions } from "../../../store/account";
 import SDDatepicker from "../../shared/DatePciker";
 import SDLabel from "../../shared/Label";
 import LabeledFileInput from "../../shared/LabeledFileInput";
-import { useState } from "react";
 
-interface DocumentItem {
+interface DocumentItemProps {
+  field:UserDocumentsFieldType;
   title: string;
-  status: string; ///
   withDate?: boolean;
-  defualtExpireDate?: string;
-  onChange(): void;
   validation?: boolean;
 }
 
-const DocumentItem: React.FC<DocumentItem> = ({
+const DocumentItemComponent: React.FC<DocumentItemProps> = ({
   title,
-  // status,
   withDate = false,
-  defualtExpireDate = "",
-  // onChange,
   validation,
+  field
 }) => {
-  const [expireDate, setExpireDate] = useState<string>(defualtExpireDate);
-  function onFileChoose(file: File) {
-    console.log(file);
+  const documentData = useAppSelector(state=>state.account[field]);
+  const dispatch = useAppDispatch();
+  function onFileUpload(id: string) {
+    dispatch(accoutnActions.setDocumnetFile({field:field,fileId: id}))
+
   }
+
+  function onFileRemove(){
+    dispatch(accoutnActions.setDocumnetFile({field:field,fileId: ''}))
+  }
+
   function onDateChange(value: string) {
-    setExpireDate(value);
-    console.log(value);
+    dispatch(accoutnActions.setDocumnetExpireDate({field:field,date: value}))
   }
   return (
     <div className="flex justify-between mb-10 items-center flex-wrap">
@@ -42,10 +45,10 @@ const DocumentItem: React.FC<DocumentItem> = ({
               name="expireDate"
               onChange={onDateChange}
               required={true}
-              manualInvalid={validation && !expireDate}
-              value={expireDate}
+              manualInvalid={validation && !documentData?.expirationDate}
+              value={documentData?.expirationDate || ''}
             ></SDDatepicker>
-            {validation && !expireDate && (
+            {validation && !documentData?.expirationDate && (
               <p className="text-red-600 text-sm pr-2 mt-2">
                 تاریخ انقضا برای این مدرک الزامی است.
               </p>
@@ -57,12 +60,13 @@ const DocumentItem: React.FC<DocumentItem> = ({
         <LabeledFileInput
           accepFiles="application/pdf,image/*"
           title={title}
-          onChoose={onFileChoose}
+          onUpload={onFileUpload}
+          onRemove={onFileRemove}
         />
       </div>
-      <p className="text-green-500 font-semibold">تایید شده</p>
+      <p className="text-green-500 font-semibold">{ documentData?.statusDisplay || 'بارگذاری نشده' }</p>
     </div>
   );
 };
 
-export default DocumentItem;
+export default DocumentItemComponent;

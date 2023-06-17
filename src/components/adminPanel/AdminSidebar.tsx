@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LinkWithIcon } from "../../models/shared";
+import { LinkWithIcon } from "../../models/shared.models";
 import { ShellElement } from "../shared/PanelShell";
 
 const AdminSideber: React.FC<ShellElement> = () => {

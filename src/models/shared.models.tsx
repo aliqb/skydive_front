@@ -14,8 +14,19 @@ export interface UserPersonalInfo {
   id: string;
   firstName: string;
   lastName: string;
-  nationalcode: string;
+  nationalCode: string;
   birthDate: string;
+  email?: string
+  cityId?: string,
+  state?: string,
+  city?: string,
+  address?: string,
+  weight?: number,
+  height?: number,
+  createdAt?: string
+  updatedAt?: string,
+  emergencyContact?: string;
+  emergencyPhone?: string;
 }
 
 export interface UserGeneralInfo {

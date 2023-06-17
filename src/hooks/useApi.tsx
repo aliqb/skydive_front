@@ -1,7 +1,7 @@
 import axios, {AxiosError, AxiosRequestConfig, AxiosResponse} from "axios";
 import { useCallback, useState, useEffect } from "react"
 import { useAppSelector } from "./reduxHooks";
-import { BaseResponse } from "../models/shared";
+import { BaseResponse } from "../models/shared.models";
 export const axiosIntance = axios.create({
     baseURL: 'http://app-api.bestskydive.ir/api'
 })
@@ -14,7 +14,6 @@ export default function useAPi<T,R=BaseResponse<any>,ErrorType={message: string}
         setIsPending(true)
          try {
             const response = await axiosIntance.request<T, AxiosResponse<R>>(config);
-            console.log(response)
             setData(response.data)
             if(applyData){
                 applyData(response.data)

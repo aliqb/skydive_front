@@ -3,7 +3,7 @@ interface SDTextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   invalid?: boolean;
 }
 
-const SDTextInput: React.FC<SDTextInputProps> = forwardRef(
+const SDTextInput = forwardRef(
   (props: SDTextInputProps, ref: Ref<HTMLInputElement>) => {
     const inputProps = { ...props };
     delete inputProps.invalid;

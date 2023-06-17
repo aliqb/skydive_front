@@ -2,10 +2,10 @@ import { Outlet, useNavigate } from "react-router-dom";
 import UserHeader from "../../components/userPanel/UserHeader";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { useEffect } from "react";
-import { AuthData } from "../../models/auth";
+import { AuthData } from "../../models/auth.models";
 import { authActions } from "../../store/auth";
 import useAPi from "../../hooks/useApi";
-import { BaseResponse, UserGeneralInfo } from "../../models/shared";
+import { BaseResponse, UserGeneralInfo } from "../../models/shared.models";
 
 const UserPanelContainer: React.FC = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const UserPanelContainer: React.FC = () => {
   //   }
   // },[isAuthenticated,navigate])
   useEffect(() => {
-    console.log('in eff',isAuthenticated)
+    console.log('in container')
     if (!isAuthenticated) {
       const authDataJson = localStorage.getItem("authData");
       if (authDataJson) {
@@ -35,15 +35,12 @@ const UserPanelContainer: React.FC = () => {
     },(response)=>{
       dispatch(authActions.setUserGenralInfo(response.content))
     })
-  }, [isAuthenticated, navigate,dispatch,sendRequest]);
+  }, [isAuthenticated]);
   return (
     <>
       <UserHeader></UserHeader>
-      <Outlet></Outlet>
+      {isAuthenticated && <Outlet></Outlet> }
     </>
-    //     <PanelShell header={UserHeader} sidebar={UserSideber} mainContinerClassName="bg-slate-100 p-2  xs:p-6" sidBarContainerClassName="bg-white">
-    //         <Outlet></Outlet>
-    //     </PanelShell>
   );
 };
 

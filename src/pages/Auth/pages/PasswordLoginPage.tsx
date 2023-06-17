@@ -4,10 +4,10 @@ import BackButton from "../../../components/shared/BackButton";
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { Link, useNavigate } from "react-router-dom";
 import useAPi from "../../../hooks/useApi";
-import { AuthData, OTPRequest, OTPResponse } from "../../../models/auth";
+import { AuthData, OTPRequest, OTPResponse } from "../../../models/auth.models";
 import SDAlert from "../../../components/shared/Alert";
 import { authActions } from "../../../store/auth";
-import { BaseResponse } from "../../../models/shared";
+import { BaseResponse } from "../../../models/shared.models";
 import SDSpinner from "../../../components/shared/Spinner";
 
 const PasswordLoginPage: React.FC = () => {

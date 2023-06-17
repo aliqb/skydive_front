@@ -4,8 +4,8 @@ import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { Link, useNavigate } from "react-router-dom";
 import OTPBox from "../../../components/auth/OTPBox";
 import useAPi, { axiosIntance } from "../../../hooks/useApi";
-import { BaseResponse } from "../../../models/shared";
-import { AuthData } from "../../../models/auth";
+import { BaseResponse } from "../../../models/shared.models";
+import { AuthData } from "../../../models/auth.models";
 import { authActions } from "../../../store/auth";
 
 const OTPLoginPage: React.FC = () => {

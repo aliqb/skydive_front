@@ -6,7 +6,6 @@ interface RouteGuardProps{
     navigateTo: string
 }
 const RouteGuard : React.FC<RouteGuardProps> = (props)=>{
-    console.log('guard',props.canActivate)
     // return props.canActivate ? (<>{<props.component />}</>) : <Navigate to={props.navigateTo}></Navigate>
     return (
         <>
