@@ -75,6 +75,8 @@ const authSlice = createSlice({
         state.username = action.payload.userName;
         state.code = action.payload.code;
         state.mobile = action.payload.mobile;
+        state.enteredPhone = '';
+        state.enteredUsername = '';
     }
   },
 });

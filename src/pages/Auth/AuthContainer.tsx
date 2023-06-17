@@ -3,13 +3,14 @@ import { useAppSelector } from "../../hooks/reduxHooks";
 import { useEffect, useState } from "react";
 
 export default function AuthContainer() {
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const authState = useAppSelector((state) => state.auth);
   const [wasAuthenticated, setWasAuthenticated] = useState<boolean>(false);
   useEffect(() => {
     const authDataJson = localStorage.getItem("authData");
     setWasAuthenticated(!!authDataJson);
   }, []);
-  return isAuthenticated || wasAuthenticated ? (
+  return (authState.isAuthenticated || wasAuthenticated) &&
+    !(authState.enteredPhone || authState.enteredUsername) ? (
     <Navigate to="/" />
   ) : (
     <div className="container px-1 m-auto py-1 flex justify-center items-center min-h-full">
