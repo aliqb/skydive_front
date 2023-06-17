@@ -21,15 +21,10 @@ import Account from "./pages/userPanel/pages/Account";
 import AdminPanelContainer from "./pages/adminPanel/AdminPanelContainer";
 import Cartable from "./pages/adminPanel/pages/Cartable";
 import SignUpPasswordOtpPage from "./pages/Auth/pages/singUp/SignUpOtpPage";
-import { useEffect } from "react";
-import { AuthData } from "./models/auth";
-import { useAppDispatch, useAppSelector } from "./hooks/reduxHooks";
-import { authActions } from "./store/auth";
-
+import { ToastContainer } from "react-toastify";
+import AuthenticatedRoute from "./AuthenticatedRoute";
 
 function App() {
-  const dispatch = useAppDispatch();
-  const isAuthenticated = useAppSelector(state=>state.auth.isAuthenticated);
   // useEffect(()=>{
   //   const authDataJson = localStorage.getItem('authData');
   //   if(authDataJson){
@@ -38,33 +33,47 @@ function App() {
   //   }
   // },[dispatch])
   return (
-    <Router>
-      <Routes>
-        <Route Component={UserPanelContainer} path="">
-          <Route Component={Home} path=""></Route>
-          <Route Component={Account} path="account"></Route>
-        </Route>
-        <Route Component={AuthContainer} path="auth">
-          <Route Component={UsernameLoginPage} path=""></Route>
-          <Route Component={PasswordLoginPage} path="password"></Route>
-          <Route Component={OTPLOginPage} path="otp"></Route>
-          <Route Component={() => <Outlet></Outlet>} path="forget-password">
-            <Route Component={ForgetPasswordFirstPage} path=""></Route>
-            <Route Component={ForgetPasswordOtpPage} path="otp"></Route>
-            <Route Component={ChangePasswordPage} path="change"></Route>
+    <>
+      <ToastContainer
+        rtl
+        theme="colored"
+        position="top-left"
+        icon={false}
+        closeButton={false}
+      />
+
+      <Router>
+        <Routes>
+          <Route element={
+            <AuthenticatedRoute component={UserPanelContainer} />
+          } path="">
+            <Route Component={Home} path=""></Route>
+            <Route Component={Account} path="account"></Route>
           </Route>
-          <Route Component={() => <Outlet></Outlet>} path="signup">
-            <Route Component={SignUpMobilePage} path=""></Route>
-            <Route Component={SignUpPasswordOtpPage} path="otp"></Route>
-            <Route Component={SingUpPersonaPage} path="personal"></Route>
-            <Route Component={SingUpUserInfoPage} path="user-info"></Route>
+          <Route Component={AuthContainer} path="auth">
+            <Route Component={UsernameLoginPage} path=""></Route>
+            <Route Component={PasswordLoginPage} path="password"></Route>
+            <Route Component={OTPLOginPage} path="otp"></Route>
+            <Route Component={() => <Outlet></Outlet>} path="forget-password">
+              <Route Component={ForgetPasswordFirstPage} path=""></Route>
+              <Route Component={ForgetPasswordOtpPage} path="otp"></Route>
+              <Route Component={ChangePasswordPage} path="change"></Route>
+            </Route>
+            <Route Component={() => <Outlet></Outlet>} path="signup">
+              <Route Component={SignUpMobilePage} path=""></Route>
+              <Route Component={SignUpPasswordOtpPage} path="otp"></Route>
+              <Route Component={SingUpPersonaPage} path="personal"></Route>
+              <Route Component={SingUpUserInfoPage} path="user-info"></Route>
+            </Route>
           </Route>
-        </Route>
-        <Route Component={AdminPanelContainer} path="admin">
-          <Route Component={Cartable} path=""></Route>
-        </Route>
-      </Routes>
-    </Router>
+          <Route element={
+            <AuthenticatedRoute component={AdminPanelContainer} />
+          } path="admin">
+            <Route Component={Cartable} path=""></Route>
+          </Route>
+        </Routes>
+      </Router>
+    </>
   );
 }
 

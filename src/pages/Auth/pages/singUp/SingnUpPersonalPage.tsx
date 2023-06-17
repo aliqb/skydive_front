@@ -5,7 +5,7 @@ import SDButton from "../../../../components/shared/Button";
 import SDDatepicker from "../../../../components/shared/DatePciker";
 import { useNavigate } from "react-router-dom";
 import useAPi from "../../../../hooks/useApi";
-import { UserPersonalInfo } from "../../../../models/shared";
+import { UserPersonalInfo } from "../../../../models/shared.models";
 import SDAlert from "../../../../components/shared/Alert";
 import SDSpinner from "../../../../components/shared/Spinner";
 
@@ -56,9 +56,9 @@ const SingUpPersonaPage: React.FC = () => {
       )}
       <div>
         <div className="mb-4">
-          <SDLabel htmlFor="nationalcode">کد ملی</SDLabel>
+          <SDLabel htmlFor="nationalCode">کد ملی</SDLabel>
           <SDTextInput
-            {...register("nationalcode", {
+            {...register("nationalCode", {
               required: "فیلد الزامی است.",
               pattern: {
                 value: /^\d{10}$/,
@@ -66,13 +66,13 @@ const SingUpPersonaPage: React.FC = () => {
               },
             })}
             type="text"
-            id="nationalcode"
+            id="nationalCode"
             maxLength={10}
-            invalid={!!errors.nationalcode}
+            invalid={!!errors.nationalCode}
           />
-          {errors.nationalcode?.message && (
+          {errors.nationalCode?.message && (
             <p className="text-red-600 text-sm pr-2 mt-2">
-              {errors.nationalcode.message}
+              {errors.nationalCode.message}
             </p>
           )}
         </div>

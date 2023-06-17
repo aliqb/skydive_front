@@ -9,10 +9,8 @@ function useConfirm(
   confirmButton = "بله",
   rejectButton = "خیر"
 ): [React.FC, () => Promise<boolean>] {
-    console.log('confirm hook')
   const [showModal, setShowModal] = useState<boolean>(false);
   const confirmation = () => {
-    console.log('confirmaion')
     setShowModal(true);
     return new Promise<boolean>((resolve) => {
       resolvePromise = resolve;
@@ -25,7 +23,6 @@ function useConfirm(
   }
 
   function handleReject() {
-    console.log('re')
     resolvePromise(false);
     setShowModal(false);
   }

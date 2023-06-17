@@ -1,13 +1,18 @@
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "../../hooks/reduxHooks";
 import SDDropdown, { DropDownItem } from "../shared/Dropdown";
 import HumbergerButton from "../shared/HumbergerButtom";
 import { ShellElement } from "../shared/PanelShell";
+import { authActions } from "../../store/auth";
 
 const AdminHeader: React.FC<ShellElement> = (props) => {
+  const name = useAppSelector(state=>state.auth.name);
+  const dispatch = useDispatch();
   const dropdownItems: DropDownItem[] = [
     {
       title: "خروج",
       mode: "Button",
-      onClick: (event) => console.log("ttttt"),
+      onClick: logOut,
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -26,12 +31,16 @@ const AdminHeader: React.FC<ShellElement> = (props) => {
       ),
     },
   ];
+
+  function logOut(){
+    dispatch(authActions.logOut());
+  }
   return (
     <div className="bg-blue-900 h-[60px] flex items-center">
       <HumbergerButton {...props} className="stroke-white"></HumbergerButton>
       <div className="mr-auto ml-12">
         <SDDropdown items={dropdownItems} chevronClassName="stroke-white">
-          <span className="text-white">حسن محمدی</span>
+          <span className="text-white">{name}</span>
         </SDDropdown>
       </div>
     </div>

@@ -1,17 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import OTPBox from "../../../../components/auth/OTPBox";
-import BackButton from "../../../../components/shared/BackButton";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/reduxHooks";
 import { useEffect } from 'react'
 import useAPi, { axiosIntance } from "../../../../hooks/useApi";
-import { BaseResponse } from "../../../../models/shared";
-import { AuthData } from "../../../../models/auth";
+import { BaseResponse } from "../../../../models/shared.models";
+import { AuthData } from "../../../../models/auth.models";
 import { authActions } from "../../../../store/auth";
 
 const SignUpPasswordOtpPage: React.FC = () => {
   const phone = useAppSelector((state) => state.auth.enteredPhone);
   const dispatch = useAppDispatch();
-  const {sendRequest, isPending,errors} = useAPi<{phone:string, code: string},BaseResponse<AuthData>>();
+  const {sendRequest,errors} = useAPi<{phone:string, code: string},BaseResponse<AuthData>>();
   const navigate = useNavigate();
   useEffect(() => {
     if (!phone) {
@@ -19,7 +18,6 @@ const SignUpPasswordOtpPage: React.FC = () => {
     }
   }, [phone, navigate]);
   function onFinish(code: string): void {
-    console.log("finish", code);
     sendRequest({
         url: '/Users/OtpRegisterConfirmation',
         method:'post',
@@ -34,7 +32,7 @@ const SignUpPasswordOtpPage: React.FC = () => {
   }
 
   function onOTPRefresh() {
-    return axiosIntance.post('/Users/OtpRequest',{phone:phone})
+    return axiosIntance.post('/Users/OtpRequest',{username:phone})
   }
 
   return (

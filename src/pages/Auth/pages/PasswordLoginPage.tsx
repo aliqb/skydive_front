@@ -4,10 +4,10 @@ import BackButton from "../../../components/shared/BackButton";
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { Link, useNavigate } from "react-router-dom";
 import useAPi from "../../../hooks/useApi";
-import { AuthData } from "../../../models/auth";
+import { AuthData, OTPRequest, OTPResponse } from "../../../models/auth.models";
 import SDAlert from "../../../components/shared/Alert";
 import { authActions } from "../../../store/auth";
-import { BaseResponse } from "../../../models/shared";
+import { BaseResponse } from "../../../models/shared.models";
 import SDSpinner from "../../../components/shared/Spinner";
 
 const PasswordLoginPage: React.FC = () => {
@@ -21,6 +21,12 @@ const PasswordLoginPage: React.FC = () => {
     { username: string; password: string },
     BaseResponse<AuthData>
   >();
+
+  const {
+    sendRequest: sendOtpRequest,
+    errors: otpError,
+    isPending: otpPending,
+  } = useAPi<OTPRequest,OTPResponse>();
 
   useEffect(() => {
     if (!enteredUsername) {
@@ -54,6 +60,17 @@ const PasswordLoginPage: React.FC = () => {
         navigate("/");
       }
     );
+  }
+
+  function onOTPRequest() {
+    sendOtpRequest({
+      url: '/Users/OtpRequest',
+      method: 'post',
+      data: {username: enteredUsername}
+    },(response)=>{
+      dispatch(authActions.setMobile(response.content))
+      navigate("../otp")
+    })
   }
 
   const showPasswordIcon: JSX.Element = (
@@ -104,6 +121,11 @@ const PasswordLoginPage: React.FC = () => {
             {errors.message}
           </SDAlert>
         )}
+        {otpError && (
+          <SDAlert color="red" className="my-2">
+            {otpError.message}
+          </SDAlert>
+        )}
         <p className="mb-6 text-lg font-semibold">رمز عبور خود را وارد کنید.</p>
         <div className="flex w-full gap-1 flex-wrap sm:flex-nowrap">
           <div className="relative w-full mb-0">
@@ -133,7 +155,12 @@ const PasswordLoginPage: React.FC = () => {
             </div>
           </div>
           <div className="w-full sm:w-auto mt-2 sm:mt-0">
-            <SDButton className="w-full" type="submit" color="success" disabled={isPending}>
+            <SDButton
+              className="w-full"
+              type="submit"
+              color="success"
+              disabled={isPending}
+            >
               {isPending && <SDSpinner />}
               ورود
             </SDButton>
@@ -145,7 +172,7 @@ const PasswordLoginPage: React.FC = () => {
           </p>
         )}
       </form>
-      <Link to="../otp" className="flex items-center w-full h-full px-8 py-4">
+      <button onClick={onOTPRequest} disabled={otpPending} className="flex items-center w-full h-full px-8 py-4 disabled:text-gray-300">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -159,7 +186,7 @@ const PasswordLoginPage: React.FC = () => {
           />
         </svg>
         <p>ارسال کد یک بار مصرف از طریق پیامک</p>
-      </Link>
+      </button>
     </section>
   );
 };

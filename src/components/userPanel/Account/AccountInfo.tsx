@@ -2,6 +2,16 @@ import { useForm } from "react-hook-form";
 import SDLabel from "../../shared/Label";
 import SDTextInput from "../../shared/TextInput";
 import SDTooltip from "../../shared/Tooltip";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
+import { BaseResponse, UserStatuses } from "../../../models/shared.models";
+import useConfirm from "../../../hooks/useConfirm";
+import useAPi from "../../../hooks/useApi";
+import { toast } from "react-toastify";
+import { authActions } from "../../../store/auth";
+import { useState } from "react";
+import { OTPRequest, OTPResponse } from "../../../models/auth.models";
+import ChangePasswordModal from "./ChangePasswordModal";
+
 interface AccountInfoFormData {
   username: string;
   password: string;
@@ -9,19 +19,80 @@ interface AccountInfoFormData {
 }
 const AccountInfo: React.FC = () => {
   const {
-    register,
+    // register,
     formState: { errors },
-    handleSubmit,
-    watch,
+    // handleSubmit,
+    // watch,
   } = useForm<AccountInfoFormData>({
     mode: "onTouched",
   });
+
+  const authState = useAppSelector((state) => state.auth);
+
+  const [ConfirmModal, confirmation] = useConfirm(
+    "حساب کاربری شما غیر فعال خواهد شد. آیا مطمئن هستید؟ ",
+    "غیرفعال کردن حساب کاربری"
+  );
+
+  const { sendRequest: sendInavtivate } = useAPi<null, BaseResponse<string>>();
+  const [startChangePassword, setStartChangePassword] = useState<boolean>(false);
+  const { sendRequest: sendOtpRequest, isPending: otpPending } = useAPi<
+    OTPRequest,
+    OTPResponse
+  >();
+
+  const dispatch = useAppDispatch();
+  const statusColorMap = new Map([
+    [UserStatuses.PENDING, "text-orange-500"],
+    [UserStatuses.AWAITING_COMPLETION, "text-orange-500"],
+    [UserStatuses.ACTIVE, "text-green-500"],
+    [UserStatuses.INACTIVE, "text-red-600"],
+  ]);
+
+  async function onInactiveAccount() {
+    const confirm = await confirmation();
+    if (confirm) {
+      sendInavtivate(
+        {
+          url: "/Users/Inactivate",
+          method: "put",
+        },
+        (response) => {
+          toast.success(response.message);
+          dispatch(authActions.logOut());
+        },
+        (error) => {
+          toast.error(error?.message);
+        }
+      );
+    }
+  }
+
+  function onStartChangePassword() {
+
+    sendOtpRequest({
+      url: "/Users/OtpRequest",
+      method: "post",
+      data: { username: authState.mobile },
+    },()=>{
+      setStartChangePassword(true)
+    },(error)=>toast.error(error?.message));
+  }
+
   return (
     <div className="flex flex-col items-center">
+      <ConfirmModal />
+      <ChangePasswordModal phone={authState.mobile} show={startChangePassword} onClose={()=>setStartChangePassword(false)} />
       <div className="flex flex-col items-center mb-10">
         <div className="flex gap-4 mb-3">
           <p className="text-slate-500">وضعیت حساب کاربری</p>
-          <p className="font-semibold text-orange-500">در انتظار تأیید</p>
+          <p
+            className={`${statusColorMap.get(
+              authState.userStatus
+            )} font-semibold`}
+          >
+            {authState.userStatusDisplay}
+          </p>
           <SDTooltip
             content="باید تایید شود."
             trigger="hover"
@@ -45,13 +116,18 @@ const AccountInfo: React.FC = () => {
         </div>
         <div className="flex gap-4">
           <p className="text-slate-500">نوع حساب کاربری</p>
-          <p className="font-semibold">همراه با مربی</p>
+          <p className="font-semibold">{authState.userType}</p>
         </div>
       </div>
       <form className="flex flex-wrap max-w-2xl">
         <div className="mb-6 w-full sm:w-1/2 sm:pl-12">
           <SDLabel htmlFor="userId">کد کاربری</SDLabel>
-          <SDTextInput value={"asd"} disabled={true} type="text" id="userId" />
+          <SDTextInput
+            value={authState.code}
+            disabled={true}
+            type="text"
+            id="userId"
+          />
         </div>
         <div className="mb-6 w-full sm:w-1/2 sm:pl-12">
           <SDLabel htmlFor="username">نام کاربری</SDLabel>
@@ -75,6 +151,7 @@ const AccountInfo: React.FC = () => {
             id="username"
             disabled={true}
             invalid={!!errors.username}
+            value={authState.username}
           />
           {errors.username?.message && (
             <p className="text-red-600 text-sm pr-2 mt-2">
@@ -88,6 +165,8 @@ const AccountInfo: React.FC = () => {
             <button
               type="button"
               className="text-green-500 mb-2 font-semibold text-sm pl-2"
+              disabled={otpPending}
+              onClick={onStartChangePassword}
             >
               ویرایش
             </button>
@@ -102,12 +181,12 @@ const AccountInfo: React.FC = () => {
         <div className="mb-6 w-full sm:w-1/2 sm:pl-12">
           <div className="flex justify-between">
             <SDLabel htmlFor="phone">موبایل</SDLabel>
-            <button
+            {/* <button
               type="button"
               className="text-green-500 mb-2 font-semibold text-sm pl-2"
             >
               ویرایش
-            </button>
+            </button> */}
           </div>
           <SDTextInput
             type="text"
@@ -119,6 +198,7 @@ const AccountInfo: React.FC = () => {
             //   },
             // })}
             disabled={true}
+            value={authState.mobile}
             id="nationalId"
           />
           {errors.phone?.message && (
@@ -127,8 +207,14 @@ const AccountInfo: React.FC = () => {
             </p>
           )}
         </div>
-        <div className="w-full sm:w-1/2 sm:pl-12">  
-            <button className="text-red-600 font-semibold text-sm">غیر فعال کردن حساب کاربری</button>
+        <div className="w-full sm:w-1/2 sm:pl-12">
+          <button
+            type="button"
+            className="text-red-600 font-semibold text-sm"
+            onClick={onInactiveAccount}
+          >
+            غیر فعال کردن حساب کاربری
+          </button>
         </div>
       </form>
     </div>

@@ -5,8 +5,9 @@ import { ChangeEvent, useState } from "react";
 import useAPi from "../../../../hooks/useApi";
 import { useAppDispatch } from "../../../../hooks/reduxHooks";
 import { authActions } from "../../../../store/auth";
-import { BaseResponse } from "../../../../models/shared";
+import { BaseResponse } from "../../../../models/shared.models";
 import SDSpinner from "../../../../components/shared/Spinner";
+import { OTPRequest, OTPResponse } from "../../../../models/auth.models";
 
 const SignUpMobilePage: React.FC = () => {
   const {
@@ -23,8 +24,8 @@ const SignUpMobilePage: React.FC = () => {
   } = useAPi<{ phone: string }, BaseResponse<string>>();
 
   const { sendRequest: sendOtpRequest, errors: otpErrors } = useAPi<
-    { phone: string },
-    BaseResponse<null>
+    OTPRequest,
+    OTPResponse
   >();
 
   const [finalPending, setFinalPending] = useState<boolean>(false)
@@ -48,7 +49,7 @@ const SignUpMobilePage: React.FC = () => {
       {
         url: "/Users/OtpRequest",
         method: "post",
-        data: { phone: phone },
+        data: { username: phone },
       },
       () => {
         setFinalPending(false);
@@ -61,7 +62,6 @@ const SignUpMobilePage: React.FC = () => {
     if (!acceptRules) {
       return;
     }
-    console.log(data, acceptRules);
     setFinalPending(true)
     sendRequest(
       {
