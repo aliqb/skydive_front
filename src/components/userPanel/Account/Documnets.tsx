@@ -1,13 +1,7 @@
 import SDButton from "../../shared/Button";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import DocumentItemComponent from "./DocumentsItemComponent";
-import useAPi from "../../../hooks/useApi";
-import { BaseResponse } from "../../../models/shared.models";
-import {
-  DocumentsList,
-} from "../../../models/account.models";
-import { useAppDispatch } from "../../../hooks/reduxHooks";
-import { UserDocumentsFields, accoutnActions } from "../../../store/account";
+import { UserDocumentsFields } from "../../../store/account";
 import SDSpinner from "../../shared/Spinner";
 
 interface DocumentsProp {
@@ -17,11 +11,7 @@ interface DocumentsProp {
 
 const Documents: React.FC<DocumentsProp> = (props) => {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const { sendRequest: getDcouments } = useAPi<
-    null,
-    BaseResponse<DocumentsList>
-  >();
-  const dispatch = useAppDispatch();
+
 
 
   async function onSubmit() {

@@ -3,6 +3,7 @@ import SDLabel from "../../shared/Label";
 import SDTextInput from "../../shared/TextInput";
 import SDTooltip from "../../shared/Tooltip";
 import { useAppSelector } from "../../../hooks/reduxHooks";
+import { UserStatuses } from "../../../models/shared.models";
 interface AccountInfoFormData {
   username: string;
   password: string;
@@ -20,12 +21,19 @@ const AccountInfo: React.FC = () => {
 
   const authState = useAppSelector(state=>state.auth);
 
+  const statusColorMap = new Map([
+    [UserStatuses.PENDING, "text-orange-500"],
+    [UserStatuses.AWAITING_COMPLETION, "text-orange-500"],
+    [UserStatuses.ACTIVE, "text-green-500"],
+    [UserStatuses.INACTIVE, "text-red-600"]
+  ]);
+
   return (
     <div className="flex flex-col items-center">
       <div className="flex flex-col items-center mb-10">
         <div className="flex gap-4 mb-3">
           <p className="text-slate-500">وضعیت حساب کاربری</p>
-          <p className="font-semibold text-orange-500">در انتظار تأیید</p>
+          <p className={`${statusColorMap.get(authState.userStatus)} font-semibold`}>{authState.userStatusDisplay}</p>
           <SDTooltip
             content="باید تایید شود."
             trigger="hover"

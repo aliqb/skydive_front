@@ -34,6 +34,7 @@ export interface UserGeneralInfo {
   userName: string;
   mobile: string;
   userStatus: string;
+  userStatusDisplay: string;
   userType: string;
   id: string;
   createdAt: string;
@@ -41,3 +42,11 @@ export interface UserGeneralInfo {
   firstName: string;
   lastName: string;
 }
+
+
+export const UserStatuses = {
+  AWAITING_COMPLETION: 'AwaitingCompletion',
+  PENDING: 'Pending',
+  ACTIVE: 'Active',
+  INACTIVE: 'Inactive'
+} 

@@ -15,6 +15,7 @@ interface AuthState {
   username: string;
   code: string;
   mobile: string;
+  userStatusDisplay: string;
 }
 
 const initialState: AuthState = {
@@ -29,7 +30,8 @@ const initialState: AuthState = {
   name: '',
   username: '',
   code: '',
-  mobile: ''
+  mobile: '',
+  userStatusDisplay: ''
 };
 
 const authSlice = createSlice({
@@ -68,6 +70,7 @@ const authSlice = createSlice({
     setUserGenralInfo:(state, action: PayloadAction<UserGeneralInfo>)=>{
         state.name = `${action.payload.firstName} ${action.payload.lastName}`;
         state.userStatus = action.payload.userStatus;
+        state.userStatusDisplay = action.payload.userStatusDisplay;
         state.userType = action.payload.userType;
         state.username = action.payload.userName;
         state.code = action.payload.code;
