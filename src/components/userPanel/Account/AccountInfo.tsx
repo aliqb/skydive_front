@@ -2,8 +2,13 @@ import { useForm } from "react-hook-form";
 import SDLabel from "../../shared/Label";
 import SDTextInput from "../../shared/TextInput";
 import SDTooltip from "../../shared/Tooltip";
-import { useAppSelector } from "../../../hooks/reduxHooks";
-import { UserStatuses } from "../../../models/shared.models";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
+import { BaseResponse, UserStatuses } from "../../../models/shared.models";
+import useConfirm from "../../../hooks/useConfirm";
+import useAPi from "../../../hooks/useApi";
+import { toast } from "react-toastify";
+import { authActions } from "../../../store/auth";
+
 interface AccountInfoFormData {
   username: string;
   password: string;
@@ -21,6 +26,11 @@ const AccountInfo: React.FC = () => {
 
   const authState = useAppSelector(state=>state.auth);
 
+  const [ConfirmModal, confirmation] = useConfirm(
+    "حساب کاربری شما غیر فعال خواهد شد. آیا مطمئن هستید؟ ","غیرفعال کردن حساب کاربری");
+
+  const {sendRequest:sendInavtivate} = useAPi<null,BaseResponse<string>>()
+  const dispatch = useAppDispatch();
   const statusColorMap = new Map([
     [UserStatuses.PENDING, "text-orange-500"],
     [UserStatuses.AWAITING_COMPLETION, "text-orange-500"],
@@ -28,8 +38,24 @@ const AccountInfo: React.FC = () => {
     [UserStatuses.INACTIVE, "text-red-600"]
   ]);
 
+  async function onInactiveAccount(){
+    const confirm = await confirmation();
+    if(confirm){
+      sendInavtivate({
+        url:'/Users/Inactivate',
+        method: 'put'
+      },response=>{
+        toast.success(response.message)
+        dispatch(authActions.logOut())
+      },error=>{
+        toast.error(error?.message)
+      })
+    }
+  }
+
   return (
     <div className="flex flex-col items-center">
+      <ConfirmModal />
       <div className="flex flex-col items-center mb-10">
         <div className="flex gap-4 mb-3">
           <p className="text-slate-500">وضعیت حساب کاربری</p>
@@ -142,7 +168,7 @@ const AccountInfo: React.FC = () => {
           )}
         </div>
         <div className="w-full sm:w-1/2 sm:pl-12">  
-            <button className="text-red-600 font-semibold text-sm">غیر فعال کردن حساب کاربری</button>
+            <button type="button" className="text-red-600 font-semibold text-sm" onClick={onInactiveAccount}>غیر فعال کردن حساب کاربری</button>
         </div>
       </form>
     </div>

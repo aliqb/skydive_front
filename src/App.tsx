@@ -22,6 +22,7 @@ import AdminPanelContainer from "./pages/adminPanel/AdminPanelContainer";
 import Cartable from "./pages/adminPanel/pages/Cartable";
 import SignUpPasswordOtpPage from "./pages/Auth/pages/singUp/SignUpOtpPage";
 import { ToastContainer } from "react-toastify";
+import AuthenticatedRoute from "./AuthenticatedRoute";
 
 function App() {
   // useEffect(()=>{
@@ -43,7 +44,9 @@ function App() {
 
       <Router>
         <Routes>
-          <Route Component={UserPanelContainer} path="">
+          <Route element={
+            <AuthenticatedRoute component={UserPanelContainer} />
+          } path="">
             <Route Component={Home} path=""></Route>
             <Route Component={Account} path="account"></Route>
           </Route>
@@ -63,7 +66,9 @@ function App() {
               <Route Component={SingUpUserInfoPage} path="user-info"></Route>
             </Route>
           </Route>
-          <Route Component={AdminPanelContainer} path="admin">
+          <Route element={
+            <AuthenticatedRoute component={AdminPanelContainer} />
+          } path="admin">
             <Route Component={Cartable} path=""></Route>
           </Route>
         </Routes>

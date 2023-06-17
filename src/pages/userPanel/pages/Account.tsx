@@ -13,7 +13,7 @@ import {
 import { BaseResponse } from "../../../models/shared.models";
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import useConfirm from "../../../hooks/useConfirm";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { accoutnActions } from "../../../store/account";
 
 const Account: React.FC = () => {
@@ -21,7 +21,7 @@ const Account: React.FC = () => {
   const accountState = useAppSelector((state) => state.account);
   const tabsRef = useRef<TabsRef>(null);
   const props = { setActiveTab, tabsRef };
-  const { sendRequest, errors, isPending } = useAPi<
+  const { sendRequest, isPending } = useAPi<
     PersonalInfoEditRequest,
     BaseResponse<null>
   >();

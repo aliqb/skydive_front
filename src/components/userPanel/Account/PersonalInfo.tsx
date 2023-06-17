@@ -42,6 +42,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
     BaseResponse<CityDto[]>
   >();
 
+  
   const dispatch = useAppDispatch();
 
   const [cities, setCities] = useState<City[]>([]);
