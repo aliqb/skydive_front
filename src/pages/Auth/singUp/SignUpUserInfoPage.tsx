@@ -1,15 +1,16 @@
-import { useForm } from "react-hook-form";
-import SDLabel from "../../../../components/shared/Label";
-import SDTextInput from "../../../../components/shared/TextInput";
-import SDButton from "../../../../components/shared/Button";
-import PasswordInput from "../../../../components/shared/PasswordInput";
 import { useRef } from "react";
-import useAPi from "../../../../hooks/useApi";
-import { UserSecurityInformation } from "../../../../models/auth.models";
-import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../../../hooks/reduxHooks";
-import SDAlert from "../../../../components/shared/Alert";
-import SDSpinner from "../../../../components/shared/Spinner";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import SDAlert from "../../../components/shared/Alert";
+import SDButton from "../../../components/shared/Button";
+import SDLabel from "../../../components/shared/Label";
+import PasswordInput from "../../../components/shared/PasswordInput";
+import SDSpinner from "../../../components/shared/Spinner";
+import SDTextInput from "../../../components/shared/TextInput";
+import { useAppSelector } from "../../../hooks/reduxHooks";
+import useAPi from "../../../hooks/useApi";
+import { UserSecurityInformation } from "../../../models/auth.models";
+
 interface UserInfoFormData {
   username: string;
   password: string;

@@ -1,10 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { FormEvent, useState } from "react";
-import SDButton from "../../../components/shared/Button";
-import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
-import { authActions } from "../../../store/auth";
-import useAPi from "../../../hooks/useApi";
-import SDSpinner from "../../../components/shared/Spinner";
+import SDButton from "../../components/shared/Button";
+import SDSpinner from "../../components/shared/Spinner";
+import { useAppSelector, useAppDispatch } from "../../hooks/reduxHooks";
+import useAPi from "../../hooks/useApi";
+import { authActions } from "../../store/auth";
+
 export default function UsernameLoginPage() {
   const username = useAppSelector((state) => state.auth.enteredUsername);
   const dispatch = useAppDispatch();

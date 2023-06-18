@@ -1,13 +1,14 @@
 import { useForm } from "react-hook-form";
-import SDButton from "../../../../components/shared/Button";
 import { Link, useNavigate } from "react-router-dom";
 import { ChangeEvent, useState } from "react";
-import useAPi from "../../../../hooks/useApi";
-import { useAppDispatch } from "../../../../hooks/reduxHooks";
-import { authActions } from "../../../../store/auth";
-import { BaseResponse } from "../../../../models/shared.models";
-import SDSpinner from "../../../../components/shared/Spinner";
-import { OTPRequest, OTPResponse } from "../../../../models/auth.models";
+import SDButton from "../../../components/shared/Button";
+import SDSpinner from "../../../components/shared/Spinner";
+import { useAppDispatch } from "../../../hooks/reduxHooks";
+import useAPi from "../../../hooks/useApi";
+import { OTPRequest, OTPResponse } from "../../../models/auth.models";
+import { BaseResponse } from "../../../models/shared.models";
+import { authActions } from "../../../store/auth";
+
 
 const SignUpMobilePage: React.FC = () => {
   const {

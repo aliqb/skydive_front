@@ -1,20 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import SDCard from "../../../components/shared/Card";
-import { SDTabs } from "../../../components/shared/Tabs";
-import AccountInfo from "../../../components/userPanel/Account/AccountInfo";
-import Documents from "../../../components/userPanel/Account/Documnets";
-import PersonalInfo from "../../../components/userPanel/Account/PersonalInfo";
+import SDCard from "../../components/shared/Card";
+import { SDTabs } from "../../components/shared/Tabs";
+import AccountInfo from "../../components/userPanel/Account/AccountInfo";
+import Documents from "../../components/userPanel/Account/Documnets";
+import PersonalInfo from "../../components/userPanel/Account/PersonalInfo";
 import { TabsRef } from "flowbite-react";
-import useAPi from "../../../hooks/useApi";
+import useAPi from "../../hooks/useApi";
 import {
   DocumentsList,
   PersonalInfoEditRequest,
-} from "../../../models/account.models";
-import { BaseResponse } from "../../../models/shared.models";
-import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
-import useConfirm from "../../../hooks/useConfirm";
+} from "../../models/account.models";
+import { BaseResponse } from "../../models/shared.models";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import useConfirm from "../../hooks/useConfirm";
 import { toast } from "react-toastify";
-import { accoutnActions } from "../../../store/account";
+import { accoutnActions } from "../../store/account";
 
 const Account: React.FC = () => {
   const [, setActiveTab] = useState<number>(0);

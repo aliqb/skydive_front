@@ -1,6 +1,6 @@
 
 import { useNavigate } from "react-router-dom";
-import ResetPasswordFinalComponent from "../../../../components/auth/ResetPasswordFinalComponent";
+import ResetPasswordFinalComponent from "../../../components/auth/ResetPasswordFinalComponent";
 
 const ChangePasswordPage: React.FC = () => {
   const navigate = useNavigate();
