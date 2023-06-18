@@ -24,8 +24,8 @@ const UserManagement: React.FC = () => {
   }, []);
   if (isPending) {
     return (
-      <div>
-        <SDSpinner size={3} />
+      <div className="flex justify-center items-center h-3/4">
+        <SDSpinner size={16} />
       </div>
     );
   }
