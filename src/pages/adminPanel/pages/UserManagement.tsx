@@ -1,22 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Grid from "../../../components/shared/Grid";
 import SDButton from "../../../components/shared/Button";
 import SDDatepicker from "../../../components/shared/DatePicker";
 import useAPi from "../../../hooks/useApi";
+import { BaseResponse } from "../../../models/shared.models";
 
 const UserManagement: React.FC = () => {
-  const data = [
-    { کدکاربر: 1, name: "Kate", age: 25, favFruit: "🍏" },
-    { کدکاربر: 2, name: "Tom", age: 23, favFruit: "🍌" },
-    { کدکاربر: 3, name: "Ann", age: 26, favFruit: "🍊" },
-    { کدکاربر: 4, name: "Jack", age: 21, favFruit: "🍒" },
-    { کدکاربر: 4, name: "Jack", age: 21, favFruit: "🍒" },
-    { کدکاربر: 4, name: "Jack", age: 21, favFruit: "🍒" },
-    { کدکاربر: 4, name: "Jack", age: 21, favFruit: "🍒" },
-    { کدکاربر: 4, name: "Jack", age: 21, favFruit: "🍒" },
-    { کدکاربر: 4, name: "Jack", age: 21, favFruit: "🍒" },
-  ];
-  const { sendRequest, errors, isPending } = useAPi();
+  const { sendRequest, errors, isPending } = useAPi<null, BaseResponse<any>>();
+  const [result, setResult] = useState([]);
+  useEffect(() => {
+    sendRequest(
+      {
+        url: "/Admin/GetUsers",
+        params: { pagesize: 10, pageindex: 1 },
+      },
+      (response) => {
+        const result = response.content;
+        console.log(result);
+        setResult(result);
+      }
+    );
+  }, []);
 
   return (
     <>
@@ -64,7 +68,21 @@ const UserManagement: React.FC = () => {
         </div>
       </div>
       <div className="mt-6">
-        <Grid data={data} />
+        <Grid
+          data={result}
+          columnsToShow={[
+            "code",
+            "nationalCode",
+            "firstName",
+            "lastName",
+            "userType",
+            "phone",
+            "birthDate",
+            "username",
+            "email",
+            "statusDisplay",
+          ]}
+        />
       </div>
     </>
   );
