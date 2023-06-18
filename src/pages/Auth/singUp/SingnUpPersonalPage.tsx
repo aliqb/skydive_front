@@ -10,6 +10,7 @@ import { UserPersonalInfo } from "../../../models/shared.models";
 import SDDatepicker from "../../../components/shared/DatePicker";
 
 
+
 const SingUpPersonaPage: React.FC = () => {
   const navigate = useNavigate();
   const {

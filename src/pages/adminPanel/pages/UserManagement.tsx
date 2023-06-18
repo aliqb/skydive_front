@@ -25,7 +25,7 @@ const UserManagement: React.FC = () => {
   if (isPending) {
     return (
       <div>
-        <SDSpinner className="h-16 w-16" />
+        <SDSpinner size={3} />
       </div>
     );
   }
