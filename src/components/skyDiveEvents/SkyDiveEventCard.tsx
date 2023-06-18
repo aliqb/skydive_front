@@ -1,20 +1,31 @@
-import SDCard from "../shared/Card"
+import { Link } from "react-router-dom";
+import SDCard from "../shared/Card";
+import { SkyDiveEvent } from "../../models/skyDiveEvents.models";
 
-const SkyDiveEventCard : React.FC = (props)=>{
-    return (
-        <SDCard className="!p-0 border-gray-500 ">
-            <div className="w-full aspect-[2] relative">
-                <img src="https://picsum.photos/id/237/200/300" alt="" className="w-full h-full object-cover rounded-t-lg" />
-            </div>
-            <div className="py-4 px-4">
-                <p className="font-bold text-lg">رویدارد زیتب</p>
-                <div className="flex justify-between mt-2 text-slate-600 flex-wrap">
-                    <p className="my-1">1 خرداد تا 3 خرداد</p>
-                    <p className="my-1">40 ظرفیت خالی</p>
-                </div>
-            </div>
-        </SDCard>
-    )
-}
+const SkyDiveEventCard: React.FC<SkyDiveEvent> = (props) => {
+  return (
+    <Link to={''}>
+      <SDCard className="!p-0 border-gray-200 border ">
+        <div className="w-full aspect-[2] relative">
+          <img
+            src={`${import.meta.env.VITE_BASE_API_URL}/file/${props.image}`}
+            alt={props.title}
+            className="w-full h-full object-cover rounded-t-lg"
+          />
+          <span className="absolute bottom-2 left-2 bg-primary-100 shadow px-3 rounded-xl text-sm">
+            {props.statusTitle}
+          </span>
+        </div>
+        <div className="py-4 px-4">
+          <p className="font-bold text-lg">{ props.title }</p>
+          <div className="flex justify-between mt-2 text-slate-600 flex-wrap">
+            <p className="my-1">{props.duration}</p>
+            <p className="my-1">{props.capacity} ظرفیت خالی</p>
+          </div>
+        </div>
+      </SDCard>
+    </Link>
+  );
+};
 
 export default SkyDiveEventCard;

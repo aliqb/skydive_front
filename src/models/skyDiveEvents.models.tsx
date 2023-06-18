@@ -23,6 +23,7 @@ export interface SkyDiveEvent {
     id: string
     createdAt: string
     updatedAt: string
+    duration: string
   }
   
   export interface SkyDiveEventDay {

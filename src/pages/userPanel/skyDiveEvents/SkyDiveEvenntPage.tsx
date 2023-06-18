@@ -10,7 +10,7 @@ export const SkyDiveEventsPage: React.FC = () => {
   const params = useParams();
   const { sendRequest, isPending, data } = useAPi<
     null,
-    BaseResponse<SkyDiveEventStatus>
+    BaseResponse<SkyDiveEventStatus[]>
   >();
   useEffect(() => {
     sendRequest({
@@ -23,33 +23,40 @@ export const SkyDiveEventsPage: React.FC = () => {
   }, []);
   return (
     <SDCard className="!px-0">
-      <nav className="flex border-b border-gray-200">
-        <ul className="flex w-full">
-          <li className="flex-grow text-center">
-            <NavLink
-              className={`${
-                !params.id && "border-b-2 !border-primary-500 !text-primary-500"
-              } pb-4 block hover:border-b-2 text-gray-500 hover:text-gray-600 hover:border-gray-300  transition-all ease-linear duration-75`}
-              to={"/events/"}
-            >
-              test
-            </NavLink>
-          </li>
-          <li className="flex-grow text-center">
-            <NavLink
-              className={(nav) =>
-                `${
-                  nav.isActive &&
+      {(!isPending && data) && (
+        <nav className="flex border-b border-gray-200">
+          <ul className="flex w-full">
+            <li className="flex-grow text-center">
+              <NavLink
+                className={`${
+                  !params.id &&
                   "border-b-2 !border-primary-500 !text-primary-500"
-                } pb-4 block hover:border-b-2 text-gray-500 hover:text-gray-600 hover:border-gray-300  transition-all ease-linear duration-75`
-              }
-              to={"/events/5"}
-            >
-              test
-            </NavLink>
-          </li>
-        </ul>
-      </nav>
+                } pb-4 block hover:border-b-2 text-gray-500 hover:text-gray-600 hover:border-gray-300  transition-all ease-linear duration-75`}
+                to={"/events/"}
+              >
+                همه
+              </NavLink>
+            </li>
+                {
+                    data.content.map((status,index)=>(
+                        <li key={index} className="flex-grow text-center">
+                        <NavLink
+                          className={(nav) =>
+                            `${
+                              nav.isActive &&
+                              "border-b-2 !border-primary-500 !text-primary-500"
+                            } pb-4 block hover:border-b-2 text-gray-500 hover:text-gray-600 hover:border-gray-300  transition-all ease-linear duration-75`
+                          }
+                          to={`/events/${status.id}`}
+                        >
+                          {status.title}
+                        </NavLink>
+                      </li>
+                    ))
+                }
+          </ul>
+        </nav>
+      )}
       <SkyDiveEventList id={params.id || ""} />
     </SDCard>
   );
