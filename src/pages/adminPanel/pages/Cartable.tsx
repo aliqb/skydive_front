@@ -1,7 +1,5 @@
 const Cartable : React.FC = ()=>{
-    return (
-        <p>test</p>
-    )
+    return <p>cartable</p>;
 }
 
 export default Cartable
