@@ -1,7 +1,7 @@
-import SDCard from "../../../components/shared/Card";
-import HomeLink, { HomeLinkProps } from "../../../components/userPanel/home/HomeLink";
-import { useAppSelector } from "../../../hooks/reduxHooks";
-import { UserStatuses } from "../../../models/shared.models";
+import SDCard from "../../components/shared/Card";
+import HomeLink, { HomeLinkProps } from "../../components/userPanel/home/HomeLink";
+import { useAppSelector } from "../../hooks/reduxHooks";
+import { UserStatuses } from "../../models/shared.models";
 
 const Home: React.FC = () => {
   const name = useAppSelector(state=>state.auth.name);

@@ -1,12 +1,14 @@
-import BackButton from "../../../components/shared/BackButton";
 import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
-import { Link, useNavigate } from "react-router-dom";
-import OTPBox from "../../../components/auth/OTPBox";
-import useAPi, { axiosIntance } from "../../../hooks/useApi";
-import { BaseResponse } from "../../../models/shared.models";
-import { AuthData } from "../../../models/auth.models";
-import { authActions } from "../../../store/auth";
+import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
+import OTPBox from "../../components/auth/OTPBox";
+import BackButton from "../../components/shared/BackButton";
+import { useAppSelector, useAppDispatch } from "../../hooks/reduxHooks";
+import useAPi, { axiosIntance } from "../../hooks/useApi";
+import { AuthData } from "../../models/auth.models";
+import { BaseResponse } from "../../models/shared.models";
+import { authActions } from "../../store/auth";
+
 
 const OTPLoginPage: React.FC = () => {
   const enteredPhone = useAppSelector((state) => state.auth.enteredPhone);

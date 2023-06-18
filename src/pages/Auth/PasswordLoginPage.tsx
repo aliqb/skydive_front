@@ -1,14 +1,16 @@
-import SDButton from "../../../components/shared/Button";
-import { FormEvent, useState, useEffect } from "react";
-import BackButton from "../../../components/shared/BackButton";
-import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
-import { Link, useNavigate } from "react-router-dom";
-import useAPi from "../../../hooks/useApi";
-import { AuthData, OTPRequest, OTPResponse } from "../../../models/auth.models";
-import SDAlert from "../../../components/shared/Alert";
-import { authActions } from "../../../store/auth";
-import { BaseResponse } from "../../../models/shared.models";
-import SDSpinner from "../../../components/shared/Spinner";
+import { useState, useEffect, FormEvent } from "react";
+import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
+import SDAlert from "../../components/shared/Alert";
+import BackButton from "../../components/shared/BackButton";
+import SDButton from "../../components/shared/Button";
+import SDSpinner from "../../components/shared/Spinner";
+import { useAppSelector, useAppDispatch } from "../../hooks/reduxHooks";
+import useAPi from "../../hooks/useApi";
+import { AuthData, OTPRequest, OTPResponse } from "../../models/auth.models";
+import { BaseResponse } from "../../models/shared.models";
+import { authActions } from "../../store/auth";
+
 
 const PasswordLoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);

@@ -5,24 +5,25 @@ import {
   BrowserRouter as Router,
   Outlet,
 } from "react-router-dom";
-import UsernameLoginPage from "./pages/Auth/pages/UsernameLoginPage";
+
 import AuthContainer from "./pages/Auth/AuthContainer";
-import PasswordLoginPage from "./pages/Auth/pages/PasswordLoginPage";
-import OTPLOginPage from "./pages/Auth/pages/OTPLoginPage";
-import ForgetPasswordFirstPage from "./pages/Auth/pages/forgetPassword/ForgetPasswordFirstPage";
-import ForgetPasswordOtpPage from "./pages/Auth/pages/forgetPassword/ForgetPasswordOtpPage";
-import ChangePasswordPage from "./pages/Auth/pages/forgetPassword/ChangePasswordPage";
-import SignUpMobilePage from "./pages/Auth/pages/singUp/SingUpMobilePage";
-import SingUpPersonaPage from "./pages/Auth/pages/singUp/SingnUpPersonalPage";
-import SingUpUserInfoPage from "./pages/Auth/pages/singUp/SignUpUserInfoPage";
+import ForgetPasswordFirstPage from "./pages/Auth/forgetPassword/ForgetPasswordFirstPage";
+import ForgetPasswordOtpPage from "./pages/Auth/forgetPassword/ForgetPasswordOtpPage";
+import ChangePasswordPage from "./pages/Auth/forgetPassword/ChangePasswordPage";
 import UserPanelContainer from "./pages/userPanel/UserPanelContainer";
-import Home from "./pages/userPanel/pages/Home";
-import Account from "./pages/userPanel/pages/Account";
+import Account from "./pages/userPanel/Account";
 import AdminPanelContainer from "./pages/adminPanel/AdminPanelContainer";
 import Cartable from "./pages/adminPanel/pages/Cartable";
-import SignUpPasswordOtpPage from "./pages/Auth/pages/singUp/SignUpOtpPage";
 import { ToastContainer } from "react-toastify";
 import AuthenticatedRoute from "./AuthenticatedRoute";
+import UsernameLoginPage from "./pages/Auth/UsernameLoginPage";
+import PasswordLoginPage from "./pages/Auth/PasswordLoginPage";
+import SignUpPasswordOtpPage from "./pages/Auth/singUp/SignUpOtpPage";
+import SingUpUserInfoPage from "./pages/Auth/singUp/SignUpUserInfoPage";
+import SignUpMobilePage from "./pages/Auth/singUp/SingUpMobilePage";
+import SingUpPersonaPage from "./pages/Auth/singUp/SingnUpPersonalPage";
+import OTPLoginPage from "./pages/Auth/OTPLoginPage";
+import Home from "./pages/userPanel/Home";
 
 function App() {
   // useEffect(()=>{
@@ -53,7 +54,7 @@ function App() {
           <Route Component={AuthContainer} path="auth">
             <Route Component={UsernameLoginPage} path=""></Route>
             <Route Component={PasswordLoginPage} path="password"></Route>
-            <Route Component={OTPLOginPage} path="otp"></Route>
+            <Route Component={OTPLoginPage} path="otp"></Route>
             <Route Component={() => <Outlet></Outlet>} path="forget-password">
               <Route Component={ForgetPasswordFirstPage} path=""></Route>
               <Route Component={ForgetPasswordOtpPage} path="otp"></Route>
