@@ -4,6 +4,7 @@ import SDButton from "../../../components/shared/Button";
 import SDDatepicker from "../../../components/shared/DatePicker";
 import useAPi from "../../../hooks/useApi";
 import { BaseResponse } from "../../../models/shared.models";
+import SDSpinner from "../../../components/shared/Spinner";
 
 const UserManagement: React.FC = () => {
   const { sendRequest, errors, isPending } = useAPi<null, BaseResponse<any>>();
@@ -21,7 +22,16 @@ const UserManagement: React.FC = () => {
       }
     );
   }, []);
-
+  if (isPending) {
+    return (
+      <div>
+        <SDSpinner className="h-16 w-16" />
+      </div>
+    );
+  }
+  if (errors) {
+    return <div>Error: {errors.message}</div>;
+  }
   return (
     <>
       <div className="flex justify-between mt-12">
