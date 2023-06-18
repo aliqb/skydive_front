@@ -1,13 +1,7 @@
-export interface LinkWithIcon {
-  username: string;
-  code: string;
-  createdAt: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  id: string;
+interface User {
+  username: string | null;
   phone: string;
-  status: string;
-  userType: string;
-  userName: string;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
 }

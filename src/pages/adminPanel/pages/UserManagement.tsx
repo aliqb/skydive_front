@@ -3,25 +3,50 @@ import Grid from "../../../components/shared/Grid";
 import SDButton from "../../../components/shared/Button";
 import SDDatepicker from "../../../components/shared/DatePicker";
 import useAPi from "../../../hooks/useApi";
-import { BaseResponse } from "../../../models/shared.models";
+import {
+  BaseResponse,
+  UserStatusesPersianMap,
+} from "../../../models/shared.models";
 import SDSpinner from "../../../components/shared/Spinner";
 
 const UserManagement: React.FC = () => {
-  const { sendRequest, errors, isPending } = useAPi<null, BaseResponse<any>>();
-  const [result, setResult] = useState([]);
+  const { sendRequest, errors, isPending } = useAPi<
+    null,
+    BaseResponse<User[]>
+  >();
+  const [result, setResult] = useState<User[]>([]);
+  const [selectedValue, setSelectedValue] = useState<string>("");
+
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedValue(event.target.value);
+  };
+
   useEffect(() => {
-    sendRequest(
-      {
-        url: "/Admin/GetUsers",
-        params: { pagesize: 10, pageindex: 1 },
-      },
-      (response) => {
-        const result = response.content;
-        console.log(result);
-        setResult(result);
+    const fetchUsers = async () => {
+      try {
+        await sendRequest(
+          {
+            url: "/Admin/GetUsers",
+            params: {
+              pagesize: 10,
+              pageindex: 1,
+              userStatus: selectedValue.toLowerCase(),
+            },
+          },
+          (response) => {
+            const result = response.content;
+            console.log(result);
+            setResult(result);
+          }
+        );
+      } catch (error) {
+        console.error("Error:", error);
       }
-    );
-  }, []);
+    };
+
+    fetchUsers();
+  }, [selectedValue]);
+
   if (isPending) {
     return (
       <div className="flex justify-center items-center h-3/4">
@@ -29,9 +54,11 @@ const UserManagement: React.FC = () => {
       </div>
     );
   }
+
   if (errors) {
     return <div>Error: {errors.message}</div>;
   }
+
   return (
     <>
       <div className="flex justify-between mt-12">
@@ -42,16 +69,23 @@ const UserManagement: React.FC = () => {
           <div>
             <p>وضعیت :</p>
           </div>
-          <div>
+          <div className="mr-5">
             <select
               id="underline_select"
-              className="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer rtl:text-right"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              onChange={handleSelectChange}
+              value={selectedValue}
             >
-              <option selected>همه</option>
-              <option value="US">در انتظار تایید</option>
-              <option value="CA">در انتظار تکمیل</option>
-              <option value="FR">فعال</option>
-              <option value="DE">غیر فعال</option>
+              <option selected value="">
+                همه
+              </option>
+              {Array.from(UserStatusesPersianMap.entries()).map(
+                ([key, value]) => (
+                  <option key={key} value={key} className="text-right">
+                    {value}
+                  </option>
+                )
+              )}
             </select>
           </div>
         </div>

@@ -24,7 +24,13 @@ const Grid: React.FC<GridProps> = ({ data, columnsToShow }) => {
     username: "نام کاربری",
     email: "ایمیل",
     statusDisplay: "وضعیت",
-    // Add more translations as needed
+    title: "نام",
+    startDate: "شروع",
+    endDate: "پایان",
+    location: "محل رویداد",
+    statusTitle: "وضعیت",
+    voidableString: "قابل لغو",
+    termsAndConditions: "قوانین و شرایط",
   };
   {
     return (
