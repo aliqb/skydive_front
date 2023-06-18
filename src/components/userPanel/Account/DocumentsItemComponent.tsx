@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { DocumnetStatus } from "../../../models/account.models";
 import { UserDocumentsFieldType, accoutnActions } from "../../../store/account";
-import SDDatepicker from "../../shared/DatePciker";
+import SDDatepicker from "../../shared/DatePicker";
 import SDLabel from "../../shared/Label";
 import LabeledFileInput from "../../shared/LabeledFileInput";
 

@@ -26,6 +26,12 @@ import OTPLoginPage from "./pages/Auth/OTPLoginPage";
 import Home from "./pages/userPanel/Home";
 import SkyDiveEventsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEvenntPage";
 
+import UserManagement from "./pages/adminPanel/pages/UserManagement";
+import Events from "./pages/adminPanel/pages/Events";
+import Settings from "./pages/adminPanel/pages/Settings";
+import SendMessage from "./pages/adminPanel/pages/SendMessage";
+import Reports from "./pages/adminPanel/pages/Reports";
+
 function App() {
   // useEffect(()=>{
   //   const authDataJson = localStorage.getItem('authData');
@@ -46,9 +52,10 @@ function App() {
 
       <Router>
         <Routes>
-          <Route element={
-            <AuthenticatedRoute component={UserPanelContainer} />
-          } path="">
+          <Route
+            element={<AuthenticatedRoute component={UserPanelContainer} />}
+            path=""
+          >
             <Route Component={Home} path=""></Route>
             <Route Component={Account} path="account"></Route>
             <Route Component={Outlet} path="events">
@@ -71,10 +78,16 @@ function App() {
               <Route Component={SingUpUserInfoPage} path="user-info"></Route>
             </Route>
           </Route>
-          <Route element={
-            <AuthenticatedRoute component={AdminPanelContainer} />
-          } path="admin">
-            <Route Component={Cartable} path=""></Route>
+          <Route
+            element={<AuthenticatedRoute component={AdminPanelContainer} />}
+            path="admin"
+          >
+            <Route Component={Cartable} path="cartable"></Route>
+            <Route Component={UserManagement} path="users"></Route>
+            <Route Component={Events} path="events"></Route>
+            <Route Component={Settings} path="settings"></Route>
+            <Route Component={SendMessage} path="sendMessage"></Route>
+            <Route Component={Reports} path="reports"></Route>
           </Route>
         </Routes>
       </Router>

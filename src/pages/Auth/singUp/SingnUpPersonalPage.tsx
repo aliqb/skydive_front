@@ -2,12 +2,13 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import SDAlert from "../../../components/shared/Alert";
 import SDButton from "../../../components/shared/Button";
-import SDDatepicker from "../../../components/shared/DatePciker";
 import SDLabel from "../../../components/shared/Label";
 import SDSpinner from "../../../components/shared/Spinner";
 import SDTextInput from "../../../components/shared/TextInput";
 import useAPi from "../../../hooks/useApi";
 import { UserPersonalInfo } from "../../../models/shared.models";
+import SDDatepicker from "../../../components/shared/DatePicker";
+
 
 
 const SingUpPersonaPage: React.FC = () => {
