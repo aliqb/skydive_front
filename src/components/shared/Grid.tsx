@@ -28,7 +28,7 @@ const Grid: React.FC<GridProps> = ({ data, columnsToShow }) => {
   };
   {
     return (
-      <Table hoverable>
+      <Table hoverable className="text-right">
         <Table.Head>
           {columnsToShow.map((column) => (
             <Table.HeadCell key={column}>
