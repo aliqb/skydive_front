@@ -23,6 +23,9 @@ export const SkyDiveEventsPage: React.FC = () => {
   }, []);
   return (
     <SDCard className="!px-0">
+      <div className="flex justify-center my-14">
+          <p className="text-center text-slate-600 font-semibold">وارد رویداد شوید و بلیت خود را رزرو کنید.</p>
+      </div>
       {(!isPending && data) && (
         <nav className="flex border-b border-gray-200">
           <ul className="flex w-full">
