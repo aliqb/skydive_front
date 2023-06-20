@@ -9,7 +9,7 @@ const Home: React.FC = () => {
   const links : HomeLinkProps[] = [
     {
       tilte: 'رویدادها',
-      href:''
+      href:'/events'
     },
     {
       tilte: 'قوانین و شرایط',

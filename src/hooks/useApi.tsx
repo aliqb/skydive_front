@@ -3,7 +3,7 @@ import { useCallback, useState, useEffect } from "react"
 import { useAppSelector } from "./reduxHooks";
 import { BaseResponse } from "../models/shared.models";
 export const axiosIntance = axios.create({
-    baseURL: 'http://app-api.bestskydive.ir/api'
+    baseURL: import.meta.env.VITE_BASE_API_URL
 })
 export default function useAPi<T,R=BaseResponse<any>,ErrorType={message: string}>(){
     const [isPending, setIsPending] = useState<boolean>(false);

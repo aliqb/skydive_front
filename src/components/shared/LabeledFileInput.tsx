@@ -57,7 +57,7 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
           بارگذاری فایل
         </label>
       )}
-      {isPending && <SDSpinner className="h-8 w-8"></SDSpinner>}
+      {isPending && <SDSpinner size={8}></SDSpinner>}
       {errors && (
         <p className="text-red-600 font-semibold">
           {errors.message || "خطا در بارگذاری"}
