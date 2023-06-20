@@ -17,6 +17,7 @@
   ::-webkit-scrollbar {
     width: 6px;
     margin: 10px;
+    height: 6px;
   }
 
   /* Track */
@@ -46,5 +47,8 @@
   input,
   textarea {
     outline: none;
+  }
+  .horizental-scrol ::-webkit-scrollbar{
+    height: 6px;
   }
 }
