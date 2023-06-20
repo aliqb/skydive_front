@@ -16,7 +16,6 @@ const SkyDiveEventList: React.FC<SkyDiveEventListProps> = (props) => {
   >();
 
   useEffect(() => {
-    console.log("here", props);
     sendRequest({
       url: "/SkyDiveEvents",
       params: {
@@ -25,7 +24,7 @@ const SkyDiveEventList: React.FC<SkyDiveEventListProps> = (props) => {
         pageSize: 100000,
       },
     });
-  }, [props.id]);
+  }, [props.id,sendRequest]);
 
   if (isPending) {
     return (

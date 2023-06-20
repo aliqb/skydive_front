@@ -1,18 +1,20 @@
-const SkyDiveEventDayItem: React.FC = () => {
+import { SkyDiveEventDay } from "../../models/skyDiveEvents.models";
+
+const SkyDiveEventDayItem: React.FC<SkyDiveEventDay> = (props) => {
   return (
     <a href="">
       <div className="flex flex-wrap justify-between items-center border-gray-300 shadow-sm border rounded-lg w-full  py-3 px-6 ">
         <p className="w-full text-center my-3 xs:w-auto font-semibold">
-          1400/01/01
+          {props.date}
         </p>
         <p className="w-full text-center my-3 xs:w-auto text-slate-600">
-          6 پرواز
+          {props.flightQty} پرواز
         </p>
         <p className="w-full text-center my-3 xs:w-auto text-slate-600">
-          11 ظرفیت خالی
+          {props.emptyCapacity} ظرفیت خالی
         </p>
         <p className="w-full text-center my-3 xs:w-auto text-green-500">
-          بلیت‌های شما : 0
+          بلیت‌های شما : {props.userTicketQty}
         </p>
         <svg
           xmlns="http://www.w3.org/2000/svg"

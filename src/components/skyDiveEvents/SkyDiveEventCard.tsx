@@ -4,7 +4,7 @@ import { SkyDiveEvent } from "../../models/skyDiveEvents.models";
 
 const SkyDiveEventCard: React.FC<SkyDiveEvent> = (props) => {
   return (
-    <Link to={''}>
+    <Link to={`${props.id}/days`}>
       <SDCard className="!p-0 border-gray-200 border ">
         <div className="w-full aspect-[2] relative">
           <img
@@ -12,7 +12,7 @@ const SkyDiveEventCard: React.FC<SkyDiveEvent> = (props) => {
             alt={props.title}
             className="w-full h-full object-cover rounded-t-lg"
           />
-          <span className="absolute bottom-2 left-2 bg-primary-100 shadow px-3 rounded-xl text-sm">
+          <span className="absolute bottom-2 left-2 bg-primary-100 shadow px-3 py-0.5 rounded-xl text-sm">
             {props.statusTitle}
           </span>
         </div>

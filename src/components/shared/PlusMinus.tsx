@@ -23,12 +23,12 @@ const PlusMinus: React.FC<PlusMinusProps> = ({
   }
 
   function decrease() {
-    if (value === 0) {
+    if (value === 0 && !allowNegative) {
       return;
     }
     setValue((prevVlaue) => {
       const newVlaue = prevVlaue - 1;
-      onIncrease(newVlaue);
+      onDecrease(newVlaue);
       return newVlaue;
     });
   }

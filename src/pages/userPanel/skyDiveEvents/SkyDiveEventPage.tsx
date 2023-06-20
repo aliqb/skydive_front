@@ -20,7 +20,7 @@ export const SkyDiveEventsPage: React.FC = () => {
         pageIndex: 1,
       },
     });
-  }, []);
+  }, [sendRequest]);
   return (
     <SDCard className="!px-0">
       <div className="flex justify-center my-14">
@@ -32,7 +32,7 @@ export const SkyDiveEventsPage: React.FC = () => {
             <li className="flex-grow text-center">
               <NavLink
                 className={`${
-                  !params.id &&
+                  !params.statusId &&
                   "border-b-2 !border-primary-500 !text-primary-500"
                 } pb-4 block hover:border-b-2 text-gray-500 hover:text-gray-600 hover:border-gray-300  transition-all ease-linear duration-75`}
                 to={"/events/"}
@@ -60,7 +60,7 @@ export const SkyDiveEventsPage: React.FC = () => {
           </ul>
         </nav>
       )}
-      <SkyDiveEventList id={params.id || ""} />
+      <SkyDiveEventList id={params.statusId || ""} />
     </SDCard>
   );
 };
