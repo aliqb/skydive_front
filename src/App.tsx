@@ -24,12 +24,15 @@ import SignUpMobilePage from "./pages/Auth/singUp/SingUpMobilePage";
 import SingUpPersonaPage from "./pages/Auth/singUp/SingnUpPersonalPage";
 import OTPLoginPage from "./pages/Auth/OTPLoginPage";
 import Home from "./pages/userPanel/Home";
+import SkyDiveEventsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventPage";
 
 import UserManagement from "./pages/adminPanel/pages/UserManagement";
 import Events from "./pages/adminPanel/pages/Events";
 import Settings from "./pages/adminPanel/pages/Settings";
 import SendMessage from "./pages/adminPanel/pages/SendMessage";
 import Reports from "./pages/adminPanel/pages/Reports";
+import SkyDiveEventDaysPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventDaysPage";
+import SkyDiveEventFlightsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventFlightsPage";
 
 function App() {
   // useEffect(()=>{
@@ -57,6 +60,11 @@ function App() {
           >
             <Route Component={Home} path=""></Route>
             <Route Component={Account} path="account"></Route>
+            <Route Component={Outlet} path="events">
+                <Route Component={SkyDiveEventsPage} path=":statusId?"></Route>
+                <Route Component={SkyDiveEventDaysPage} path=":eventId/days"></Route>
+                <Route Component={SkyDiveEventFlightsPage} path=":eventId/flights"></Route>
+            </Route>
           </Route>
           <Route Component={AuthContainer} path="auth">
             <Route Component={UsernameLoginPage} path=""></Route>

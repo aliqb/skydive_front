@@ -32,7 +32,7 @@ const AuthenticatedRoute: React.FC<AutenticateGuardProps> = (props) => {
     },(response)=>{
       dispatch(authActions.setUserGenralInfo(response.content))
     })
-  }, [isAuthenticated,dispatch,navigate,sendRequest]);
+  }, [isAuthenticated]);
 
   return <>{isAuthenticated && <props.component></props.component>}</>;
 };
