@@ -45,7 +45,6 @@ const SkyDiveEventDaysPage: React.FC = () => {
 
   const mainBody = (
     <>
-      {" "}
       <header className="flex flex-col items-center gap-3 mb-5">
         <h2 className="text-center font-bold text-lg">
           {event?.content.title}
