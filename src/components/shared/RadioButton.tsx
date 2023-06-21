@@ -7,12 +7,14 @@ interface Option {
 }
 
 interface RadioButtonProps {
+  name: string;
   options: Option[];
   selectedOption: string;
   onOptionChange: (value: string) => void;
 }
 
 const RadioButton: React.FC<RadioButtonProps> = ({
+  name,
   options,
   selectedOption,
   onOptionChange,
@@ -22,7 +24,7 @@ const RadioButton: React.FC<RadioButtonProps> = ({
       {options.map((option) => (
         <div key={option.value} className="flex  items-center mr-5">
           <Radio
-            name="radio"
+            name={name}
             value={option.value}
             checked={selectedOption === option.value}
             onChange={() => onOptionChange(option.value)}

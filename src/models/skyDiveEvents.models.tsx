@@ -60,3 +60,6 @@ export interface Ticket {
   amount: number
   qty: number
 }
+export interface LastCode {
+  lastCode: string;
+}
