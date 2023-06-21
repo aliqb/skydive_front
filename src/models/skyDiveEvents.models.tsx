@@ -60,6 +60,13 @@ export interface Ticket {
   amount: number
   qty: number
 }
-export interface LastCode {
-  lastCode: string;
+export interface NewEvent {
+  title: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  voidable: boolean;
+  image: string;
+  statusId: string;
+  subjecToVAT: boolean;
 }

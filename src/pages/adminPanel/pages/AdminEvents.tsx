@@ -3,6 +3,8 @@ import Grid from "../../../components/shared/Grid";
 import SDButton from "../../../components/shared/Button";
 import SDDatepicker from "../../../components/shared/DatePicker";
 import useAPi from "../../../hooks/useApi";
+import { useForm } from "react-hook-form";
+import { NewEvent } from "../../../models/skyDiveEvents.models";
 import {
   BaseResponse,
   EventStatusesPersianMap,
@@ -13,33 +15,24 @@ import SDModal from "../../../components/shared/Modal";
 import SDTextInput from "../../../components/shared/TextInput";
 import RadioButton from "../../../components/shared/RadioButton";
 import LabeledFileInput from "../../../components/shared/LabeledFileInput";
-import { LastCode } from "../../../models/skyDiveEvents.models";
+import SDLabel from "../../../components/shared/Label";
 
-const Events: React.FC = () => {
+const AdminEvents: React.FC = () => {
+  const { register, handleSubmit, control } = useForm<NewEvent>();
+
   const { sendRequest, errors, isPending } = useAPi<
     null,
     BaseResponse<SkyDiveEvent[]>
   >();
-  const {
-    sendRequest: lastCodeSendRequest,
-    errors: lastCodeErrors,
-    isPending: lastCodePending,
-    data: lastCode,
-  } = useAPi<null, BaseResponse<string>>();
-  // const [result, setResult] = useState<SkyDiveEvent[]>([]);
+  const { sendRequest: lastCodeSendRequest, data: lastCode } = useAPi<
+    null,
+    BaseResponse<string>
+  >();
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
-  const [selectedCancelOption, setSelectedCancelOption] = useState<string>("");
-  const [selectedVATOption, setSelectedVATOption] = useState<string>("");
-  const [code, setCode] = useState("");
-  const [titleValue, setTitleValue] = useState("");
-  const [locationValue, setLocationValue] = useState("");
-  const [startDateValue, setStartDateValue] = useState("");
-  const [endDateValue, setEndDateValue] = useState("");
-  const [voidableValue, setVoidableValue] = useState(true);
-  const [imageValue, setImageValue] = useState("");
-  const [statusIdValue, setStatusIdValue] = useState("");
-  const [subjectToVATValue, setSubjectToVATValue] = useState(true);
+  const [selectedCancelOption, setSelectedCancelOption] = useState(false);
+  const [selectedVATOption, setSelectedVATOption] = useState(false);
+
   const [processedData, setProcessedData] = useState<SkyDiveEvent[]>([]);
   const closeModal = () => {
     setShowModal(false);
@@ -79,6 +72,19 @@ const Events: React.FC = () => {
 
     fetchUsers();
   }, [selectedValue]);
+  useEffect(() => {
+    const fetchEventStatuses = () => {
+      try {
+        sendRequest({
+          url: "/SkyDiveEventStatuses",
+        });
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchEventStatuses();
+  }, [selectedValue]);
 
   useEffect(() => {
     const fetchLastCode = () => {
@@ -111,35 +117,28 @@ const Events: React.FC = () => {
   }
 
   const handleCancelOptionChange = (value: string) => {
-    setSelectedCancelOption(value === selectedCancelOption ? "null" : value);
+    setSelectedCancelOption(value === "cancel-active");
   };
 
   const handleVATOptionChange = (value: string) => {
-    setSelectedVATOption(value === selectedVATOption ? "null" : value);
+    setSelectedVATOption(value === "vat-active");
   };
+  const handleSaveButton = handleSubmit((data) => {
+    console.log(data);
+    data.subjecToVAT = selectedVATOption;
+    data.voidable = selectedCancelOption;
 
-  const handleSaveButton = () => {
-    const requestBody = {
-      title: titleValue,
-      location: locationValue,
-      startDate: startDateValue,
-      endDate: endDateValue,
-      voidable: voidableValue,
-      image: imageValue,
-      statusId: statusIdValue,
-      subjectToVAT: subjectToVATValue,
-    };
     sendRequest(
       {
         url: "/SkyDiveEvents",
         method: "post",
-        data: requestBody as any,
+        data: data as any,
       },
       (response) => {
         console.log("Response:", response);
       }
     );
-  };
+  });
 
   const CancelOptions = [
     { value: "cancel-active", label: "فعال" },
@@ -159,7 +158,7 @@ const Events: React.FC = () => {
         </div>
 
         <SDModal show={showModal} onClose={closeModal} containerClass="!p-0">
-          <div className="border-b text-lg flex justify-between px-6 py-4 bg-primary-500 text-white rounded-t-md">
+          <div className="border-b text-lg flex justify-between px-6 py-4 bg-blue-900 text-white rounded-t-md">
             <span>ثبت رویداد جدید</span>
             <button type="button" onClick={resetModal}>
               <svg
@@ -181,71 +180,62 @@ const Events: React.FC = () => {
           <div className="px-6 py-8">
             <div className="flex flex-row mb-6 w-full mt-5">
               <div className="flex flex-col">
-                <p className="mb-2">کد</p>
+                <SDLabel className="mb-2">کد</SDLabel>
                 <SDTextInput
                   type="text"
                   id="eventCode"
-                  onChange={(event) => setCode(event.target.value)}
                   defaultValue={lastCode?.content || ""}
                   disabled={true}
                 />
               </div>
               <div className="flex flex-col mr-4 w-full">
-                <p className="mb-2">عنوان رویداد</p>
-                <SDTextInput
-                  type="text"
-                  id="newEvent"
-                  onChange={(event) => setTitleValue(event.target.value)}
-                  value={titleValue}
-                />
+                <SDLabel className="mb-2">عنوان رویداد </SDLabel>
+                <SDTextInput type="text" id="title" {...register("title")} />
               </div>
             </div>
             <div className="mb-6 w-full mt-5">
-              <p>محل رویداد</p>
+              <SDLabel>محل رویداد</SDLabel>
               <SDTextInput
                 type="text"
-                id="eventPlace"
-                onChange={(event) => setLocationValue(event.target.value)}
-                value={locationValue}
+                id="location"
+                {...register("location")}
               />
             </div>
             <div className="flex items-center">
               <div>
-                <p>تاریخ شروع</p>
+                <SDLabel>تاریخ شروع</SDLabel>
               </div>
               <div className="mr-5">
                 <SDDatepicker
                   inputClass=" !xs:w-40 text-center !bg-white border-slate-500"
-                  name="expireDate"
+                  name="startDate"
                   required={true}
-                  onChange={(date) => setStartDateValue(date)}
-                  value={startDateValue}
+                  control={control}
                 ></SDDatepicker>
               </div>
               <div className="mr-5">
-                <p>تاریخ پایان</p>
+                <SDLabel>تاریخ پایان</SDLabel>
               </div>
               <div className="mr-5">
                 <SDDatepicker
                   inputClass=" !xs:w-40 text-center !bg-white border-slate-500"
-                  name="expireDate"
+                  name="endDate"
                   required={true}
-                  onChange={(date) => setEndDateValue(date)}
-                  value={endDateValue}
+                  control={control}
                 ></SDDatepicker>
               </div>
             </div>
             <div className="flex flex-row w-full mt-5">
               <div className="flex flex-col w-1/2">
                 <div>
-                  <p>وضعیت</p>
+                  <SDLabel>وضعیت</SDLabel>
                 </div>
                 <div className="mt-2">
                   <select
-                    id="underline_select"
+                    id="eventStatus"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    onChange={handleSelectChange}
                     value={selectedValue}
+                    {...register("statusId")}
                   >
                     <option selected value="">
                       انتخاب کنید
@@ -262,13 +252,15 @@ const Events: React.FC = () => {
               </div>
               <div className="flex flex-col w-1/2 items-center mr-4">
                 <div>
-                  <p className="mb-5">قابلیت لغو</p>
+                  <SDLabel className="mb-5">قابلیت لغو</SDLabel>
                 </div>
                 <div>
                   <RadioButton
                     name="voidable"
                     options={CancelOptions}
-                    selectedOption={selectedCancelOption}
+                    selectedOption={
+                      selectedVATOption ? "cancel-active" : "cancel-inactive"
+                    }
                     onOptionChange={handleCancelOptionChange}
                   />
                 </div>
@@ -277,7 +269,7 @@ const Events: React.FC = () => {
             <div className="flex flex-row w-full mt-5">
               <div className="flex flex-col w-1/2">
                 <div>
-                  <p>تصویر</p>
+                  <SDLabel>تصویر</SDLabel>
                 </div>
                 <div className="mt-5">
                   <LabeledFileInput
@@ -291,13 +283,15 @@ const Events: React.FC = () => {
               </div>
               <div className="flex flex-col w-1/2 items-center mr-4">
                 <div>
-                  <p className="mb-5">ارزش افزوده</p>
+                  <SDLabel className="mb-5">ارزش افزوده</SDLabel>
                 </div>
                 <div>
                   <RadioButton
-                    name="vat"
+                    name="subjecToVAT"
                     options={VATOptions}
-                    selectedOption={selectedVATOption}
+                    selectedOption={
+                      selectedVATOption ? "vat-active" : "vat-inactive"
+                    }
                     onOptionChange={handleVATOptionChange}
                   />
                 </div>
@@ -308,7 +302,7 @@ const Events: React.FC = () => {
             <SDButton
               color="primary"
               type="submit"
-              className="w-full"
+              className="w-full !bg-blue-900"
               onClick={handleSaveButton}
             >
               ذخیره
@@ -381,4 +375,4 @@ const Events: React.FC = () => {
   );
 };
 
-export default Events;
+export default AdminEvents;
