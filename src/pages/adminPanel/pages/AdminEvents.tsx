@@ -4,11 +4,11 @@ import SDButton from "../../../components/shared/Button";
 import SDDatepicker from "../../../components/shared/DatePicker";
 import useAPi from "../../../hooks/useApi";
 import { useForm } from "react-hook-form";
-import { NewEvent } from "../../../models/skyDiveEvents.models";
 import {
-  BaseResponse,
-  EventStatusesPersianMap,
-} from "../../../models/shared.models";
+  NewEvent,
+  SkyDiveEventStatus,
+} from "../../../models/skyDiveEvents.models";
+import { BaseResponse } from "../../../models/shared.models";
 import SDSpinner from "../../../components/shared/Spinner";
 import { SkyDiveEvent } from "../../../models/skyDiveEvents.models";
 import SDModal from "../../../components/shared/Modal";
@@ -18,11 +18,14 @@ import LabeledFileInput from "../../../components/shared/LabeledFileInput";
 import SDLabel from "../../../components/shared/Label";
 
 const AdminEvents: React.FC = () => {
-  const { register, handleSubmit, control } = useForm<NewEvent>();
-
+  const { register, handleSubmit, reset, control } = useForm<NewEvent>();
   const { sendRequest, errors, isPending } = useAPi<
-    null,
+    NewEvent,
     BaseResponse<SkyDiveEvent[]>
+  >();
+  const { sendRequest: eventStatusSendRequest, data: eventStatusData } = useAPi<
+    null,
+    BaseResponse<SkyDiveEventStatus[]>
   >();
   const { sendRequest: lastCodeSendRequest, data: lastCode } = useAPi<
     null,
@@ -42,6 +45,12 @@ const AdminEvents: React.FC = () => {
   };
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedValue(event.target.value);
+    console.log("Selected value:", event.target.value);
+  };
+  const handleModalSelectChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    console.log("Selected value:", event.target.value);
   };
 
   useEffect(() => {
@@ -72,10 +81,11 @@ const AdminEvents: React.FC = () => {
 
     fetchUsers();
   }, [selectedValue]);
+
   useEffect(() => {
     const fetchEventStatuses = () => {
       try {
-        sendRequest({
+        eventStatusSendRequest({
           url: "/SkyDiveEventStatuses",
         });
       } catch (error) {
@@ -84,7 +94,7 @@ const AdminEvents: React.FC = () => {
     };
 
     fetchEventStatuses();
-  }, [selectedValue]);
+  }, []);
 
   useEffect(() => {
     const fetchLastCode = () => {
@@ -112,6 +122,19 @@ const AdminEvents: React.FC = () => {
     return <div>Error: {errors.message}</div>;
   }
 
+  function setFormValue(info: NewEvent) {
+    reset({
+      title: info.title,
+      location: info.location,
+      startDate: info.startDate,
+      endDate: info.endDate,
+      voidable: info.voidable,
+      image: info.image,
+      statusId: info.statusId,
+      subjecToVAT: info.subjecToVAT,
+    });
+  }
+
   function resetModal() {
     setShowModal(false);
   }
@@ -132,7 +155,7 @@ const AdminEvents: React.FC = () => {
       {
         url: "/SkyDiveEvents",
         method: "post",
-        data: data as any,
+        data: data,
       },
       (response) => {
         console.log("Response:", response);
@@ -235,18 +258,24 @@ const AdminEvents: React.FC = () => {
                     id="eventStatus"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     value={selectedValue}
-                    {...register("statusId")}
+                    {...register("statusId", {
+                      onChange: (event) => {
+                        setSelectedValue(event.target.value);
+                      },
+                    })}
                   >
                     <option selected value="">
                       انتخاب کنید
                     </option>
-                    {Array.from(EventStatusesPersianMap.entries()).map(
-                      ([key, value]) => (
-                        <option key={key} value={key} className="text-right">
-                          {value}
-                        </option>
-                      )
-                    )}
+                    {eventStatusData?.content.map((status, index) => (
+                      <option
+                        key={index}
+                        value={status.id}
+                        className="text-right"
+                      >
+                        {status.title}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -321,16 +350,12 @@ const AdminEvents: React.FC = () => {
               onChange={handleSelectChange}
               value={selectedValue}
             >
-              <option selected value="">
-                همه
-              </option>
-              {Array.from(EventStatusesPersianMap.entries()).map(
-                ([key, value]) => (
-                  <option key={key} value={key} className="text-right">
-                    {value}
-                  </option>
-                )
-              )}
+              <option value="">همه</option>
+              {eventStatusData?.content.map((status, index) => (
+                <option key={index} value={status.id} className="text-right">
+                  {status.title}
+                </option>
+              ))}
             </select>
           </div>
         </div>
