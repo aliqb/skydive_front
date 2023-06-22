@@ -18,7 +18,7 @@ import LabeledFileInput from "../../../components/shared/LabeledFileInput";
 import SDLabel from "../../../components/shared/Label";
 
 const AdminEvents: React.FC = () => {
-  const { register, handleSubmit, reset, control } = useForm<NewEvent>();
+  const { register, handleSubmit, control } = useForm<NewEvent>();
   const { sendRequest, errors, isPending } = useAPi<
     NewEvent,
     BaseResponse<SkyDiveEvent[]>
@@ -47,11 +47,11 @@ const AdminEvents: React.FC = () => {
     setSelectedValue(event.target.value);
     console.log("Selected value:", event.target.value);
   };
-  const handleModalSelectChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    console.log("Selected value:", event.target.value);
-  };
+  // const handleModalSelectChange = (
+  //   event: React.ChangeEvent<HTMLSelectElement>
+  // ) => {
+  //   console.log("Selected value:", event.target.value);
+  // };
 
   useEffect(() => {
     const fetchUsers = () => {
@@ -122,18 +122,18 @@ const AdminEvents: React.FC = () => {
     return <div>Error: {errors.message}</div>;
   }
 
-  function setFormValue(info: NewEvent) {
-    reset({
-      title: info.title,
-      location: info.location,
-      startDate: info.startDate,
-      endDate: info.endDate,
-      voidable: info.voidable,
-      image: info.image,
-      statusId: info.statusId,
-      subjecToVAT: info.subjecToVAT,
-    });
-  }
+  // function setFormValue(info: NewEvent) {
+  //   reset({
+  //     title: info.title,
+  //     location: info.location,
+  //     startDate: info.startDate,
+  //     endDate: info.endDate,
+  //     voidable: info.voidable,
+  //     image: info.image,
+  //     statusId: info.statusId,
+  //     subjecToVAT: info.subjecToVAT,
+  //   });
+  // }
 
   function resetModal() {
     setShowModal(false);
