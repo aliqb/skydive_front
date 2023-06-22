@@ -2,10 +2,34 @@ import { useAppSelector } from "../../hooks/reduxHooks";
 import { authActions } from "../../store/auth";
 import SDDropdown, { DropDownItem } from "../shared/Dropdown";
 import { useDispatch } from "react-redux";
+import { FaShoppingCart } from "react-icons/fa";
+import Basket from "../shared/Basket/Basket";
+import {  useLocation, useNavigate } from "react-router-dom";
+import { MouseEventHandler, useEffect, useState } from "react";
 
 const UserHeader: React.FC = () => {
-  const name = useAppSelector(state=>state.auth.name);
+  const name = useAppSelector((state) => state.auth.name);
   const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [cartIsInBody, setCartIsInBody] = useState<boolean>(false);
+  const [showBasket, setShowBasket] = useState<boolean>(false);
+
+  const goToPayment : MouseEventHandler = (event)=>{
+    event.stopPropagation();
+    console.log('here')
+    setShowBasket(false);
+    navigate('/payment');
+  }
+
+  useEffect(() => {
+    if (
+      location.pathname.includes("flights") ||
+      location.pathname.includes("payment")
+    ) {
+      setCartIsInBody(true);
+    }
+  }, [location]);
   // const navigate = use
   const dropdownItems: DropDownItem[] = [
     {
@@ -51,17 +75,35 @@ const UserHeader: React.FC = () => {
     },
   ];
 
-  function logOut(){
+  function logOut() {
     dispatch(authActions.logOut());
   }
   return (
-    <div className="bg-primary-500 h-[60px] flex items-center">
-      <div className="mr-auto ml-12">
-        <SDDropdown items={dropdownItems}>
-          <span>{name}</span>
-        </SDDropdown>
+    <>
+      <div className="bg-primary-500 h-[60px] flex items-center fixed w-full top-0 z-40">
+        <div className="mr-auto ml-12 flex text-white">
+          <button
+            onMouseEnter={() => setShowBasket(true)}
+            onMouseLeave={() => setShowBasket(false)}
+            onClick={goToPayment}
+            className="ml-1"
+          >
+            <FaShoppingCart size="1.5rem" />
+            {!cartIsInBody && showBasket && (
+              <div
+                
+                className="hidden  md:block absolute max-h-screen overflow-auto rounded-t-lg top-[50px] left-36 z-20 w-96"
+              >
+                <Basket />
+              </div>
+            )}
+          </button>
+          <SDDropdown items={dropdownItems}>
+            <span>{name}</span>
+          </SDDropdown>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -14,7 +14,7 @@ const Basket: React.FC<BasketProps> = ({
   onPayClick,
 }) => {
   return (
-    <SDCard className={`${inPayment && "mb-10"} mb-0 border border-gray-200`}>
+    <SDCard className={`${inPayment && "mb-10"} mb-0 border border-gray-200 text-black`}>
       <div className="text-center border-b border-gray-400 pb-5">
         <p className="text-xl font-semibold text-slate-600 mb-3">
           سبد خرید شما
