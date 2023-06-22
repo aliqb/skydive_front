@@ -86,10 +86,9 @@ const SkyDiveEventFlightsPage: React.FC = () => {
   }
 
   return (
-    <div className="flex relative mt-1 px-3">
+    <div className="flex relative mt-1 px-5">
       <SDCard className="px-0 pt-0 w-full lg:w-[65vw] border border-gray-200 relative">
         <header className="flex flex-col items-center sticky top-0 bg-white pt-5">
-
           <h2 className="text-center font-bold text-lg">{eventTitle}</h2>
           <nav className="mt-8 flex border-b-2  border-gray-200 w-full">
             <ul className="flex w-full overflow-auto horizental-scrol">
@@ -120,13 +119,19 @@ const SkyDiveEventFlightsPage: React.FC = () => {
         <div className="px-8 pt-8">
           <FlightList dayId={currentDayId} />
         </div>
-        <div className="px-5 sticky bottom-0 flex justify-center pb-5 bg-white lg:hidden">
+        <div className="px-5 fixed w-full right-0 -bottom-1 flex justify-center top-shadow py-5 bg-white lg:hidden lg:shadow-none">
           <BookButton />
         </div>
       </SDCard>
-      <div className={`${inTop ? 'top-16' : 'top-1'} px-3  hidden lg:block w-[33vw] fixed  left-0 transition-all ease-linear`}>
-        <Basket />
-      </div>
+      <aside className="hidden lg:block  relative">
+        <div
+          className={`${
+            inTop ? "top-[64px]" : "top-4"
+          } px-3   w-[33vw] sticky  left-0 transition-all ease-linear`}
+        >
+          <Basket />
+        </div>
+      </aside>
     </div>
   );
 };

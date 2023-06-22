@@ -1,7 +1,11 @@
 import NumberWithSeperator from "../NumberWithSeperator";
 import PlusMinus from "../PlusMinus";
-
-const BasketTicketItem: React.FC = () => {
+interface BasketTicketItemProps {
+  canEdit?: boolean;
+}
+const BasketTicketItem: React.FC<BasketTicketItemProps> = ({
+  canEdit = true,
+}) => {
   function onIncrease(value: number) {
     console.log(value);
   }
@@ -20,7 +24,15 @@ const BasketTicketItem: React.FC = () => {
       </div>
       <div>
         <p className="mb-5">بلیت آزاد</p>
-        <PlusMinus value={0} onIncrease={onIncrease} onDecrease={onDecrease} />
+        {canEdit ? (
+          <PlusMinus
+            value={0}
+            onIncrease={onIncrease}
+            onDecrease={onDecrease}
+          />
+        ) : (
+          <span className="text-lg">0</span>
+        )}
       </div>
     </div>
   );

@@ -33,6 +33,7 @@ import SendMessage from "./pages/adminPanel/pages/SendMessage";
 import Reports from "./pages/adminPanel/pages/Reports";
 import SkyDiveEventDaysPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventDaysPage";
 import SkyDiveEventFlightsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventFlightsPage";
+import PaymentPage from "./pages/Payment/PaymentPage";
 
 function App() {
   // useEffect(()=>{
@@ -61,10 +62,17 @@ function App() {
             <Route Component={Home} path=""></Route>
             <Route Component={Account} path="account"></Route>
             <Route Component={Outlet} path="events">
-                <Route Component={SkyDiveEventsPage} path=":statusId?"></Route>
-                <Route Component={SkyDiveEventDaysPage} path=":eventId/days"></Route>
-                <Route Component={SkyDiveEventFlightsPage} path=":eventId/flights"></Route>
+              <Route Component={SkyDiveEventsPage} path=":statusId?"></Route>
+              <Route
+                Component={SkyDiveEventDaysPage}
+                path=":eventId/days"
+              ></Route>
+              <Route
+                Component={SkyDiveEventFlightsPage}
+                path=":eventId/flights"
+              ></Route>
             </Route>
+            <Route Component={PaymentPage} path="payment"></Route>
           </Route>
           <Route Component={AuthContainer} path="auth">
             <Route Component={UsernameLoginPage} path=""></Route>
