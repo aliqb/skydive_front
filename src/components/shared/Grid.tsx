@@ -1,5 +1,5 @@
 import { Table } from "flowbite-react";
-import React from "react";
+import React, { useState } from "react";
 interface GridProps {
   data: Record<string, any>[];
   columnsToShow: string[];
@@ -61,8 +61,8 @@ const Grid: React.FC<GridProps> = ({ data, columnsToShow }) => {
               ))}
               <Table.Cell>
                 <a
-                  className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                  href="/tables"
+                  className="font-medium text-cyan-600  dark:text-cyan-500"
+                  href=""
                 >
                   <p>ویرایش</p>
                 </a>

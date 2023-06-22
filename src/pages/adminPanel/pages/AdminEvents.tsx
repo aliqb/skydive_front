@@ -47,12 +47,6 @@ const AdminEvents: React.FC = () => {
     setSelectedValue(event.target.value);
     console.log("Selected value:", event.target.value);
   };
-  const handleModalSelectChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    console.log("Selected value:", event.target.value);
-  };
-
   useEffect(() => {
     const fetchUsers = () => {
       try {
@@ -285,10 +279,10 @@ const AdminEvents: React.FC = () => {
                 </div>
                 <div>
                   <RadioButton
-                    name="voidable"
+                    groupName="voidable"
                     options={CancelOptions}
                     selectedOption={
-                      selectedVATOption ? "cancel-active" : "cancel-inactive"
+                      selectedCancelOption ? "cancel-active" : "cancel-inactive"
                     }
                     onOptionChange={handleCancelOptionChange}
                   />
@@ -316,7 +310,7 @@ const AdminEvents: React.FC = () => {
                 </div>
                 <div>
                   <RadioButton
-                    name="subjecToVAT"
+                    groupName="subjecToVAT"
                     options={VATOptions}
                     selectedOption={
                       selectedVATOption ? "vat-active" : "vat-inactive"
