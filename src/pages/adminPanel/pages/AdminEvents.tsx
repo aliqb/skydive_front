@@ -40,7 +40,8 @@ const AdminEvents: React.FC = () => {
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedValue(event.target.value);
   };
-  useEffect(() => {
+
+  
     const fetchEvents = () => {
       try {
         sendRequest(
@@ -66,126 +67,128 @@ const AdminEvents: React.FC = () => {
       }
     };
 
-    fetchEvents();
-  }, [selectedValue]);
+    useEffect(() => {
+      fetchEvents();
+    }, []);
 
-  useEffect(() => {
-    const fetchEventStatuses = () => {
-      try {
-        eventStatusSendRequest({
-          url: "/SkyDiveEventStatuses",
-        });
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    };
+    useEffect(() => {
+      const fetchEventStatuses = () => {
+        try {
+          eventStatusSendRequest({
+            url: "/SkyDiveEventStatuses",
+          });
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      };
 
-    fetchEventStatuses();
-  }, []);
+      fetchEventStatuses();
+    }, []);
 
-  useEffect(() => {
-    const fetchLastCode = () => {
-      try {
-        lastCodeSendRequest({
-          url: "/SkyDiveEvents/GetLastCode",
-        });
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    };
+    useEffect(() => {
+      const fetchLastCode = () => {
+        try {
+          lastCodeSendRequest({
+            url: "/SkyDiveEvents/GetLastCode",
+          });
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      };
 
-    fetchLastCode();
-  }, []);
+      fetchLastCode();
+    }, []);
 
-  if (isPending) {
+    if (isPending) {
+      return (
+        <div className="flex justify-center items-center h-3/4">
+          <SDSpinner size={16} />
+        </div>
+      );
+    }
+
+    if (errors) {
+      return <div>Error: {errors.message}</div>;
+    }
+
     return (
-      <div className="flex justify-center items-center h-3/4">
-        <SDSpinner size={16} />
-      </div>
+      <>
+        <div className="flex justify-between mt-12">
+          <div>
+            <SDButton color="success" onClick={handleButtonClick}>
+              + جدید
+            </SDButton>
+          </div>
+
+          <AdminNewEvent
+            eventStatusData={eventStatusData}
+            lastCode={lastCode}
+            showModal={showModal}
+            onOpenModal={handleButtonClick}
+            onCloseModal={handleCloseModal}
+            fetchData={fetchEvents}
+          />
+
+          <div className="flex items-center justify-center">
+            <div>
+              <p>وضعیت :</p>
+            </div>
+            <div className="mr-5">
+              <select
+                id="underline_select"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                onChange={handleSelectChange}
+                value={selectedValue}
+              >
+                <option value="">همه</option>
+                {eventStatusData?.content.map((status, index) => (
+                  <option key={index} value={status.id} className="text-right">
+                    {status.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="flex items-center">
+            <div>
+              <p> تاریخ :</p>
+            </div>
+            <div className="mr-5">
+              <SDDatepicker
+                inputClass=" !xs:w-40 text-center !bg-white border-slate-500"
+                name="expireDate"
+                required={true}
+                placeholder="از :"
+              ></SDDatepicker>
+            </div>
+            <div className="mr-5">
+              <SDDatepicker
+                inputClass=" !xs:w-40 text-center !bg-white border-slate-500"
+                name="expireDate"
+                required={true}
+                placeholder="تا :"
+              ></SDDatepicker>
+            </div>
+          </div>
+        </div>
+        <div className="mt-6">
+          <Grid
+            data={processedData}
+            columnsToShow={[
+              "code",
+              "title",
+              "startDate",
+              "endDate",
+              "location",
+              "statusTitle",
+              "voidableString",
+              "termsAndConditions",
+              "cost",
+            ]}
+          />
+        </div>
+      </>
     );
-  }
-
-  if (errors) {
-    return <div>Error: {errors.message}</div>;
-  }
-
-  return (
-    <>
-      <div className="flex justify-between mt-12">
-        <div>
-          <SDButton color="success" onClick={handleButtonClick}>
-            + جدید
-          </SDButton>
-        </div>
-
-        <AdminNewEvent
-          eventStatusData={eventStatusData}
-          lastCode={lastCode}
-          showModal={showModal}
-          onOpenModal={handleButtonClick}
-          onCloseModal={handleCloseModal}
-        />
-
-        <div className="flex items-center justify-center">
-          <div>
-            <p>وضعیت :</p>
-          </div>
-          <div className="mr-5">
-            <select
-              id="underline_select"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              onChange={handleSelectChange}
-              value={selectedValue}
-            >
-              <option value="">همه</option>
-              {eventStatusData?.content.map((status, index) => (
-                <option key={index} value={status.id} className="text-right">
-                  {status.title}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div className="flex items-center">
-          <div>
-            <p> تاریخ :</p>
-          </div>
-          <div className="mr-5">
-            <SDDatepicker
-              inputClass=" !xs:w-40 text-center !bg-white border-slate-500"
-              name="expireDate"
-              required={true}
-              placeholder="از :"
-            ></SDDatepicker>
-          </div>
-          <div className="mr-5">
-            <SDDatepicker
-              inputClass=" !xs:w-40 text-center !bg-white border-slate-500"
-              name="expireDate"
-              required={true}
-              placeholder="تا :"
-            ></SDDatepicker>
-          </div>
-        </div>
-      </div>
-      <div className="mt-6">
-        <Grid
-          data={processedData}
-          columnsToShow={[
-            "code",
-            "title",
-            "startDate",
-            "endDate",
-            "location",
-            "statusTitle",
-            "voidableString",
-            "termsAndConditions",
-            "cost",
-          ]}
-        />
-      </div>
-    </>
-  );
 };
 
 export default AdminEvents;

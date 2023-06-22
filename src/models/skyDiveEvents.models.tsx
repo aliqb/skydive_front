@@ -78,4 +78,5 @@ export interface AdminNewEventProps {
   showModal: boolean;
   onOpenModal: () => void;
   onCloseModal: () => void;
+  fetchData: () => void;
 }

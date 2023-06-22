@@ -20,6 +20,7 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
   showModal,
   onOpenModal,
   onCloseModal,
+  fetchData,
 }) => {
   const { sendRequest, errors, isPending } = useAPi<
     NewEvent,
@@ -28,9 +29,6 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
   const { register, handleSubmit, control } = useForm<NewEvent>();
   const [selectedCancelOption, setSelectedCancelOption] = useState(false);
   const [selectedVATOption, setSelectedVATOption] = useState(false);
-  const [apiStatus, setApiStatus] = useState<
-    "idle" | "pending" | "success" | "error"
-  >("idle");
 
   const CancelOptions = [
     { value: "cancel-active", label: "فعال" },
@@ -49,7 +47,6 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
     setSelectedVATOption(value === "vat-active");
   };
   const handleSaveButton = handleSubmit((data) => {
-    setApiStatus("pending");
     console.log(data);
     data.subjecToVAT = selectedVATOption;
     data.voidable = selectedCancelOption;
@@ -64,6 +61,7 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
         console.log("Response:", response);
         toast.success(response.message);
         onCloseModal();
+        fetchData();
       },
       (error) => {
         console.log("Error:", error);
@@ -72,32 +70,11 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
     );
   });
 
-  let message = null;
-  if (apiStatus === "success") {
-    message = (
-      <div className="flex items-center text-white bg-green-500 h-16 p-5">
-        ثبت رویداد جدید با موفقیت انجام شد
-      </div>
-    );
-  } else if (apiStatus === "error") {
-    message = (
-      <div className="flex items-center text-red-500">
-        در ثبت رویداد جدید مشکلی پیش آمده است
-      </div>
-    );
-  }
-
-  if (isPending) {
-    return (
-      <div className="flex justify-center items-center h-3/4">
-        <SDSpinner size={16} />
-      </div>
-    );
+  if (errors) {
+    return <div>Error: {errors.message}</div>;
   }
   return (
     <div>
-      {message && <div>{message}</div>}
-
       <SDModal show={showModal} onClose={onCloseModal} containerClass="!p-0">
         <div className="border-b text-lg flex justify-between px-6 py-4 bg-blue-900 text-white rounded-t-md">
           <span>ثبت رویداد جدید</span>
@@ -242,7 +219,9 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
             type="submit"
             className="w-full !bg-blue-900"
             onClick={handleSaveButton}
+            disabled={isPending}
           >
+            {isPending && <SDSpinner />}
             ذخیره
           </SDButton>
         </div>
