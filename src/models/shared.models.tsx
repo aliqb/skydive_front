@@ -59,7 +59,7 @@ export const UserStatusesPersianMap = new Map([
 ]);
 
 export const EventStatuses = {
-  HELD: "AwaitingCompletion",
+  HELD: "Held",
   PENDING: "Pending",
   ACTIVE: "Active",
   INACTIVE: "Inactive",

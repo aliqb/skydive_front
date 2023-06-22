@@ -7,10 +7,10 @@ import { useForm } from "react-hook-form";
 import {
   NewEvent,
   SkyDiveEventStatus,
+  SkyDiveEvent,
 } from "../../../models/skyDiveEvents.models";
 import { BaseResponse } from "../../../models/shared.models";
 import SDSpinner from "../../../components/shared/Spinner";
-import { SkyDiveEvent } from "../../../models/skyDiveEvents.models";
 import SDModal from "../../../components/shared/Modal";
 import SDTextInput from "../../../components/shared/TextInput";
 import RadioButton from "../../../components/shared/RadioButton";
@@ -48,7 +48,7 @@ const AdminEvents: React.FC = () => {
     console.log("Selected value:", event.target.value);
   };
   useEffect(() => {
-    const fetchUsers = () => {
+    const fetchEvents = () => {
       try {
         sendRequest(
           {
@@ -56,7 +56,7 @@ const AdminEvents: React.FC = () => {
             params: {
               pagesize: 10,
               pageindex: 1,
-              userStatus: selectedValue.toLowerCase(),
+              Statusid: selectedValue.toLowerCase(),
             },
           },
           (response) => {
@@ -73,7 +73,7 @@ const AdminEvents: React.FC = () => {
       }
     };
 
-    fetchUsers();
+    fetchEvents();
   }, [selectedValue]);
 
   useEffect(() => {
