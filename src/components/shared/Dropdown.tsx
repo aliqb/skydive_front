@@ -122,17 +122,17 @@ export const SDDropDownItem: React.FC<SDDropdownItemProps> = ({
   return (
     <li
       onClick={handleLiClick}
-      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+      className="block  hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
     >
       {mode === "Link" ? (
         <Link to={href || ""}>
-          <div className="flex gap-2 items-center py-1">
+          <div className="flex gap-2 items-center px-4 py-3">
             {icon ? icon : ""}
             {title}
           </div>
         </Link>
       ) : (
-        <button className="flex gap-2 items-center py-1" onClick={onClick}>
+        <button className="flex gap-2 items-center px-4 py-3 w-full" onClick={onClick}>
           {icon ? icon : ""}
           {title}
         </button>
