@@ -1,5 +1,5 @@
 import { Table } from "flowbite-react";
-import React, { useState } from "react";
+import React from "react";
 interface GridProps {
   data: Record<string, any>[];
   columnsToShow: string[];
@@ -31,6 +31,7 @@ const Grid: React.FC<GridProps> = ({ data, columnsToShow }) => {
     statusTitle: "وضعیت",
     voidableString: "قابل لغو",
     termsAndConditions: "قوانین و شرایط",
+    cost: "بهای فروش",
   };
   {
     return (
