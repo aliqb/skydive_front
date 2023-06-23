@@ -1,4 +1,4 @@
-import { AggregatedTicket, BasketTicketModel } from "../../../models/shared.models";
+import { AggregatedTicket } from "../../../models/shared.models";
 import NumberWithSeperator from "../NumberWithSeperator";
 import AddOrRemoveTicket from "./AddorRemoveTicket";
 interface BasketTicketItemProps extends AggregatedTicket {

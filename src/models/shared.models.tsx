@@ -101,11 +101,11 @@ export interface AggregatedTicket {
   ticketMembers:BasketTicketModel[]
 }
 
-export interface AddingTicketRequest {
-  items: AddingTicketItem[];
+export interface ChangingTicketRequest {
+  items: RequestTicketItem[];
 }
 
-export interface AddingTicketItem {
+export interface RequestTicketItem {
   flightLoadId: string;
   ticketTypeId: string;
   userCode: string | null;

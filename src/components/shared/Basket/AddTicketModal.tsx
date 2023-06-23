@@ -50,7 +50,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
     <SDModal
       show={showModal}
       containerClass="pt-0 px-0 pb-2"
-      onClose={() => setShowModal(false)}
+      onClose={closeModal}
     >
       <div className="border-b text-lg flex justify-between px-6 py-4 bg-primary-500 text-white rounded-t-md">
         <span>رزرو بلیت</span>

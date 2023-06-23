@@ -41,7 +41,7 @@ const FlightTicketCard: React.FC<FlightTicketCardProps> = (props) => {
       </p>
       <p className="mb-6 text-green-500">بلیت‌های موجود : {props.qty}</p>
       {(aggregatedTicket && aggregatedTickets) && (
-        <AddOrRemoveTicket aggretadTicket={aggregatedTicket} />
+        <AddOrRemoveTicket aggretadTicket={aggregatedTicket} disabled={!props.allowedToReserve} />
       )}
     </div>
   );
