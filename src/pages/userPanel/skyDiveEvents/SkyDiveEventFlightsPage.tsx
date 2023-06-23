@@ -19,7 +19,6 @@ const SkyDiveEventFlightsPage: React.FC = () => {
 
   const [days, setDays] = useState<SkyDiveEventDay[]>([]);
   const [eventTitle, setEventTitle] = useState<string>("");
-  const [inTop, setInTop] = useState<boolean>(true);
   useEffect(() => {
     function getDays(eventId: string, currentDayId: string) {
       requestDays(
@@ -45,13 +44,7 @@ const SkyDiveEventFlightsPage: React.FC = () => {
     const handleScroll = () => {
       const { scrollTop, clientHeight, scrollHeight } =
         document.documentElement;
-      const headerHeight = 60;
-      if (scrollTop > headerHeight) {
-        setInTop(false);
-      }
-      if (scrollTop < headerHeight) {
-        setInTop(true);
-      }
+
       const threshold = 50; // Adjust this value according to your needs
 
       const isNearBottom = scrollTop + clientHeight >= scrollHeight - threshold;
@@ -125,9 +118,7 @@ const SkyDiveEventFlightsPage: React.FC = () => {
       </SDCard>
       <aside className="hidden lg:block  relative">
         <div
-          className={`${
-            inTop ? "top-[64px]" : "top-[64px]"
-          } px-3   w-[33vw] sticky  left-0 transition-all ease-linear`}
+          className={` top-[64px] px-3   w-[33vw] sticky  left-0 transition-all ease-linear`}
         >
           <Basket />
         </div>

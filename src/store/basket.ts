@@ -2,59 +2,29 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   AddingTicketItem,
   AddingTicketRequest,
-  AggregatedTicket,
   BaseResponse,
   BasketModel,
-  BasketTicketModel,
 } from "../models/shared.models";
 import { axiosIntance } from "../hooks/useApi";
 import { AxiosError, AxiosResponse } from "axios";
 import { RootState } from ".";
 import { toast } from "react-toastify";
 
-class TicketAggregator {
-  private _aggreateds: AggregatedTicket[] = [];
-  constructor(basketTickets: BasketTicketModel[]= []) {
-    if(basketTickets.length === 0){
-        return
-    }
-    basketTickets.forEach((item) => {
-      const findedAggregate = this._aggreateds.find(
-        (agg) =>
-          agg.flightLoadId === item.flightLoadId &&
-          agg.ticketTypeId === item.ticketTypeId
-      );
-      if (findedAggregate) {
-        findedAggregate.amount += item.amount;
-        findedAggregate.ticketMembers.push(item);
-      } else {
-        const aggregated: AggregatedTicket = {
-          flightLoadId: item.flightLoadId,
-          flightNumber: item.flightNumber,
-          ticketTypeId: item.ticketTypeId,
-          type: item.type,
-          amount: item.amount,
-          ticketMembers: [item],
-        };
-        this._aggreateds.push(aggregated);
-      }
-    });
-  }
-  get aggregateds(){
-    return this._aggreateds
-  }
-}
-
 interface BasketState {
   basket: BasketModel | null;
   loading: boolean;
   error: string;
+  changingTicket:{
+    flightLoadId: string,
+    ticketTypeId: string
+  } | null
 }
 
 const initialState: BasketState = {
   basket: null,
   loading: false,
   error: "",
+  changingTicket: null
 };
 
 export const fetchBasket = createAsyncThunk("basket/fetchBasket", async () => {
@@ -124,8 +94,21 @@ const basketSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || "";
         state.basket = null;
+      })
+      .addCase(addTicketToBasket.pending, (state,action) => {
+            state.changingTicket = {
+                flightLoadId: action.meta.arg.flightLoadId,
+                ticketTypeId: action.meta.arg.ticketTypeId
+            }
+      })
+      .addCase(addTicketToBasket.fulfilled, (state) => {
+            state.changingTicket = null;
+      })
+      .addCase(addTicketToBasket.rejected, (state) => {
+        state.changingTicket = null;
       });
   },
+  
 });
 
 export default basketSlice.reducer;

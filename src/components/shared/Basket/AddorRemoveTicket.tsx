@@ -1,19 +1,20 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AddTicketModal from "./AddTicketModal";
-import { useAppDispatch } from "../../../hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { addTicketToBasket } from "../../../store/basket";
-import { AddingTicketItem, AggregatedTicket } from "../../../models/shared.models";
-import useBasketTickets from "../../../hooks/useBasketTickets";
+import {
+  AddingTicketItem,
+  AggregatedTicket,
+} from "../../../models/shared.models";
+import SDSpinner from "../Spinner";
 interface PlusMinusProps {
   aggretadTicket: AggregatedTicket;
 }
 
-const AddOrRemoveTicket: React.FC<PlusMinusProps> = ({
-  aggretadTicket
-}) => {
+const AddOrRemoveTicket: React.FC<PlusMinusProps> = ({ aggretadTicket }) => {
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-
+  const changingTicket = useAppSelector((state) => state.basket.changingTicket);
 
   function increase() {
     setIsAdding(true);
@@ -60,7 +61,16 @@ const AddOrRemoveTicket: React.FC<PlusMinusProps> = ({
             />
           </svg>
         </button>
-        <div className="text-lg">{aggretadTicket?.ticketMembers?.length || 0}</div>
+        <div className="text-lg">
+          {/* <SDSpinner size={10}></SDSpinner> */}
+          {changingTicket &&
+          changingTicket.flightLoadId === aggretadTicket.flightLoadId &&
+          changingTicket.ticketTypeId === aggretadTicket.ticketTypeId ? (
+            <SDSpinner size={10}></SDSpinner>
+          ) : (
+            aggretadTicket?.ticketMembers?.length || 0
+          )}
+        </div>
         <button
           onClick={increase}
           className="rounded-full shadow-lg border border-slate-100 w-10 h-10 text-lg text-white bg-pink-500 flex justify-center items-center"

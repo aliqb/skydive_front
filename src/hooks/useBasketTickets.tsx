@@ -6,16 +6,7 @@ function useBasketTickets() {
   const basketTicket = useAppSelector((state) => state.basket.basket?.items);
   const [aggreateds, setAggreateds] = useState<AggregatedTicket[]>([]);
 
-  const getQuantity = useCallback(
-    (tikcetTypeId: string, flightLoadId: string) => {
-      const findedAggregate = aggreateds.find(
-        (agg) =>
-          agg.flightLoadId === flightLoadId && agg.ticketTypeId === tikcetTypeId
-      );
-      return findedAggregate?.ticketMembers.length || 0;
-    },
-    [aggreateds]
-  );
+
 
   const getAggregate = useCallback(
     (tikcetTypeId: string, flightLoadId: string) => {
@@ -58,7 +49,7 @@ function useBasketTickets() {
     setAggreateds(getAggregatedTickets());
   }, [basketTicket]);
 
-  return { aggregatedTickets: aggreateds,getQuantity, getAggregate };
+  return { aggregatedTickets: aggreateds, getAggregate };
 }
 
 export default useBasketTickets;
