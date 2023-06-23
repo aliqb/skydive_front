@@ -5,6 +5,7 @@ export interface AuthData {
   authToken: string
   refreshToken: string;
   expiresIn: number;
+  isAdmin: boolean;
 }
 
 

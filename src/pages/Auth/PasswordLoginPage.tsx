@@ -11,7 +11,6 @@ import { AuthData, OTPRequest, OTPResponse } from "../../models/auth.models";
 import { BaseResponse } from "../../models/shared.models";
 import { authActions } from "../../store/auth";
 
-
 const PasswordLoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
@@ -28,7 +27,7 @@ const PasswordLoginPage: React.FC = () => {
     sendRequest: sendOtpRequest,
     errors: otpError,
     isPending: otpPending,
-  } = useAPi<OTPRequest,OTPResponse>();
+  } = useAPi<OTPRequest, OTPResponse>();
 
   useEffect(() => {
     if (!enteredUsername) {
@@ -59,20 +58,27 @@ const PasswordLoginPage: React.FC = () => {
       },
       (response) => {
         dispatch(authActions.setToken(response.content));
+        if (response.content.isAdmin) {
+          navigate("/admin");
+          return;
+        }
         navigate("/");
       }
     );
   }
 
   function onOTPRequest() {
-    sendOtpRequest({
-      url: '/Users/OtpRequest',
-      method: 'post',
-      data: {username: enteredUsername}
-    },(response)=>{
-      dispatch(authActions.setMobile(response.content))
-      navigate("../otp")
-    })
+    sendOtpRequest(
+      {
+        url: "/Users/OtpRequest",
+        method: "post",
+        data: { username: enteredUsername },
+      },
+      (response) => {
+        dispatch(authActions.setMobile(response.content));
+        navigate("../otp");
+      }
+    );
   }
 
   const showPasswordIcon: JSX.Element = (
@@ -174,7 +180,11 @@ const PasswordLoginPage: React.FC = () => {
           </p>
         )}
       </form>
-      <button onClick={onOTPRequest} disabled={otpPending} className="flex items-center w-full h-full px-8 py-4 disabled:text-gray-300">
+      <button
+        onClick={onOTPRequest}
+        disabled={otpPending}
+        className="flex items-center w-full h-full px-8 py-4 disabled:text-gray-300"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"

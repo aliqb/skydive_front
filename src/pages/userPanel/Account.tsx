@@ -67,7 +67,6 @@ const Account: React.FC = () => {
     ) {
       return;
     }
-    console.log(accountState);
     const confirmed = await confirmation();
     if (confirmed) {
       const body: PersonalInfoEditRequest = {

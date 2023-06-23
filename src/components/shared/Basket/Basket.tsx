@@ -1,6 +1,9 @@
+import { useAppSelector } from "../../../hooks/reduxHooks";
+import useBasketTickets from "../../../hooks/useBasketTickets";
 import SDButton from "../Button";
 import SDCard from "../Card";
 import NumberWithSeperator from "../NumberWithSeperator";
+import SDSpinner from "../Spinner";
 import BasketTicketItem from "./BasketTicketItem";
 import BookButton from "./‌BookButton";
 interface BasketProps {
@@ -13,29 +16,31 @@ const Basket: React.FC<BasketProps> = ({
   canPay = true,
   onPayClick,
 }) => {
-  return (
-    <SDCard className={`${inPayment && "mb-10"} mb-0 border border-gray-200 text-black`}>
-      <div className="text-center border-b border-gray-400 pb-5">
-        <p className="text-xl font-semibold text-slate-600 mb-3">
-          سبد خرید شما
-        </p>
-        <p className="text-green-500">بلیت‌های انتخاب شده: 4</p>
-      </div>
+  const basketState = useAppSelector((state) => state.basket);
+  const {aggregatedTickets} = useBasketTickets();
+  const body = (
+    <>
       <div className=" px-3">
-        <BasketTicketItem canEdit={!inPayment} />
-        <BasketTicketItem canEdit={!inPayment} />
+        {aggregatedTickets.slice().sort((a,b)=>{return a.flightNumber - b.flightNumber}).map((item, index) => {
+          return (
+            <BasketTicketItem key={index} {...item} canEdit={!inPayment} />
+          );
+        })}
+
         <div className="border-b border-gray-200 py-4">
           <div className="flex justify-between px-1 mb-4">
             <p className="font-semibold">جمع:</p>
             <p>
-              <NumberWithSeperator value={50000} />
+              <NumberWithSeperator
+                value={basketState.basket?.totalAmount || 0}
+              />
               <span className="mr-1">ریال</span>
             </p>
           </div>
           <div className="flex justify-between px-1">
             <p className="font-semibold">مالیات:</p>
             <p>
-              <NumberWithSeperator value={50000} />
+              <NumberWithSeperator value={basketState.basket?.taxAmount || 0} />
               <span className="mr-1">ریال</span>
             </p>
           </div>
@@ -44,7 +49,9 @@ const Basket: React.FC<BasketProps> = ({
           <div className="flex justify-between px-1 mb-4">
             <p className="font-semibold">قابل پرداخت:</p>
             <p>
-              <NumberWithSeperator value={50000} />
+              <NumberWithSeperator
+                value={basketState.basket?.payableAmount || 0}
+              />
               <span className="mr-1">ریال</span>
             </p>
           </div>
@@ -60,10 +67,12 @@ const Basket: React.FC<BasketProps> = ({
             >
               پرداخت
             </SDButton>
-            <div  className="text-centers font-semibold lg:hidden">
+            <div className="text-centers font-semibold lg:hidden">
               <p className=" mb-3">قابل پرداخت:</p>
               <p>
-                <NumberWithSeperator value={50000} />
+                <NumberWithSeperator
+                  value={basketState.basket?.payableAmount || 0}
+                />
                 <span className="mr-1">ریال</span>
               </p>
             </div>
@@ -72,6 +81,34 @@ const Basket: React.FC<BasketProps> = ({
           <BookButton />
         )}
       </div>
+    </>
+  );
+
+  const errorMessage = <p className="text-center mt-5">{basketState.error}</p>;
+
+  const laodingContainer = (
+    <div className="flex justify-center pt-6">
+      <SDSpinner size={20} />
+    </div>
+  );
+
+  return (
+    <SDCard
+      className={`${
+        inPayment && "mb-10"
+      } mb-0 border border-gray-200 text-black`}
+    >
+      <div className="text-center border-b border-gray-400 pb-5">
+        <p className="text-xl font-semibold text-slate-600 mb-3">
+          سبد خرید شما
+        </p>
+        {basketState.basket && (
+          <p className="text-green-500">بلیت‌های انتخاب شده: 4</p>
+        )}
+      </div>
+      {basketState.loading && laodingContainer}
+      {basketState.error && errorMessage}
+      {(basketState.basket && !basketState.loading) && body}
     </SDCard>
   );
 };

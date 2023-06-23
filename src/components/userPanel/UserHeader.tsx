@@ -17,7 +17,6 @@ const UserHeader: React.FC = () => {
 
   const goToPayment : MouseEventHandler = (event)=>{
     event.stopPropagation();
-    console.log('here')
     setShowBasket(false);
     navigate('/payment');
   }
@@ -80,7 +79,7 @@ const UserHeader: React.FC = () => {
   }
   return (
     <>
-      <div className="bg-primary-500 h-[60px] flex items-center fixed w-full top-0 z-40">
+      <div className="bg-primary-500 h-[60px] flex items-center fixed w-full top-0 z-20">
         <div className="mr-auto ml-12 flex text-white">
           <button
             onMouseEnter={() => setShowBasket(true)}
