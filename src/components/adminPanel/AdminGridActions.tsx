@@ -1,24 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import useAPi from '../../hooks/useApi';
 import useConfirm from '../../hooks/useConfirm';
 import { BaseResponse } from '../../models/shared.models';
 import { toast } from 'react-toastify';
+import AdminNewEvent from './AdminNewEvent';
+import { SkyDiveEvent } from '../../models/skyDiveEvents.models';
+import SDSpinner from '../shared/Spinner';
 
 interface AdminGridProps {
   fetchData: () => void;
   rowId: string;
 }
 const AdminGridActions: React.FC<AdminGridProps> = ({ fetchData, rowId }) => {
-  const { sendRequest, errors, isPending } = useAPi<BaseResponse<string>>();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { sendRequest, errors, isPending } = useAPi<
+    null,
+    BaseResponse<string>
+  >();
+  const { sendRequest: editModalSendRequest, data: editModalData } = useAPi<
+    null,
+    BaseResponse<SkyDiveEvent>
+  >();
 
   const [ConfirmModal, confirmation] = useConfirm(
     ' رویداد شما حذف خواهد شد. آیا مطمئن هستید؟ ',
     'حذف کردن رویداد'
   );
 
-  const handleEditOnClick = () => {
-    console.log('edited');
+  const handleEditOnClick = (id?: string) => {
+    setIsEditModalOpen(true);
+    try {
+      editModalSendRequest({
+        url: `/SkyDiveEvents/${id}`,
+      });
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handleEditModalClose = () => {
+    setIsEditModalOpen(false);
   };
   const handleMoreOnClick = () => {
     console.log('More clicked');
@@ -46,10 +68,20 @@ const AdminGridActions: React.FC<AdminGridProps> = ({ fetchData, rowId }) => {
   };
   return (
     <>
-      {' '}
+      {editModalData && (
+        <AdminNewEvent
+          showModal={isEditModalOpen}
+          onOpenModal={handleEditOnClick}
+          onCloseModal={handleEditModalClose}
+          fetchData={fetchData}
+          lastCode={editModalData?.content.code}
+          eventData={editModalData}
+        />
+      )}
+
       <ConfirmModal />
       <div className="flex items-center">
-        <button onClick={handleEditOnClick}>
+        <button onClick={() => handleEditOnClick(rowId)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

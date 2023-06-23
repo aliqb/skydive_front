@@ -6,13 +6,13 @@ import LabeledFileInput from "../shared/LabeledFileInput";
 import SDModal from "../shared/Modal";
 import RadioButton from "../shared/RadioButton";
 import SDTextInput from "../shared/TextInput";
-import { useState } from "react";
-import { NewEvent, SkyDiveEvent } from "../../models/skyDiveEvents.models";
-import { AdminNewEventProps } from "../../models/skyDiveEvents.models";
-import useAPi from "../../hooks/useApi";
-import { BaseResponse } from "../../models/shared.models";
-import SDSpinner from "../shared/Spinner";
-import { toast } from "react-toastify";
+import { useEffect, useState } from 'react';
+import { NewEvent, SkyDiveEvent } from '../../models/skyDiveEvents.models';
+import { AdminNewEventProps } from '../../models/skyDiveEvents.models';
+import useAPi from '../../hooks/useApi';
+import { BaseResponse } from '../../models/shared.models';
+import SDSpinner from '../shared/Spinner';
+import { toast } from 'react-toastify';
 
 const AdminNewEvent: React.FC<AdminNewEventProps> = ({
   eventStatusData,
@@ -20,15 +20,27 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
   showModal,
   onCloseModal,
   fetchData,
+  isEditMode = false,
+  eventData,
 }) => {
   const { sendRequest, errors, isPending } = useAPi<
     NewEvent,
     BaseResponse<SkyDiveEvent[]>
   >();
-  const { register, handleSubmit, control } = useForm<NewEvent>();
+  const { register, handleSubmit, control, setValue } = useForm<NewEvent>();
   const [selectedCancelOption, setSelectedCancelOption] = useState(false);
   const [selectedVATOption, setSelectedVATOption] = useState(false);
-
+  useEffect(() => {
+    if (eventData) {
+      setValue('title', eventData.content.title);
+      setValue('location', eventData.content.location);
+      setValue('startDate', eventData.content.startDate);
+      setValue('endDate', eventData.content.endDate);
+      setValue('statusId', eventData.content.statusId);
+      setValue('voidable', eventData.content.voidable);
+      setValue('subjecToVAT', eventData.content.subjecToVAT);
+    }
+  }, [eventData, setValue]);
   const CancelOptions = [
     { value: 'cancel-active', label: 'فعال' },
     { value: 'cancel-inactive', label: 'غیر فعال' },
@@ -50,23 +62,43 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
     data.subjecToVAT = selectedVATOption;
     data.voidable = selectedCancelOption;
 
-    sendRequest(
-      {
-        url: '/SkyDiveEvents',
-        method: 'post',
-        data: data,
-      },
-      (response) => {
-        console.log('Response:', response);
-        toast.success(response.message);
-        onCloseModal();
-        fetchData();
-      },
-      (error) => {
-        console.log('Error:', error);
-        toast.error(error?.message);
-      }
-    );
+    if (isEditMode) {
+      sendRequest(
+        {
+          url: `/SkyDiveEvents/${eventId}`,
+          method: 'put',
+          data: data,
+        },
+        (response) => {
+          console.log('Response:', response);
+          toast.success(response.message);
+          onCloseModal();
+          fetchData();
+        },
+        (error) => {
+          console.log('Error:', error);
+          toast.error(error?.message);
+        }
+      );
+    } else {
+      sendRequest(
+        {
+          url: '/SkyDiveEvents',
+          method: 'post',
+          data: data,
+        },
+        (response) => {
+          console.log('Response:', response);
+          toast.success(response.message);
+          onCloseModal();
+          fetchData();
+        },
+        (error) => {
+          console.log('Error:', error);
+          toast.error(error?.message);
+        }
+      );
+    }
   });
 
   if (errors) {
@@ -76,7 +108,8 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
     <div>
       <SDModal show={showModal} onClose={onCloseModal} containerClass="!p-0">
         <div className="border-b text-lg flex justify-between px-6 py-4 bg-blue-900 text-white rounded-t-md">
-          <span>ثبت رویداد جدید</span>
+          {!eventData && <span>ثبت رویداد جدید</span>}
+          {eventData && <span>ویرایش رویداد</span>}
           <button type="button" onClick={onCloseModal}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -101,7 +134,7 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
               <SDTextInput
                 type="text"
                 id="eventCode"
-                defaultValue={lastCode?.content || ''}
+                defaultValue={lastCode}
                 disabled={true}
               />
             </div>

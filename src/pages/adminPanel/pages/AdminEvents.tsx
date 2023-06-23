@@ -65,12 +65,6 @@ const AdminEvents: React.FC = () => {
       console.error('Error:', error);
     }
   };
-  // const handleModalSelectChange = (
-  //   event: React.ChangeEvent<HTMLSelectElement>
-  // ) => {
-  //   console.log("Selected value:", event.target.value);
-  // };
-
   useEffect(() => {
     fetchEvents();
   }, [selectedValue]);
@@ -126,7 +120,7 @@ const AdminEvents: React.FC = () => {
 
         <AdminNewEvent
           eventStatusData={eventStatusData}
-          lastCode={lastCode}
+          lastCode={lastCode?.content || ''}
           showModal={showModal}
           onOpenModal={handleButtonClick}
           onCloseModal={handleCloseModal}

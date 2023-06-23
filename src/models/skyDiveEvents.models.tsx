@@ -21,6 +21,7 @@ export interface SkyDiveEvent {
   voidable: boolean;
   termsAndConditions: string;
   statusTitle: string;
+  statusId: string;
   days: SkyDiveInlineEventDay[];
   id: string;
   createdAt: string;
@@ -57,14 +58,11 @@ export interface Flight {
 }
 
 export interface Ticket {
-  ticketType: string
-  amount: number
-  qty: number,
-  allowedToReserve: boolean,
-  ticketTypeId: string
   ticketType: string;
   amount: number;
   qty: number;
+  allowedToReserve: boolean;
+  ticketTypeId: string;
 }
 export interface NewEvent {
   title: string;
@@ -78,10 +76,12 @@ export interface NewEvent {
 }
 
 export interface AdminNewEventProps {
-  eventStatusData: BaseResponse<SkyDiveEventStatus[]> | null;
-  lastCode: BaseResponse<string> | null;
+  eventStatusData?: BaseResponse<SkyDiveEventStatus[]> | null;
+  lastCode: string;
   showModal: boolean;
-  onOpenModal: () => void;
+  onOpenModal: (id?: string) => void;
   onCloseModal: () => void;
   fetchData: () => void;
+  isEditMode?: boolean;
+  eventData?: BaseResponse<SkyDiveEvent>;
 }
