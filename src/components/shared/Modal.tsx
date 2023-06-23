@@ -24,12 +24,12 @@ const BackDrop : React.FC<BackDropProps> = (props) => {
     function handleClick(){
         props.onClick();
     }
-  return <div className="fixed top-0 left-0 w-full h-screen z-20 bg-black opacity-75" onClick={handleClick} />;
+  return <div className="fixed top-0 left-0 w-full h-screen z-40 bg-black opacity-75" onClick={handleClick} />;
 };
 
 const ModalBody : React.FC<ModalBodyProps> = (props) => {
   return (
-    <SDCard className={` ${props.containerClass} z-30 fixed  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white w-4/5 xs:w-auto`}>
+    <SDCard className={` ${props.containerClass} z-50 fixed  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white w-4/5 xs:w-auto`}>
         {props.children}
     </SDCard>
   );

@@ -58,7 +58,9 @@ export interface Flight {
 export interface Ticket {
   ticketType: string
   amount: number
-  qty: number
+  qty: number,
+  allowedToReserve: boolean,
+  ticketTypeId: string
 }
 export interface NewEvent {
   title: string;

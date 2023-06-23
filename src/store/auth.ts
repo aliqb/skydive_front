@@ -17,6 +17,7 @@ interface AuthState {
   mobile: string;
   userStatusDisplay: string;
   isAdmin: boolean;
+  genralInfoSet: boolean,
 }
 
 const initialState: AuthState = {
@@ -33,7 +34,8 @@ const initialState: AuthState = {
   code: '',
   mobile: '',
   userStatusDisplay: '',
-  isAdmin: false
+  isAdmin: false,
+  genralInfoSet: false,
 };
 
 const authSlice = createSlice({
@@ -80,6 +82,7 @@ const authSlice = createSlice({
         state.mobile = action.payload.mobile;
         state.enteredPhone = '';
         state.enteredUsername = '';
+        state.genralInfoSet = true;
     }
   },
 });
