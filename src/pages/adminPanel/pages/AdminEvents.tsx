@@ -11,7 +11,6 @@ import {
 import { BaseResponse } from '../../../models/shared.models';
 import SDSpinner from '../../../components/shared/Spinner';
 import AdminNewEvent from '../../../components/adminPanel/AdminNewEvent';
-import StatusIndicator from '../../../components/shared/StatusIndicator';
 
 const AdminEvents: React.FC = () => {
   const { sendRequest, errors, isPending } = useAPi<

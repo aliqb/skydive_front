@@ -18,7 +18,6 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
   eventStatusData,
   lastCode,
   showModal,
-  onOpenModal,
   onCloseModal,
   fetchData,
 }) => {
@@ -31,20 +30,20 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
   const [selectedVATOption, setSelectedVATOption] = useState(false);
 
   const CancelOptions = [
-    { value: "cancel-active", label: "فعال" },
-    { value: "cancel-inactive", label: "غیر فعال" },
+    { value: 'cancel-active', label: 'فعال' },
+    { value: 'cancel-inactive', label: 'غیر فعال' },
   ];
   const VATOptions = [
-    { value: "vat-active", label: "فعال" },
-    { value: "vat-inactive", label: "غیر فعال" },
+    { value: 'vat-active', label: 'فعال' },
+    { value: 'vat-inactive', label: 'غیر فعال' },
   ];
 
   const handleCancelOptionChange = (value: string) => {
-    setSelectedCancelOption(value === "cancel-active");
+    setSelectedCancelOption(value === 'cancel-active');
   };
 
   const handleVATOptionChange = (value: string) => {
-    setSelectedVATOption(value === "vat-active");
+    setSelectedVATOption(value === 'vat-active');
   };
   const handleSaveButton = handleSubmit((data) => {
     console.log(data);
@@ -53,18 +52,18 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
 
     sendRequest(
       {
-        url: "/SkyDiveEvents",
-        method: "post",
+        url: '/SkyDiveEvents',
+        method: 'post',
         data: data,
       },
       (response) => {
-        console.log("Response:", response);
+        console.log('Response:', response);
         toast.success(response.message);
         onCloseModal();
         fetchData();
       },
       (error) => {
-        console.log("Error:", error);
+        console.log('Error:', error);
         toast.error(error?.message);
       }
     );
@@ -102,18 +101,18 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
               <SDTextInput
                 type="text"
                 id="eventCode"
-                defaultValue={lastCode?.content || ""}
+                defaultValue={lastCode?.content || ''}
                 disabled={true}
               />
             </div>
             <div className="flex flex-col mr-4 w-full">
               <SDLabel className="mb-2">عنوان رویداد </SDLabel>
-              <SDTextInput type="text" id="title" {...register("title")} />
+              <SDTextInput type="text" id="title" {...register('title')} />
             </div>
           </div>
           <div className="mb-6 w-full mt-5">
             <SDLabel>محل رویداد</SDLabel>
-            <SDTextInput type="text" id="location" {...register("location")} />
+            <SDTextInput type="text" id="location" {...register('location')} />
           </div>
           <div className="flex items-center">
             <div>
@@ -148,7 +147,7 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
                 <select
                   id="eventStatus"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  {...register("statusId")}
+                  {...register('statusId')}
                 >
                   <option selected value="">
                     انتخاب کنید
@@ -174,7 +173,7 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
                   groupName="voidable"
                   options={CancelOptions}
                   selectedOption={
-                    selectedCancelOption ? "cancel-active" : "cancel-inactive"
+                    selectedCancelOption ? 'cancel-active' : 'cancel-inactive'
                   }
                   onOptionChange={handleCancelOptionChange}
                 />
@@ -205,7 +204,7 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
                   groupName="subjecToVAT"
                   options={VATOptions}
                   selectedOption={
-                    selectedVATOption ? "vat-active" : "vat-inactive"
+                    selectedVATOption ? 'vat-active' : 'vat-inactive'
                   }
                   onOptionChange={handleVATOptionChange}
                 />
