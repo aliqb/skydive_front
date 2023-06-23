@@ -28,7 +28,6 @@ const SingUpPersonaPage: React.FC = () => {
   });
 
   function navigateToNextPage() {
-    console.log("wa");
     navigate("../user-info");
   }
 

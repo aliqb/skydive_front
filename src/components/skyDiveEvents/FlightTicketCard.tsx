@@ -15,7 +15,6 @@ const FlightTicketCard: React.FC<FlightTicketCardProps> = (props) => {
   const { aggregatedTickets, getAggregate } = useBasketTickets();
 
   useEffect(() => {
-    console.log("mg", props.flightLoadId, props.ticketTypeId);
     const aggreated = getAggregate(props.ticketTypeId, props.flightLoadId);
     setAggreatedTicket(
       aggreated ||

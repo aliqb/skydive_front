@@ -45,7 +45,6 @@ const AdminEvents: React.FC = () => {
   };
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedValue(event.target.value);
-    console.log("Selected value:", event.target.value);
   };
   // const handleModalSelectChange = (
   //   event: React.ChangeEvent<HTMLSelectElement>

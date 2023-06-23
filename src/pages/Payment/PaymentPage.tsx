@@ -12,7 +12,6 @@ const PaymentPage: React.FC = () => {
 
   function onSelectMethod(id: string) {
     setMethod(id);
-    console.log(id);
   }
 
   function onChangeAcceptance(evenet: ChangeEvent<HTMLInputElement>) {

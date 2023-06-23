@@ -40,7 +40,6 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
   }
 
   function onsubmit(data: { userCode: string }) {
-    console.log(data);
     onSubmit(data.userCode || "");
     setShowModal(false);
     onClose();

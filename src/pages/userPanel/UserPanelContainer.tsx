@@ -9,7 +9,6 @@ const UserPanelContainer: React.FC = () => {
   const genralInfoSet = useAppSelector((state) => state.auth.genralInfoSet);
   useEffect(() => {
     if (genralInfoSet) {
-      console.log('gggg',genralInfoSet)
       dispatch(fetchBasket());
     }
   }, [dispatch, genralInfoSet]);

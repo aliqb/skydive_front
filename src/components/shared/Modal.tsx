@@ -36,10 +36,8 @@ const ModalBody : React.FC<ModalBodyProps> = (props) => {
 };
 const SDModal : React.FC<ModalProps> = ({children,show:propsShow,closeOnBackDrop=true,onClose, containerClass}) => {
     const [show, setShow] = useState<boolean>(propsShow);
-    // console.log('prop',propsShow,show)
     function onBackDropClick(){
         if(closeOnBackDrop){
-            console.log('onnn')
             if(onClose){
                 onClose()
             }

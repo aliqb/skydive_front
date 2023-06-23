@@ -33,7 +33,7 @@ export default function useAPi<T,R=BaseResponse<any>,ErrorType={message: string}
     //     axiosIntance.defaults.headers.common['Authorization'] = `Bearer ${token}`
     // },[])
     useEffect(()=>{
-        console.log('fc',token)
+        // console.log('fc',token)
         axiosIntance.defaults.headers.common['Authorization'] = `Bearer ${token}`
     },[token])
     return {isPending, errors, sendRequest,data}

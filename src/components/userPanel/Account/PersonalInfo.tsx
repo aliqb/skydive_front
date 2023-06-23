@@ -94,7 +94,6 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
   }
 
   function onSubmit(data: PersonalInfoEditableFormData) {
-    console.log(data);
     const info : UserPersonalInfo = {
       ...personalInfo!.content,
       ...data

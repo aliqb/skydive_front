@@ -17,7 +17,6 @@ const UserHeader: React.FC = () => {
 
   const goToPayment : MouseEventHandler = (event)=>{
     event.stopPropagation();
-    console.log('here')
     setShowBasket(false);
     navigate('/payment');
   }
