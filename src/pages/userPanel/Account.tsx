@@ -10,11 +10,13 @@ import {
   DocumentsList,
   PersonalInfoEditRequest,
 } from "../../models/account.models";
-import { BaseResponse } from "../../models/shared.models";
+import { BaseResponse, UserGeneralInfo } from "../../models/shared.models";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import useConfirm from "../../hooks/useConfirm";
 import { toast } from "react-toastify";
 import { accoutnActions } from "../../store/account";
+import { useNavigate } from "react-router-dom";
+import { authActions } from "../../store/auth";
 
 const Account: React.FC = () => {
   const [, setActiveTab] = useState<number>(0);
@@ -31,12 +33,23 @@ const Account: React.FC = () => {
     BaseResponse<DocumentsList>
   >();
 
+  const {sendRequest:sendUserInfoRequest} = useAPi<null,BaseResponse<UserGeneralInfo>>();
+
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [ConfirmModal, confirmation] = useConfirm(
     "آیا از صحت اطلاعات اطمینان دارید و مدارک برای تایید ارسال شود ؟ ",
     "تکمیل اطلاعات و ارسال"
   );
+
+  function getUserInfo(){
+    sendUserInfoRequest({
+      url:'/Users/GetUserInformation'
+    },(response)=>{
+      dispatch(authActions.setUserGenralInfo(response.content))
+    })
+  }
 
   function getDcouments() {
     sendGetDocumentsRequest(
@@ -105,6 +118,8 @@ const Account: React.FC = () => {
         (response) => {
           toast.success(response.message);
           getDcouments();
+          getUserInfo();
+          navigate('/');
         },
         (error) => toast.error(error?.message)
       );

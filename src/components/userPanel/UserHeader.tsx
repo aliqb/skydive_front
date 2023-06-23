@@ -4,8 +4,9 @@ import SDDropdown, { DropDownItem } from "../shared/Dropdown";
 import { useDispatch } from "react-redux";
 import { FaShoppingCart } from "react-icons/fa";
 import Basket from "../shared/Basket/Basket";
-import {  useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { MouseEventHandler, useEffect, useState } from "react";
+import Logo from "../shared/Logo";
 
 const UserHeader: React.FC = () => {
   const name = useAppSelector((state) => state.auth.name);
@@ -15,11 +16,11 @@ const UserHeader: React.FC = () => {
   const [cartIsInBody, setCartIsInBody] = useState<boolean>(false);
   const [showBasket, setShowBasket] = useState<boolean>(false);
 
-  const goToPayment : MouseEventHandler = (event)=>{
+  const goToPayment: MouseEventHandler = (event) => {
     event.stopPropagation();
     setShowBasket(false);
-    navigate('/payment');
-  }
+    navigate("/payment");
+  };
 
   useEffect(() => {
     if (
@@ -80,6 +81,10 @@ const UserHeader: React.FC = () => {
   return (
     <>
       <div className="bg-primary-500 h-[60px] flex items-center fixed w-full top-0 z-20">
+        <Link to="/" className="mr-4 flex items-center">
+          <Logo className="w-14" />
+          <h1 className="text-white font-bold text-lg hidden xs:block">باشگاه سقوط آزاد ایرانیان</h1>
+        </Link>
         <div className="mr-auto ml-12 flex text-white">
           <button
             onMouseEnter={() => setShowBasket(true)}
@@ -89,10 +94,7 @@ const UserHeader: React.FC = () => {
           >
             <FaShoppingCart size="1.5rem" />
             {!cartIsInBody && showBasket && (
-              <div
-                
-                className="hidden  md:block absolute max-h-screen overflow-auto rounded-t-lg top-[50px] left-36 z-20 w-96"
-              >
+              <div className="hidden  md:block absolute max-h-screen overflow-auto rounded-t-lg top-[50px] left-36 z-20 w-96">
                 <Basket />
               </div>
             )}

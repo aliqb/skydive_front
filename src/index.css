@@ -3,15 +3,19 @@
 @tailwind components;
 @tailwind utilities;
 @font-face {
-  src: url("assets/IRANSansWeb.ttf");
-  font-family: "IRANSansWeb";
+  src: url("assets/iranyekanwebregular(fanum).ttf");
+  font-family: "IRANYekan";
+}
+
+:root{
+  --toastify-font-family: "IRANYekan"
 }
 
 @layer base {
 
   html,
   body {
-    font-family: "IRANSansWeb";
+    font-family: "IRANYekan";
   }
   /* width */
   ::-webkit-scrollbar {
