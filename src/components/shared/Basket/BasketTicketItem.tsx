@@ -1,34 +1,26 @@
+import { AggregatedTicket } from "../../../models/shared.models";
 import NumberWithSeperator from "../NumberWithSeperator";
-import PlusMinus from "../PlusMinus";
-interface BasketTicketItemProps {
+import AddOrRemoveTicket from "./AddorRemoveTicket";
+interface BasketTicketItemProps extends AggregatedTicket {
   canEdit?: boolean;
 }
 const BasketTicketItem: React.FC<BasketTicketItemProps> = ({
-  canEdit = true,
+  canEdit = true,...ticket
 }) => {
-  function onIncrease(value: number) {
-    console.log(value);
-  }
-
-  function onDecrease(value: number) {
-    console.log(value);
-  }
   return (
     <div className="flex justify-between border-b border-gray-200 py-4 items-center text-center">
       <div>
-        <p className="mb-5">شماره پرواز: 1</p>
+        <p className="mb-5">شماره پرواز: {ticket.flightNumber}</p>
         <p>
-          <NumberWithSeperator value={2000000} />
+          <NumberWithSeperator value={ticket.amount} />
           <span className="mr-1">ریال</span>
         </p>
       </div>
       <div>
-        <p className="mb-5">بلیت آزاد</p>
+        <p className="mb-5">بلیت {ticket.type}</p>
         {canEdit ? (
-          <PlusMinus
-            value={0}
-            onIncrease={onIncrease}
-            onDecrease={onDecrease}
+          <AddOrRemoveTicket
+            aggretadTicket={ticket}
           />
         ) : (
           <span className="text-lg">0</span>

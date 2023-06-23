@@ -3,8 +3,6 @@ import { TabItem } from "flowbite-react/lib/esm/components/Tab/TabItem";
 import { forwardRef, ForwardedRef } from "react";
 const SDTabComponent  = forwardRef(
   (props: TabsProps, ref: ForwardedRef<TabsRef>) => {
-    // const dtheme = useTheme()
-    // console.log(dtheme.theme.tab)
     const theme: DeepPartial<FlowbiteTabTheme> = {
       tablist: {
         styles:{

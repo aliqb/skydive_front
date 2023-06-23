@@ -16,7 +16,6 @@ const AuthenticatedRoute: React.FC<AutenticateGuardProps> = (props) => {
 
 
   useEffect(() => {
-    console.log("in container");
     if (!isAuthenticated) {
       const authDataJson = localStorage.getItem("authData");
       if (authDataJson) {

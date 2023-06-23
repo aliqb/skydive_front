@@ -16,15 +16,15 @@ export interface UserPersonalInfo {
   lastName: string;
   nationalCode: string;
   birthDate: string;
-  email?: string
-  cityId?: string,
-  state?: string,
-  city?: string,
-  address?: string,
-  weight?: number,
-  height?: number,
-  createdAt?: string
-  updatedAt?: string,
+  email?: string;
+  cityId?: string;
+  state?: string;
+  city?: string;
+  address?: string;
+  weight?: number;
+  height?: number;
+  createdAt?: string;
+  updatedAt?: string;
   emergencyContact?: string;
   emergencyPhone?: string;
 }
@@ -43,13 +43,12 @@ export interface UserGeneralInfo {
   lastName: string;
 }
 
-
 export const UserStatuses = {
-  AWAITING_COMPLETION: 'AwaitingCompletion',
-  PENDING: 'Pending',
-  ACTIVE: 'Active',
-  INACTIVE: 'Inactive'
-} 
+  AWAITING_COMPLETION: "AwaitingCompletion",
+  PENDING: "Pending",
+  ACTIVE: "Active",
+  INACTIVE: "Inactive",
+};
 
 export const UserStatusesPersianMap = new Map([
   [UserStatuses.AWAITING_COMPLETION, "در انتظار تکمیل"],
@@ -72,3 +71,42 @@ export const EventStatusesPersianMap = new Map([
   [EventStatuses.INACTIVE, "غیر قابل رزرو"],
 ]);
 
+export interface BasketModel {
+  ticketsCount: number;
+  taxAmount: number;
+  totalAmount: number;
+  items: BasketTicketModel[];
+  payableAmount: number;
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BasketTicketModel {
+  subjectToVAT: boolean;
+  flightNumber: number;
+  type: string;
+  amount: number;
+  userCode: string;
+  flightLoadId: string;
+  ticketTypeId: string;
+}
+
+export interface AggregatedTicket {
+  flightLoadId: string;
+  ticketTypeId: string;
+  amount: number;
+  type: string;
+  flightNumber: number;
+  ticketMembers:BasketTicketModel[]
+}
+
+export interface ChangingTicketRequest {
+  items: RequestTicketItem[];
+}
+
+export interface RequestTicketItem {
+  flightLoadId: string;
+  ticketTypeId: string;
+  userCode: string | null;
+}

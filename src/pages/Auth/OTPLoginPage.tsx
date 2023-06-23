@@ -37,6 +37,10 @@ const OTPLoginPage: React.FC = () => {
       },
       (response) => {
         dispatch(authActions.setToken(response.content));
+        if (response.content.isAdmin) {
+          navigate("/admin");
+          return;
+        }
         navigate("/");
       }
     );

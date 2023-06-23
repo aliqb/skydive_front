@@ -57,6 +57,11 @@ export interface Flight {
 }
 
 export interface Ticket {
+  ticketType: string
+  amount: number
+  qty: number,
+  allowedToReserve: boolean,
+  ticketTypeId: string
   ticketType: string;
   amount: number;
   qty: number;

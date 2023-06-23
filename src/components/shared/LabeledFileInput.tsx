@@ -26,7 +26,6 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
       return;
     }
     const file: File = files[0];
-    console.log(file);
     const formData = new FormData();
     formData.append(field, file);
     sendRequest(

@@ -11,7 +11,7 @@ export const FlightItem: React.FC<Flight> = (props) => {
         {props.tickets
           .sort((a, b) => a.ticketType.localeCompare(b.ticketType))
           .map((ticket, index) => (
-            <FlightTicketCard {...ticket} key={index} className="xs:w-1/2 lg:w-1/3" />
+            <FlightTicketCard {...ticket} key={index} className="xs:w-1/2 lg:w-1/3" flightLoadId={props.flightId} />
           ))}
       </div>
     </div>
