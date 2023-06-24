@@ -34,7 +34,8 @@ import Reports from "./pages/adminPanel/pages/Reports";
 import SkyDiveEventDaysPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventDaysPage";
 import SkyDiveEventFlightsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventFlightsPage";
 import PaymentPage from "./pages/Payment/PaymentPage";
-import UserDetailPage from "./pages/adminPanel/pages/userMamangement/UserDetailPage";
+import UserDetailPage from "./pages/adminPanel/pages/userMamangement/userDetail/UserDetailPage";
+import AdminUserDocument from "./pages/adminPanel/pages/userMamangement/userDetail/AdminUserDocument";
 
 function App() {
   // useEffect(()=>{
@@ -97,7 +98,9 @@ function App() {
           >
             <Route Component={Cartable} path="cartable"></Route>
             <Route Component={UserManagement} path="users"></Route>
-            <Route Component={UserDetailPage} path="users/:id"></Route>
+            <Route Component={UserDetailPage} path="users/:id">
+              <Route Component={AdminUserDocument} path="documents"></Route>
+            </Route>
             <Route Component={AdminEvents} path="events"></Route>
             <Route Component={Settings} path="settings"></Route>
             <Route Component={SendMessage} path="sendMessage"></Route>

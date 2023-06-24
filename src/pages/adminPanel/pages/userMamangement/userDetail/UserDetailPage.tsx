@@ -1,10 +1,11 @@
-import SDButton from "../../../../components/shared/Button";
-import SDCard from "../../../../components/shared/Card";
+import { NavLink, Outlet } from "react-router-dom";
+import SDButton from "../../../../../components/shared/Button";
+import SDCard from "../../../../../components/shared/Card";
 
 const UserDetailPage: React.FC = () => {
   return (
     <SDCard className="px-0">
-      <div className="px-2 xs:px-8">
+      <div className="px-2 xs:px-8 mb-10">
         <div className="flex gap-3">
           <SDButton>
             <svg
@@ -120,6 +121,35 @@ const UserDetailPage: React.FC = () => {
           </div>
         </main>
       </div>
+      <nav className="flex border-b border-blue-400">
+        <ul className="flex w-full">
+          <li className="flex-grow text-center">
+            <NavLink
+              className={(nav) =>
+                `${
+                  !nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
+                } pb-4 block hover:border-b-2 text-gray-500 hover:text-blue-600 hover:border-blue-300  transition-all ease-linear duration-75`
+              }
+              to={""}
+            >
+              بلیت‌ها
+            </NavLink>
+          </li>
+          <li className="flex-grow text-center">
+            <NavLink
+              className={(nav) =>
+                `${
+                  nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
+                } pb-4 block hover:border-b-2 text-gray-500 hover:text-blue-400 hover:border-blue-300  transition-all ease-linear duration-75`
+              }
+              to="documents"
+            >
+              مدارک
+            </NavLink>
+          </li>
+        </ul>
+      </nav>
+      <Outlet></Outlet>
     </SDCard>
   );
 };
