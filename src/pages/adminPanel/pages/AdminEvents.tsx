@@ -81,7 +81,7 @@ const AdminEvents: React.FC = () => {
     };
 
     fetchEventStatuses();
-  }, []);
+  }, [eventStatusSendRequest]);
 
   useEffect(() => {
     const fetchLastCode = () => {

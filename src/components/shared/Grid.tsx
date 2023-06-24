@@ -1,6 +1,7 @@
 import { Table } from 'flowbite-react';
-import React from 'react';
+import React, { useState } from 'react';
 import AdminGridActions from '../adminPanel/AdminGridActions';
+import CostModal from '../adminPanel/CostModal';
 interface GridProps {
   data: Record<string, any>[];
   columnsToShow: string[];
@@ -9,12 +10,14 @@ interface GridProps {
 interface HeaderTranslations {
   [key: string]: string;
 }
-
 const translateHeader = (header: string, translations: HeaderTranslations) => {
   return translations[header] || header;
 };
 
 const Grid: React.FC<GridProps> = ({ data, columnsToShow, fetchData }) => {
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedRowId, setSelectedRowId] = useState('');
+
   const headerTranslations: HeaderTranslations = {
     code: 'کد کاربر',
     nationalCode: 'کدملی',
@@ -36,9 +39,24 @@ const Grid: React.FC<GridProps> = ({ data, columnsToShow, fetchData }) => {
     cost: 'بهای فروش',
     actions: 'عملیات',
   };
+  const handleOnOpenModal = (id?: string) => {
+    setSelectedRowId(id || '');
+    setOpenModal(true);
+  };
+  const handleOnCloseModal = () => {
+    setOpenModal(false);
+  };
   {
     return (
       <>
+        <CostModal
+          showModal={openModal}
+          onOpenModal={handleOnOpenModal}
+          onCloseModal={handleOnCloseModal}
+          fetchData={fetchData}
+          rowId={selectedRowId}
+        />
+
         <Table hoverable className="text-right">
           <Table.Head>
             {columnsToShow.map((column) => (
@@ -59,12 +77,13 @@ const Grid: React.FC<GridProps> = ({ data, columnsToShow, fetchData }) => {
                     key={column}
                   >
                     {column === 'cost' ? (
-                      <a
+                      <button
+                        type="button"
+                        onClick={() => handleOnOpenModal(row.id)}
                         className="font-medium text-cyan-600 dark:text-cyan-500"
-                        href={`cost/edit`}
                       >
                         ویرایش
-                      </a>
+                      </button>
                     ) : column === 'termsAndConditions' ? (
                       <a
                         className="font-medium text-cyan-600 dark:text-cyan-500"

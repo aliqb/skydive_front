@@ -6,15 +6,12 @@ import { BaseResponse } from '../../models/shared.models';
 import { toast } from 'react-toastify';
 import AdminEventModal from './AdminEventModal';
 import {
+  AdminGridProps,
   SkyDiveEvent,
   SkyDiveEventStatus,
 } from '../../models/skyDiveEvents.models';
 import SDSpinner from '../shared/Spinner';
 
-interface AdminGridProps {
-  fetchData: () => void;
-  rowId: string;
-}
 const AdminGridActions: React.FC<AdminGridProps> = ({ fetchData, rowId }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { sendRequest, errors, isPending } = useAPi<
@@ -46,7 +43,8 @@ const AdminGridActions: React.FC<AdminGridProps> = ({ fetchData, rowId }) => {
     };
 
     fetchEventStatuses();
-  }, []);
+  }, [eventStatusSendRequest]);
+
   const handleEditOnClick = (id?: string) => {
     setIsEditModalOpen(true);
     try {
