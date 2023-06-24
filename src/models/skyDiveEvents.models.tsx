@@ -1,3 +1,5 @@
+import { BaseResponse } from "./shared.models";
+
 export interface SkyDiveEventStatus {
   title: string;
   reservable: boolean;
@@ -19,6 +21,7 @@ export interface SkyDiveEvent {
   voidable: boolean;
   termsAndConditions: string;
   statusTitle: string;
+  statusId: string;
   days: SkyDiveInlineEventDay[];
   id: string;
   createdAt: string;
@@ -41,26 +44,25 @@ export interface SkyDiveEventDay {
   updatedAt: string;
 }
 
-
 export interface FlightOfDayInfo {
-  date: string
-  dateDisplay: string
-  flights: Flight[]
-  qty: number
+  date: string;
+  dateDisplay: string;
+  flights: Flight[];
+  qty: number;
 }
 
 export interface Flight {
-  flightNumber: number
-  flightId: string
-  tickets: Ticket[]
+  flightNumber: number;
+  flightId: string;
+  tickets: Ticket[];
 }
 
 export interface Ticket {
-  ticketType: string
-  amount: number
-  qty: number,
-  allowedToReserve: boolean,
-  ticketTypeId: string
+  ticketType: string;
+  amount: number;
+  qty: number;
+  allowedToReserve: boolean;
+  ticketTypeId: string;
 }
 export interface NewEvent {
   title: string;
@@ -71,4 +73,14 @@ export interface NewEvent {
   image: string;
   statusId: string;
   subjecToVAT: boolean;
+}
+
+export interface AdminEventModalProps {
+  eventStatusData?: BaseResponse<SkyDiveEventStatus[]> | null;
+  lastCode: string;
+  showModal: boolean;
+  onOpenModal: (id?: string) => void;
+  onCloseModal: () => void;
+  fetchData: () => void;
+  eventData?: BaseResponse<SkyDiveEvent>;
 }
