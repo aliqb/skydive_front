@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import useAPi from '../../hooks/useApi';
 import useConfirm from '../../hooks/useConfirm';
 import { BaseResponse } from '../../models/shared.models';
 import { toast } from 'react-toastify';
-import AdminNewEvent from './AdminNewEvent';
-import { SkyDiveEvent } from '../../models/skyDiveEvents.models';
+import AdminEventModal from './AdminEventModal';
+import {
+  SkyDiveEvent,
+  SkyDiveEventStatus,
+} from '../../models/skyDiveEvents.models';
 import SDSpinner from '../shared/Spinner';
 
 interface AdminGridProps {
@@ -18,6 +21,10 @@ const AdminGridActions: React.FC<AdminGridProps> = ({ fetchData, rowId }) => {
     null,
     BaseResponse<string>
   >();
+  const { sendRequest: eventStatusSendRequest, data: eventStatusData } = useAPi<
+    null,
+    BaseResponse<SkyDiveEventStatus[]>
+  >();
   const { sendRequest: editModalSendRequest, data: editModalData } = useAPi<
     null,
     BaseResponse<SkyDiveEvent>
@@ -27,7 +34,19 @@ const AdminGridActions: React.FC<AdminGridProps> = ({ fetchData, rowId }) => {
     ' رویداد شما حذف خواهد شد. آیا مطمئن هستید؟ ',
     'حذف کردن رویداد'
   );
+  useEffect(() => {
+    const fetchEventStatuses = () => {
+      try {
+        eventStatusSendRequest({
+          url: '/SkyDiveEventStatuses',
+        });
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
 
+    fetchEventStatuses();
+  }, []);
   const handleEditOnClick = (id?: string) => {
     setIsEditModalOpen(true);
     try {
@@ -69,13 +88,14 @@ const AdminGridActions: React.FC<AdminGridProps> = ({ fetchData, rowId }) => {
   return (
     <>
       {editModalData && (
-        <AdminNewEvent
+        <AdminEventModal
           showModal={isEditModalOpen}
           onOpenModal={handleEditOnClick}
           onCloseModal={handleEditModalClose}
           fetchData={fetchData}
           lastCode={editModalData?.content.code}
           eventData={editModalData}
+          eventStatusData={eventStatusData}
         />
       )}
 

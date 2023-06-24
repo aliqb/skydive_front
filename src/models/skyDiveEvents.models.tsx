@@ -75,13 +75,12 @@ export interface NewEvent {
   subjecToVAT: boolean;
 }
 
-export interface AdminNewEventProps {
+export interface AdminEventModalProps {
   eventStatusData?: BaseResponse<SkyDiveEventStatus[]> | null;
   lastCode: string;
   showModal: boolean;
   onOpenModal: (id?: string) => void;
   onCloseModal: () => void;
   fetchData: () => void;
-  isEditMode?: boolean;
   eventData?: BaseResponse<SkyDiveEvent>;
 }

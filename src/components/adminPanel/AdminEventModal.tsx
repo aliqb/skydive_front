@@ -1,26 +1,25 @@
-import { useForm } from "react-hook-form";
-import SDButton from "../shared/Button";
-import SDDatepicker from "../shared/DatePicker";
-import SDLabel from "../shared/Label";
-import LabeledFileInput from "../shared/LabeledFileInput";
-import SDModal from "../shared/Modal";
-import RadioButton from "../shared/RadioButton";
-import SDTextInput from "../shared/TextInput";
+import { useForm } from 'react-hook-form';
+import SDButton from '../shared/Button';
+import SDDatepicker from '../shared/DatePicker';
+import SDLabel from '../shared/Label';
+import LabeledFileInput from '../shared/LabeledFileInput';
+import SDModal from '../shared/Modal';
+import RadioButton from '../shared/RadioButton';
+import SDTextInput from '../shared/TextInput';
 import { useEffect, useState } from 'react';
 import { NewEvent, SkyDiveEvent } from '../../models/skyDiveEvents.models';
-import { AdminNewEventProps } from '../../models/skyDiveEvents.models';
+import { AdminEventModalProps } from '../../models/skyDiveEvents.models';
 import useAPi from '../../hooks/useApi';
 import { BaseResponse } from '../../models/shared.models';
 import SDSpinner from '../shared/Spinner';
 import { toast } from 'react-toastify';
 
-const AdminNewEvent: React.FC<AdminNewEventProps> = ({
+const AdminEventModal: React.FC<AdminEventModalProps> = ({
   eventStatusData,
   lastCode,
   showModal,
   onCloseModal,
   fetchData,
-  isEditMode = false,
   eventData,
 }) => {
   const { sendRequest, errors, isPending } = useAPi<
@@ -30,6 +29,7 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
   const { register, handleSubmit, control, setValue } = useForm<NewEvent>();
   const [selectedCancelOption, setSelectedCancelOption] = useState(false);
   const [selectedVATOption, setSelectedVATOption] = useState(false);
+
   useEffect(() => {
     if (eventData) {
       setValue('title', eventData.content.title);
@@ -37,10 +37,11 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
       setValue('startDate', eventData.content.startDate);
       setValue('endDate', eventData.content.endDate);
       setValue('statusId', eventData.content.statusId);
-      setValue('voidable', eventData.content.voidable);
-      setValue('subjecToVAT', eventData.content.subjecToVAT);
+      setSelectedCancelOption(eventData.content.voidable === true);
+      setSelectedVATOption(eventData.content.subjecToVAT === true);
     }
   }, [eventData, setValue]);
+
   const CancelOptions = [
     { value: 'cancel-active', label: 'فعال' },
     { value: 'cancel-inactive', label: 'غیر فعال' },
@@ -62,10 +63,10 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
     data.subjecToVAT = selectedVATOption;
     data.voidable = selectedCancelOption;
 
-    if (isEditMode) {
+    if (eventData) {
       sendRequest(
         {
-          url: `/SkyDiveEvents/${eventId}`,
+          url: `/SkyDiveEvents/${eventData.content.id}`,
           method: 'put',
           data: data,
         },
@@ -262,4 +263,4 @@ const AdminNewEvent: React.FC<AdminNewEventProps> = ({
   );
 };
 
-export default AdminNewEvent;
+export default AdminEventModal;

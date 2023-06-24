@@ -10,7 +10,7 @@ import {
 } from '../../../models/skyDiveEvents.models';
 import { BaseResponse } from '../../../models/shared.models';
 import SDSpinner from '../../../components/shared/Spinner';
-import AdminNewEvent from '../../../components/adminPanel/AdminNewEvent';
+import AdminEventModal from '../../../components/adminPanel/AdminEventModal';
 
 const AdminEvents: React.FC = () => {
   const { sendRequest, errors, isPending } = useAPi<
@@ -118,7 +118,7 @@ const AdminEvents: React.FC = () => {
           </SDButton>
         </div>
 
-        <AdminNewEvent
+        <AdminEventModal
           eventStatusData={eventStatusData}
           lastCode={lastCode?.content || ''}
           showModal={showModal}
