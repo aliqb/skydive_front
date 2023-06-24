@@ -4,6 +4,7 @@ import { UserDocumentsFieldType, accoutnActions } from "../../../store/account";
 import SDDatepicker from "../../shared/DatePicker";
 import SDLabel from "../../shared/Label";
 import LabeledFileInput from "../../shared/LabeledFileInput";
+import UserDocumentStatus from "../../shared/UserDocumentStatus";
 
 interface DocumentItemProps {
   field:UserDocumentsFieldType;
@@ -33,13 +34,6 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
     dispatch(accoutnActions.setDocumnetExpireDate({field:field,date: value}))
   }
 
-  const statusColorMap = new Map([
-    [DocumnetStatus.NOT_LOADED, "text-blue-700"],
-    ['', "text-blue-700"],
-    [DocumnetStatus.PENDING, "text-orange-500"],
-    [DocumnetStatus.CONFIRMED, "text-green-500"],
-    [DocumnetStatus.EXPIRED, "text-red-600"]
-  ]);
   return (
     <div className="flex justify-between mb-10 items-center flex-wrap">
       <div className=" basis-1/3  xs:basis-1/2 md:basis-1/3">
@@ -73,7 +67,7 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
           onRemove={onFileRemove}
         />
       </div>
-      <p className={`${statusColorMap.get(documentData?.status || '')} font-semibold`}>{ documentData?.statusDisplay || 'بارگذاری نشده' }</p>
+      <UserDocumentStatus status={documentData?.status || ''} display={documentData?.statusDisplay  || ''}></UserDocumentStatus>
     </div>
   );
 };

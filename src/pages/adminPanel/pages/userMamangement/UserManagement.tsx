@@ -8,6 +8,8 @@ import {
   UserStatusesPersianMap,
 } from "../../../../models/shared.models";
 import SDSpinner from "../../../../components/shared/Spinner";
+import { useNavigate } from "react-router-dom";
+import { User } from "../../../../models/usermanagement.models";
 
 const UserManagement: React.FC = () => {
   const { sendRequest, errors, isPending } = useAPi<
@@ -16,10 +18,16 @@ const UserManagement: React.FC = () => {
   >();
   const [result, setResult] = useState<User[]>([]);
   const [selectedValue, setSelectedValue] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedValue(event.target.value);
   };
+
+  function goToDetail(user:User){
+    navigate(`${user.id}`)
+    console.log(user)
+  }
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -28,7 +36,7 @@ const UserManagement: React.FC = () => {
           {
             url: "/Admin/GetUsers",
             params: {
-              pagesize: 10,
+              pagesize: 10000,
               pageindex: 1,
               userStatus: selectedValue.toLowerCase(),
             },
@@ -45,7 +53,7 @@ const UserManagement: React.FC = () => {
     };
 
     fetchUsers();
-  }, [selectedValue]);
+  }, [selectedValue,sendRequest]);
 
   if (isPending) {
     return (
@@ -76,7 +84,7 @@ const UserManagement: React.FC = () => {
               onChange={handleSelectChange}
               value={selectedValue}
             >
-              <option selected value="">
+              <option  value="">
                 همه
               </option>
               {Array.from(UserStatusesPersianMap.entries()).map(
@@ -114,6 +122,7 @@ const UserManagement: React.FC = () => {
       <div className="mt-6">
         <Grid
           data={result}
+          onDoubleClick={goToDetail}
           columnsToShow={[
             "code",
             "nationalCode",

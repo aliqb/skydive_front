@@ -1,7 +1,13 @@
-import { Link } from "react-router-dom";
-import { CartableMessage } from "../../../models/cartable.models";
+import { Link, useNavigate } from "react-router-dom";
+import { CartableMessage, CartableRequestTypes } from "../../../models/cartable.models";
 
 const CartableItem: React.FC<CartableMessage> = (props) => {
+  const navigate = useNavigate();
+  const onClickTitle : React.MouseEventHandler<HTMLButtonElement> = ()=>{
+    if(props.requestType === CartableRequestTypes.USER_INFORMATION_CONFIRM){
+      navigate(`/admin/users/${props.applicantId}/documents`)
+    }
+  }
   return (
     <div className="flex gap-11 items-center border-b py-8 last:border-none">
       <div className="hidden sm:block">
@@ -22,9 +28,9 @@ const CartableItem: React.FC<CartableMessage> = (props) => {
       </div>
       <div>
         <div className="flex mb-5 items-center">
-          <Link to="" className="font-bold text-lg ml-6">
+          <button className="font-bold text-lg ml-6" onClick={onClickTitle}>
             {props.requestTypeDisplay}
-          </Link>
+          </button>
           <p className="text-green-400 text-sm">در {props.createdAt}</p>
         </div>
         <div className="flex gap-6 flex-wrap md:gap-12 text-slate-600">

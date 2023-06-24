@@ -98,7 +98,7 @@ function App() {
           >
             <Route Component={Cartable} path="cartable"></Route>
             <Route Component={UserManagement} path="users"></Route>
-            <Route Component={UserDetailPage} path="users/:id">
+            <Route Component={UserDetailPage} path="users/:userId">
               <Route Component={AdminUserDocument} path="documents"></Route>
             </Route>
             <Route Component={AdminEvents} path="events"></Route>

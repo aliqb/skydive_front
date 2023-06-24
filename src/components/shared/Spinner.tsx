@@ -1,10 +1,11 @@
-const SDSpinner: React.FC<{size?: number}> = (props) => {
-  const spinnerSize = props.size || '5'
+const SDSpinner: React.FC<{size?: number,color?:'primary' | 'blue'}> = ({size,color='primary'}) => {
+  const spinnerSize = size || '5'
+  const spinnerColor = color === 'primary' ? 'primary' : 'blue-500'
   return (
     <div role="status" className="ml-2">
       <svg
         aria-hidden="true"
-        className={`w-${spinnerSize} h-${spinnerSize} mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-primary`}
+        className={`w-${spinnerSize} h-${spinnerSize} mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-${spinnerColor}`}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

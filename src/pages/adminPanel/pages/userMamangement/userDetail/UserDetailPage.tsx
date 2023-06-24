@@ -1,8 +1,25 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useParams } from "react-router-dom";
 import SDButton from "../../../../../components/shared/Button";
 import SDCard from "../../../../../components/shared/Card";
+import useAPi from "../../../../../hooks/useApi";
+import { BaseResponse } from "../../../../../models/shared.models";
+import { UserDatail } from "../../../../../models/usermanagement.models";
+import { useEffect } from "react";
 
 const UserDetailPage: React.FC = () => {
+  const params = useParams();
+
+  const { sendRequest, isPending, data } = useAPi<
+    null,
+    BaseResponse<UserDatail>
+  >();
+
+  useEffect(() => {
+    sendRequest({
+      url: `/Admin/UserDetail/${params.userId}`,
+    });
+  }, [params.userId, sendRequest]);
+
   return (
     <SDCard className="px-0">
       <div className="px-2 xs:px-8 mb-10">
@@ -42,84 +59,67 @@ const UserDetailPage: React.FC = () => {
             حذف
           </SDButton>
         </div>
-        <main className=" mt-10 text-slate-800">
-          <div className="flex flex-wrap justify-between">
-            <div className="flex lg:pl-12 w-full md:w-1/2   lg:w-5/12">
-              <div className="font-semibold flex flex-col  md:pl-6 ml-6 border-l w-1/2 md:w-auto md:min-w-max">
-                <p className="pb-6">نام</p>
-                <p className="pb-6">نام خانوادگی</p>
-                <p className="pb-6">نوع حساب کاربری</p>
-                <p className="pb-6">کد ملی</p>
-                <p className="pb-6">تاریخ تولد</p>
-                <p className="pb-6">محل اقامت</p>
-                <p className="pb-6">آدرس</p>
+        {(data && !isPending) && (
+          <main className=" mt-10 text-slate-800">
+            <div className="flex flex-wrap justify-between">
+              <div className="flex lg:pl-12 w-full md:w-1/2   lg:w-5/12">
+                <div className="font-semibold flex flex-col  md:pl-6 ml-6 border-l w-1/2 md:w-auto md:min-w-max">
+                  <p className="pb-6">نام</p>
+                  <p className="pb-6">نام خانوادگی</p>
+                  <p className="pb-6">نوع حساب کاربری</p>
+                  <p className="pb-6">کد ملی</p>
+                  <p className="pb-6">تاریخ تولد</p>
+                  <p className="pb-6">محل اقامت</p>
+                  <p className="pb-6">آدرس</p>
+                </div>
+                <div className=" flex flex-col w-1/2 text-center md:text-right">
+                  <p className="pb-6">{data.content.firstName}</p>
+                  <p className="pb-6"> {data.content.lastName}</p>
+                  <p className="pb-6">{data.content.userTypeDisplay}</p>
+                  <p className="pb-6">{data.content.nationalCode}</p>
+                  <p className="pb-6">{data.content.birthDate}</p>
+                  <p className="pb-6">{data.content.city}</p>
+                  <p className="pb-6">
+                    {data.content.address}
+                  </p>
+                </div>
               </div>
-              <div className=" flex flex-col w-1/2 text-center md:text-right">
-                <p className="pb-6">علی</p>
-                <p className="pb-6"> خانوادگی</p>
-                <p className="pb-6">آزاد</p>
-                <p className="pb-6">0022601244</p>
-                <p className="pb-6">1378/07/099</p>
-                <p className="pb-6">تهران</p>
-                <p className="pb-6">
-                  صادقیه، کوچه فلان، نبش کوچه فلان، کوچه ی فلان، پ26،واخد اول
-                </p>
-              </div>
-            </div>
-            <div className="flex md:pl-12 w-full md:w-1/2  lg:w-5/12">
-              <div className="font-semibold flex flex-col  md:pl-6 ml-6 border-l w-1/2 md:w-auto  md:min-w-max">
-                <p className="pb-6">کد کابر</p>
-                <p className="pb-6">نام کاربری</p>
-                <p className="pb-6">رمز عبور</p>
-                <p className="pb-6">ایمیل</p>
-                <p className="pb-6">شماره موبایل</p>
-                <p className="pb-6">قد</p>
-                <p className="pb-6">وزن</p>
-              </div>
-              <div className=" flex flex-col w-1/2 text-center md:text-right">
-                <p className="pb-6">علی</p>
-                <p className="pb-6"> خانوادگی</p>
-                <p className="pb-6">آزاد</p>
-                <p className="pb-6">0022601244</p>
-                <p className="pb-6">1378/07/099</p>
-                <p className="pb-6">تهران</p>
-              </div>
-            </div>
-            {/* <div className="flex w-full md:w-1/2 lg:w-5/12">
-              <div className="font-semibold flex flex-col gap-6 pl-6 ml-6 border-l w-48 md:min-w-max">
-                <p>کد کاربر</p>
-                <p>نام کاربری</p>
-                <p>رمز عبور</p>
-                <p>ایمیل</p>
-                <p>شماره موبایل</p>
-                <p>قد</p>
-                <p>وزن</p>
-              </div>
-              <div className=" flex flex-col gap-6">
-                <p>علی</p>
-                <p> خانوادگی</p>
-                <p>آزاد</p>
-                <p>0022601244</p>
-                <p>1378/07/099</p>
-                <p>تهران</p>
-                <p>50</p>
-              </div>
-            </div> */}
-          </div>
-          <div className="mt-10">
-            <h6 className="font-bold text-lg">اطلاعات تماس اضطراری</h6>
-            <div className="pt-5 flex flex-wrap justify-between">
-              <div className="flex w-full pb-6 md:w-1/2   lg:w-5/12">
-                <p className="font-semibold ml-12">نام</p>
-                <p>محمد</p>
-              </div>
-              <div className="flex w-full pb-6 md:w-1/2   lg:w-5/12">
-                <p className="font-semibold ml-12">مبایل</p>
-                <p>091255646548</p>
+              <div className="flex md:pl-12 w-full md:w-1/2  lg:w-5/12">
+                <div className="font-semibold flex flex-col  md:pl-6 ml-6 border-l w-1/2 md:w-auto  md:min-w-max">
+                  <p className="pb-6">کد کابر</p>
+                  <p className="pb-6">نام کاربری</p>
+                  <p className="pb-6">رمز عبور</p>
+                  <p className="pb-6">ایمیل</p>
+                  <p className="pb-6">شماره موبایل</p>
+                  <p className="pb-6">قد</p>
+                  <p className="pb-6">وزن</p>
+                </div>
+                <div className=" flex flex-col w-1/2 text-center md:text-right">
+                  <p className="pb-6">{data.content.userCode}</p>
+                  <p className="pb-6"> {data.content.userCode}</p>
+                  <p className="pb-6"></p>
+                  <p className="pb-6">{data.content.email}</p>
+                  <p className="pb-6">{data.content.phone}</p>
+                  <p className="pb-6">{data.content.height}</p>
+                  <p className="pb-6">{data.content.weight}</p>
+                </div>
               </div>
             </div>
-          </div>
-        </main>
+            <div className="mt-10">
+              <h6 className="font-bold text-lg">اطلاعات تماس اضطراری</h6>
+              <div className="pt-5 flex flex-wrap justify-between">
+                <div className="flex w-full pb-6 md:w-1/2   lg:w-5/12">
+                  <p className="font-semibold ml-12">نام</p>
+                  <p>{data.content.emergencyContact}</p>
+                </div>
+                <div className="flex w-full pb-6 md:w-1/2   lg:w-5/12">
+                  <p className="font-semibold ml-12">مبایل</p>
+                  <p>{data.content.emergencyPhone}</p>
+                </div>
+              </div>
+            </div>
+          </main>
+        )}
       </div>
       <nav className="flex border-b border-blue-400">
         <ul className="flex w-full">

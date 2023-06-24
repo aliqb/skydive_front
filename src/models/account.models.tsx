@@ -25,6 +25,9 @@ export interface DocumentItem {
   expirationDate?: string;
   status?: string;
   statusDisplay?: string;
+  updatedAt?: string,
+  createdAt?: string,
+  id?:string
 }
 
 export interface PersonalInfoEditRequest extends Omit<UserPersonalInfo, "id"> {
@@ -35,10 +38,10 @@ export interface PersonalInfoEditRequest extends Omit<UserPersonalInfo, "id"> {
 }
 
 export interface DocumentsList {
-  medicalDocument: DocumentItem;
-  logBookDocument: DocumentItem;
-  attorneyDocument: DocumentItem;
-  nationalCardDocument: DocumentItem;
+  medicalDocument: DocumentItem | null;
+  logBookDocument: DocumentItem | null;
+  attorneyDocument: DocumentItem | null;
+  nationalCardDocument: DocumentItem | null;
   id: string;
   createdAt: string;
   updatedAt: string;

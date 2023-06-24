@@ -10,8 +10,8 @@ import { City, CityDto } from "../../../models/account.models";
 import { useAppDispatch } from "../../../hooks/reduxHooks";
 import { accoutnActions } from "../../../store/account";
 
-interface PersonalInfoProps{
-  onSubmit:()=>void
+interface PersonalInfoProps {
+  onSubmit: () => void;
 }
 interface PersonalInfoEditableFormData {
   email: string;
@@ -42,7 +42,6 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
     BaseResponse<CityDto[]>
   >();
 
-  
   const dispatch = useAppDispatch();
 
   const [cities, setCities] = useState<City[]>([]);
@@ -94,11 +93,11 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
   }
 
   function onSubmit(data: PersonalInfoEditableFormData) {
-    const info : UserPersonalInfo = {
+    const info: UserPersonalInfo = {
       ...personalInfo!.content,
-      ...data
-    }
-    dispatch(accoutnActions.setPersonalInfo(info))
+      ...data,
+    };
+    dispatch(accoutnActions.setPersonalInfo(info));
     props.onSubmit();
   }
 
@@ -171,19 +170,23 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
         <div className="mb-6 w-full">
           <SDLabel htmlFor="cityId">استان و شهر اقامت</SDLabel>
           {/* <SDTextInput {...register("cityId")} type="cityId" id="cityId" /> */}
-          <select
-            id="cityId"
-            {...register("cityId")}
-            // defaultValue=""
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          >
-            <option value="" ></option>
-            {
-              cities.map((city,index)=>{
-                return (<option key={index} value={city.id}>{city.locationString}</option>)
-              })
-            }
-          </select>
+          {personalInfo && (
+            <select
+              id="cityId"
+              {...register("cityId")}
+              // defaultValue=""
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            >
+              <option value=""></option>
+              {cities.map((city, index) => {
+                return (
+                  <option key={index} value={city.id}>
+                    {city.locationString}
+                  </option>
+                );
+              })}
+            </select>
+          )}
         </div>
         <div className=" w-full mb-6">
           <SDLabel htmlFor="address">نشانی</SDLabel>
@@ -218,7 +221,6 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
                 {...register("emergencyContact")}
                 type="text"
                 id="firstName"
-                className="ltr"
               />
             </div>
             <div className="w-1/2">
