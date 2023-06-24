@@ -31,3 +31,9 @@ export interface UserDatail {
   createdAt: string;
   updatedAt: string;
 }
+
+
+export interface CheckUserInfoRequest{
+  id: string;
+  isConfirmed: boolean;
+}

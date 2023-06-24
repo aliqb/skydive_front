@@ -2,7 +2,7 @@ import { DocumentItem, DocumnetStatus } from "../../../models/account.models";
 import SDButton from "../../shared/Button";
 import SDCard from "../../shared/Card";
 import noImage from "../../../assets/no-image.png";
-import UserDocumentStatus from "../../shared/UserDocumentStatus";
+import UserDocumentStatusLabel from "../../shared/UserDocumentStatusLabel";
 import documnetImagePlacholder from "../../../assets/document.png";
 import { useCallback, useEffect, useState } from "react";
 import useAPi, { axiosIntance } from "../../../hooks/useApi";
@@ -104,11 +104,11 @@ const AdminUserDocumentItem: React.FC<AdminUserDocumentItemProp> = ({
         )} */}
       </div>
       <div className="text-center mt-2 mb-3">
-        <p className="font-bold text-xl mb-1">{title}</p>
-        <UserDocumentStatus
+        <p className="font-bold text-lg mb-1">{title}</p>
+        <UserDocumentStatusLabel
           status={documentData?.status || ""}
           display={documentData?.statusDisplay || ""}
-        ></UserDocumentStatus>
+        ></UserDocumentStatusLabel>
 
         {withDate && documentData?.expirationDate && (
           <p className="text-sm">تاریخ انقضا: {documentData.expirationDate}</p>

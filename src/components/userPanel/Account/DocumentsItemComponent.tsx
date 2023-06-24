@@ -1,10 +1,9 @@
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
-import { DocumnetStatus } from "../../../models/account.models";
 import { UserDocumentsFieldType, accoutnActions } from "../../../store/account";
 import SDDatepicker from "../../shared/DatePicker";
 import SDLabel from "../../shared/Label";
 import LabeledFileInput from "../../shared/LabeledFileInput";
-import UserDocumentStatus from "../../shared/UserDocumentStatus";
+import UserDocumentStatusLabel from "../../shared/UserDocumentStatusLabel";
 
 interface DocumentItemProps {
   field:UserDocumentsFieldType;
@@ -67,7 +66,7 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
           onRemove={onFileRemove}
         />
       </div>
-      <UserDocumentStatus status={documentData?.status || ''} display={documentData?.statusDisplay  || ''}></UserDocumentStatus>
+      <UserDocumentStatusLabel status={documentData?.status || ''} display={documentData?.statusDisplay  || ''}></UserDocumentStatusLabel>
     </div>
   );
 };

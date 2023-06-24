@@ -1,12 +1,12 @@
 import React from "react";
 import { DocumnetStatus } from "../../models/account.models";
 
-interface UserDocumentStatusProps {
+interface UserDocumentStatusLabelProps {
   status:  typeof DocumnetStatus[keyof typeof DocumnetStatus];
   display: string;
 }
 
-const UserDocumentStatus: React.FC<UserDocumentStatusProps> = (props) => {
+const UserDocumentStatusLabel: React.FC<UserDocumentStatusLabelProps> = (props) => {
   const statusColorMap = new Map([
     [DocumnetStatus.NOT_LOADED, "text-blue-700"],
     ["", "text-blue-700"],
@@ -25,4 +25,4 @@ const UserDocumentStatus: React.FC<UserDocumentStatusProps> = (props) => {
   );
 };
 
-export default UserDocumentStatus;
+export default UserDocumentStatusLabel;

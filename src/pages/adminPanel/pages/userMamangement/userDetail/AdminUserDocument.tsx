@@ -5,15 +5,19 @@ import { DocumentsList } from "../../../../../models/account.models";
 import { BaseResponse } from "../../../../../models/shared.models";
 import { useParams } from "react-router-dom";
 import SDSpinner from "../../../../../components/shared/Spinner";
+import { useAppDispatch } from "../../../../../hooks/reduxHooks";
+import { fetchUserDetail } from "../../../../../store/usermanagement";
 
 const AdminUserDocument: React.FC = () => {
   const params = useParams();
+  const dispatch = useAppDispatch();
   const { sendRequest, isPending, data } = useAPi<
     null,
     BaseResponse<DocumentsList>
   >();
 
   function onChangeDocument() {
+    dispatch(fetchUserDetail(params.userId as string));
     getDocuments(params.userId as string);
   }
 

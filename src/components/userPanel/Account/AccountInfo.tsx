@@ -11,6 +11,7 @@ import { authActions } from "../../../store/auth";
 import { useState } from "react";
 import { OTPRequest, OTPResponse } from "../../../models/auth.models";
 import ChangePasswordModal from "./ChangePasswordModal";
+import UserStatusLabel from "../../shared/UserStatusLabel";
 
 interface AccountInfoFormData {
   username: string;
@@ -42,12 +43,7 @@ const AccountInfo: React.FC = () => {
   >();
 
   const dispatch = useAppDispatch();
-  const statusColorMap = new Map([
-    [UserStatuses.PENDING, "text-orange-500"],
-    [UserStatuses.AWAITING_COMPLETION, "text-orange-500"],
-    [UserStatuses.ACTIVE, "text-green-500"],
-    [UserStatuses.INACTIVE, "text-red-600"],
-  ]);
+
 
   async function onInactiveAccount() {
     const confirm = await confirmation();
@@ -86,13 +82,7 @@ const AccountInfo: React.FC = () => {
       <div className="flex flex-col items-center mb-10">
         <div className="flex gap-4 mb-3">
           <p className="text-slate-500">وضعیت حساب کاربری</p>
-          <p
-            className={`${statusColorMap.get(
-              authState.userStatus
-            )} font-semibold`}
-          >
-            {authState.userStatusDisplay}
-          </p>
+          <UserStatusLabel status={authState.userStatus} display={authState.userStatusDisplay} />
           <SDTooltip
             content="باید تایید شود."
             trigger="hover"
