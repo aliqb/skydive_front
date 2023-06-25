@@ -8,7 +8,7 @@ import {
   UserStatusesPersianMap,
 } from "../../../../models/shared.models";
 import SDSpinner from "../../../../components/shared/Spinner";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { User } from "../../../../models/usermanagement.models";
 
 const UserManagement: React.FC = () => {
@@ -24,9 +24,9 @@ const UserManagement: React.FC = () => {
     setSelectedValue(event.target.value);
   };
 
-  function goToDetail(user:User){
-    navigate(`${user.id}`)
-    console.log(user)
+  function goToDetail(user: User) {
+    navigate(`${user.id}`);
+    console.log(user);
   }
 
   useEffect(() => {
@@ -53,7 +53,7 @@ const UserManagement: React.FC = () => {
     };
 
     fetchUsers();
-  }, [selectedValue,sendRequest]);
+  }, [selectedValue, sendRequest]);
 
   if (isPending) {
     return (
@@ -71,7 +71,9 @@ const UserManagement: React.FC = () => {
     <>
       <div className="flex justify-between mt-12">
         <div>
-          <SDButton color="success">+ جدید</SDButton>
+          <Link to="create">
+            <SDButton color="success">+ جدید</SDButton>
+          </Link>
         </div>
         <div className="flex items-center justify-center">
           <div>
@@ -84,9 +86,7 @@ const UserManagement: React.FC = () => {
               onChange={handleSelectChange}
               value={selectedValue}
             >
-              <option  value="">
-                همه
-              </option>
+              <option value="">همه</option>
               {Array.from(UserStatusesPersianMap.entries()).map(
                 ([key, value]) => (
                   <option key={key} value={key} className="text-right">

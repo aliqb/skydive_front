@@ -8,9 +8,8 @@ import {
 } from "../../../../../models/shared.models";
 import {
   CheckUserInfoRequest,
-  UserDatail,
 } from "../../../../../models/usermanagement.models";
-import { useCallback, useEffect } from "react";
+import {  useEffect } from "react";
 import UserStatusLabel from "../../../../../components/shared/UserStatusLabel";
 import SDSpinner from "../../../../../components/shared/Spinner";
 import { toast } from "react-toastify";
