@@ -12,7 +12,7 @@ const SDTextInput = forwardRef(
     return (
       <input
         {...inputProps}
-        id="password"
+        id={props.id}
         ref={ref}
         className={`${
           props.invalid
