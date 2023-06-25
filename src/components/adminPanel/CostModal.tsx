@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   CostModalProps,
   NewTicketFee,
+  NewTicketFeeList,
   SkyDiveEventTicketType,
-} from '../../models/skyDiveEvents.models';
-import SDModal from '../shared/Modal';
-import SDLabel from '../shared/Label';
-import SDButton from '../shared/Button';
-import SDSpinner from '../shared/Spinner';
-import SDTextInput from '../shared/TextInput';
-import { BaseResponse } from '../../models/shared.models';
-import useAPi from '../../hooks/useApi';
-import { toast } from 'react-toastify';
-import { useForm } from 'react-hook-form';
+} from "../../models/skyDiveEvents.models";
+import SDModal from "../shared/Modal";
+import SDLabel from "../shared/Label";
+import SDButton from "../shared/Button";
+import SDSpinner from "../shared/Spinner";
+import SDTextInput from "../shared/TextInput";
+import { BaseResponse } from "../../models/shared.models";
+import useAPi from "../../hooks/useApi";
+import { toast } from "react-toastify";
+import { useFieldArray, useForm } from "react-hook-form";
 
 const CostModal: React.FC<CostModalProps> = ({
   showModal,
@@ -20,7 +21,16 @@ const CostModal: React.FC<CostModalProps> = ({
   fetchData,
   rowId,
 }) => {
-  const { register, handleSubmit } = useForm<NewTicketFee>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors: formErrors },
+    control,
+  } = useForm<NewTicketFeeList>();
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'items',
+  });
   const {
     sendRequest,
     errors,
@@ -38,13 +48,18 @@ const CostModal: React.FC<CostModalProps> = ({
   const [divCount, setDivCount] = useState(1);
 
   useEffect(() => {
+    console.log('hrer')
+    append({
+        amount:0,
+        typeId: ''
+    })
     const fetchEventTicketType = () => {
       try {
         sendRequest({
-          url: '/SkyDiveEventTicketType',
+          url: "/SkyDiveEventTicketType",
         });
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     };
 
@@ -52,31 +67,36 @@ const CostModal: React.FC<CostModalProps> = ({
   }, []);
 
   const handleSaveButton = handleSubmit((data) => {
-    sendDatasendRequest(
-      {
-        url: `/SkyDiveEvents/AddEventTypeFee/${rowId}`,
-        method: 'post',
-        data: data,
-      },
-      (response) => {
-        console.log('Response:', response);
-        toast.success(response.message);
-        onCloseModal();
-        if (fetchData) {
-          fetchData();
-        }
-      },
-      (error) => {
-        console.log('Error:', error);
-        toast.error(error?.message);
-      }
-    );
+    console.log(data)
+    // sendDatasendRequest(
+    //   {
+    //     url: `/SkyDiveEvents/AddEventTypeFee/${rowId}`,
+    //     method: "post",
+    //     data: data,
+    //   },
+    //   (response) => {
+    //     console.log("Response:", response);
+    //     toast.success(response.message);
+    //     onCloseModal();
+    //     if (fetchData) {
+    //       fetchData();
+    //     }
+    //   },
+    //   (error) => {
+    //     console.log("Error:", error);
+    //     toast.error(error?.message);
+    //   }
+    // );
   });
 
-  const handleAddDiv = () => {
-    if (getData && getData.content && divCount < getData.content.length) {
-      setDivCount((prevCount) => prevCount + 1);
-    }
+  const addFeeItem = () => {
+    append({
+      amount:0,
+      typeId: ''
+    })
+    // if (getData && getData.content && divCount < getData.content.length) {
+    //   setDivCount((prevCount) => prevCount + 1);
+    // }
   };
   return (
     <>
@@ -107,14 +127,11 @@ const CostModal: React.FC<CostModalProps> = ({
               </button>
             </div>
             <div className="px-6 py-8">
-              {Array.from({ length: divCount }).map((_, index) => {
-                const typeIdFieldName = `typeId.${index}` as const;
-                const amountFieldName = `amount.${index}` as const;
-
+              {fields.map((field, index) => {
                 return (
                   <div
                     className="flex flex-row items-center justify-center w-full mt-5"
-                    key={index}
+                    key={field.id}
                   >
                     <div className="flex flex-col w-1/2">
                       <div>
@@ -124,9 +141,9 @@ const CostModal: React.FC<CostModalProps> = ({
                         <select
                           id={`ticketType-${index}`}
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                          {...register(`typeId.${index}` as const)}
+                          {...register(`items.${index}.typeId` as const)}
                         >
-                          <option selected value="">
+                          <option  value="">
                             انتخاب کنید
                           </option>
                           {getData?.content.map((type, typeIndex) => (
@@ -147,7 +164,7 @@ const CostModal: React.FC<CostModalProps> = ({
                       </div>
                       <div className="flex items-center">
                         <SDTextInput
-                          {...register(`amount.${index}` as const, {
+                          {...register(`items.${index}.amount` as const, {
                             valueAsNumber: true,
                           })}
                           type="number"
@@ -160,7 +177,7 @@ const CostModal: React.FC<CostModalProps> = ({
                             <SDButton
                               color="primary"
                               className="w-8 h-8 font-extrabold"
-                              onClick={handleAddDiv}
+                              onClick={addFeeItem}
                               disabled={divCount >= getData.content.length}
                             >
                               +

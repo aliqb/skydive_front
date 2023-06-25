@@ -101,6 +101,10 @@ export interface NewTicketFee {
   amount: number;
 }
 
+export interface NewTicketFeeList{
+  items:NewTicketFee[]
+}
+
 export interface AdminGridProps {
   fetchData: () => void;
   rowId: string;
