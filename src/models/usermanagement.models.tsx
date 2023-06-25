@@ -30,10 +30,46 @@ export interface UserDatail {
   id: string;
   createdAt: string;
   updatedAt: string;
+  password?: string;
 }
 
 
 export interface CheckUserInfoRequest{
   id: string;
   isConfirmed: boolean;
+}
+
+export interface userType {
+  isDefault: boolean
+  title: string
+  allowedTicketTypes: AllowedTicketType[]
+  id: string
+  createdAt: string
+  updatedAt: string
+}
+
+interface AllowedTicketType {
+  title: string
+  id: string
+  createdAt: string
+  updatedAt: string
+}
+
+
+export interface UserRequest {
+  firstName: string
+  lastName: string
+  nationalCode: string
+  phone: string
+  birthDate: string
+  username: string
+  email: string | null,
+  cityId: string | null,
+  address: string
+  height: number
+  weight: number
+  emergencyContact: string
+  emergencyPhone: string
+  password: string,
+  userTypeId: string
 }

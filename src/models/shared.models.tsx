@@ -17,7 +17,7 @@ export interface UserPersonalInfo {
   nationalCode: string;
   birthDate: string;
   email?: string;
-  cityId?: string;
+  cityId: string | null;
   state?: string;
   city?: string;
   address?: string;

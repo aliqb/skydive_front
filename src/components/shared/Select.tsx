@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, forwardRef, Ref, Children } from "react";
+import { InputHTMLAttributes, forwardRef, Ref } from "react";
 
 interface SDTextInputProps extends InputHTMLAttributes<HTMLSelectElement> {
   invalid?: boolean;

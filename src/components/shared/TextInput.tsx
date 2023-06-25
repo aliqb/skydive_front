@@ -1,5 +1,5 @@
 import { InputHTMLAttributes, forwardRef, Ref } from "react";
-interface SDTextInputProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface SDTextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   invalid?: boolean;
 }
 

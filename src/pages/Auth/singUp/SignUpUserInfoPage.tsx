@@ -76,10 +76,6 @@ const SingUpUserInfoPage: React.FC = () => {
                 value: /^[\da-zA-z]*$/,
                 message: "نام کاربری فقط باید شامل اعداد و حروف انگلیسی باشد.",
               },
-              maxLength: {
-                value: 10,
-                message: "کد ملی باید 10 رقم باشد.",
-              },
               minLength: {
                 value: 5,
                 message: "نام کاربری حداقل باید 5 کاراکتر باشد.",
@@ -138,8 +134,13 @@ const SingUpUserInfoPage: React.FC = () => {
           )}
         </div>
         <div>
-          <SDButton type="submit" color="success" className="w-full" disabled={isPending}>
-          {isPending &&  <SDSpinner />}
+          <SDButton
+            type="submit"
+            color="success"
+            className="w-full"
+            disabled={isPending}
+          >
+            {isPending && <SDSpinner />}
             ثبت اطلاعات
           </SDButton>
         </div>

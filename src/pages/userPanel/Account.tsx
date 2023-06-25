@@ -88,7 +88,7 @@ const Account: React.FC = () => {
         lastName: personalInfo?.lastName || "",
         nationalCode: personalInfo?.nationalCode || "",
         address: personalInfo?.address,
-        cityId: personalInfo?.cityId,
+        cityId: personalInfo?.cityId || null,
         email: personalInfo?.email,
         emergencyContact: personalInfo?.emergencyContact,
         emergencyPhone: personalInfo?.emergencyPhone,

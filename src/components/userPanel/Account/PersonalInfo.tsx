@@ -16,7 +16,7 @@ interface PersonalInfoProps {
 }
 interface PersonalInfoEditableFormData {
   email: string;
-  cityId: string;
+  cityId: string | null;
   address: string;
   height: number;
   weight: number;
@@ -26,7 +26,7 @@ interface PersonalInfoEditableFormData {
 const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
   const {
     register,
-    formState: { errors, isDirty },
+    formState: { errors },
     handleSubmit,
     reset,
   } = useForm<PersonalInfoEditableFormData>({
@@ -91,7 +91,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
     function setFormValue(info: UserPersonalInfo) {
       reset({
         address: info.address,
-        cityId: info.cityId,
+        cityId: info.cityId || null,
         email: info.email,
         emergencyContact: info.emergencyContact,
         emergencyPhone: info.emergencyPhone,
@@ -263,7 +263,6 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
             className="w-full"
             color="primary"
             type="submit"
-            disabled={!isDirty}
           >
             مرحله بعد
           </SDButton>
