@@ -1,7 +1,10 @@
 import { useCallback, useEffect } from "react";
 import AdminUserDocumentItem from "../../../../../components/adminPanel/userManagement/AdminUserDocumentItem";
 import useAPi from "../../../../../hooks/useApi";
-import { DocumentsList } from "../../../../../models/account.models";
+import {
+  DocumentsList,
+  DocumnetStatus,
+} from "../../../../../models/account.models";
 import { BaseResponse } from "../../../../../models/shared.models";
 import { useParams } from "react-router-dom";
 import SDSpinner from "../../../../../components/shared/Spinner";
@@ -17,20 +20,38 @@ const AdminUserDocument: React.FC = () => {
   >();
 
   function onChangeDocument() {
-    dispatch(fetchUserDetail(params.userId as string));
-    getDocuments(params.userId as string);
+    getDocuments(params.userId as string,true);
   }
 
   const getDocuments = useCallback(
-    (userId: string) => {
-      sendRequest({
-        url: "/Users/GetUserDocument",
-        params: {
-          userId: userId,
+    (userId: string, documentChange = false) => {
+      sendRequest(
+        {
+          url: "/Users/GetUserDocument",
+          params: {
+            userId: userId,
+          },
         },
-      });
+        (response) => {
+          if (documentChange) {
+            const documents = response.content;
+            const itemsStutes = [
+              documents.nationalCardDocument?.status,
+              documents.logBookDocument?.status,
+              documents.attorneyDocument?.status,
+              documents.medicalDocument?.status,
+            ];
+            const allApproved = itemsStutes.every(
+              (status) => DocumnetStatus.CONFIRMED === status
+            );
+            if (allApproved) {
+              dispatch(fetchUserDetail(userId as string));
+            }
+          }
+        }
+      );
     },
-    [sendRequest]
+    [sendRequest,dispatch]
   );
 
   useEffect(() => {
