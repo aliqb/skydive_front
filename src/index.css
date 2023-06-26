@@ -52,6 +52,9 @@
   textarea {
     outline: none;
   }
+  th{
+    white-space: nowrap;
+  }
   .horizental-scrol ::-webkit-scrollbar{
     height: 6px;
   }
