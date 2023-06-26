@@ -1,10 +1,18 @@
-export interface User {
-  id: string;
-  username: string | null;
-  phone: string;
-  email: string | null;
-  firstName: string | null;
-  lastName: string | null;
+export interface UserListItem {
+  username: string | null
+  phone: string | null
+  email: string | null
+  firstName: string
+  lastName: string
+  statusDisplay: string
+  status: string
+  userType: string
+  code: number
+  nationalCode: string | null
+  birthDate: string
+  id: string
+  createdAt: string
+  updatedAt: string
 }
 
 export interface UserDatail {

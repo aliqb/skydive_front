@@ -157,7 +157,7 @@ function Grid<T>({
                               </button>
                             </SDTooltip>
                           )}
-                          {rowActions.otherActions.map((action, index) => {
+                          {rowActions.otherActions && rowActions.otherActions.map((action, index) => {
                             return (
                               <GridRowOtherActionComponent
                                 key={index}

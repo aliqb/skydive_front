@@ -56,7 +56,7 @@ export class GridRow<T = any> {
 export interface GridRowActions<T>{
     edit?: boolean,
     remove?: boolean,
-    otherActions: GridRowOtherAction<T>[],
+    otherActions?: GridRowOtherAction<T>[],
     moreActions?:GridRowOtherAction<T>[]
 }
 
