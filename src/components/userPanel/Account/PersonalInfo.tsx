@@ -9,13 +9,14 @@ import { useEffect, useState } from "react";
 import { City, CityDto } from "../../../models/account.models";
 import { useAppDispatch } from "../../../hooks/reduxHooks";
 import { accoutnActions } from "../../../store/account";
+import SDSelect from "../../shared/Select";
 
-interface PersonalInfoProps{
-  onSubmit:()=>void
+interface PersonalInfoProps {
+  onSubmit: () => void;
 }
 interface PersonalInfoEditableFormData {
   email: string;
-  cityId: string;
+  cityId: string | null;
   address: string;
   height: number;
   weight: number;
@@ -25,7 +26,7 @@ interface PersonalInfoEditableFormData {
 const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
   const {
     register,
-    formState: { errors, isDirty },
+    formState: { errors },
     handleSubmit,
     reset,
   } = useForm<PersonalInfoEditableFormData>({
@@ -42,7 +43,6 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
     BaseResponse<CityDto[]>
   >();
 
-  
   const dispatch = useAppDispatch();
 
   const [cities, setCities] = useState<City[]>([]);
@@ -53,52 +53,66 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
         url: "/Users/GetPersonalInformation",
       },
       (response) => {
-        setFormValue(response.content);
+        // setFormValue(response.content);
         dispatch(accoutnActions.setPersonalInfo(response.content));
       }
     );
 
-    getCities();
-  }, []);
+  }, [getInfo,dispatch]);
 
-  function getCities() {
-    sendCitiesRequest(
-      {
-        url: "/cities",
-        params: {
-          pageSize: 10000,
-          pageIndex: 1,
+  useEffect(() => {
+    function getCities() {
+      sendCitiesRequest(
+        {
+          url: "/cities",
+          params: {
+            pageSize: 10000,
+            pageIndex: 1,
+          },
         },
-      },
-      (response) => {
-        const cities = response.content
-          .map(
-            (item) => new City(item.id, item.state, item.province, item.city)
-          )
-          .sort((c1, c2) => c1.locationString.localeCompare(c2.locationString));
-        setCities(cities);
-      }
-    );
-  }
+        (response) => {
+          const cities = response.content
+            .map(
+              (item) => new City(item.id, item.state, item.province, item.city)
+            )
+            .sort((c1, c2) =>
+              c1.locationString.localeCompare(c2.locationString)
+            );
+          setCities(cities);
+        }
+      );
+    }
+    if(personalInfo?.content){
+      getCities();
+    }
+  }, [personalInfo, sendCitiesRequest]);
 
-  function setFormValue(info: UserPersonalInfo) {
-    reset({
-      address: info.address,
-      cityId: info.cityId,
-      email: info.email,
-      emergencyContact: info.emergencyContact,
-      emergencyPhone: info.emergencyPhone,
-      height: info.height,
-      weight: info.weight,
-    });
-  }
+  useEffect(()=>{
+    function setFormValue(info: UserPersonalInfo) {
+      reset({
+        address: info.address,
+        cityId: info.cityId || null,
+        email: info.email,
+        emergencyContact: info.emergencyContact,
+        emergencyPhone: info.emergencyPhone,
+        height: info.height,
+        weight: info.weight,
+      });
+    }
+
+    if(personalInfo?.content){
+      setFormValue(personalInfo.content)
+    }
+  },[cities,personalInfo,reset])
+
+
 
   function onSubmit(data: PersonalInfoEditableFormData) {
-    const info : UserPersonalInfo = {
+    const info: UserPersonalInfo = {
       ...personalInfo!.content,
-      ...data
-    }
-    dispatch(accoutnActions.setPersonalInfo(info))
+      ...data,
+    };
+    dispatch(accoutnActions.setPersonalInfo(info));
     props.onSubmit();
   }
 
@@ -171,19 +185,21 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
         <div className="mb-6 w-full">
           <SDLabel htmlFor="cityId">استان و شهر اقامت</SDLabel>
           {/* <SDTextInput {...register("cityId")} type="cityId" id="cityId" /> */}
-          <select
-            id="cityId"
-            {...register("cityId")}
-            // defaultValue=""
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          >
-            <option value="" ></option>
-            {
-              cities.map((city,index)=>{
-                return (<option key={index} value={city.id}>{city.locationString}</option>)
-              })
-            }
-          </select>
+          {personalInfo && (
+            <SDSelect
+              id="cityId"
+              {...register("cityId")}
+            >
+              <option value=""></option>
+              {cities.map((city, index) => {
+                return (
+                  <option key={index} value={city.id}>
+                    {city.locationString}
+                  </option>
+                );
+              })}
+            </SDSelect>
+          )}
         </div>
         <div className=" w-full mb-6">
           <SDLabel htmlFor="address">نشانی</SDLabel>
@@ -218,7 +234,6 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
                 {...register("emergencyContact")}
                 type="text"
                 id="firstName"
-                className="ltr"
               />
             </div>
             <div className="w-1/2">
@@ -248,7 +263,6 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
             className="w-full"
             color="primary"
             type="submit"
-            disabled={!isDirty}
           >
             مرحله بعد
           </SDButton>

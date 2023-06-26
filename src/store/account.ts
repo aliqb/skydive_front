@@ -37,10 +37,10 @@ const accountSlice = createSlice({
         },
         setDocuments:(state,action: PayloadAction<DocumentsList>)=>{
             const payload = action.payload;
-            state.medicalDocument = payload.medicalDocument;
-            state.logBookDocument = payload.logBookDocument;
-            state.attorneyDocument = payload.attorneyDocument;
-            state.nationalCardDocument = payload.nationalCardDocument;
+            state.medicalDocument = payload.medicalDocument || undefined;
+            state.logBookDocument = payload.logBookDocument || undefined;
+            state.attorneyDocument = payload.attorneyDocument || undefined;
+            state.nationalCardDocument = payload.nationalCardDocument || undefined;
         },
         setDocumnetFile:(state, action:PayloadAction<{field:UserDocumentsFieldType,fileId: string}>)=>{
             const payload = action.payload;

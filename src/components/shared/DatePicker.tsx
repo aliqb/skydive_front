@@ -4,9 +4,11 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import persian_en from "react-date-object/locales/persian_en";
 import DatePicker, { DateObject } from "react-multi-date-picker";
-type DatePickerFinalProps = CalendarProps & DatePickerProps
+import { useState } from "react";
+type DatePickerFinalProps = CalendarProps & DatePickerProps;
 interface SDDatePickerProps extends Omit<DatePickerFinalProps, "onChange"> {
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control?: Control<any>;
   required?: boolean;
   manualInvalid?: boolean;
@@ -18,6 +20,9 @@ const SDDatepicker: React.FC<SDDatePickerProps> = (props) => {
   delete datePickerPropsTemp.control;
   delete datePickerPropsTemp.required;
   delete datePickerPropsTemp.onChange;
+
+  const [manualIsTouched,setManualIsTouched] = useState<boolean>(false);
+
   function formaDateObject(date: DateObject): string {
     if (!date) {
       return "";
@@ -61,15 +66,17 @@ const SDDatepicker: React.FC<SDDatePickerProps> = (props) => {
       } //optional
       render={({
         field: { onChange, value },
-        //   fieldState: { invalid, isDirty }, //optional
+        // fieldState: { isTouched }, //optional
         formState: { errors }, //optional, but necessary if you want to show an error message
       }) => (
         <>
           <DatePicker
+            onOpen={()=>setManualIsTouched(true)}
             name={props.name}
             id={props.id}
             value={value || ""}
             onChange={(date: DateObject) => {
+              console.log(formaDateObject(date));
               onChange(formaDateObject(date));
             }}
             //   format={language === "en" ? "MM/DD/YYYY" : "YYYY/MM/DD"}
@@ -78,7 +85,7 @@ const SDDatepicker: React.FC<SDDatePickerProps> = (props) => {
             calendarPosition="bottom-right"
             containerClassName="w-full"
             inputClass={`${
-              errors[props.name]
+              errors[props.name] || (props.required && manualIsTouched && !value)
                 ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                 : "border-gray-300 focus:border-blue-500"
             } ${

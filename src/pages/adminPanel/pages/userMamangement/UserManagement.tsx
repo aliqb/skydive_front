@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import Grid from "../../../components/shared/Grid";
-import SDButton from "../../../components/shared/Button";
-import SDDatepicker from "../../../components/shared/DatePicker";
-import useAPi from "../../../hooks/useApi";
+import Grid from "../../../../components/shared/Grid";
+import SDButton from "../../../../components/shared/Button";
+import SDDatepicker from "../../../../components/shared/DatePicker";
+import useAPi from "../../../../hooks/useApi";
 import {
   BaseResponse,
   UserStatusesPersianMap,
-} from "../../../models/shared.models";
-import SDSpinner from "../../../components/shared/Spinner";
+} from "../../../../models/shared.models";
+import SDSpinner from "../../../../components/shared/Spinner";
+import { Link, useNavigate } from "react-router-dom";
+import { User } from "../../../../models/usermanagement.models";
 
 const UserManagement: React.FC = () => {
   const { sendRequest, errors, isPending } = useAPi<
@@ -16,10 +18,16 @@ const UserManagement: React.FC = () => {
   >();
   const [result, setResult] = useState<User[]>([]);
   const [selectedValue, setSelectedValue] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedValue(event.target.value);
   };
+
+  function goToDetail(user: User) {
+    navigate(`${user.id}`);
+    console.log(user);
+  }
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -28,7 +36,7 @@ const UserManagement: React.FC = () => {
           {
             url: "/Admin/GetUsers",
             params: {
-              pagesize: 10,
+              pagesize: 10000,
               pageindex: 1,
               userStatus: selectedValue.toLowerCase(),
             },
@@ -45,7 +53,7 @@ const UserManagement: React.FC = () => {
     };
 
     fetchUsers();
-  }, [selectedValue]);
+  }, [selectedValue, sendRequest]);
 
   if (isPending) {
     return (
@@ -63,7 +71,9 @@ const UserManagement: React.FC = () => {
     <>
       <div className="flex justify-between mt-12">
         <div>
-          <SDButton color="success">+ جدید</SDButton>
+          <Link to="create">
+            <SDButton color="success">+ جدید</SDButton>
+          </Link>
         </div>
         <div className="flex items-center justify-center">
           <div>
@@ -76,9 +86,7 @@ const UserManagement: React.FC = () => {
               onChange={handleSelectChange}
               value={selectedValue}
             >
-              <option selected value="">
-                همه
-              </option>
+              <option value="">همه</option>
               {Array.from(UserStatusesPersianMap.entries()).map(
                 ([key, value]) => (
                   <option key={key} value={key} className="text-right">
@@ -114,6 +122,7 @@ const UserManagement: React.FC = () => {
       <div className="mt-6">
         <Grid
           data={result}
+          onDoubleClick={goToDetail}
           columnsToShow={[
             "code",
             "nationalCode",

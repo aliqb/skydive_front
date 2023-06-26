@@ -1,5 +1,5 @@
 import { InputHTMLAttributes, forwardRef, Ref } from "react";
-interface SDTextInputProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface SDTextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   invalid?: boolean;
 }
 
@@ -12,7 +12,7 @@ const SDTextInput = forwardRef(
     return (
       <input
         {...inputProps}
-        id="password"
+        id={props.id}
         ref={ref}
         className={`${
           props.invalid

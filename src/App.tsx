@@ -26,7 +26,7 @@ import OTPLoginPage from "./pages/Auth/OTPLoginPage";
 import Home from "./pages/userPanel/Home";
 import SkyDiveEventsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventPage";
 
-import UserManagement from "./pages/adminPanel/pages/UserManagement";
+import UserManagement from "./pages/adminPanel/pages/userMamangement/UserManagement";
 import AdminEvents from "./pages/adminPanel/pages/AdminEvents";
 import Settings from "./pages/adminPanel/pages/Settings";
 import SendMessage from "./pages/adminPanel/pages/SendMessage";
@@ -34,6 +34,10 @@ import Reports from "./pages/adminPanel/pages/Reports";
 import SkyDiveEventDaysPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventDaysPage";
 import SkyDiveEventFlightsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventFlightsPage";
 import PaymentPage from "./pages/Payment/PaymentPage";
+import UserDetailPage from "./pages/adminPanel/pages/userMamangement/userDetail/UserDetailPage";
+import AdminUserDocument from "./pages/adminPanel/pages/userMamangement/userDetail/AdminUserDocument";
+import CreateUserPage from "./pages/adminPanel/pages/userMamangement/CreateUserPage";
+import EditUserPage from "./pages/adminPanel/pages/userMamangement/EditUserPage";
 
 function App() {
   // useEffect(()=>{
@@ -96,6 +100,11 @@ function App() {
           >
             <Route Component={Cartable} path="cartable"></Route>
             <Route Component={UserManagement} path="users"></Route>
+            <Route Component={CreateUserPage} path="users/create"></Route>
+            <Route Component={UserDetailPage} path="users/:userId">
+              <Route Component={AdminUserDocument} path="documents"></Route>
+            </Route>
+            <Route Component={EditUserPage} path="users/:userId/edit"></Route>
             <Route Component={AdminEvents} path="events"></Route>
             <Route Component={Settings} path="settings"></Route>
             <Route Component={SendMessage} path="sendMessage"></Route>

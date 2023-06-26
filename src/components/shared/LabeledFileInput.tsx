@@ -66,7 +66,7 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
         <span>
           <button className="text-red-600 ml-2 -mb-6 translate-y-[2px]" onClick={resetUploadedFile}>X</button>
           <a
-            className="text-blue-700"
+            className="text-blue-700 inline-block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap ltr"
             href={URL.createObjectURL(uploadedFile)}
             download={uploadedFile.name}
           >

@@ -88,26 +88,26 @@ const Account: React.FC = () => {
         lastName: personalInfo?.lastName || "",
         nationalCode: personalInfo?.nationalCode || "",
         address: personalInfo?.address,
-        cityId: personalInfo?.cityId,
+        cityId: personalInfo?.cityId || null,
         email: personalInfo?.email,
         emergencyContact: personalInfo?.emergencyContact,
         emergencyPhone: personalInfo?.emergencyPhone,
         height: personalInfo?.height,
         weight: personalInfo?.weight,
-        nationalCardDocument: accountState.nationalCardDocument && {
+        nationalCardDocument: (accountState.nationalCardDocument && accountState.nationalCardDocument.fileId) ? {
           fileId: accountState.nationalCardDocument.fileId,
-        },
-        attorneyDocument: accountState.attorneyDocument && {
+        } :  undefined,
+        attorneyDocument: (accountState.attorneyDocument && accountState.attorneyDocument) ? {
           fileId: accountState.attorneyDocument.fileId,
           expirationDate: accountState.attorneyDocument.expirationDate,
-        },
-        logBookDocument: accountState.logBookDocument && {
+        } :  undefined,
+        logBookDocument: (accountState.logBookDocument && accountState.logBookDocument.fileId) ? {
           fileId: accountState.logBookDocument.fileId,
-        },
-        medicalDocument: accountState.medicalDocument && {
+        } : undefined,
+        medicalDocument: (accountState.medicalDocument && accountState.medicalDocument.fileId) ? {
           fileId: accountState.medicalDocument.fileId,
           expirationDate: accountState.medicalDocument.expirationDate,
-        },
+        } : undefined,
       };
       sendRequest(
         {

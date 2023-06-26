@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 import AdminGridActions from '../adminPanel/AdminGridActions';
 import CostModal from '../adminPanel/CostModal';
 interface GridProps {
-  data: Record<string, any>[];
+  data: any[];
   columnsToShow: string[];
-  fetchData: () => void;
+  fetchData?: () => void;
+  onDoubleClick?: (data: any) => void;
 }
 interface HeaderTranslations {
   [key: string]: string;
@@ -14,30 +15,37 @@ const translateHeader = (header: string, translations: HeaderTranslations) => {
   return translations[header] || header;
 };
 
-const Grid: React.FC<GridProps> = ({ data, columnsToShow, fetchData }) => {
+const Grid: React.FC<GridProps> = ({ data, columnsToShow, fetchData,onDoubleClick }) => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState('');
 
   const headerTranslations: HeaderTranslations = {
-    code: 'کد کاربر',
-    nationalCode: 'کدملی',
-    firstName: 'نام ',
-    lastName: 'نام خانوادگی',
-    userType: 'نوع کاربر',
-    phone: 'موبایل',
-    birthDate: 'تاریخ تولد',
-    username: 'نام کاربری',
-    email: 'ایمیل',
-    statusDisplay: 'وضعیت',
-    title: 'نام',
-    startDate: 'شروع',
-    endDate: 'پایان',
-    location: 'محل رویداد',
-    statusTitle: 'وضعیت',
-    voidableString: 'قابل لغو',
-    termsAndConditions: 'قوانین و شرایط',
-    cost: 'بهای فروش',
-    actions: 'عملیات',
+    code: "کد کاربر",
+    nationalCode: "کدملی",
+    firstName: "نام ",
+    lastName: "نام خانوادگی",
+    userType: "نوع کاربر",
+    phone: "موبایل",
+    birthDate: "تاریخ تولد",
+    username: "نام کاربری",
+    email: "ایمیل",
+    statusDisplay: "وضعیت",
+    title: "نام",
+    startDate: "شروع",
+    endDate: "پایان",
+    location: "محل رویداد",
+    statusTitle: "وضعیت",
+    voidableString: "قابل لغو",
+    termsAndConditions: "قوانین و شرایط",
+    cost: "بهای فروش",
+    actions: "عملیات",
+  };
+
+  const onRowDobuleClisk = (item: any) => {
+    console.log(item);
+    if (onDoubleClick) {
+      onDoubleClick(item);
+    }
   };
   const handleOnOpenModal = (id?: string) => {
     setSelectedRowId(id || '');
@@ -70,7 +78,11 @@ const Grid: React.FC<GridProps> = ({ data, columnsToShow, fetchData }) => {
           <Table.Body className="divide-y">
             {data.map((row, index) => (
               <Table.Row
-                className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                onDoubleClick={(event) => {
+                  event.stopPropagation();
+                  onRowDobuleClisk(row);
+                }}
+                className={`${onDoubleClick && '!cursor-pointer'} bg-white dark:border-gray-700 dark:bg-gray-800`}
                 key={index}
               >
                 {columnsToShow.map((column) => (
