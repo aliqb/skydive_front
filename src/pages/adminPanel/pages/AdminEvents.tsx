@@ -12,6 +12,10 @@ import { BaseResponse } from '../../../models/shared.models';
 import SDSpinner from '../../../components/shared/Spinner';
 import AdminEventModal from '../../../components/adminPanel/AdminEventModal';
 import { ColDef } from '../../../components/shared/Grid/grid.types';
+import StatusIndicator from '../../../components/shared/StatusIndicator';
+import {BiToggleLeft} from 'react-icons/bi';
+import { BsAirplaneEngines } from "react-icons/bs";
+
 
 const AdminEvents: React.FC = () => {
   const { sendRequest, errors, isPending } = useAPi<
@@ -51,7 +55,7 @@ const AdminEvents: React.FC = () => {
   // 'termsAndConditions',
   // 'cost',
   // 'actions',
-  const [colDefs] = useState<ColDef[]>([
+  const [colDefs] = useState<ColDef<SkyDiveEvent>[]>([
     {
       field: 'code',
       headerName: 'کد',
@@ -76,8 +80,25 @@ const AdminEvents: React.FC = () => {
     },
     {
       field: 'voidableString',
-      headerName: 'قابلیت لغو',
+      headerName: 'قابل لغو',
     },
+    {
+      field:'',
+      headerName:'قوانین و شرایط',
+      onClick:(item)=>{console.log(item)},
+      template: 'ویرایش'
+    },
+    {
+      field:'',
+      headerName:'بهای فروش',
+      onClick:(item)=>{console.log(item)},
+      template: 'ویرایش'
+    },
+    {
+      field:'',
+      headerName: '',
+      cellRenderer:(item)=>(<StatusIndicator isActive={item.isActive}></StatusIndicator>)
+    }
     // {
     //   field: 'termsAndConditions',
     //   headerName: 'کد',
@@ -222,10 +243,34 @@ const AdminEvents: React.FC = () => {
         </div>
       </div>
       <div className="mt-6">
-        <Grid
+        <Grid<SkyDiveEvent>
           data={processedData}
           colDefs={colDefs}
           fetchData={fetchEvents}
+          onEditRow={(item)=>console.log('edit',item)}
+          onRemoveRow={(item)=>console.log('remove',item)}
+          rowActions={{
+            edit: true,
+            remove: true,
+            otherActions:[
+              {
+                icon:<BiToggleLeft size="1.5rem" color="#e02424" />,
+                descriptions: 'فعال کردن',
+                // showField:'isActive',
+                // disableField: '!isActive',
+                onClick:(item)=>{console.log(item)}
+                
+              }
+              
+            ],
+            moreActions:[
+              {
+                icon: <BsAirplaneEngines size="1.5rem" />,
+                descriptions:'پروازها',
+                onClick:(item)=>{console.log(item)}
+              }
+            ]
+          }}
         />
       </div>
     </>
