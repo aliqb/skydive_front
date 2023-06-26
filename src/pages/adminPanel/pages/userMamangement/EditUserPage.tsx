@@ -12,12 +12,13 @@ import {
   usermanagementActions,
 } from "../../../../store/usermanagement";
 import SDSpinner from "../../../../components/shared/Spinner";
+import UserStatusLabel from "../../../../components/shared/UserStatusLabel";
 
 const EditUserPage: React.FC = () => {
   const { sendRequest } = useAPi<UserRequest, BaseResponse<null>>();
   const navigate = useNavigate();
   const params = useParams();
-  const userMamangementState = useAppSelector((state) => state.userManagement);
+  const userManagementState = useAppSelector((state) => state.userManagement);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -56,12 +57,28 @@ const EditUserPage: React.FC = () => {
         <h6 className="font-bold text-lg ">ویرایش کاربر</h6>
       </div>
       <div className="px-2 xs:px-4 lg:px-12 mt-12">
-        {userMamangementState.loading && (
+        {userManagementState.loading && (
           <div className="flex justify-center">
             <SDSpinner color="blue" size={28}></SDSpinner>
           </div>
         )}
-        {userMamangementState.userDetail && !userMamangementState.loading && <UserForm onSubmit={onSubmit} userDetail={userMamangementState.userDetail} />}
+        {userManagementState.userDetail && !userManagementState.loading && (
+          <>
+            <div className="flex gap-4 mb-12 justify-center">
+              <p className="text-slate-800 font-semibold">وضعیت حساب کاربری</p>
+              
+                <UserStatusLabel
+                  status={userManagementState.userDetail.userStatus}
+                  display={userManagementState.userDetail.userStatusDisplay}
+                />
+              
+            </div>
+            <UserForm
+              onSubmit={onSubmit}
+              userDetail={userManagementState.userDetail}
+            />
+          </>
+        )}
       </div>
     </SDCard>
   );
