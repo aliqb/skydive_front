@@ -159,17 +159,21 @@ const AdminEvents: React.FC = () => {
   );
 
   const onRemove = async (item: SkyDiveEvent) => {
-    const confirm = await  confirmation();
+    const confirm = await confirmation();
     if (confirm) {
-      sendDeleteRequest({
-        url: `/SkyDiveEvents/${item.id}`,
-        method: "delete",
-      },(response)=>{
-        toast.success(response.message);
-        fetchEvents(selectedValue);
-      },(error)=>{
-        toast.error(error?.message)
-      });
+      sendDeleteRequest(
+        {
+          url: `/SkyDiveEvents/${item.id}`,
+          method: "delete",
+        },
+        (response) => {
+          toast.success(response.message);
+          fetchEvents(selectedValue);
+        },
+        (error) => {
+          toast.error(error?.message);
+        }
+      );
     }
   };
 
@@ -226,49 +230,40 @@ const AdminEvents: React.FC = () => {
   return (
     <>
       <ConfirmModal />
-      <div className="flex justify-between mt-12">
-        <div>
+      <AdminEventModal
+        eventStatusData={eventStatusData?.content}
+        lastCode={lastCode?.content || ""}
+        showModal={showModal}
+        onCloseModal={handleCloseModal}
+        eventData={currentEvent}
+      />
+      <div className="flex justify-between gap-3 flex-wrap">
+        <div className="flex gap-6 ">
           <SDButton color="success" onClick={onCreate}>
             + جدید
           </SDButton>
-        </div>
-
-        <AdminEventModal
-          eventStatusData={eventStatusData?.content}
-          lastCode={lastCode?.content || ""}
-          showModal={showModal}
-          onCloseModal={handleCloseModal}
-          eventData={currentEvent}
-        />
-
-        {/* <AdminEventModal
-          eventStatusData={eventStatusData?.content}
-          lastCode={lastCode?.content || ""}
-          showModal={showModal}
-          onOpenModal={handleButtonClick}
-          onCloseModal={handleCloseModal}
-        /> */}
-
-        <div className="flex items-center justify-center">
-          <div>
-            <p>وضعیت :</p>
-          </div>
-          <div className="mr-5">
-            <select
-              id="underline_select"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              onChange={handleSelectChange}
-              value={selectedValue}
-            >
-              <option value="">همه</option>
-              {eventStatusData?.content.map((status, index) => (
-                <option key={index} value={status.id} className="text-right">
-                  {status.title}
-                </option>
-              ))}
-            </select>
+          <div className="flex items-center justify-center">
+            <div>
+              <p>وضعیت :</p>
+            </div>
+            <div className="mr-5">
+              <select
+                id="underline_select"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                onChange={handleSelectChange}
+                value={selectedValue}
+              >
+                <option value="">همه</option>
+                {eventStatusData?.content.map((status, index) => (
+                  <option key={index} value={status.id} className="text-right">
+                    {status.title}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
+
         <div className="flex items-center">
           <div>
             <p> تاریخ :</p>
