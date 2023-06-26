@@ -9,7 +9,7 @@ import GridRowMoreActionComponent from "./GridRowMoreActionsComponent";
 interface GridProps<T = any> {
   data: T[];
   colDefs: ColDef[];
-  fetchData?: () => void;
+  // fetchData?: () => void;
   onDoubleClick?: (data: T) => void;
   rowActions?: GridRowActions<T> | null;
   onEditRow?: (item: T) => void;
@@ -19,7 +19,7 @@ interface GridProps<T = any> {
 function Grid<T>({
   data,
   colDefs: colDefs,
-  fetchData,
+  // fetchData,
   onDoubleClick,
   onEditRow,
   onRemoveRow,
@@ -53,7 +53,7 @@ function Grid<T>({
   {
     return (
       <>
-        {openModal && (
+        {/* {openModal && (
           <CostModal
             showModal={openModal}
             onOpenModal={handleOnOpenModal}
@@ -61,7 +61,7 @@ function Grid<T>({
             fetchData={fetchData}
             rowId={selectedRowId}
           />
-        )}
+        )} */}
 
         <div className="overflow-x-auto w-full">
           <div>

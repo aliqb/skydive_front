@@ -1,21 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import Grid from '../../../components/shared/Grid/Grid';
-import SDButton from '../../../components/shared/Button';
-import SDDatepicker from '../../../components/shared/DatePicker';
-import useAPi from '../../../hooks/useApi';
+import React, { useEffect, useState, useCallback } from "react";
+import Grid from "../../../components/shared/Grid/Grid";
+import SDButton from "../../../components/shared/Button";
+import SDDatepicker from "../../../components/shared/DatePicker";
+import useAPi from "../../../hooks/useApi";
 import {
   NewEvent,
   SkyDiveEventStatus,
   SkyDiveEvent,
-} from '../../../models/skyDiveEvents.models';
-import { BaseResponse } from '../../../models/shared.models';
-import SDSpinner from '../../../components/shared/Spinner';
-import AdminEventModal from '../../../components/adminPanel/AdminEventModal';
-import { ColDef } from '../../../components/shared/Grid/grid.types';
-import StatusIndicator from '../../../components/shared/StatusIndicator';
-import {BiToggleLeft} from 'react-icons/bi';
+} from "../../../models/skyDiveEvents.models";
+import { BaseResponse } from "../../../models/shared.models";
+import SDSpinner from "../../../components/shared/Spinner";
+import AdminEventModal from "../../../components/adminPanel/AdminEventModal";
+import { ColDef } from "../../../components/shared/Grid/grid.types";
+import StatusIndicator from "../../../components/shared/StatusIndicator";
+import { BiToggleLeft } from "react-icons/bi";
 import { BsAirplaneEngines } from "react-icons/bs";
-
 
 const AdminEvents: React.FC = () => {
   const { sendRequest, errors, isPending } = useAPi<
@@ -30,75 +29,85 @@ const AdminEvents: React.FC = () => {
     null,
     BaseResponse<string>
   >();
-  const [selectedValue, setSelectedValue] = useState<string>('');
+  const [selectedValue, setSelectedValue] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
+  const [currentEvent,setCurrentEvent] = useState<SkyDiveEvent>();
 
-  const handleCloseModal = () => {
+  const handleCloseModal = (submitted: boolean) => {
+    if (submitted) {
+      fetchEvents(selectedValue);
+    }
+    setCurrentEvent(undefined)
     setShowModal(false);
   };
 
   const [processedData, setProcessedData] = useState<SkyDiveEvent[]>([]);
 
-  const handleButtonClick = () => {
+  const onCreate = () => {
     setShowModal(true);
   };
+
+  const onEdit = (item:SkyDiveEvent)=>{
+    setCurrentEvent(item)
+  }
+
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedValue(event.target.value);
   };
-  // 'code',
-  // 'title',
-  // 'startDate',
-  // 'endDate',
-  // 'location',
-  // 'statusTitle',
-  // 'voidableString',
-  // 'termsAndConditions',
-  // 'cost',
-  // 'actions',
   const [colDefs] = useState<ColDef<SkyDiveEvent>[]>([
     {
-      field: 'code',
-      headerName: 'کد',
+      field: "code",
+      headerName: "کد",
     },
     {
-      field: 'title',
-      headerName: 'عنوان',
-    },
-
-    {
-      field: 'startDate',
-      headerName: 'تاریخ شروع',
+      field: "title",
+      headerName: "عنوان",
     },
 
     {
-      field: 'endDate',
-      headerName: 'تاریخ پایان',
+      field: "startDate",
+      headerName: "تاریخ شروع",
+    },
+
+    {
+      field: "endDate",
+      headerName: "تاریخ پایان",
     },
     {
-      field: 'location',
-      headerName: 'محل رویداد',
+      field: "location",
+      headerName: "محل رویداد",
     },
     {
-      field: 'voidableString',
-      headerName: 'قابل لغو',
+      field: "statusTitle",
+      headerName: "وضعیت",
     },
     {
-      field:'',
-      headerName:'قوانین و شرایط',
-      onClick:(item)=>{console.log(item)},
-      template: 'ویرایش'
+      field: "voidableString",
+      headerName: "قابل لغو",
     },
     {
-      field:'',
-      headerName:'بهای فروش',
-      onClick:(item)=>{console.log(item)},
-      template: 'ویرایش'
+      field: "",
+      headerName: "قوانین و شرایط",
+      onClick: (item) => {
+        console.log(item);
+      },
+      template: "ویرایش",
     },
     {
-      field:'',
-      headerName: '',
-      cellRenderer:(item)=>(<StatusIndicator isActive={item.isActive}></StatusIndicator>)
-    }
+      field: "",
+      headerName: "بهای فروش",
+      onClick: (item) => {
+        console.log(item);
+      },
+      template: "ویرایش",
+    },
+    {
+      field: "",
+      headerName: "",
+      cellRenderer: (item) => (
+        <StatusIndicator isActive={item.isActive}></StatusIndicator>
+      ),
+    },
     // {
     //   field: 'termsAndConditions',
     //   headerName: 'کد',
@@ -111,45 +120,44 @@ const AdminEvents: React.FC = () => {
     //   field: 'code',
     //   headerName: 'کد',
     // },
+  ]);
 
-  ])
-
-  const fetchEvents = () => {
-    try {
+  const fetchEvents = useCallback(
+    (selectedStatus: string) => {
       sendRequest(
         {
-          url: '/SkyDiveEvents',
+          url: "/SkyDiveEvents",
           params: {
             pagesize: 10,
             pageindex: 1,
-            Statusid: selectedValue.toLowerCase(),
+            Statusid: selectedStatus,
           },
         },
         (response) => {
           const processedData =
             response.content.map((item) => {
-              const voidableString = item.voidable ? 'هست' : 'نیست';
+              const voidableString = item.voidable ? "هست" : "نیست";
               return { ...item, voidableString };
             }) || [];
           setProcessedData(processedData);
         }
       );
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
+    },
+    [sendRequest]
+  );
+
   useEffect(() => {
-    fetchEvents();
-  }, [selectedValue]);
+    fetchEvents(selectedValue);
+  }, [selectedValue, sendRequest, fetchEvents]);
 
   useEffect(() => {
     const fetchEventStatuses = () => {
       try {
         eventStatusSendRequest({
-          url: '/SkyDiveEventStatuses',
+          url: "/SkyDiveEventStatuses",
         });
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     };
 
@@ -160,15 +168,21 @@ const AdminEvents: React.FC = () => {
     const fetchLastCode = () => {
       try {
         lastCodeSendRequest({
-          url: '/SkyDiveEvents/GetLastCode',
+          url: "/SkyDiveEvents/GetLastCode",
         });
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     };
 
     fetchLastCode();
-  }, []);
+  }, [lastCodeSendRequest]);
+
+  useEffect(()=>{
+    if(currentEvent){
+      setShowModal(true);
+    }
+  },[currentEvent])
 
   if (isPending) {
     return (
@@ -186,19 +200,26 @@ const AdminEvents: React.FC = () => {
     <>
       <div className="flex justify-between mt-12">
         <div>
-          <SDButton color="success" onClick={handleButtonClick}>
+          <SDButton color="success" onClick={onCreate}>
             + جدید
           </SDButton>
         </div>
 
         <AdminEventModal
-          eventStatusData={eventStatusData}
-          lastCode={lastCode?.content || ''}
+          eventStatusData={eventStatusData?.content}
+          lastCode={lastCode?.content || ""}
+          showModal={showModal}
+          onCloseModal={handleCloseModal}
+          eventData={currentEvent}
+        />
+
+        {/* <AdminEventModal
+          eventStatusData={eventStatusData?.content}
+          lastCode={lastCode?.content || ""}
           showModal={showModal}
           onOpenModal={handleButtonClick}
           onCloseModal={handleCloseModal}
-          fetchData={fetchEvents}
-        />
+        /> */}
 
         <div className="flex items-center justify-center">
           <div>
@@ -246,30 +267,31 @@ const AdminEvents: React.FC = () => {
         <Grid<SkyDiveEvent>
           data={processedData}
           colDefs={colDefs}
-          fetchData={fetchEvents}
-          onEditRow={(item)=>console.log('edit',item)}
-          onRemoveRow={(item)=>console.log('remove',item)}
+          onEditRow={onEdit}
+          onRemoveRow={(item) => console.log("remove", item)}
           rowActions={{
             edit: true,
             remove: true,
-            otherActions:[
+            otherActions: [
               {
-                icon:<BiToggleLeft size="1.5rem" color="#e02424" />,
-                descriptions: 'فعال کردن',
+                icon: <BiToggleLeft size="1.5rem" color="#e02424" />,
+                descriptions: "فعال کردن",
                 // showField:'isActive',
                 // disableField: '!isActive',
-                onClick:(item)=>{console.log(item)}
-                
-              }
-              
+                onClick: (item) => {
+                  console.log(item);
+                },
+              },
             ],
-            moreActions:[
+            moreActions: [
               {
                 icon: <BsAirplaneEngines size="1.5rem" />,
-                descriptions:'پروازها',
-                onClick:(item)=>{console.log(item)}
-              }
-            ]
+                descriptions: "پروازها",
+                onClick: (item) => {
+                  console.log(item);
+                },
+              },
+            ],
           }}
         />
       </div>
