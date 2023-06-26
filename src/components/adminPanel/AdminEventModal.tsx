@@ -22,6 +22,7 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
   onCloseModal,
   eventData,
 }) => {
+  const fileBase = `${import.meta.env.VITE_BASE_API_URL}/file/`;
   const { sendRequest, isPending } = useAPi<
     NewEvent,
     BaseResponse<SkyDiveEvent[]>
@@ -32,12 +33,13 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
     control,
     setValue,
     formState: { errors: formErrors },
-    reset
+    reset,
   } = useForm<NewEvent>({
     mode: "onTouched",
   });
   const [selectedCancelOption, setSelectedCancelOption] = useState(false);
   const [selectedVATOption, setSelectedVATOption] = useState(false);
+  const [uploadedImageId, setUploadedImageId] = useState<string>("");
 
   useEffect(() => {
     if (eventData) {
@@ -71,6 +73,7 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
     console.log(data);
     data.subjecToVAT = selectedVATOption;
     data.voidable = selectedCancelOption;
+    data.image = uploadedImageId ? uploadedImageId : eventData?.image || "";
 
     if (eventData) {
       sendRequest(
@@ -106,18 +109,33 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
     }
   };
 
-  function resetModal(submitted: boolean){
+  function onUploadImage(id: string) {
+    setUploadedImageId(id);
+  }
+
+  function onRemoveImage() {
+    setUploadedImageId("");
+  }
+
+  function resetModal(submitted: boolean) {
     reset();
     onCloseModal(submitted);
+    setSelectedCancelOption(false);
+    setSelectedVATOption(false);
+    setUploadedImageId("");
   }
 
   return (
     <div>
-      <SDModal show={showModal} onClose={()=>resetModal(false)} containerClass="!p-0">
+      <SDModal
+        show={showModal}
+        onClose={() => resetModal(false)}
+        containerClass="!p-0"
+      >
         <div className="border-b text-lg flex justify-between px-6 py-4 bg-blue-900 text-white rounded-t-md">
           {!eventData && <span>ثبت رویداد جدید</span>}
           {eventData && <span>ویرایش رویداد</span>}
-          <button type="button" onClick={()=>resetModal(false)}>
+          <button type="button" onClick={() => resetModal(false)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -222,7 +240,7 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
                     id="eventStatus"
                     invalid={!!formErrors.statusId}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    {...register("statusId")}
+                    {...register("statusId", { required: "فیلد اجباری است." })}
                   >
                     <option value="">انتخاب کنید</option>
                     {eventStatusData &&
@@ -260,18 +278,32 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
               </div>
             </div>
             <div className="flex flex-row w-full mt-5">
-              <div className="flex flex-col w-1/2">
+              <div className="flex flex-col w-1/2 justify-center">
                 <div>
                   <SDLabel>تصویر</SDLabel>
                 </div>
-                <div className="mt-5">
-                  <LabeledFileInput
-                    accepFiles="application/pdf,image/*"
-                    onUpload={() => {
-                      return;
-                    }}
-                    title=""
-                  />
+                <div className="mt-3">
+                  {(!uploadedImageId && eventData?.image) && (
+                    <a
+                      href={fileBase + eventData.image}
+                      target="_blank"
+                      className="block w-40 max-h-48 mb-2"
+                    >
+                      <img
+                        className="w-full h-full object-contain"
+                        src={fileBase + eventData.image}
+                        alt=""
+                      />
+                    </a>
+                  )}
+                  <div className="pr-3">
+                    <LabeledFileInput
+                      accepFiles="image/*"
+                      onUpload={onUploadImage}
+                      onRemove={onRemoveImage}
+                      title="image"
+                    />
+                  </div>
                 </div>
               </div>
               <div className="flex flex-col w-1/2 items-center mr-4">
@@ -291,7 +323,7 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
               </div>
             </div>
           </div>
-          <div className="w-full px-5 py-8 flex justify-start items-center">
+          <div className="w-full px-5 pb-6 flex justify-start items-center">
             <SDButton
               color="primary"
               type="submit"
