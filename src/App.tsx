@@ -37,6 +37,7 @@ import PaymentPage from "./pages/Payment/PaymentPage";
 import UserDetailPage from "./pages/adminPanel/pages/userMamangement/userDetail/UserDetailPage";
 import AdminUserDocument from "./pages/adminPanel/pages/userMamangement/userDetail/AdminUserDocument";
 import CreateUserPage from "./pages/adminPanel/pages/userMamangement/CreateUserPage";
+import EditUserPage from "./pages/adminPanel/pages/userMamangement/EditUserPage";
 
 function App() {
   // useEffect(()=>{
@@ -103,6 +104,7 @@ function App() {
             <Route Component={UserDetailPage} path="users/:userId">
               <Route Component={AdminUserDocument} path="documents"></Route>
             </Route>
+            <Route Component={EditUserPage} path="users/:userId/edit"></Route>
             <Route Component={AdminEvents} path="events"></Route>
             <Route Component={Settings} path="settings"></Route>
             <Route Component={SendMessage} path="sendMessage"></Route>

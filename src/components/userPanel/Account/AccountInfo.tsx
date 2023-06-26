@@ -117,6 +117,7 @@ const AccountInfo: React.FC = () => {
             disabled={true}
             type="text"
             id="userId"
+            className="ltr"
           />
         </div>
         <div className="mb-6 w-full sm:w-1/2 sm:pl-12">
@@ -142,6 +143,7 @@ const AccountInfo: React.FC = () => {
             disabled={true}
             invalid={!!errors.username}
             value={authState.username}
+            className="ltr"
           />
           {errors.username?.message && (
             <p className="text-red-600 text-sm pr-2 mt-2">
@@ -189,7 +191,8 @@ const AccountInfo: React.FC = () => {
             // })}
             disabled={true}
             value={authState.mobile}
-            id="nationalId"
+            className="ltr"
+            id="phone"
           />
           {errors.phone?.message && (
             <p className="text-red-600 text-sm pr-2 mt-2">

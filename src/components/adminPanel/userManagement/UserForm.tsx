@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import {
+  UserDatail,
   UserRequest,
   userType,
 } from "../../../models/usermanagement.models";
@@ -12,7 +13,7 @@ import { City, CityDto } from "../../../models/account.models";
 import UserFormSelect from "./UserFormSelect";
 
 interface UserFormProps {
-  userDetail?: UserRequest;
+  userDetail?: UserDatail;
   onSubmit: (data: UserRequest, afterSubmit: () => void) => void;
 }
 
@@ -22,6 +23,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
     formState: { errors: formErrors },
     handleSubmit,
     control,
+    reset,
   } = useForm<UserRequest>({
     mode: "onTouched",
   });
@@ -77,6 +79,31 @@ const UserForm: React.FC<UserFormProps> = (props) => {
     getUserTypes();
   }, [props.userDetail, sendCitiesRequest, sendUserTypesRequest]);
 
+  useEffect(() => {
+    function setFormValue(userDetail: UserDatail) {
+      reset({
+        address: userDetail.address,
+        birthDate: userDetail.birthDate,
+        cityId: userDetail.cityId,
+        email: userDetail.email,
+        emergencyContact: userDetail.emergencyContact,
+        emergencyPhone: userDetail.emergencyPhone,
+        firstName: userDetail.firstName,
+        height: userDetail.height,
+        lastName: userDetail.lastName,
+        nationalCode: userDetail.nationalCode,
+        phone: userDetail.phone,
+        username: userDetail.username,
+        userTypeId: userDetail.userTypeId,
+        weight: userDetail.weight,
+      });
+    }
+
+    if (props.userDetail) {
+      setFormValue(props.userDetail);
+    }
+  }, [props.userDetail, cities, userTypes, reset]);
+
   function onSubmit(data: UserRequest) {
     setIsSubmitting(true);
     props.onSubmit(data, () => {
@@ -129,7 +156,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               name="userTypeId"
               register={register}
               errors={formErrors}
-              options={{required:'فیلد الزامی است.'}}
+              options={{ required: "فیلد الزامی است." }}
             >
               <option value=""></option>;
               {userTypes?.content &&
@@ -218,6 +245,8 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               //   register={register}
               disabled={true}
               errors={formErrors}
+              ltr={true}
+              defaultValue={props.userDetail?.userCode || ""}
             />
             <UserFormInput
               register={register}
@@ -237,20 +266,42 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               }}
               errors={formErrors}
             />
-            <UserFormInput
-              register={register}
-              name="password"
-              errors={formErrors}
-              options={{
-                required: "فیلد الزامی است.",
-                pattern: {
-                  value: /^(?=.*\d)(?=.*[A-Za-z])[\dA-Za-z!@#$%^&*\-()+=]{6,}$/,
-                  message:
-                    "رمز عبور حداقل 6 کاراکتر و شامل اعداد و حروف انگلیسی باشد.",
-                },
-              }}
-              type="password"
-            />
+            {props.userDetail ? (
+              <div className="mb-6 h-12 flex flex-col justify-center">
+                <SDButton className="w-12 h-12" color="light">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6 ml-2 stroke-slate-800"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                    />
+                  </svg>
+                </SDButton>
+              </div>
+            ) : (
+              <UserFormInput
+                register={register}
+                name="password"
+                errors={formErrors}
+                options={{
+                  required: "فیلد الزامی است.",
+                  pattern: {
+                    value:
+                      /^(?=.*\d)(?=.*[A-Za-z])[\dA-Za-z!@#$%^&*\-()+=]{6,}$/,
+                    message:
+                      "رمز عبور حداقل 6 کاراکتر و شامل اعداد و حروف انگلیسی باشد.",
+                  },
+                }}
+                type="password"
+              />
+            )}
             <UserFormInput
               register={register}
               name="email"
@@ -270,7 +321,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               errors={formErrors}
               ltr={true}
               options={{
-                required:'فیلد اجباری است.',
+                required: "فیلد اجباری است.",
                 pattern: {
                   value: /(\+98|0|0098)9\d{9}$/,
                   message: "شماره موبایل صحیح نیست.",
@@ -283,6 +334,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               type="number"
               errors={formErrors}
               options={{}}
+              ltr={true}
             />
             <UserFormInput
               register={register}
@@ -290,6 +342,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               type="number"
               errors={formErrors}
               options={{}}
+              ltr={true}
             />
           </div>
         </div>
