@@ -11,6 +11,7 @@ import {
 import { BaseResponse } from '../../../models/shared.models';
 import SDSpinner from '../../../components/shared/Spinner';
 import AdminEventModal from '../../../components/adminPanel/AdminEventModal';
+import { ColDef } from '../../../components/shared/Grid/grid.types';
 
 const AdminEvents: React.FC = () => {
   const { sendRequest, errors, isPending } = useAPi<
@@ -40,6 +41,57 @@ const AdminEvents: React.FC = () => {
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedValue(event.target.value);
   };
+  // 'code',
+  // 'title',
+  // 'startDate',
+  // 'endDate',
+  // 'location',
+  // 'statusTitle',
+  // 'voidableString',
+  // 'termsAndConditions',
+  // 'cost',
+  // 'actions',
+  const [colDefs] = useState<ColDef[]>([
+    {
+      field: 'code',
+      headerName: 'کد',
+    },
+    {
+      field: 'title',
+      headerName: 'عنوان',
+    },
+
+    {
+      field: 'startDate',
+      headerName: 'تاریخ شروع',
+    },
+
+    {
+      field: 'endDate',
+      headerName: 'تاریخ پایان',
+    },
+    {
+      field: 'location',
+      headerName: 'محل رویداد',
+    },
+    {
+      field: 'voidableString',
+      headerName: 'قابلیت لغو',
+    },
+    // {
+    //   field: 'termsAndConditions',
+    //   headerName: 'کد',
+    // },
+    // {
+    //   field: 'cost',
+    //   headerName: 'کد',
+    // },
+    // {
+    //   field: 'code',
+    //   headerName: 'کد',
+    // },
+
+  ])
 
   const fetchEvents = () => {
     try {
@@ -172,18 +224,7 @@ const AdminEvents: React.FC = () => {
       <div className="mt-6">
         <Grid
           data={processedData}
-          columnsToShow={[
-            'code',
-            'title',
-            'startDate',
-            'endDate',
-            'location',
-            'statusTitle',
-            'voidableString',
-            'termsAndConditions',
-            'cost',
-            'actions',
-          ]}
+          colDefs={colDefs}
           fetchData={fetchEvents}
         />
       </div>

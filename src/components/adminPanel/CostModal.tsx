@@ -47,6 +47,7 @@ const CostModal: React.FC<CostModalProps> = ({
   const [divCount, setDivCount] = useState(1);
 
   useEffect(() => {
+    console.log('hereeeeeeeeeeeeeeeeeeeee')
     append({
       amount: 0,
       typeId: '',

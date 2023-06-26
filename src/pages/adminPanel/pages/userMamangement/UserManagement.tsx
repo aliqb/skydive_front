@@ -123,7 +123,7 @@ const UserManagement: React.FC = () => {
         <Grid
           data={result}
           onDoubleClick={goToDetail}
-          columnsToShow={[
+          colDefs={[
             "code",
             "nationalCode",
             "firstName",

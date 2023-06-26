@@ -2,9 +2,10 @@ import { Table } from 'flowbite-react';
 import React, { useState } from 'react';
 import AdminGridActions from '../../adminPanel/AdminGridActions';
 import CostModal from '../../adminPanel/CostModal';
+import { ColDef } from './grid.types';
 interface GridProps {
   data: any[];
-  columnsToShow: string[];
+  colDefs: ColDef[];
   fetchData?: () => void;
   onDoubleClick?: (data: any) => void;
 }
@@ -15,7 +16,7 @@ const translateHeader = (header: string, translations: HeaderTranslations) => {
   return translations[header] || header;
 };
 
-const Grid: React.FC<GridProps> = ({ data, columnsToShow, fetchData,onDoubleClick }) => {
+const Grid: React.FC<GridProps> = ({ data, colDefs: colDefs, fetchData,onDoubleClick }) => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState('');
 
@@ -69,9 +70,9 @@ const Grid: React.FC<GridProps> = ({ data, columnsToShow, fetchData,onDoubleClic
 
         <Table hoverable className="text-right">
           <Table.Head>
-            {columnsToShow.map((column) => (
-              <Table.HeadCell key={column}>
-                {translateHeader(column, headerTranslations)}
+            {colDefs.map((column,index) => (
+              <Table.HeadCell key={index}>
+                {column.headerName}
               </Table.HeadCell>
             ))}
           </Table.Head>
@@ -85,12 +86,15 @@ const Grid: React.FC<GridProps> = ({ data, columnsToShow, fetchData,onDoubleClic
                 className={`${onDoubleClick && '!cursor-pointer'} bg-white dark:border-gray-700 dark:bg-gray-800`}
                 key={index}
               >
-                {columnsToShow.map((column) => (
+                {colDefs.map((column,index) => (
                   <Table.Cell
                     className="whitespace-nowrap font-medium text-gray-900 dark:text-white"
-                    key={column}
+                    key={index}
                   >
-                    {column === 'cost' ? (
+                    {
+                      row[column.field]
+                    }
+                    {/* {column === 'cost' ? (
                       <button
                         type="button"
                         onClick={() => handleOnOpenModal(row.id)}
@@ -113,7 +117,7 @@ const Grid: React.FC<GridProps> = ({ data, columnsToShow, fetchData,onDoubleClic
                       />
                     ) : (
                       row[column]
-                    )}{' '}
+                    )}{' '} */}
                   </Table.Cell>
                 ))}
               </Table.Row>
