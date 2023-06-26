@@ -40,7 +40,6 @@ const CostModal: React.FC<CostModalProps> = ({
 
   const {
     sendRequest: sendDatasendRequest,
-    errors: sendDataErrors,
     isPending: sendDataIsPending,
     data: newTicketFeeData,
   } = useAPi<NewTicketFee, BaseResponse<NewTicketFee[]>>();
@@ -48,18 +47,17 @@ const CostModal: React.FC<CostModalProps> = ({
   const [divCount, setDivCount] = useState(1);
 
   useEffect(() => {
-    console.log('hrer')
     append({
-        amount:0,
-        typeId: ''
-    })
+      amount: 0,
+      typeId: '',
+    });
     const fetchEventTicketType = () => {
       try {
         sendRequest({
-          url: "/SkyDiveEventTicketType",
+          url: '/SkyDiveEventTicketType',
         });
       } catch (error) {
-        console.error("Error:", error);
+        console.error('Error:', error);
       }
     };
 
@@ -67,36 +65,36 @@ const CostModal: React.FC<CostModalProps> = ({
   }, []);
 
   const handleSaveButton = handleSubmit((data) => {
-    console.log(data)
-    // sendDatasendRequest(
-    //   {
-    //     url: `/SkyDiveEvents/AddEventTypeFee/${rowId}`,
-    //     method: "post",
-    //     data: data,
-    //   },
-    //   (response) => {
-    //     console.log("Response:", response);
-    //     toast.success(response.message);
-    //     onCloseModal();
-    //     if (fetchData) {
-    //       fetchData();
-    //     }
-    //   },
-    //   (error) => {
-    //     console.log("Error:", error);
-    //     toast.error(error?.message);
-    //   }
-    // );
+    console.log(data);
+    sendDatasendRequest(
+      {
+        url: `/SkyDiveEvents/AddEventTypeFee/${rowId}`,
+        method: 'post',
+        data: data,
+      },
+      (response) => {
+        console.log('Response:', response);
+        toast.success(response.message);
+        onCloseModal();
+        if (fetchData) {
+          fetchData();
+        }
+      },
+      (error) => {
+        console.log('Error:', error);
+        toast.error(error?.message);
+      }
+    );
   });
 
   const addFeeItem = () => {
     append({
-      amount:0,
-      typeId: ''
-    })
-    // if (getData && getData.content && divCount < getData.content.length) {
-    //   setDivCount((prevCount) => prevCount + 1);
-    // }
+      amount: 0,
+      typeId: '',
+    });
+    if (getData && getData.content && divCount < getData.content.length) {
+      setDivCount((prevCount) => prevCount + 1);
+    }
   };
   return (
     <>
@@ -143,9 +141,7 @@ const CostModal: React.FC<CostModalProps> = ({
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           {...register(`items.${index}.typeId` as const)}
                         >
-                          <option  value="">
-                            انتخاب کنید
-                          </option>
+                          <option value="">انتخاب کنید</option>
                           {getData?.content.map((type, typeIndex) => (
                             <option
                               key={typeIndex}

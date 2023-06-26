@@ -108,4 +108,5 @@ export interface NewTicketFeeList{
 export interface AdminGridProps {
   fetchData: () => void;
   rowId: string;
+  isActive: boolean;
 }

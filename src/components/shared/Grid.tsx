@@ -49,13 +49,15 @@ const Grid: React.FC<GridProps> = ({ data, columnsToShow, fetchData }) => {
   {
     return (
       <>
-        <CostModal
-          showModal={openModal}
-          onOpenModal={handleOnOpenModal}
-          onCloseModal={handleOnCloseModal}
-          fetchData={fetchData}
-          rowId={selectedRowId}
-        />
+        {openModal && (
+          <CostModal
+            showModal={openModal}
+            onOpenModal={handleOnOpenModal}
+            onCloseModal={handleOnCloseModal}
+            fetchData={fetchData}
+            rowId={selectedRowId}
+          />
+        )}
 
         <Table hoverable className="text-right">
           <Table.Head>
@@ -92,10 +94,14 @@ const Grid: React.FC<GridProps> = ({ data, columnsToShow, fetchData }) => {
                         ویرایش
                       </a>
                     ) : column === 'actions' ? (
-                      <AdminGridActions fetchData={fetchData} rowId={row.id} />
+                      <AdminGridActions
+                        fetchData={fetchData}
+                        rowId={row.id}
+                        isActive={row.isActive}
+                      />
                     ) : (
                       row[column]
-                    )}
+                    )}{' '}
                   </Table.Cell>
                 ))}
               </Table.Row>
