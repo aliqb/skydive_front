@@ -6,9 +6,16 @@ interface SDDropdownProps {
   children: React.ReactNode;
   buttonClassName?: string;
   chevronClassName?: string;
+  withChevron?: boolean;
 }
 
-const SDDropdown: React.FC<SDDropdownProps> = (props) => {
+const SDDropdown: React.FC<SDDropdownProps> = ({
+  items,
+  children,
+  buttonClassName,
+  chevronClassName,
+  withChevron = true,
+}) => {
   const [show, setShow] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -50,25 +57,29 @@ const SDDropdown: React.FC<SDDropdownProps> = (props) => {
         onClick={toggleShow}
         id="dropdownDividerButton"
         data-dropdown-toggle="dropdownDivider"
-        className={`${props.buttonClassName || ''} font-medium rounded-lg  px-4 py-2.5 text-center inline-flex items-center  h-[40px]`}
+        className={`${
+          buttonClassName || ""
+        } font-medium rounded-lg  px-4 py-2.5 text-center inline-flex items-center  h-[40px]`}
         type="button"
       >
-        {props.children}
-        <svg
-          className={`${props.chevronClassName || ''} w-4 h-4 mr-2`}
-          aria-hidden="true"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M19 9l-7 7-7-7"
-          ></path>
-        </svg>
+        {children}
+        {withChevron && (
+          <svg
+            className={`${chevronClassName || ""} w-4 h-4 mr-2`}
+            aria-hidden="true"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M19 9l-7 7-7-7"
+            ></path>
+          </svg>
+        )}
       </button>
 
       <div
@@ -82,7 +93,7 @@ const SDDropdown: React.FC<SDDropdownProps> = (props) => {
           className="py-2 text-sm rounded-sm text-gray-700 dark:text-gray-200"
           aria-labelledby="dropdownDividerButton"
         >
-          {props.items.map((item, index) => {
+          {items.map((item, index) => {
             return (
               <SDDropDownItem
                 key={index}
@@ -105,6 +116,7 @@ export interface DropDownItem {
   href?: string;
   title: string;
   icon?: React.ReactNode;
+  disabled?: boolean;
 }
 
 interface SDDropdownItemProps extends DropDownItem {
@@ -118,21 +130,26 @@ export const SDDropDownItem: React.FC<SDDropdownItemProps> = ({
   href,
   title,
   icon,
+  disabled = false
 }) => {
   return (
     <li
       onClick={handleLiClick}
-      className="block  hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+      className={`${!disabled ? ' hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white' : 'opacity-70' } block  `}
     >
       {mode === "Link" ? (
-        <Link to={href || ""}>
+        <Link to={href || ""} onClick={(event)=>disabled && event.preventDefault()} >
           <div className="flex gap-2 items-center px-4 py-3">
             {icon ? icon : ""}
             {title}
           </div>
         </Link>
       ) : (
-        <button className="flex gap-2 items-center px-4 py-3 w-full" onClick={onClick}>
+        <button
+          className="flex gap-2 items-center px-4 py-3 w-full"
+          onClick={onClick}
+          disabled={disabled}
+        >
           {icon ? icon : ""}
           {title}
         </button>
