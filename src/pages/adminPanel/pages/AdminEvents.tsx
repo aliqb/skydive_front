@@ -15,12 +15,20 @@ import { ColDef } from "../../../components/shared/Grid/grid.types";
 import StatusIndicator from "../../../components/shared/StatusIndicator";
 import { BiToggleLeft } from "react-icons/bi";
 import { BsAirplaneEngines } from "react-icons/bs";
+import useConfirm from "../../../hooks/useConfirm";
+import { toast } from "react-toastify";
 
 const AdminEvents: React.FC = () => {
   const { sendRequest, errors, isPending } = useAPi<
     NewEvent,
     BaseResponse<SkyDiveEvent[]>
   >();
+
+  const { sendRequest: sendDeleteRequest } = useAPi<
+    null,
+    BaseResponse<string>
+  >();
+
   const { sendRequest: eventStatusSendRequest, data: eventStatusData } = useAPi<
     null,
     BaseResponse<SkyDiveEventStatus[]>
@@ -31,25 +39,29 @@ const AdminEvents: React.FC = () => {
   >();
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
-  const [currentEvent,setCurrentEvent] = useState<SkyDiveEvent>();
+  const [currentEvent, setCurrentEvent] = useState<SkyDiveEvent>();
+  const [processedData, setProcessedData] = useState<SkyDiveEvent[]>([]);
+
+  const [ConfirmModal, confirmation] = useConfirm(
+    " رویداد شما حذف خواهد شد. آیا مطمئن هستید؟ ",
+    "حذف کردن رویداد"
+  );
 
   const handleCloseModal = (submitted: boolean) => {
     if (submitted) {
       fetchEvents(selectedValue);
     }
-    setCurrentEvent(undefined)
+    setCurrentEvent(undefined);
     setShowModal(false);
   };
-
-  const [processedData, setProcessedData] = useState<SkyDiveEvent[]>([]);
 
   const onCreate = () => {
     setShowModal(true);
   };
 
-  const onEdit = (item:SkyDiveEvent)=>{
-    setCurrentEvent(item)
-  }
+  const onEdit = (item: SkyDiveEvent) => {
+    setCurrentEvent(item);
+  };
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedValue(event.target.value);
@@ -146,6 +158,21 @@ const AdminEvents: React.FC = () => {
     [sendRequest]
   );
 
+  const onRemove = async (item: SkyDiveEvent) => {
+    const confirm = await  confirmation();
+    if (confirm) {
+      sendDeleteRequest({
+        url: `/SkyDiveEvents/${item.id}`,
+        method: "delete",
+      },(response)=>{
+        toast.success(response.message);
+        fetchEvents(selectedValue);
+      },(error)=>{
+        toast.error(error?.message)
+      });
+    }
+  };
+
   useEffect(() => {
     fetchEvents(selectedValue);
   }, [selectedValue, sendRequest, fetchEvents]);
@@ -178,11 +205,11 @@ const AdminEvents: React.FC = () => {
     fetchLastCode();
   }, [lastCodeSendRequest]);
 
-  useEffect(()=>{
-    if(currentEvent){
+  useEffect(() => {
+    if (currentEvent) {
       setShowModal(true);
     }
-  },[currentEvent])
+  }, [currentEvent]);
 
   if (isPending) {
     return (
@@ -198,6 +225,7 @@ const AdminEvents: React.FC = () => {
 
   return (
     <>
+      <ConfirmModal />
       <div className="flex justify-between mt-12">
         <div>
           <SDButton color="success" onClick={onCreate}>
@@ -268,7 +296,7 @@ const AdminEvents: React.FC = () => {
           data={processedData}
           colDefs={colDefs}
           onEditRow={onEdit}
-          onRemoveRow={(item) => console.log("remove", item)}
+          onRemoveRow={onRemove}
           rowActions={{
             edit: true,
             remove: true,
