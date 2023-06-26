@@ -84,3 +84,29 @@ export interface AdminEventModalProps {
   fetchData: () => void;
   eventData?: BaseResponse<SkyDiveEvent>;
 }
+export interface CostModalProps {
+  rowId?: string;
+  showModal: boolean;
+  onOpenModal: (id?: string) => void;
+  onCloseModal: () => void;
+  fetchData?: () => void;
+}
+export interface SkyDiveEventTicketType {
+  title: string;
+  capacity: number;
+  id: string;
+}
+export interface NewTicketFee {
+  typeId: string;
+  amount: number;
+}
+
+export interface NewTicketFeeList{
+  items:NewTicketFee[]
+}
+
+export interface AdminGridProps {
+  fetchData: () => void;
+  rowId: string;
+  isActive: boolean;
+}

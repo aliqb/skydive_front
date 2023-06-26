@@ -1,6 +1,7 @@
-import { Table } from "flowbite-react";
-import React from "react";
-import AdminGridActions from "../adminPanel/AdminGridActions";
+import { Table } from 'flowbite-react';
+import React, { useState } from 'react';
+import AdminGridActions from '../adminPanel/AdminGridActions';
+import CostModal from '../adminPanel/CostModal';
 interface GridProps {
   data: any[];
   columnsToShow: string[];
@@ -10,17 +11,14 @@ interface GridProps {
 interface HeaderTranslations {
   [key: string]: string;
 }
-
 const translateHeader = (header: string, translations: HeaderTranslations) => {
   return translations[header] || header;
 };
 
-const Grid: React.FC<GridProps> = ({
-  data,
-  columnsToShow,
-  fetchData,
-  onDoubleClick,
-}) => {
+const Grid: React.FC<GridProps> = ({ data, columnsToShow, fetchData,onDoubleClick }) => {
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedRowId, setSelectedRowId] = useState('');
+
   const headerTranslations: HeaderTranslations = {
     code: "کد کاربر",
     nationalCode: "کدملی",
@@ -49,10 +47,26 @@ const Grid: React.FC<GridProps> = ({
       onDoubleClick(item);
     }
   };
-
+  const handleOnOpenModal = (id?: string) => {
+    setSelectedRowId(id || '');
+    setOpenModal(true);
+  };
+  const handleOnCloseModal = () => {
+    setOpenModal(false);
+  };
   {
     return (
       <>
+        {openModal && (
+          <CostModal
+            showModal={openModal}
+            onOpenModal={handleOnOpenModal}
+            onCloseModal={handleOnCloseModal}
+            fetchData={fetchData}
+            rowId={selectedRowId}
+          />
+        )}
+
         <Table hoverable className="text-right">
           <Table.Head>
             {columnsToShow.map((column) => (
@@ -76,25 +90,30 @@ const Grid: React.FC<GridProps> = ({
                     className="whitespace-nowrap font-medium text-gray-900 dark:text-white"
                     key={column}
                   >
-                    {column === "cost" ? (
-                      <a
+                    {column === 'cost' ? (
+                      <button
+                        type="button"
+                        onClick={() => handleOnOpenModal(row.id)}
                         className="font-medium text-cyan-600 dark:text-cyan-500"
-                        href={`cost/edit`}
                       >
                         ویرایش
-                      </a>
-                    ) : column === "termsAndConditions" ? (
+                      </button>
+                    ) : column === 'termsAndConditions' ? (
                       <a
                         className="font-medium text-cyan-600 dark:text-cyan-500"
                         href={`terms/edit`}
                       >
                         ویرایش
                       </a>
-                    ) : column === "actions" && fetchData ? (
-                      <AdminGridActions fetchData={fetchData} rowId={row.id} />
+                    ) : column === 'actions' ? (
+                      <AdminGridActions
+                        fetchData={fetchData}
+                        rowId={row.id}
+                        isActive={row.isActive}
+                      />
                     ) : (
                       row[column]
-                    )}
+                    )}{' '}
                   </Table.Cell>
                 ))}
               </Table.Row>
