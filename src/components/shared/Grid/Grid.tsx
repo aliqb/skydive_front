@@ -1,7 +1,7 @@
 import { Table } from 'flowbite-react';
 import React, { useState } from 'react';
-import AdminGridActions from '../adminPanel/AdminGridActions';
-import CostModal from '../adminPanel/CostModal';
+import AdminGridActions from '../../adminPanel/AdminGridActions';
+import CostModal from '../../adminPanel/CostModal';
 interface GridProps {
   data: any[];
   columnsToShow: string[];

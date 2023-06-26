@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Grid from "../../../../components/shared/Grid";
+import Grid from "../../../../components/shared/Grid/Grid";
 import SDButton from "../../../../components/shared/Button";
 import SDDatepicker from "../../../../components/shared/DatePicker";
 import useAPi from "../../../../hooks/useApi";
