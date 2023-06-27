@@ -103,8 +103,13 @@ export interface NewTicketFeeList{
   items:TicketFee[]
 }
 
-export interface AdminGridProps {
-  fetchData: () => void;
-  rowId: string;
-  isActive: boolean;
+export interface AddFlightRequest {
+  flightQty: number
+  voidableQty: number
+  ticketTypes: TicketTypeInFlightRequest[]
+}
+
+export interface TicketTypeInFlightRequest {
+  qty: number
+  typeId: string
 }

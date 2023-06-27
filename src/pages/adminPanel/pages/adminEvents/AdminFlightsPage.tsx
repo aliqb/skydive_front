@@ -55,7 +55,7 @@ const AdminFlightsPage: React.FC = () => {
 
   const [skyDiveEvent, setSkyDiveEvent] = useState<SkyDiveEvent>();
   const [days, setDays] = useState<SkyDiveInlineEventDay[]>();
-  const [currentDayId, setCurrentDayId] = useState<string>("");
+  const [currentDay, setCurrentDay] = useState<SkyDiveInlineEventDay>();
 
   useEffect(() => {
     function getEvnetDetail(eventId: string) {
@@ -64,7 +64,7 @@ const AdminFlightsPage: React.FC = () => {
         a.date.localeCompare(b.date)
       );
       setDays(sortedDays);
-      setCurrentDayId(sortedDays[0].id);
+      setCurrentDay(sortedDays[0]);
       //   requestDetail(
       //     {
       //       url: `/SkyDiveEvents/${eventId}`,
@@ -82,8 +82,8 @@ const AdminFlightsPage: React.FC = () => {
     getEvnetDetail(params.eventId as string);
   }, [params, requestDetail]);
 
-  function changeCurrentDay(dayId: string) {
-    setCurrentDayId(dayId);
+  function changeCurrentDay(day: SkyDiveInlineEventDay) {
+    setCurrentDay(day);
   }
 
   return (
@@ -124,10 +124,10 @@ const AdminFlightsPage: React.FC = () => {
                     >
                       <a
                         className={`${
-                          currentDayId === item.id &&
+                          currentDay?.id === item.id &&
                           "border-b-2 !border-blue-500 !text-blue-500"
                         } cursor-pointer pb-4 block hover:border-b-2 text-gray-500 hover:text-gray-600 hover:border-gray-300  transition-all ease-linear duration-75`}
-                        onClick={() => changeCurrentDay(item.id)}
+                        onClick={() => changeCurrentDay(item)}
                       >
                         {item.date}
                       </a>
@@ -138,7 +138,8 @@ const AdminFlightsPage: React.FC = () => {
         </nav>
       </header>
       <main className="p-6">
-        <AdminFlighList dayId={currentDayId} />
+        {currentDay && <AdminFlighList dayId={currentDay.id} date={currentDay.date} />}
+        
       </main>
     </SDCard>
   );
