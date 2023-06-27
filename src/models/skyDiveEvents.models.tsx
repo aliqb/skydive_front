@@ -20,7 +20,7 @@ export interface SkyDiveEvent {
   voidable: boolean;
   termsAndConditions: string;
   statusTitle: string;
-  statusId: string;
+  statusId?: string;
   days: SkyDiveInlineEventDay[];
   id: string;
   createdAt: string;

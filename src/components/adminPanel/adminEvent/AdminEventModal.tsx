@@ -47,7 +47,7 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
       setValue("location", eventData.location);
       setValue("startDate", eventData.startDate);
       setValue("endDate", eventData.endDate);
-      setValue("statusId", eventData.statusId);
+      setValue("statusId", eventData.statusId || '');
       setSelectedCancelOption(eventData.voidable === true);
       setSelectedVATOption(eventData.subjecToVAT === true);
     }
