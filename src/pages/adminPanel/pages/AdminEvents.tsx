@@ -17,6 +17,7 @@ import { BiToggleLeft } from "react-icons/bi";
 import { BsAirplaneEngines } from "react-icons/bs";
 import useConfirm from "../../../hooks/useConfirm";
 import { toast } from "react-toastify";
+import CostModal from "../../../components/adminPanel/CostModal";
 
 const AdminEvents: React.FC = () => {
   const { sendRequest, errors, isPending } = useAPi<
@@ -39,8 +40,9 @@ const AdminEvents: React.FC = () => {
   >();
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
-  const [currentEvent, setCurrentEvent] = useState<SkyDiveEvent>();
+  const [editingEvent, setEditingEvent] = useState<SkyDiveEvent>();
   const [processedData, setProcessedData] = useState<SkyDiveEvent[]>([]);
+  const [costTargetEvent,setCostTargetEvent] = useState<SkyDiveEvent>();
 
   const [ConfirmModal, confirmation] = useConfirm(
     " رویداد شما حذف خواهد شد. آیا مطمئن هستید؟ ",
@@ -51,7 +53,8 @@ const AdminEvents: React.FC = () => {
     if (submitted) {
       fetchEvents(selectedValue);
     }
-    setCurrentEvent(undefined);
+    setEditingEvent(undefined);
+    setCostTargetEvent(undefined);
     setShowModal(false);
   };
 
@@ -60,7 +63,7 @@ const AdminEvents: React.FC = () => {
   };
 
   const onEdit = (item: SkyDiveEvent) => {
-    setCurrentEvent(item);
+    setEditingEvent(item);
   };
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -109,7 +112,7 @@ const AdminEvents: React.FC = () => {
       field: "",
       headerName: "بهای فروش",
       onClick: (item) => {
-        console.log(item);
+        setCostTargetEvent(item)
       },
       template: "ویرایش",
     },
@@ -210,10 +213,10 @@ const AdminEvents: React.FC = () => {
   }, [lastCodeSendRequest]);
 
   useEffect(() => {
-    if (currentEvent) {
+    if (editingEvent) {
       setShowModal(true);
     }
-  }, [currentEvent]);
+  }, [editingEvent]);
 
   if (isPending) {
     return (
@@ -235,8 +238,9 @@ const AdminEvents: React.FC = () => {
         lastCode={lastCode?.content || ""}
         showModal={showModal}
         onCloseModal={handleCloseModal}
-        eventData={currentEvent}
+        eventData={editingEvent}
       />
+      {costTargetEvent && <CostModal onCloseModal={handleCloseModal} rowId={costTargetEvent.id} showModal={!!costTargetEvent.id} />}
       <div className="flex justify-between gap-3 flex-wrap">
         <div className="flex gap-6 ">
           <SDButton color="success" onClick={onCreate}>
