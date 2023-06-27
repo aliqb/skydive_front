@@ -4,17 +4,17 @@ import {
   NewTicketFeeList,
   SkyDiveEventTicketType,
   TicketFee,
-} from "../../models/skyDiveEvents.models";
-import SDModal from "../shared/Modal";
-import SDLabel from "../shared/Label";
-import SDButton from "../shared/Button";
-import SDSpinner from "../shared/Spinner";
-import SDTextInput from "../shared/TextInput";
-import { BaseResponse } from "../../models/shared.models";
-import useAPi from "../../hooks/useApi";
+} from "../../../models/skyDiveEvents.models";
+import SDModal from "../../shared/Modal";
+import SDLabel from "../../shared/Label";
+import SDButton from "../../shared/Button";
+import SDSpinner from "../../shared/Spinner";
+import SDTextInput from "../../shared/TextInput";
+import { BaseResponse } from "../../../models/shared.models";
+import useAPi from "../../../hooks/useApi";
 import { toast } from "react-toastify";
 import { useFieldArray, useForm } from "react-hook-form";
-import SDSelect from "../shared/Select";
+import SDSelect from "../../shared/Select";
 
 const CostModal: React.FC<CostModalProps> = ({
   showModal,

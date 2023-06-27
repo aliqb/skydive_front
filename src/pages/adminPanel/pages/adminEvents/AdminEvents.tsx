@@ -1,23 +1,23 @@
 import React, { useEffect, useState, useCallback } from "react";
-import Grid from "../../../components/shared/Grid/Grid";
-import SDButton from "../../../components/shared/Button";
-import SDDatepicker from "../../../components/shared/DatePicker";
-import useAPi from "../../../hooks/useApi";
+import Grid from "../../../../components/shared/Grid/Grid";
+import SDButton from "../../../../components/shared/Button";
+import SDDatepicker from "../../../../components/shared/DatePicker";
+import useAPi from "../../../../hooks/useApi";
 import {
   NewEvent,
   SkyDiveEventStatus,
   SkyDiveEvent,
-} from "../../../models/skyDiveEvents.models";
-import { BaseResponse } from "../../../models/shared.models";
-import SDSpinner from "../../../components/shared/Spinner";
-import AdminEventModal from "../../../components/adminPanel/AdminEventModal";
-import { ColDef } from "../../../components/shared/Grid/grid.types";
-import StatusIndicator from "../../../components/shared/StatusIndicator";
+} from "../../../../models/skyDiveEvents.models";
+import { BaseResponse } from "../../../../models/shared.models";
+import SDSpinner from "../../../../components/shared/Spinner";
+import AdminEventModal from "../../../../components/adminPanel/adminEvent/AdminEventModal";
+import { ColDef } from "../../../../components/shared/Grid/grid.types";
+import StatusIndicator from "../../../../components/shared/StatusIndicator";
 import { BiToggleLeft } from "react-icons/bi";
 import { BsAirplaneEngines } from "react-icons/bs";
-import useConfirm from "../../../hooks/useConfirm";
+import useConfirm from "../../../../hooks/useConfirm";
 import { toast } from "react-toastify";
-import CostModal from "../../../components/adminPanel/CostModal";
+import CostModal from "../../../../components/adminPanel/adminEvent/CostModal";
 
 const AdminEvents: React.FC = () => {
   const { sendRequest, errors, isPending } = useAPi<

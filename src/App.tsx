@@ -27,7 +27,7 @@ import Home from "./pages/userPanel/Home";
 import SkyDiveEventsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventPage";
 
 import UserManagement from "./pages/adminPanel/pages/userMamangement/UserManagement";
-import AdminEvents from "./pages/adminPanel/pages/AdminEvents";
+import AdminEvents from "./pages/adminPanel/pages/adminEvents/AdminEvents";
 import Settings from "./pages/adminPanel/pages/Settings";
 import SendMessage from "./pages/adminPanel/pages/SendMessage";
 import Reports from "./pages/adminPanel/pages/Reports";
