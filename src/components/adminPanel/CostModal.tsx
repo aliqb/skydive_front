@@ -3,6 +3,7 @@ import {
   CostModalProps,
   NewTicketFeeList,
   SkyDiveEventTicketType,
+  TicketFee,
 } from "../../models/skyDiveEvents.models";
 import SDModal from "../shared/Modal";
 import SDLabel from "../shared/Label";
@@ -25,6 +26,7 @@ const CostModal: React.FC<CostModalProps> = ({
     handleSubmit,
     formState: { errors: formErrors },
     control,
+    reset,
   } = useForm<NewTicketFeeList>({
     mode: "onTouched",
   });
@@ -34,26 +36,49 @@ const CostModal: React.FC<CostModalProps> = ({
   });
   const {
     sendRequest: getRequest,
-    isPending: getPending,
+    isPending: getTypesPending,
     data: typesResponse,
   } = useAPi<null, BaseResponse<SkyDiveEventTicketType[]>>();
 
-  // const {
-  //   sendRequest: getRequest,
-  //   errors,
-  //   isPending: getPending,
-  //   data: typesResponse,
-  // } = useAPi<null, BaseResponse<SkyDiveEventTicketType[]>>();
+  const {
+    sendRequest: getFees,
+    isPending: getFeesPending,
+    data: detailResponse,
+  } = useAPi<null, BaseResponse<TicketFee[]>>();
 
   const { sendRequest: sendChangeRequest, isPending: sendDataIsPending } =
     useAPi<NewTicketFeeList, BaseResponse<null>>();
 
   useEffect(() => {
-    console.log("hereeeeeeeeeeeeeeeeeeeee");
-    append({
-      amount: 0,
-      typeId: "",
+    getFees({
+      url: `/SkyDiveEvents/TicketTypeAmounts/${rowId}`,
     });
+  }, [rowId, getFees]);
+
+  useEffect(() => {
+    function setFormValue(fees: TicketFee[]) {
+      reset({
+        items: fees.map((fee) => {
+          return {
+            amount: fee.amount,
+            typeId: fee.typeId,
+          };
+        }),
+      });
+    }
+    if (detailResponse?.content) {
+      if (detailResponse.content.length) {
+        setFormValue(detailResponse.content);
+      } else {
+        setFormValue([{
+          amount:0,
+          typeId: ''
+        }])
+      }
+    }
+  }, [detailResponse, reset, typesResponse]);
+
+  useEffect(() => {
     const fetchEventTicketType = () => {
       getRequest({
         url: "/SkyDiveEventTicketType",
@@ -65,7 +90,7 @@ const CostModal: React.FC<CostModalProps> = ({
     };
 
     fetchEventTicketType();
-  }, [getRequest, append]);
+  }, [getRequest, detailResponse]);
 
   const handleSaveButton = handleSubmit((data) => {
     console.log(data);
@@ -133,12 +158,12 @@ const CostModal: React.FC<CostModalProps> = ({
                 </svg>
               </button>
             </div>
-            {getPending && (
+            {(getTypesPending || getFeesPending) && (
               <div className="flex justify-center py-5">
                 <SDSpinner color="blue" size={20}></SDSpinner>
               </div>
             )}
-            {typesResponse?.content && !getPending && (
+            {typesResponse?.content && !getTypesPending && !getFeesPending && (
               <form className="max-h-[80vh] overflow-auto">
                 <div className="px-6 py-8">
                   <div className="flex flex-row items-center  w-full mt-5">

@@ -82,7 +82,7 @@ export interface AdminEventModalProps {
   eventData?: SkyDiveEvent;
 }
 export interface CostModalProps {
-  rowId?: string;
+  rowId: string;
   showModal: boolean;
   // onOpenModal: (id?: string) => void;
   onCloseModal: (submitted:boolean) => void;
@@ -93,13 +93,14 @@ export interface SkyDiveEventTicketType {
   capacity: number;
   id: string;
 }
-export interface NewTicketFee {
+export interface TicketFee {
   typeId: string;
   amount: number;
+  tpye?: string;
 }
 
 export interface NewTicketFeeList{
-  items:NewTicketFee[]
+  items:TicketFee[]
 }
 
 export interface AdminGridProps {

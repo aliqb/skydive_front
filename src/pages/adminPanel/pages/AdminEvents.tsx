@@ -51,7 +51,7 @@ const AdminEvents: React.FC = () => {
     "حذف کردن رویداد"
   );
 
-  const handleCloseModal = (submitted: boolean) => {
+  const handleCloseEntryModal = (submitted: boolean) => {
     if (submitted) {
       fetchEvents(selectedValue, startDate, endDate);
     }
@@ -241,12 +241,12 @@ const AdminEvents: React.FC = () => {
         eventStatusData={eventStatusData?.content}
         lastCode={lastCode?.content || ""}
         showModal={showModal}
-        onCloseModal={handleCloseModal}
+        onCloseModal={handleCloseEntryModal}
         eventData={editingEvent}
       />
       {costTargetEvent && (
         <CostModal
-          onCloseModal={handleCloseModal}
+          onCloseModal={()=>setCostTargetEvent(undefined)}
           rowId={costTargetEvent.id}
           showModal={!!costTargetEvent.id}
         />
