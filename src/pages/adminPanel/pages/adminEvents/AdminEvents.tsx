@@ -18,8 +18,19 @@ import { BsAirplaneEngines } from "react-icons/bs";
 import useConfirm from "../../../../hooks/useConfirm";
 import { toast } from "react-toastify";
 import CostModal from "../../../../components/adminPanel/adminEvent/CostModal";
+import { useNavigate } from "react-router-dom";
 
 const AdminEvents: React.FC = () => {
+  const [selectedValue, setSelectedValue] = useState<string>("");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndtDate] = useState<string>("");
+  const [showModal, setShowModal] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<SkyDiveEvent>();
+  const [processedData, setProcessedData] = useState<SkyDiveEvent[]>([]);
+  const [costTargetEvent, setCostTargetEvent] = useState<SkyDiveEvent>();
+
+  const navigate = useNavigate();
+
   const { sendRequest, errors, isPending } = useAPi<
     NewEvent,
     BaseResponse<SkyDiveEvent[]>
@@ -38,13 +49,7 @@ const AdminEvents: React.FC = () => {
     null,
     BaseResponse<string>
   >();
-  const [selectedValue, setSelectedValue] = useState<string>("");
-  const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndtDate] = useState<string>("");
-  const [showModal, setShowModal] = useState(false);
-  const [editingEvent, setEditingEvent] = useState<SkyDiveEvent>();
-  const [processedData, setProcessedData] = useState<SkyDiveEvent[]>([]);
-  const [costTargetEvent, setCostTargetEvent] = useState<SkyDiveEvent>();
+
 
   const [ConfirmModal, confirmation] = useConfirm(
     " رویداد شما حذف خواهد شد. آیا مطمئن هستید؟ ",
@@ -347,7 +352,7 @@ const AdminEvents: React.FC = () => {
                 icon: <BsAirplaneEngines size="1.5rem" />,
                 descriptions: "پروازها",
                 onClick: (item) => {
-                  console.log(item);
+                  navigate(`${item.id}/flights`)
                 },
               },
             ],

@@ -4,7 +4,7 @@ import { SkyDiveEvent } from "../../models/skyDiveEvents.models";
 
 const SkyDiveEventCard: React.FC<SkyDiveEvent> = (props) => {
   return (
-    <Link to={`${props.id}/days`}>
+    <Link to={`/events/${props.id}/days`}>
       <SDCard className="!p-0 border-gray-200 border ">
         <div className="w-full aspect-[2] relative">
           <img

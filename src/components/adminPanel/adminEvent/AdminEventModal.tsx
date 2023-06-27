@@ -163,7 +163,7 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
                 <SDTextInput
                   type="text"
                   id="eventCode"
-                  defaultValue={lastCode}
+                  defaultValue={eventData?.code ||  lastCode}
                   disabled={true}
                 />
               </div>
