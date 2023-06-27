@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   CostModalProps,
-  NewTicketFee,
   NewTicketFeeList,
   SkyDiveEventTicketType,
 } from "../../models/skyDiveEvents.models";
@@ -14,11 +13,11 @@ import { BaseResponse } from "../../models/shared.models";
 import useAPi from "../../hooks/useApi";
 import { toast } from "react-toastify";
 import { useFieldArray, useForm } from "react-hook-form";
+import SDSelect from "../shared/Select";
 
 const CostModal: React.FC<CostModalProps> = ({
   showModal,
   onCloseModal,
-  fetchData,
   rowId,
 }) => {
   const {
@@ -26,62 +25,66 @@ const CostModal: React.FC<CostModalProps> = ({
     handleSubmit,
     formState: { errors: formErrors },
     control,
-  } = useForm<NewTicketFeeList>();
+  } = useForm<NewTicketFeeList>({
+    mode: "onTouched",
+  });
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'items',
+    name: "items",
   });
   const {
-    sendRequest,
-    errors,
-    isPending,
-    data: getData,
+    sendRequest: getRequest,
+    isPending: getPending,
+    data: typesResponse,
   } = useAPi<null, BaseResponse<SkyDiveEventTicketType[]>>();
 
-  const {
-    sendRequest: sendDatasendRequest,
-    isPending: sendDataIsPending,
-    data: newTicketFeeData,
-  } = useAPi<NewTicketFee, BaseResponse<NewTicketFee[]>>();
+  // const {
+  //   sendRequest: getRequest,
+  //   errors,
+  //   isPending: getPending,
+  //   data: typesResponse,
+  // } = useAPi<null, BaseResponse<SkyDiveEventTicketType[]>>();
 
-  const [divCount, setDivCount] = useState(1);
+  const { sendRequest: sendChangeRequest, isPending: sendDataIsPending } =
+    useAPi<NewTicketFeeList, BaseResponse<null>>();
 
   useEffect(() => {
+    console.log("hereeeeeeeeeeeeeeeeeeeee");
     append({
       amount: 0,
-      typeId: '',
+      typeId: "",
     });
     const fetchEventTicketType = () => {
-      try {
-        sendRequest({
-          url: '/SkyDiveEventTicketType',
-        });
-      } catch (error) {
-        console.error('Error:', error);
-      }
+      getRequest({
+        url: "/SkyDiveEventTicketType",
+        params: {
+          pageIndex: 1,
+          pageSize: 1000000000,
+        },
+      });
     };
 
     fetchEventTicketType();
-  }, []);
+  }, [getRequest, append]);
 
   const handleSaveButton = handleSubmit((data) => {
     console.log(data);
-    sendDatasendRequest(
+    sendChangeRequest(
       {
         url: `/SkyDiveEvents/AddEventTypeFee/${rowId}`,
-        method: 'post',
+        method: "post",
         data: data,
       },
       (response) => {
-        console.log('Response:', response);
+        console.log("Response:", response);
         toast.success(response.message);
-        onCloseModal();
-        if (fetchData) {
-          fetchData();
-        }
+        onCloseModal(true);
+        // if (fetchData) {
+        //   fetchData();
+        // }
       },
       (error) => {
-        console.log('Error:', error);
+        console.log("Error:", error);
         toast.error(error?.message);
       }
     );
@@ -90,24 +93,30 @@ const CostModal: React.FC<CostModalProps> = ({
   const addFeeItem = () => {
     append({
       amount: 0,
-      typeId: '',
+      typeId: "",
     });
-    if (getData && getData.content && divCount < getData.content.length) {
-      setDivCount((prevCount) => prevCount + 1);
-    }
   };
+
+  const removeFeeItem = (index: number) => {
+    remove(index);
+  };
+
+  const resetModal = (submitted: boolean) => {
+    onCloseModal(submitted);
+  };
+
   return (
     <>
       {showModal && (
         <div>
           <SDModal
             show={showModal}
-            onClose={onCloseModal}
-            containerClass="!p-0"
+            onClose={() => resetModal(false)}
+            containerClass="!p-0 border-none !w-[480px]"
           >
-            <div className="border-b text-lg flex justify-between px-6 py-4 bg-blue-900 text-white rounded-t-md">
-              <span>افزودن بهای فروش</span>
-              <button type="button" onClick={onCloseModal}>
+            <div className="border-b  text-lg flex justify-between px-6 py-4 bg-blue-900 text-white rounded-t-md">
+              <span>ویرایش بهای فروش</span>
+              <button type="button" onClick={() => resetModal(false)}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -124,80 +133,127 @@ const CostModal: React.FC<CostModalProps> = ({
                 </svg>
               </button>
             </div>
-            <div className="px-6 py-8">
-              {fields.map((field, index) => {
-                return (
-                  <div
-                    className="flex flex-row items-center justify-center w-full mt-5"
-                    key={field.id}
-                  >
-                    <div className="flex flex-col w-1/2">
+            {getPending && (
+              <div className="flex justify-center py-5">
+                <SDSpinner color="blue" size={20}></SDSpinner>
+              </div>
+            )}
+            {typesResponse?.content && !getPending && (
+              <form className="max-h-[80vh] overflow-auto">
+                <div className="px-6 py-8">
+                  <div className="flex flex-row items-center  w-full mt-5">
+                    <div className="flex flex-col w-5/12 ">
                       <div>
                         <SDLabel>نوع</SDLabel>
                       </div>
-                      <div className="mt-2">
-                        <select
-                          id={`ticketType-${index}`}
-                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                          {...register(`items.${index}.typeId` as const)}
-                        >
-                          <option value="">انتخاب کنید</option>
-                          {getData?.content.map((type, typeIndex) => (
-                            <option
-                              key={typeIndex}
-                              value={type.id}
-                              className="text-right"
-                            >
-                              {type.title}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
                     </div>
-                    <div className="flex flex-col w-1/2 items-center mr-4">
+                    <div className="flex flex-col w-5/12  mr-4">
                       <div>
-                        <SDLabel className="mb-5">قیمت واحد</SDLabel>
-                      </div>
-                      <div className="flex items-center">
-                        <SDTextInput
-                          {...register(`items.${index}.amount` as const, {
-                            valueAsNumber: true,
-                          })}
-                          type="number"
-                          id={`amount-${index}`}
-                          className="ltr"
-                        />
-
-                        {index === divCount - 1 && getData?.content && (
-                          <div className="flex items-center m-2">
-                            <SDButton
-                              color="primary"
-                              className="w-8 h-8 font-extrabold"
-                              onClick={addFeeItem}
-                              disabled={divCount >= getData.content.length}
-                            >
-                              +
-                            </SDButton>
-                          </div>
-                        )}
+                        <SDLabel>قیمت واحد</SDLabel>
                       </div>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-            <div className="w-full px-5 py-8 flex justify-start items-center">
-              <SDButton
-                color="primary"
-                type="submit"
-                className="w-full !bg-blue-900"
-                onClick={handleSaveButton}
-                disabled={sendDataIsPending}
-              >
-                {sendDataIsPending && <SDSpinner />}
-                افزودن
-              </SDButton>
-            </div>
+                  {fields.map((field, index) => {
+                    return (
+                      <div
+                        className="flex flex-row  justify-between w-full mb-2"
+                        key={field.id}
+                      >
+                        <div className="flex flex-col w-5/12">
+                          <div className="">
+                            <SDSelect
+                              id={`ticketType-${index}`}
+                              {...register(`items.${index}.typeId` as const, {
+                                required: "فیلد اجباری است.",
+                              })}
+                              invalid={
+                                !!formErrors?.items?.[index]?.typeId?.message
+                              }
+                            >
+                              <option value="">انتخاب کنید</option>
+                              {typesResponse.content.map((type, typeIndex) => (
+                                <option
+                                  key={typeIndex}
+                                  value={type.id}
+                                  className="text-right"
+                                >
+                                  {type.title}
+                                </option>
+                              ))}
+                            </SDSelect>
+                            {formErrors?.items?.[index]?.typeId && (
+                              <p className="text-red-600 text-xs pr-2 mt-2">
+                                {formErrors?.items?.[index]?.typeId?.message}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex flex-col w-4/12 items-center mr-4">
+                          <div>
+                            <SDTextInput
+                              {...register(`items.${index}.amount` as const, {
+                                valueAsNumber: true,
+                                required: "فیلد اجباری است.",
+                                validate: (value) => {
+                                  return (
+                                    value > 0 || "قیمت باید بزرگ‌تر از 0 باشد."
+                                  );
+                                },
+                              })}
+                              type="number"
+                              id={`amount-${index}`}
+                              className="ltr"
+                              invalid={
+                                !!formErrors?.items?.[index]?.amount?.message
+                              }
+                            />
+                            {formErrors?.items?.[index]?.amount && (
+                              <p className="text-red-600 text-xs pr-2 mt-2">
+                                {formErrors?.items?.[index]?.amount?.message}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex  justify-between pr-4  w-4/12 xs:w-3/12">
+                          {fields.length !== 1 && (
+                            <SDButton
+                              color="primary"
+                              className="font-extrabold !h-10 w-10"
+                              onClick={() => removeFeeItem(index)}
+                            >
+                              -
+                            </SDButton>
+                          )}
+                          {index === fields.length - 1 && (
+                            <SDButton
+                              className=" mr-1 !h-10 w-10"
+                              onClick={addFeeItem}
+                              disabled={
+                                fields.length === typesResponse.content.length
+                              }
+                            >
+                              +
+                            </SDButton>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="w-full px-5 pb-6 flex justify-start items-center">
+                  <SDButton
+                    color="primary"
+                    type="submit"
+                    className="w-full !bg-blue-900"
+                    onClick={handleSaveButton}
+                    disabled={sendDataIsPending}
+                  >
+                    {sendDataIsPending && <SDSpinner />}
+                    افزودن
+                  </SDButton>
+                </div>
+              </form>
+            )}
           </SDModal>
         </div>
       )}

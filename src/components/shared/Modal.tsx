@@ -29,7 +29,7 @@ const BackDrop : React.FC<BackDropProps> = (props) => {
 
 const ModalBody : React.FC<ModalBodyProps> = (props) => {
   return (
-    <SDCard className={` ${props.containerClass} z-50 fixed  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white w-4/5 xs:w-auto`}>
+    <SDCard className={` ${props.containerClass} z-50 fixed  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white w-4/5 xs:w-auto max-w-[95vw]`}>
         {props.children}
     </SDCard>
   );

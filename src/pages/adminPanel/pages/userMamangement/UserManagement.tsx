@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Grid from "../../../../components/shared/Grid";
+import Grid from "../../../../components/shared/Grid/Grid";
 import SDButton from "../../../../components/shared/Button";
 import SDDatepicker from "../../../../components/shared/DatePicker";
 import useAPi from "../../../../hooks/useApi";
@@ -9,47 +9,88 @@ import {
 } from "../../../../models/shared.models";
 import SDSpinner from "../../../../components/shared/Spinner";
 import { Link, useNavigate } from "react-router-dom";
-import { User } from "../../../../models/usermanagement.models";
+import { UserListItem } from "../../../../models/usermanagement.models";
+import { ColDef } from "../../../../components/shared/Grid/grid.types";
 
 const UserManagement: React.FC = () => {
   const { sendRequest, errors, isPending } = useAPi<
     null,
-    BaseResponse<User[]>
+    BaseResponse<UserListItem[]>
   >();
-  const [result, setResult] = useState<User[]>([]);
+  const [result, setResult] = useState<UserListItem[]>([]);
   const [selectedValue, setSelectedValue] = useState<string>("");
+  const [colDefs] = useState<ColDef<UserListItem>[]>([
+    {
+      field: "code",
+      headerName: "کد",
+    },
+    {
+      field: "nationalCode",
+      headerName: "کد ملی",
+    },
+    {
+      field: "firstName",
+      headerName: "نام",
+    },
+    {
+      field: "lastName",
+      headerName: "نام خانوادگی",
+    },
+    {
+      field: "userType",
+      headerName: "نوع",
+    },
+    {
+      field: "phone",
+      headerName: "موبایل",
+    },
+    {
+      field: "birthDate",
+      headerName: "تاریخ تولد",
+    },
+    {
+      field: "username",
+      headerName: "نام کاربری",
+    },
+    {
+      field: "email",
+      headerName: "ایمیل",
+    },
+    {
+      field: "statusDisplay",
+      headerName: "وضعیت",
+    },
+  ]);
   const navigate = useNavigate();
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedValue(event.target.value);
   };
 
-  function goToDetail(user: User) {
+  function goToDetail(user: UserListItem) {
     navigate(`${user.id}`);
-    console.log(user);
+  }
+
+  function goToEdit(user: UserListItem) {
+    navigate(`${user.id}/edit`);
   }
 
   useEffect(() => {
     const fetchUsers = async () => {
-      try {
-        await sendRequest(
-          {
-            url: "/Admin/GetUsers",
-            params: {
-              pagesize: 10000,
-              pageindex: 1,
-              userStatus: selectedValue.toLowerCase(),
-            },
+      await sendRequest(
+        {
+          url: "/Admin/GetUsers",
+          params: {
+            pagesize: 10000,
+            pageindex: 1,
+            userStatus: selectedValue.toLowerCase(),
           },
-          (response) => {
-            const result = response.content;
-            console.log(result);
-            setResult(result);
-          }
-        );
-      } catch (error) {
-        console.error("Error:", error);
-      }
+        },
+        (response) => {
+          const result = response.content;
+          setResult(result);
+        }
+      );
     };
 
     fetchUsers();
@@ -120,21 +161,12 @@ const UserManagement: React.FC = () => {
         </div>
       </div>
       <div className="mt-6">
-        <Grid
+        <Grid<UserListItem>
           data={result}
           onDoubleClick={goToDetail}
-          columnsToShow={[
-            "code",
-            "nationalCode",
-            "firstName",
-            "lastName",
-            "userType",
-            "phone",
-            "birthDate",
-            "username",
-            "email",
-            "statusDisplay",
-          ]}
+          colDefs={colDefs}
+          rowActions={{ edit: true, remove: false }}
+          onEditRow={goToEdit}
         />
       </div>
     </>

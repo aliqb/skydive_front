@@ -1,4 +1,3 @@
-import { BaseResponse } from "./shared.models";
 
 export interface SkyDiveEventStatus {
   title: string;
@@ -76,20 +75,18 @@ export interface NewEvent {
 }
 
 export interface AdminEventModalProps {
-  eventStatusData?: BaseResponse<SkyDiveEventStatus[]> | null;
+  eventStatusData?: SkyDiveEventStatus[];
   lastCode: string;
   showModal: boolean;
-  onOpenModal: (id?: string) => void;
-  onCloseModal: () => void;
-  fetchData: () => void;
-  eventData?: BaseResponse<SkyDiveEvent>;
+  onCloseModal: (submitted:boolean) => void;
+  eventData?: SkyDiveEvent;
 }
 export interface CostModalProps {
   rowId?: string;
   showModal: boolean;
-  onOpenModal: (id?: string) => void;
-  onCloseModal: () => void;
-  fetchData?: () => void;
+  // onOpenModal: (id?: string) => void;
+  onCloseModal: (submitted:boolean) => void;
+  // fetchData?: () => void;
 }
 export interface SkyDiveEventTicketType {
   title: string;
