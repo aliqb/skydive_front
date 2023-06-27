@@ -38,6 +38,7 @@ import UserDetailPage from "./pages/adminPanel/pages/userMamangement/userDetail/
 import AdminUserDocument from "./pages/adminPanel/pages/userMamangement/userDetail/AdminUserDocument";
 import CreateUserPage from "./pages/adminPanel/pages/userMamangement/CreateUserPage";
 import EditUserPage from "./pages/adminPanel/pages/userMamangement/EditUserPage";
+import Messages from './pages/userPanel/Messages';
 
 function App() {
   // useEffect(()=>{
@@ -65,6 +66,7 @@ function App() {
           >
             <Route Component={Home} path=""></Route>
             <Route Component={Account} path="account"></Route>
+            <Route Component={Messages} path="messages"></Route>
             <Route Component={Outlet} path="events">
               <Route Component={SkyDiveEventsPage} path=":statusId?"></Route>
               <Route
