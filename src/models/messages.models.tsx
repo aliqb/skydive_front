@@ -1,7 +1,7 @@
 export interface UserMessages {
   text: string;
   title: string;
-  visited: string;
+  visited: boolean;
   id: string;
   createdAt: string;
   updatedAt: string;
