@@ -59,25 +59,27 @@ const AdminFlightsPage: React.FC = () => {
 
   useEffect(() => {
     function getEvnetDetail(eventId: string) {
+      //////////temp
       setSkyDiveEvent(temp.content);
       const sortedDays = temp.content.days.sort((a, b) =>
         a.date.localeCompare(b.date)
       );
       setDays(sortedDays);
       setCurrentDay(sortedDays[0]);
-      //   requestDetail(
-      //     {
-      //       url: `/SkyDiveEvents/${eventId}`,
-      //     },
-      //     (response) => {
-      //       setSkyDiveEvent(response.content);
-      //       const sortedDays = response.content.days.sort((a, b) =>
-      //         a.date.localeCompare(b.date)
-      //       );
-      //       setDays(sortedDays);
-      //       setCurrentDayId(sortedDays[0].id);
-      //     }
-      //   );
+      //////////temp
+        requestDetail(
+          {
+            url: `/SkyDiveEvents/${eventId}`,
+          },
+          (response) => {
+            setSkyDiveEvent(response.content);
+            const sortedDays = response.content.days.sort((a, b) =>
+              a.date.localeCompare(b.date)
+            );
+            setDays(sortedDays);
+            setCurrentDay(sortedDays[0]);
+          }
+        );
     }
     getEvnetDetail(params.eventId as string);
   }, [params, requestDetail]);

@@ -1,11 +1,13 @@
 import { useState } from "react";
+import { AdminFlightModel } from "../../../models/skyDiveEvents.models";
 
-interface AdminFlightItemProps {
+interface AdminFlightItemProps extends AdminFlightModel {
   withHeader?: boolean;
 }
 
 const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
   withHeader = false,
+  ...flight
 }) => {
   const [isActive, setIsActive] = useState<boolean>(false);
 
@@ -63,17 +65,17 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
           <p
             className={`${isActive && '!bg-gray-200'} px-5 py-3 w-60  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
           >
-            1
+            {flight.flightNumber}
           </p>
           <p
             className={`${isActive && '!bg-gray-200'} px-5 py-3 w-60  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
           >
-            23
+            {flight.capacity}
           </p>
           <p
             className={`${isActive && '!bg-gray-200'} px-5 py-3 w-40  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
           >
-            5
+            {flight.voidableQty}
           </p>
         </div>
       </div>
