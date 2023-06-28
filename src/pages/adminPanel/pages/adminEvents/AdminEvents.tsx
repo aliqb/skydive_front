@@ -1,25 +1,36 @@
 import React, { useEffect, useState, useCallback } from "react";
-import Grid from "../../../components/shared/Grid/Grid";
-import SDButton from "../../../components/shared/Button";
-import SDDatepicker from "../../../components/shared/DatePicker";
-import useAPi from "../../../hooks/useApi";
+import Grid from "../../../../components/shared/Grid/Grid";
+import SDButton from "../../../../components/shared/Button";
+import SDDatepicker from "../../../../components/shared/DatePicker";
+import useAPi from "../../../../hooks/useApi";
 import {
   NewEvent,
   SkyDiveEventStatus,
   SkyDiveEvent,
-} from "../../../models/skyDiveEvents.models";
-import { BaseResponse } from "../../../models/shared.models";
-import SDSpinner from "../../../components/shared/Spinner";
-import AdminEventModal from "../../../components/adminPanel/AdminEventModal";
-import { ColDef } from "../../../components/shared/Grid/grid.types";
-import StatusIndicator from "../../../components/shared/StatusIndicator";
+} from "../../../../models/skyDiveEvents.models";
+import { BaseResponse } from "../../../../models/shared.models";
+import SDSpinner from "../../../../components/shared/Spinner";
+import AdminEventModal from "../../../../components/adminPanel/adminEvent/AdminEventModal";
+import { ColDef } from "../../../../components/shared/Grid/grid.types";
+import StatusIndicator from "../../../../components/shared/StatusIndicator";
 import { BiToggleLeft } from "react-icons/bi";
 import { BsAirplaneEngines } from "react-icons/bs";
-import useConfirm from "../../../hooks/useConfirm";
+import useConfirm from "../../../../hooks/useConfirm";
 import { toast } from "react-toastify";
-import CostModal from "../../../components/adminPanel/CostModal";
+import CostModal from "../../../../components/adminPanel/adminEvent/CostModal";
+import { useNavigate } from "react-router-dom";
 
 const AdminEvents: React.FC = () => {
+  const [selectedValue, setSelectedValue] = useState<string>("");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndtDate] = useState<string>("");
+  const [showModal, setShowModal] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<SkyDiveEvent>();
+  const [processedData, setProcessedData] = useState<SkyDiveEvent[]>([]);
+  const [costTargetEvent, setCostTargetEvent] = useState<SkyDiveEvent>();
+
+  const navigate = useNavigate();
+
   const { sendRequest, errors, isPending } = useAPi<
     NewEvent,
     BaseResponse<SkyDiveEvent[]>
@@ -38,20 +49,16 @@ const AdminEvents: React.FC = () => {
     null,
     BaseResponse<string>
   >();
-  const [selectedValue, setSelectedValue] = useState<string>("");
-  const [showModal, setShowModal] = useState(false);
-  const [editingEvent, setEditingEvent] = useState<SkyDiveEvent>();
-  const [processedData, setProcessedData] = useState<SkyDiveEvent[]>([]);
-  const [costTargetEvent,setCostTargetEvent] = useState<SkyDiveEvent>();
+
 
   const [ConfirmModal, confirmation] = useConfirm(
     " رویداد شما حذف خواهد شد. آیا مطمئن هستید؟ ",
     "حذف کردن رویداد"
   );
 
-  const handleCloseModal = (submitted: boolean) => {
+  const handleCloseEntryModal = (submitted: boolean) => {
     if (submitted) {
-      fetchEvents(selectedValue);
+      fetchEvents(selectedValue, startDate, endDate);
     }
     setEditingEvent(undefined);
     setCostTargetEvent(undefined);
@@ -112,7 +119,7 @@ const AdminEvents: React.FC = () => {
       field: "",
       headerName: "بهای فروش",
       onClick: (item) => {
-        setCostTargetEvent(item)
+        setCostTargetEvent(item);
       },
       template: "ویرایش",
     },
@@ -138,7 +145,7 @@ const AdminEvents: React.FC = () => {
   ]);
 
   const fetchEvents = useCallback(
-    (selectedStatus: string) => {
+    (selectedStatus: string, startDate: string, endDate: string) => {
       sendRequest(
         {
           url: "/SkyDiveEvents",
@@ -146,6 +153,8 @@ const AdminEvents: React.FC = () => {
             pagesize: 10,
             pageindex: 1,
             Statusid: selectedStatus,
+            start: startDate,
+            end: endDate,
           },
         },
         (response) => {
@@ -171,7 +180,7 @@ const AdminEvents: React.FC = () => {
         },
         (response) => {
           toast.success(response.message);
-          fetchEvents(selectedValue);
+          fetchEvents(selectedValue, startDate, endDate);
         },
         (error) => {
           toast.error(error?.message);
@@ -181,8 +190,8 @@ const AdminEvents: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchEvents(selectedValue);
-  }, [selectedValue, sendRequest, fetchEvents]);
+    fetchEvents(selectedValue, startDate, endDate);
+  }, [selectedValue, sendRequest, fetchEvents, startDate, endDate]);
 
   useEffect(() => {
     const fetchEventStatuses = () => {
@@ -237,10 +246,16 @@ const AdminEvents: React.FC = () => {
         eventStatusData={eventStatusData?.content}
         lastCode={lastCode?.content || ""}
         showModal={showModal}
-        onCloseModal={handleCloseModal}
+        onCloseModal={handleCloseEntryModal}
         eventData={editingEvent}
       />
-      {costTargetEvent && <CostModal onCloseModal={handleCloseModal} rowId={costTargetEvent.id} showModal={!!costTargetEvent.id} />}
+      {costTargetEvent && (
+        <CostModal
+          onCloseModal={()=>setCostTargetEvent(undefined)}
+          rowId={costTargetEvent.id}
+          showModal={!!costTargetEvent.id}
+        />
+      )}
       <div className="flex justify-between gap-3 flex-wrap">
         <div className="flex gap-6 ">
           <SDButton color="success" onClick={onCreate}>
@@ -268,7 +283,7 @@ const AdminEvents: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center">
+        <div className="flex items-center pl-2">
           <div>
             <p> تاریخ :</p>
           </div>
@@ -278,16 +293,38 @@ const AdminEvents: React.FC = () => {
               name="expireDate"
               required={true}
               placeholder="از :"
+              value={startDate}
+              onChange={setStartDate}
+              onOpenPickNewDate={false}
             ></SDDatepicker>
           </div>
-          <div className="mr-5">
+          <div className="mr-1">
             <SDDatepicker
               inputClass=" !xs:w-40 text-center !bg-white border-slate-500"
               name="expireDate"
               required={true}
               placeholder="تا :"
+              value={endDate}
+              onChange={setEndtDate}
+              onOpenPickNewDate={false}
             ></SDDatepicker>
           </div>
+          {/* <SDButton className="w-10 h-full mr-1" color="light">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-5 h-5 stroke-black"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z"
+              />
+            </svg>
+          </SDButton> */}
         </div>
       </div>
       <div className="mt-6">
@@ -315,7 +352,7 @@ const AdminEvents: React.FC = () => {
                 icon: <BsAirplaneEngines size="1.5rem" />,
                 descriptions: "پروازها",
                 onClick: (item) => {
-                  console.log(item);
+                  navigate(`${item.id}/flights`)
                 },
               },
             ],

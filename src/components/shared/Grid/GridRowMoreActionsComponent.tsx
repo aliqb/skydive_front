@@ -49,8 +49,8 @@ function GridRowMoreActionComponent<T>(props: {
         return {
           title: action.descriptions,
           mode: "Button",
-          onClick: (event) => {
-            event.stopPropagation();
+          onClick: () => {
+            // event.stopPropagation();
             action.onClick(props.row.data);
           },
           icon: action.icon,

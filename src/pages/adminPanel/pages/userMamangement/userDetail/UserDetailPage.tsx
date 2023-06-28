@@ -271,7 +271,7 @@ const UserDetailPage: React.FC = () => {
               className={(nav) =>
                 `${
                   !nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
-                } pb-4 block hover:border-b-2 text-gray-500 hover:text-blue-600 hover:border-blue-300  transition-all ease-linear duration-75`
+                } pb-4 block hover:border-b-2 text-gray-500 hover:text-gray-600 hover:border-gray-300  transition-all ease-linear duration-75`
               }
               to={""}
             >

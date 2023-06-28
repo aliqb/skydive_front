@@ -1,4 +1,3 @@
-
 export interface SkyDiveEventStatus {
   title: string;
   reservable: boolean;
@@ -20,7 +19,7 @@ export interface SkyDiveEvent {
   voidable: boolean;
   termsAndConditions: string;
   statusTitle: string;
-  statusId: string;
+  statusId?: string;
   days: SkyDiveInlineEventDay[];
   id: string;
   createdAt: string;
@@ -46,11 +45,11 @@ export interface SkyDiveEventDay {
 export interface FlightOfDayInfo {
   date: string;
   dateDisplay: string;
-  flights: Flight[];
+  flights: AdminFlightModel[];
   qty: number;
 }
 
-export interface Flight {
+export interface AdminFlightModel {
   flightNumber: number;
   flightId: string;
   tickets: Ticket[];
@@ -78,14 +77,14 @@ export interface AdminEventModalProps {
   eventStatusData?: SkyDiveEventStatus[];
   lastCode: string;
   showModal: boolean;
-  onCloseModal: (submitted:boolean) => void;
+  onCloseModal: (submitted: boolean) => void;
   eventData?: SkyDiveEvent;
 }
 export interface CostModalProps {
-  rowId?: string;
+  rowId: string;
   showModal: boolean;
   // onOpenModal: (id?: string) => void;
-  onCloseModal: (submitted:boolean) => void;
+  onCloseModal: (submitted: boolean) => void;
   // fetchData?: () => void;
 }
 export interface SkyDiveEventTicketType {
@@ -93,17 +92,46 @@ export interface SkyDiveEventTicketType {
   capacity: number;
   id: string;
 }
-export interface NewTicketFee {
+export interface TicketFee {
   typeId: string;
   amount: number;
+  tpye?: string;
 }
 
-export interface NewTicketFeeList{
-  items:NewTicketFee[]
+export interface NewTicketFeeList {
+  items: TicketFee[];
 }
 
-export interface AdminGridProps {
-  fetchData: () => void;
-  rowId: string;
-  isActive: boolean;
+export interface AddFlightRequest {
+  flightQty: number;
+  voidableQty: number;
+  ticketTypes: TicketTypeInFlightRequest[];
+}
+
+export interface TicketTypeInFlightRequest {
+  qty: number;
+  typeId: string;
+}
+
+export interface AdminFlightOfDay {
+  date: string;
+  flights: AdminFlightModel[];
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdminFlightModel {
+  flightNumber: number;
+  capacity: number;
+  voidableQty: number;
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface EditTicketRuest {
+  id: string;
+  ticketTypeId: string;
+  reservable: boolean;
 }
