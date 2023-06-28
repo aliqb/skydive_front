@@ -1,6 +1,5 @@
 import { Table } from "flowbite-react";
 import { useState, useEffect } from "react";
-import CostModal from "../../adminPanel/CostModal";
 import { ColDef, GridRow, GridRowActions } from "./grid.types";
 import SDTooltip from "../Tooltip";
 import GridRowOtherActionComponent from "./GridOtherRowActionComponent";
@@ -25,8 +24,6 @@ function Grid<T>({
   onRemoveRow,
   rowActions = { edit: true, remove: true, otherActions: [], moreActions: [] },
 }: GridProps<T>) {
-  const [openModal, setOpenModal] = useState(false);
-  const [selectedRowId, setSelectedRowId] = useState("");
   const [gridRows, setGridRows] = useState<GridRow<T>[]>([]);
 
   useEffect(() => {
@@ -43,13 +40,6 @@ function Grid<T>({
     }
   };
 
-  const handleOnOpenModal = (id?: string) => {
-    setSelectedRowId(id || "");
-    setOpenModal(true);
-  };
-  const handleOnCloseModal = () => {
-    setOpenModal(false);
-  };
   {
     return (
       <>
