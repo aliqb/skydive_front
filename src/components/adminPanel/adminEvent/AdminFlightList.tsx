@@ -1,4 +1,5 @@
 import useAPi from "../../../hooks/useApi";
+import useConfirm from "../../../hooks/useConfirm";
 import { BaseResponse } from "../../../models/shared.models";
 import { AdminFlightOfDay } from "../../../models/skyDiveEvents.models";
 import SDButton from "../../shared/Button";
@@ -6,35 +7,22 @@ import SDSpinner from "../../shared/Spinner";
 import AddFlightModal from "./AddFlightModal";
 import AdminFlightItem from "./AdminFlightItem";
 import { useCallback, useEffect, useState } from "react";
-import EditTicketModal from "./EditTicketModal";
-
-// const temp = {
-//   message: "بلیت های رویداد",
-//   content: {
-//     date: "1402/04/02",
-//     flights: [
-//       {
-//         flightNumber: 1,
-//         capacity: 34,
-//         voidableQty: 1,
-//         id: "7173de74-1036-45cb-99fa-82823826cfc0",
-//         createdAt: "1402/03/30",
-//         updatedAt: "1402/03/30",
-//       },
-//     ],
-//     id: "d3f0c0d0-e15f-421c-a864-1b8df41dd0e5",
-//     createdAt: "1402/03/28",
-//     updatedAt: "1402/03/28",
-//   },
-//   total: 1,
-// };
+import { toast } from "react-toastify";
 
 const AdminFlighList: React.FC<{ dayId: string; date: string }> = ({
   dayId,
   date,
 }) => {
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
-  // const [temp, setTemp] = useState<boolean>(false);
+  const [ConfirmModal, confirmation] = useConfirm(
+    "پرواز‌های این روز حذف می‌شوند، آیا مطمئن هستید؟",
+    "حذف پروازهای روز"
+  );
+
+  const { sendRequest: deleteRequest, isPending: deletePending } = useAPi<
+    null,
+    BaseResponse<null>
+  >();
 
   const {
     sendRequest,
@@ -55,8 +43,28 @@ const AdminFlighList: React.FC<{ dayId: string; date: string }> = ({
     setShowAddModal(true);
   }
 
-  function onCloseAddModa() {
+  function onCloseAddModal() {
     setShowAddModal(false);
+    fetchFlights(dayId);
+  }
+
+  async function removeFlights() {
+    const confirm = await confirmation();
+    if (confirm) {
+      deleteRequest(
+        {
+          url: `/SkyDiveEvents/${dayId}`,
+          method: "delete",
+        },
+        (response) => {
+          toast.success(response.message);
+          fetchFlights(dayId);
+        },
+        (error) => {
+          toast.error(error?.message);
+        }
+      );
+    }
   }
 
   useEffect(() => {
@@ -64,34 +72,39 @@ const AdminFlighList: React.FC<{ dayId: string; date: string }> = ({
   }, [dayId, fetchFlights]);
   return (
     <>
-    {/* <button onClick={()=>setTemp(true)}>temp</button> */}
-      {/* <EditTicketModal showModal={temp} onCloseModal={() => setTemp(false)} /> */}
+      <ConfirmModal />
 
       {showAddModal && (
         <AddFlightModal
           showModal={showAddModal}
           dayId={dayId}
           date={date}
-          onCloseModal={onCloseAddModa}
+          onCloseModal={onCloseAddModal}
         />
       )}
       <div className="min-h-[300px]">
-        {isPending && (
+        {(isPending || deletePending) && (
           <div className="flex justify-center mt-8">
             <SDSpinner color="blue" size={28} />
           </div>
         )}
-        {flightsResponse?.content && !isPending && (
+        {flightsResponse?.content && !isPending && !deletePending && (
           <>
             <div className="flex gap-2 ">
               <SDButton
                 color="success"
                 className="px-8"
                 onClick={startAddFlight}
+                disabled={flightsResponse.content.flights.length > 0}
               >
                 افزودن
               </SDButton>
-              <SDButton color="failure" className="px-8">
+              <SDButton
+                color="failure"
+                className="px-8"
+                onClick={removeFlights}
+                disabled={!flightsResponse.content.flights.length}
+              >
                 حذف
               </SDButton>
             </div>

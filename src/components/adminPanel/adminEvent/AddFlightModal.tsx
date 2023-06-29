@@ -12,6 +12,7 @@ import SDButton from "../../shared/Button";
 import useAPi from "../../../hooks/useApi";
 import { BaseResponse } from "../../../models/shared.models";
 import SDSpinner from "../../shared/Spinner";
+import { toast } from "react-toastify";
 
 interface AddFlightModalProps {
   dayId: string;
@@ -56,6 +57,11 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
     data: tickeTypeResponse,
   } = useAPi<null, BaseResponse<SkyDiveEventTicketType[]>>();
 
+  const {
+    sendRequest: saveRequest,
+    isPending: savePending
+  } = useAPi<AddFlightRequest,BaseResponse<null>>();
+
   const [totalCapacity, setTotalCapacity] = useState<number>();
 
   function resetModal(submitted: boolean) {
@@ -64,7 +70,16 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
   }
 
   function onSubmit(data: AddFlightRequest) {
-    console.log(data);
+    saveRequest({
+      url:`/SkyDiveEvents/AddFlight/${dayId}`,
+      data: data,
+      method: 'post'
+    },(response)=>{
+      toast.success(response.message)
+      resetModal(true);
+    },(error)=>{
+      toast.error(error?.message)
+    })
   }
 
   function addTicket() {
@@ -337,9 +352,9 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                 color="primary"
                 type="submit"
                 className="w-full !bg-blue-900"
-                //   disabled={sendDataIsPending}
+                  disabled={savePending}
               >
-                {/* {sendDataIsPending && <SDSpinner />} */}
+                {savePending && <SDSpinner color="blue" />}
                 افزودن
               </SDButton>
             </div>
