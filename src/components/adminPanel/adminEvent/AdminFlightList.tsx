@@ -34,7 +34,7 @@ const AdminFlighList: React.FC<{ dayId: string; date: string }> = ({
   date,
 }) => {
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
-  const [temp, setTemp] = useState<boolean>(false);
+  // const [temp, setTemp] = useState<boolean>(false);
 
   const {
     sendRequest,
@@ -64,8 +64,8 @@ const AdminFlighList: React.FC<{ dayId: string; date: string }> = ({
   }, [dayId, fetchFlights]);
   return (
     <>
-    <button onClick={()=>setTemp(true)}>temp</button>
-      <EditTicketModal showModal={temp} onCloseModal={() => setTemp(false)} />
+    {/* <button onClick={()=>setTemp(true)}>temp</button> */}
+      {/* <EditTicketModal showModal={temp} onCloseModal={() => setTemp(false)} /> */}
 
       {showAddModal && (
         <AddFlightModal

@@ -49,11 +49,11 @@ export interface FlightOfDayInfo {
   qty: number;
 }
 
-export interface AdminFlightModel {
-  flightNumber: number;
-  flightId: string;
-  tickets: Ticket[];
-}
+// export interface AdminFlightModel {
+//   flightNumber: number;
+//   flightId: string;
+//   tickets: Ticket[];
+// }
 
 export interface Ticket {
   ticketType: string;
@@ -68,7 +68,7 @@ export interface NewEvent {
   startDate: string;
   endDate: string;
   voidable: boolean;
-  image: string;
+  image: string | null;
   statusId: string;
   subjecToVAT: boolean;
 }
