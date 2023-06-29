@@ -55,7 +55,7 @@ function Grid<T>({
 
         <div className="overflow-x-auto w-full">
           <div>
-            <Table hoverable className="text-right">
+            <Table hoverable className="text-right border">
               <Table.Head>
                 {colDefs.map((column, index) => (
                   <Table.HeadCell key={index}>
@@ -156,7 +156,7 @@ function Grid<T>({
                               />
                             );
                           })}
-                          {rowActions.moreActions?.length && (
+                          {rowActions.moreActions && rowActions.moreActions.length > 0 && (
                             <GridRowMoreActionComponent
                               actions={rowActions.moreActions}
                               row={row}

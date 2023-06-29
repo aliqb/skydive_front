@@ -135,3 +135,13 @@ export interface EditTicketRuest {
   ticketTypeId: string;
   reservable: boolean;
 }
+
+export interface AdminTicketModel {
+  ticketNumber: string;
+  ticketType: string;
+  reservable: boolean;
+  status: string;
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+}
