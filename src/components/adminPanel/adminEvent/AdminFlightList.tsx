@@ -53,7 +53,7 @@ const AdminFlighList: React.FC<{ dayId: string; date: string }> = ({
     if (confirm) {
       deleteRequest(
         {
-          url: `/SkyDiveEvents/${dayId}`,
+          url: `/SkyDiveEvents/RemoveFlights/${dayId}`,
           method: "delete",
         },
         (response) => {
