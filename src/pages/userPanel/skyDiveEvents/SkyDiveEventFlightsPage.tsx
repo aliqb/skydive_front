@@ -21,7 +21,7 @@ const SkyDiveEventFlightsPage: React.FC = () => {
   const [days, setDays] = useState<SkyDiveEventDay[]>([]);
   const [eventTitle, setEventTitle] = useState<string>("");
   useEffect(() => {
-    function getDays(eventId: string, currentDayId: string) {
+    function getDays(eventId: string, currentDayId: string | null) {
       requestDays(
         {
           url: `/SkyDiveEvents/EventDays/${eventId}`,
@@ -30,12 +30,12 @@ const SkyDiveEventFlightsPage: React.FC = () => {
           const sortedDays = sortDate<SkyDiveEventDay>(response.content,'date')
           setEventTitle(response.message);
           setDays(sortedDays);
-          setCurrentDayId(currentDayId);
+          setCurrentDayId(currentDayId || sortedDays[0].id);
         }
       );
     }
     if (params.eventId) {
-      getDays(params.eventId, location.state.dayId);
+      getDays(params.eventId, location.state?.dayId || null);
     }
   }, [params, requestDays, location]);
 
