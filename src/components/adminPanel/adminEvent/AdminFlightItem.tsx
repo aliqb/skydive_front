@@ -6,6 +6,7 @@ import {
 import useAPi from "../../../hooks/useApi";
 import { BaseResponse } from "../../../models/shared.models";
 import AdminFlightTicketsGrid from "./AdminFlightTicketsGrid";
+import SDSpinner from "../../shared/Spinner";
 
 interface AdminFlightItemProps extends AdminFlightModel {
   withHeader?: boolean;
@@ -26,10 +27,10 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
     getTicketRequest(
       {
         url: `/SkyDiveEvents/Tickets/${flightId}`,
-        params:{
-          pageIndex:1,
-          pageSize: 1000
-        }
+        params: {
+          pageIndex: 1,
+          pageSize: 1000,
+        },
       },
       (response) => {
         setTickets(response.content);
@@ -129,7 +130,12 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
       </div>
       {isActive && (
         <div>
-          {tickets && (
+          {ticketsPedning && (
+            <div className="flex  mt-8 mr-28">
+              <SDSpinner color="blue" size={28} />
+            </div>
+          )}
+          {tickets && !ticketsPedning && (
             <div className="p-5">
               <AdminFlightTicketsGrid
                 tickets={tickets}
