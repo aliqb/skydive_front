@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import FlightList from "../../../components/skyDiveEvents/FlightList";
 import Basket from "../../../components/shared/Basket/Basket";
 import BookButton from "../../../components/shared/Basket/‌BookButton";
+import { sortDate } from "../../../utils";
 
 const SkyDiveEventFlightsPage: React.FC = () => {
   const params = useParams();
@@ -26,9 +27,7 @@ const SkyDiveEventFlightsPage: React.FC = () => {
           url: `/SkyDiveEvents/EventDays/${eventId}`,
         },
         (response) => {
-          const sortedDays = response.content.sort((a, b) =>
-            a.date.localeCompare(b.date)
-          );
+          const sortedDays = sortDate<SkyDiveEventDay>(response.content,'date')
           setEventTitle(response.message);
           setDays(sortedDays);
           setCurrentDayId(currentDayId);
@@ -87,7 +86,6 @@ const SkyDiveEventFlightsPage: React.FC = () => {
             <ul className="flex w-full overflow-auto horizental-scrol">
               {days &&
                 days
-                  .sort((a, b) => a.date.localeCompare(b.date))
                   .map((item, index) => {
                     return (
                       <li

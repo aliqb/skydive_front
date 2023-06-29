@@ -10,42 +10,8 @@ import {
 import AdminEventField from "../../../../components/adminPanel/adminEvent/AdminEventField";
 import SDSpinner from "../../../../components/shared/Spinner";
 import AdminFlighList from "../../../../components/adminPanel/adminEvent/AdminFlightList";
-const temp: BaseResponse<SkyDiveEvent> = {
-  message: "اطلاعات رویداد.",
-  content: {
-    code: "003",
-    title: "رویداد زیبا کنار",
-    location: "زیا کنار",
-    image: "8bdf841c-55fd-4b01-8eee-7a3a086c5278",
-    startDate: "1402/05/01",
-    endDate: "1402/05/02",
-    capacity: 0,
-    subjecToVAT: true,
-    isActive: false,
-    voidable: true,
-    termsAndConditions: "",
-    statusTitle: "آماده رزرو",
-    duration: "1 مرداد تا 2 مرداد",
-    days: [
-      {
-        date: "1402/4/2",
-        id: "d31c45e5-15bd-42d3-b359-9fbd6ea3e7fb",
-      },
-      {
-        date: "1402/4/3",
-        id: "47575ec5-d297-4959-99de-c7268abe4933",
-      },
-      {
-        date: "1402/4/1",
-        id: "b363c239-c79c-43a4-851d-ef6cbe5d6cab",
-      },
-    ],
-    id: "9e36ea89-2c91-48ae-aacd-2a8dae9960fc",
-    createdAt: "1402/03/28",
-    updatedAt: "1402/03/28",
-  },
-  total: 0,
-};
+import { sortDate } from "../../../../utils";
+
 const AdminFlightsPage: React.FC = () => {
   const params = useParams();
   const { sendRequest: requestDetail, isPending: detailPending } = useAPi<
@@ -59,23 +25,13 @@ const AdminFlightsPage: React.FC = () => {
 
   useEffect(() => {
     function getEvnetDetail(eventId: string) {
-      // //////////temp
-      // setSkyDiveEvent(temp.content);
-      // const sortedDays = temp.content.days.sort((a, b) =>
-      //   a.date.localeCompare(b.date)
-      // );
-      // setDays(sortedDays);
-      // setCurrentDay(sortedDays[0]);
-      // //////////temp
         requestDetail(
           {
             url: `/SkyDiveEvents/${eventId}`,
           },
           (response) => {
             setSkyDiveEvent(response.content);
-            const sortedDays = response.content.days.sort((a, b) =>
-              a.date.localeCompare(b.date)
-            );
+            const sortedDays = sortDate<SkyDiveInlineEventDay>(response.content.days,'date')
             setDays(sortedDays);
             setCurrentDay(sortedDays[0]);
           }
@@ -117,7 +73,6 @@ const AdminFlightsPage: React.FC = () => {
           <ul className="flex w-full overflow-auto horizental-scrol">
             {days &&
               days
-                .sort((a, b) => a.date.localeCompare(b.date))
                 .map((item, index) => {
                   return (
                     <li

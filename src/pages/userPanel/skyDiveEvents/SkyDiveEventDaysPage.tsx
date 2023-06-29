@@ -9,6 +9,8 @@ import {
   SkyDiveEventDay,
 } from "../../../models/skyDiveEvents.models";
 import SDSpinner from "../../../components/shared/Spinner";
+import {useState} from 'react';
+import { sortDate } from "../../../utils";
 
 const SkyDiveEventDaysPage: React.FC = () => {
   const params = useParams();
@@ -19,9 +21,10 @@ const SkyDiveEventDaysPage: React.FC = () => {
   } = useAPi<null, BaseResponse<SkyDiveEvent>>();
   const {
     sendRequest: requestDays,
-    data: days,
     isPending: daysPending,
   } = useAPi<null, BaseResponse<SkyDiveEventDay[]>>();
+
+  const [days, setDays] = useState<SkyDiveEventDay[]>();
 
   useEffect(() => {
     function getEvnetDetail(eventId: string) {
@@ -33,6 +36,8 @@ const SkyDiveEventDaysPage: React.FC = () => {
     function getDays(eventId: string) {
       requestDays({
         url: `/SkyDiveEvents/EventDays/${eventId}`,
+      },(response)=>{
+        setDays(sortDate<SkyDiveEventDay>(response.content,'date'))
       });
     }
 
@@ -57,8 +62,7 @@ const SkyDiveEventDaysPage: React.FC = () => {
       </header>
       <main className="w-full flex flex-wrap">
         {days &&
-          days.content
-            .sort((a, b) => a.date.localeCompare(b.date))
+          days
             .map((item, index) => {
               return (
                 <div key={index} className=" my-3 px-3 w-full md:w-1/2">

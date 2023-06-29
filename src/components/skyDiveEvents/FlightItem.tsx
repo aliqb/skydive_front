@@ -1,7 +1,7 @@
-import { AdminFlightModel } from "../../models/skyDiveEvents.models";
+import {  SkyDiveFlight } from "../../models/skyDiveEvents.models";
 import FlightTicketCard from "./FlightTicketCard";
 
-export const FlightItem: React.FC<AdminFlightModel> = (props) => {
+export const FlightItem: React.FC<SkyDiveFlight> = (props) => {
   return (
     <div className={`border-b border-gray-400 pb-5 mb-12 last:border-none`}>
       <h2 className="text-center font-semibold text-2xl ">

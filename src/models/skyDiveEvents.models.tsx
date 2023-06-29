@@ -45,8 +45,15 @@ export interface SkyDiveEventDay {
 export interface FlightOfDayInfo {
   date: string;
   dateDisplay: string;
-  flights: AdminFlightModel[];
+  flights: SkyDiveFlight[];
   qty: number;
+}
+
+
+export interface SkyDiveFlight {
+  flightNumber: number;
+  flightId: string;
+  tickets: Ticket[];
 }
 
 // export interface AdminFlightModel {
@@ -130,7 +137,7 @@ export interface AdminFlightModel {
   updatedAt: string;
 }
 
-export interface EditTicketRuest {
+export interface EditTicketRequest {
   id: string;
   ticketTypeId: string;
   reservable: boolean;
