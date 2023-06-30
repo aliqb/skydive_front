@@ -4,7 +4,11 @@ import Basket from "../../components/shared/Basket/Basket";
 import SDCard from "../../components/shared/Card";
 import { FaWallet } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import useAPi from "../../hooks/useApi";
+import { BaseResponse } from "../../models/shared.models";
+import { toast } from "react-toastify";
+import { basketActions } from "../../store/basket";
 
 const PaymentPage: React.FC = () => {
   const [method, setMethod] = useState<string>("");
@@ -13,6 +17,9 @@ const PaymentPage: React.FC = () => {
     (state) => state.basket.basket?.skyDiveEventId
   );
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const { sendRequest } = useAPi<null, BaseResponse<null>>();
 
   function onSelectMethod(id: string) {
     setMethod(id);
@@ -27,7 +34,20 @@ const PaymentPage: React.FC = () => {
   }
 
   function onPay() {
-    console.log("pay");
+    sendRequest(
+      {
+        url: "/Reservations/SetAsPaid",
+        method: "put",
+      },
+      (response) => {
+        toast.success(response.message);
+        dispatch(basketActions.reset());
+        //navigate to tickets
+      },
+      (error) => {
+        toast.error(error?.message);
+      }
+    );
   }
   return (
     <div className="flex flex-wrap mt-1  pb-3 lg:px-20 xl:px-28 pt-4">
