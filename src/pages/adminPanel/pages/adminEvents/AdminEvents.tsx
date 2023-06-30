@@ -356,7 +356,7 @@ const AdminEvents: React.FC = () => {
               {
                 icon: <BiToggleLeft size="1.5rem" color="#e02424" />,
                 descriptions: "فعال کردن",
-                // showField:'isActive',
+                showField:'!isActive',
                 // disableField: '!isActive',
                 onClick: onPublishEvent,
               },
