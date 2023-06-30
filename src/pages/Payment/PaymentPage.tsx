@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 const PaymentPage: React.FC = () => {
   const [method, setMethod] = useState<string>("");
   const [acceptRules, setAcceptRules] = useState<boolean>(false);
+  // const eventId
   const navigate = useNavigate();
 
   function onSelectMethod(id: string) {

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import SDCard from "../../../components/shared/Card";
 import SkyDiveEventDayItem from "../../../components/skyDiveEvents/SkyDiveEventDayItem";
 import { useEffect } from "react";
@@ -58,7 +58,7 @@ const SkyDiveEventDaysPage: React.FC = () => {
           <p>{event?.content.duration}</p>
           <p>{event?.content.capacity} ظرفیت خالی</p>
         </div>
-        <a className="text-blue-700 font-semibold">قوانین و شرایط</a>
+        <Link target="_blank" to={`/events/${event?.content.id}/terms`} className="text-blue-700 font-semibold">قوانین و شرایط</Link>
       </header>
       <main className="w-full flex flex-wrap">
         {days &&

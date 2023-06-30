@@ -7,7 +7,7 @@ import {
   SkyDiveEvent,
   SkyDiveInlineEventDay,
 } from "../../../../models/skyDiveEvents.models";
-import AdminEventField from "../../../../components/adminPanel/adminEvent/AdminEventField";
+import SkydiveEventField from "../../../../components/shared/SkydiveEventField";
 import SDSpinner from "../../../../components/shared/Spinner";
 import AdminFlighList from "../../../../components/adminPanel/adminEvent/AdminFlightList";
 import { sortDate } from "../../../../utils";
@@ -57,11 +57,11 @@ const AdminFlightsPage: React.FC = () => {
           {skyDiveEvent && !detailPending && (
             <>
               <div className="flex justify-between px-8 my-7 flex-wrap gap-6">
-                <AdminEventField title="کد" value={skyDiveEvent.code} />
-                <AdminEventField title="نام" value={skyDiveEvent.title} />
-                <AdminEventField title="شروع" value={skyDiveEvent.startDate} />
-                <AdminEventField title="پایان" value={skyDiveEvent.endDate} />
-                <AdminEventField
+                <SkydiveEventField title="کد" value={skyDiveEvent.code} />
+                <SkydiveEventField title="نام" value={skyDiveEvent.title} />
+                <SkydiveEventField title="شروع" value={skyDiveEvent.startDate} />
+                <SkydiveEventField title="پایان" value={skyDiveEvent.endDate} />
+                <SkydiveEventField
                   title="محل رویداد"
                   value={skyDiveEvent.location}
                 />
