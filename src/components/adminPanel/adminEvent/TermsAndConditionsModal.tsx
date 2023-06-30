@@ -49,9 +49,9 @@ const TermsAndConditionsModal: React.FC<TermsAndConditionsModalProps> = ({
       {
         method: "put",
         url: `/SkyDiveEvents/ConditionsAndTerms/${skyDiveEvent.id}`,
-        data:{
-          conditionsAndTerms: content
-        }
+        data: {
+          conditionsAndTerms: content,
+        },
       },
       (response) => {
         toast.success(response.message);
@@ -70,7 +70,7 @@ const TermsAndConditionsModal: React.FC<TermsAndConditionsModalProps> = ({
       onClose={() => resetModal(false)}
       containerClass="!p-0 border-none !w-[900px]"
     >
-      <div className="border-b  text-lg flex justify-between px-6 py-4 bg-blue-900 text-white rounded-t-md">
+      <div className="border-b  text-lg flex justify-between px-6 py-4 bg-blue-900 text-white rounded-t-md ">
         <span>قوانین و شرایط رویداد</span>
         <button type="button" onClick={() => resetModal(false)}>
           <svg
@@ -89,35 +89,31 @@ const TermsAndConditionsModal: React.FC<TermsAndConditionsModalProps> = ({
           </svg>
         </button>
       </div>
-      {/* {(getTypesPending || getFeesPending) && (
-          <div className="flex justify-center py-5">
-            <SDSpinner color="blue" size={20}></SDSpinner>
+      <div className="max-h-[80vh] overflow-auto">
+        <div className="flex flex-col gap-3 my-5 items-center text-slate-700 text-center w-full ">
+          <div className="flex gap-6">
+            <p className="font-semibold">رویداد</p>
+            <p>{skyDiveEvent.title}</p>
           </div>
-        )} */}
-
-      <div className="flex flex-col gap-3 my-5 items-center text-slate-700 text-center w-full">
-        <div className="flex gap-6">
-          <p className="font-semibold">رویداد</p>
-          <p>{skyDiveEvent.title}</p>
         </div>
+        <form className=" overflow-auto" onSubmit={onSubmit}>
+          <div className="p-3">
+            {/* <CKEditor editor={Editor as any}></CKEditor> */}
+            <SDEditor data={content} onChange={onChangeContent} />
+          </div>
+          <div className="w-full px-5 py-5 flex justify-center items-center">
+            <SDButton
+              color="primary"
+              type="submit"
+              className=" !bg-blue-900 w-96"
+              disabled={isPending}
+            >
+              {isPending && <SDSpinner color="blue" />}
+              ذخیره
+            </SDButton>
+          </div>
+        </form>
       </div>
-      <form className="max-h-[80vh] overflow-auto" onSubmit={onSubmit}>
-        <div className="p-3">
-          {/* <CKEditor editor={Editor as any}></CKEditor> */}
-          <SDEditor data={content} onChange={onChangeContent} />
-        </div>
-        <div className="w-full px-5 py-5 flex justify-center items-center">
-          <SDButton
-            color="primary"
-            type="submit"
-            className=" !bg-blue-900 w-96"
-            disabled={isPending}
-          >
-            {isPending && <SDSpinner color="blue" />}
-            ذخیره
-          </SDButton>
-        </div>
-      </form>
     </SDModal>
   );
 };
