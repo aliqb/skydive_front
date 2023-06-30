@@ -151,4 +151,5 @@ export interface AdminTicketModel {
   id: string;
   createdAt: string;
   updatedAt: string;
+  ticketTypeId: string;
 }

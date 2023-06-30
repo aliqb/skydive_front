@@ -83,7 +83,10 @@ const EditTicketModal: React.FC<EditTicketModal> = ({
 
   useEffect(() => {
     setSelectedReservableOption(ticket.reservable);
-  }, [ticket]);
+    reset({
+      ticketTypeId: ticket.ticketTypeId
+    })
+  }, [ticket, reset]);
 
   useEffect(() => {
     const fetchEventTicketType = () => {

@@ -3,6 +3,10 @@ import Grid from "../../shared/Grid/Grid";
 import { useState } from "react";
 import { ColDef } from "../../shared/Grid/grid.types";
 import EditTicketModal from "./EditTicketModal";
+import useConfirm from "../../../hooks/useConfirm";
+import { BaseResponse } from "../../../models/shared.models";
+import useAPi from "../../../hooks/useApi";
+import { toast } from "react-toastify";
 
 interface AdminFlightTicketsGridProps {
   tickets: AdminTicketModel[];
@@ -35,6 +39,11 @@ const AdminFlightTicketsGrid: React.FC<AdminFlightTicketsGridProps> = ({
 
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState<AdminTicketModel | null>(null);
+  const { sendRequest: deleteRequest } = useAPi<null, BaseResponse<null>>();
+  const [ConfirmModal, confirmation] = useConfirm(
+    " این بلیت حذف خواهد شد. آیا مطمئن هستید؟ ",
+    "حذف کردن بلیت"
+  );
 
   function onEdit(ticket: AdminTicketModel) {
     setCurrentRow(ticket);
@@ -49,8 +58,28 @@ const AdminFlightTicketsGrid: React.FC<AdminFlightTicketsGridProps> = ({
     }
   }
 
+  async function onRemove(ticket: AdminTicketModel) {
+    const confirm = await confirmation();
+    if (confirm) {
+      deleteRequest(
+        {
+          method: "delete",
+          url: `/SkyDiveEvents/RemoveTicket/${ticket.id}`,
+        },
+        (response) => {
+          toast.success(response.message);
+          onChange();
+        },
+        (error) => {
+          toast.error(error?.message);
+        }
+      );
+    }
+  }
+
   return (
     <>
+      <ConfirmModal />
       {currentRow && (
         <EditTicketModal
           showModal={showEditModal}
@@ -59,7 +88,12 @@ const AdminFlightTicketsGrid: React.FC<AdminFlightTicketsGridProps> = ({
         />
       )}
 
-      <Grid colDefs={colDefs} data={tickets} onEditRow={onEdit}></Grid>
+      <Grid
+        colDefs={colDefs}
+        data={tickets}
+        onEditRow={onEdit}
+        onRemoveRow={onRemove}
+      ></Grid>
     </>
   );
 };
