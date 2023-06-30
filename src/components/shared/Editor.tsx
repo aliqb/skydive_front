@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { Component } from "react";
+import  { Component } from "react";
 // import Editor from 'ckeditor5-custom-build/build/ckeditor';
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 
