@@ -66,6 +66,13 @@ const AdminEvents: React.FC = () => {
     setShowModal(false);
   };
 
+  const handleCloseTermsModal = (submitted: boolean)=>{
+    if(submitted){
+      fetchEvents(selectedValue, startDate, endDate);
+    }
+    setTermsTargetEvent(undefined);
+  }
+
   const onCreate = () => {
     setShowModal(true);
   };
@@ -243,8 +250,8 @@ const AdminEvents: React.FC = () => {
       {termsTartgetEvent && (
         <TermsAndConditionsModal
           showModal={!!termsTartgetEvent}
-          event={termsTartgetEvent}
-          onCloseModal={() => setTermsTargetEvent(undefined)}
+          skyDiveEvent={termsTartgetEvent}
+          onCloseModal={handleCloseTermsModal}
         />
       )}
       <div className="flex justify-between gap-3 flex-wrap">

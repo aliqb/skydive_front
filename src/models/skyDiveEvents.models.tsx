@@ -153,3 +153,7 @@ export interface AdminTicketModel {
   updatedAt: string;
   ticketTypeId: string;
 }
+
+export interface AddTermAndConditionsRequest{
+  conditionsAndTerms: string;
+}
