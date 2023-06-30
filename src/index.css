@@ -7,12 +7,24 @@
   font-family: "IRANYekan";
 }
 
-:root{
-  --toastify-font-family: "IRANYekan"
+:root {
+  --toastify-font-family: "IRANYekan";
+}
+
+/* editor */
+.ck-editor {
+  max-width: 100%;
+}
+
+.ck-editor__editable {
+  /* height: 200px; */
+}
+
+.ck-source-editing-area textarea {
+  direction: ltr !important;
 }
 
 @layer base {
-
   html,
   body {
     font-family: "IRANYekan";
@@ -26,16 +38,15 @@
 
   /* Track */
   ::-webkit-scrollbar-track {
-    background: rgba(0,0,0,0);
+    background: rgba(0, 0, 0, 0);
     border: none;
   }
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
     @apply bg-slate-400;
-    border: 2px solid rgba(0,0,0,0);
+    border: 2px solid rgba(0, 0, 0, 0);
     border-radius: 9px;
-    
   }
 
   /* Handle on hover */
@@ -52,14 +63,14 @@
   textarea {
     outline: none;
   }
-  th{
+  th {
     white-space: nowrap;
   }
-  .horizental-scrol ::-webkit-scrollbar{
+  .horizental-scrol ::-webkit-scrollbar {
     height: 6px;
   }
 
-  .top-shadow{
-    box-shadow: 0 -1px 1px rgba(0,0,0,.14), 0 -2px 2px rgba(0,0,0,.05);
+  .top-shadow {
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.14), 0 -2px 2px rgba(0, 0, 0, 0.05);
   }
 }

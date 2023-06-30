@@ -39,6 +39,7 @@ import AdminUserDocument from "./pages/adminPanel/pages/userMamangement/userDeta
 import CreateUserPage from "./pages/adminPanel/pages/userMamangement/CreateUserPage";
 import EditUserPage from "./pages/adminPanel/pages/userMamangement/EditUserPage";
 import AdminFlightsPage from "./pages/adminPanel/pages/adminEvents/AdminFlightsPage";
+import SkyDiveEventTermsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventTermsPage";
 
 function App() {
   // useEffect(()=>{
@@ -76,6 +77,7 @@ function App() {
                 Component={SkyDiveEventFlightsPage}
                 path=":eventId/flights"
               ></Route>
+              <Route Component={SkyDiveEventTermsPage} path=":eventId/terms"></Route>
             </Route>
             <Route Component={PaymentPage} path="payment"></Route>
           </Route>

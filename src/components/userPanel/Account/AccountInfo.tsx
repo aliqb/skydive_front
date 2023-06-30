@@ -3,7 +3,7 @@ import SDLabel from "../../shared/Label";
 import SDTextInput from "../../shared/TextInput";
 import SDTooltip from "../../shared/Tooltip";
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
-import { BaseResponse, UserStatuses } from "../../../models/shared.models";
+import { BaseResponse } from "../../../models/shared.models";
 import useConfirm from "../../../hooks/useConfirm";
 import useAPi from "../../../hooks/useApi";
 import { toast } from "react-toastify";

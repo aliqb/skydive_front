@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { CartableMessage, CartableRequestTypes } from "../../../models/cartable.models";
 
 const CartableItem: React.FC<CartableMessage> = (props) => {

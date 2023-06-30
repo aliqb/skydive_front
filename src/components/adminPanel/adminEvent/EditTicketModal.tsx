@@ -1,13 +1,21 @@
 import { useForm } from "react-hook-form";
 import SDModal from "../../shared/Modal";
-import { EditTicketRuest } from "../../../models/skyDiveEvents.models";
+import {
+  AdminTicketModel,
+  EditTicketRequest,
+  SkyDiveEventTicketType,
+} from "../../../models/skyDiveEvents.models";
 import SDButton from "../../shared/Button";
 import SDLabel from "../../shared/Label";
 import SDSelect from "../../shared/Select";
 import RadioButton from "../../shared/RadioButton";
-import {useState} from 'react';
+import { useState, useEffect } from "react";
+import useAPi from "../../../hooks/useApi";
+import { BaseResponse } from "../../../models/shared.models";
+import { toast } from "react-toastify";
+import SDSpinner from "../../shared/Spinner";
 
-interface EditTicketModal {
+interface EditTicketModal extends AdminTicketModel {
   showModal: boolean;
   onCloseModal: (submitted: boolean) => void;
 }
@@ -15,36 +23,84 @@ interface EditTicketModal {
 const EditTicketModal: React.FC<EditTicketModal> = ({
   showModal,
   onCloseModal,
+  ...ticket
 }) => {
   const {
     register,
     formState: { errors: formErrors },
     handleSubmit,
     reset,
-  } = useForm<EditTicketRuest>({
+  } = useForm<EditTicketRequest>({
     mode: "onTouched",
   });
 
-  const [selectedReservableOption, setSelectedReservableOption] = useState(false);
+  const [selectedReservableOption, setSelectedReservableOption] =
+    useState(false);
 
+  const { sendRequest: getTicketTypesRequest, data: tickeTypeResponse } =
+    useAPi<null, BaseResponse<SkyDiveEventTicketType[]>>();
+
+  const { sendRequest: sendEditRequest, isPending: editPending } = useAPi<
+    EditTicketRequest,
+    BaseResponse<null>
+  >();
 
   const reservableOptions = [
     { value: "reservable-active", label: "فعال" },
     { value: "reservable-inactive", label: "غیر فعال" },
   ];
 
-  function handleReservableOptionChange (value: string) {
+  function handleReservableOptionChange(value: string) {
     setSelectedReservableOption(value === "reservable-active");
   }
 
   function resetModal(submitted: boolean) {
-    // reset();
+    reset();
     onCloseModal(submitted);
   }
 
-  function onSubmit(data: EditTicketRuest) {
+  function onSubmit(data: EditTicketRequest) {
+    sendEditRequest(
+      {
+        url: `/SkyDiveEvents/UpdateTicket`,
+        data: {
+          id: ticket.id,
+          ticketTypeId: data.ticketTypeId,
+          reservable: selectedReservableOption,
+        },
+        method: "put",
+      },
+      (reponse) => {
+        toast.success(reponse.message);
+        resetModal(true);
+      },
+      (error) => {
+        toast.error(error?.message);
+      }
+    );
     console.log(data);
   }
+
+  useEffect(() => {
+    setSelectedReservableOption(ticket.reservable);
+    reset({
+      ticketTypeId: ticket.ticketTypeId
+    })
+  }, [ticket, reset]);
+
+  useEffect(() => {
+    const fetchEventTicketType = () => {
+      getTicketTypesRequest({
+        url: "/SkyDiveEventTicketType",
+        params: {
+          pageIndex: 1,
+          pageSize: 1000000000,
+        },
+      });
+    };
+
+    fetchEventTicketType();
+  }, [getTicketTypesRequest]);
 
   return (
     <SDModal
@@ -75,7 +131,7 @@ const EditTicketModal: React.FC<EditTicketModal> = ({
         <div className="flex flex-col gap-3 items-center text-slate-700 text-center w-full">
           <div className="flex gap-6">
             <p className="font-semibold">شماره بلیت</p>
-            <p>54654</p>
+            <p>{ticket.ticketNumber}</p>
           </div>
         </div>
         <form className="mt-6" onSubmit={handleSubmit(onSubmit)}>
@@ -92,6 +148,14 @@ const EditTicketModal: React.FC<EditTicketModal> = ({
                 })}
               >
                 <option></option>
+                {tickeTypeResponse?.content &&
+                  tickeTypeResponse.content.map((item, index) => {
+                    return (
+                      <option key={index} value={item.id}>
+                        {item.title}
+                      </option>
+                    );
+                  })}
               </SDSelect>
               {formErrors.ticketTypeId?.message && (
                 <p className="text-red-600 text-xs pr-2 mt-2">
@@ -101,14 +165,16 @@ const EditTicketModal: React.FC<EditTicketModal> = ({
             </div>
             <div className="w-full md:w-1/2 px-5 py-3">
               <SDLabel htmlFor="reservableQty" className="mb-2">
-                 قابل رزرو
+                قابل رزرو
               </SDLabel>
               <div className="mt-3">
                 <RadioButton
                   groupName="reservable"
                   options={reservableOptions}
                   selectedOption={
-                    selectedReservableOption ? "reservable-active" : "reservable-inactive"
+                    selectedReservableOption
+                      ? "reservable-active"
+                      : "reservable-inactive"
                   }
                   onOptionChange={handleReservableOptionChange}
                 />
@@ -120,9 +186,9 @@ const EditTicketModal: React.FC<EditTicketModal> = ({
               color="primary"
               type="submit"
               className="w-full !bg-blue-900"
-              //   disabled={sendDataIsPending}
+                disabled={editPending}
             >
-              {/* {sendDataIsPending && <SDSpinner />} */}
+              {editPending && <SDSpinner color="blue" />}
               ذخیره
             </SDButton>
           </div>

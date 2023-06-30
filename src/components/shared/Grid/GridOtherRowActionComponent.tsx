@@ -13,9 +13,9 @@ function GridRowOtherActionComponent<T>(props: {
     const invert = field.includes("!");
     if (invert) {
       field = field.slice(1);
-      mustShow = !(props.row.data as any)[props.action.showField];
+      mustShow = !(props.row.data as any)[field];
     } else {
-      mustShow = !!(props.row.data as any)[props.action.showField];
+      mustShow = !!(props.row.data as any)[field];
     }
   }
 
@@ -24,9 +24,9 @@ function GridRowOtherActionComponent<T>(props: {
     const invert = field.includes("!");
     if (invert) {
       field = field.slice(1);
-      musDisable = (props.row.data as any)[props.action.disableField];
+      musDisable = (props.row.data as any)[field];
     } else {
-      musDisable = !(props.row.data as any)[props.action.disableField];
+      musDisable = !(props.row.data as any)[field];
     }
   }
   return mustShow ? (

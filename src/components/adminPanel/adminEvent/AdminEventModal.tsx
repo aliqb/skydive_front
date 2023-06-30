@@ -80,7 +80,7 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
         {
           url: `/SkyDiveEvents/${eventData.id}`,
           method: "put",
-          data: data,
+          data: {...data,image: data.image || null},
         },
         (response) => {
           console.log("Response:", response);
@@ -96,7 +96,7 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
         {
           url: "/SkyDiveEvents",
           method: "post",
-          data: data,
+          data: {...data,image: data.image || null},
         },
         (response) => {
           toast.success(response.message);
