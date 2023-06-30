@@ -3,12 +3,15 @@ import PaymentMethod from "../../components/payment/PaymentMethod";
 import Basket from "../../components/shared/Basket/Basket";
 import SDCard from "../../components/shared/Card";
 import { FaWallet } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../hooks/reduxHooks";
 
 const PaymentPage: React.FC = () => {
   const [method, setMethod] = useState<string>("");
   const [acceptRules, setAcceptRules] = useState<boolean>(false);
-  // const eventId
+  const eventId = useAppSelector(
+    (state) => state.basket.basket?.skyDiveEventId
+  );
   const navigate = useNavigate();
 
   function onSelectMethod(id: string) {
@@ -19,12 +22,12 @@ const PaymentPage: React.FC = () => {
     setAcceptRules(!!evenet.target.value);
   }
 
-  function goBack(){
+  function goBack() {
     navigate(-1);
   }
 
-  function onPay(){
-    console.log('pay');
+  function onPay() {
+    console.log("pay");
   }
   return (
     <div className="flex flex-wrap mt-1  pb-3 lg:px-20 xl:px-28 pt-4">
@@ -61,9 +64,13 @@ const PaymentPage: React.FC = () => {
             htmlFor="red-radio"
             className="mr-2  font-medium text-gray-900 dark:text-gray-300"
           >
-            <a href="" className="inline-block ml-1 text-blue-600">
+            <Link
+              to={`/events/${eventId}/terms`}
+              target="_blank"
+              className="inline-block ml-1 text-blue-600"
+            >
               قوانین و شرایط
-            </a>
+            </Link>
             را مطالعه کرده‌ام و می‌پذیرم.
           </label>
         </div>
@@ -89,7 +96,11 @@ const PaymentPage: React.FC = () => {
       </SDCard>
       <aside className="relative w-full pt-4 lg:pt-0 lg:w-1/3">
         <div className="lg:px-3">
-          <Basket inPayment={true} canPay={!!method && acceptRules} onPayClick={onPay} />
+          <Basket
+            inPayment={true}
+            canPay={!!method && acceptRules}
+            onPayClick={onPay}
+          />
         </div>
       </aside>
     </div>

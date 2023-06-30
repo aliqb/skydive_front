@@ -86,6 +86,7 @@ export interface BasketModel {
   id: string;
   createdAt: string;
   updatedAt: string;
+  skyDiveEventId: string;
 }
 
 export interface BasketTicketModel {
