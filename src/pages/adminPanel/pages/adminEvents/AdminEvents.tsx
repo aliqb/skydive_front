@@ -52,6 +52,8 @@ const AdminEvents: React.FC = () => {
     BaseResponse<string>
   >();
 
+  const { sendRequest: publishRequest } = useAPi<null, BaseResponse<null>>();
+
   const [ConfirmModal, confirmation] = useConfirm(
     " رویداد شما حذف خواهد شد. آیا مطمئن هستید؟ ",
     "حذف کردن رویداد"
@@ -66,12 +68,12 @@ const AdminEvents: React.FC = () => {
     setShowModal(false);
   };
 
-  const handleCloseTermsModal = (submitted: boolean)=>{
-    if(submitted){
+  const handleCloseTermsModal = (submitted: boolean) => {
+    if (submitted) {
       fetchEvents(selectedValue, startDate, endDate);
     }
     setTermsTargetEvent(undefined);
-  }
+  };
 
   const onCreate = () => {
     setShowModal(true);
@@ -184,6 +186,22 @@ const AdminEvents: React.FC = () => {
         }
       );
     }
+  };
+
+  const onPublishEvent = (item: SkyDiveEvent) => {
+    publishRequest(
+      {
+        url: `/SkyDiveEvents/PublishEvent/${item.id}`,
+        method: "put",
+      },
+      (response) => {
+        toast.success(response.message);
+        fetchEvents(selectedValue, startDate, endDate);
+      },
+      (error) => {
+        toast.error(error?.message);
+      }
+    );
   };
 
   useEffect(() => {
@@ -340,9 +358,7 @@ const AdminEvents: React.FC = () => {
                 descriptions: "فعال کردن",
                 // showField:'isActive',
                 // disableField: '!isActive',
-                onClick: (item) => {
-                  console.log(item);
-                },
+                onClick: onPublishEvent,
               },
             ],
             moreActions: [
