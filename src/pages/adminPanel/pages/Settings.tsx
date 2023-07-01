@@ -69,7 +69,7 @@ const Settings: React.FC = () => {
             >
               <button
                 className={`p-4 text-lg font-bold w-full text-right ${
-                  selectedUserTypes.includes(userType) ? 'text-blue' : ''
+                  selectedUserTypes.includes(userType) ? 'text-blue-600' : ''
                 }`}
                 onClick={() => handleUserTypeClick(userType)}
               >
@@ -82,7 +82,7 @@ const Settings: React.FC = () => {
                       key={ticketType}
                       className={`flex items-center ${
                         selectedTickets[userType]?.includes(ticketType)
-                          ? 'text-blue-600'
+                          ? 'text-black'
                           : 'text-black'
                       }`}
                     >
