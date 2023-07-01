@@ -19,7 +19,8 @@ const PaymentPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { sendRequest } = useAPi<null, BaseResponse<null>>();
+  const { sendRequest: sendPayRequest } = useAPi<null, BaseResponse<null>>();
+  const { sendRequest: sendCheckRequest } = useAPi<null, BaseResponse<null>>();
 
   function onSelectMethod(id: string) {
     setMethod(id);
@@ -33,8 +34,8 @@ const PaymentPage: React.FC = () => {
     navigate(-1);
   }
 
-  function onPay() {
-    sendRequest(
+  function payBasket() {
+    sendPayRequest(
       {
         url: "/Reservations/SetAsPaid",
         method: "put",
@@ -42,7 +43,21 @@ const PaymentPage: React.FC = () => {
       (response) => {
         toast.success(response.message);
         dispatch(basketActions.reset());
-        //navigate to tickets
+        navigate('/tickets')
+      },
+      (error) => {
+        toast.error(error?.message);
+      }
+    );
+  }
+
+  function onPay() {
+    sendCheckRequest(
+      {
+        url: "/ShoppingCarts/CheckTickets",
+      },
+      () => {
+        payBasket();
       },
       (error) => {
         toast.error(error?.message);

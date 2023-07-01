@@ -28,6 +28,8 @@ const UserHeader: React.FC = () => {
       location.pathname.includes("payment")
     ) {
       setCartIsInBody(true);
+    }else{
+      setCartIsInBody(false)
     }
   }, [location]);
   // const navigate = use
