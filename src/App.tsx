@@ -40,7 +40,8 @@ import CreateUserPage from "./pages/adminPanel/pages/userMamangement/CreateUserP
 import EditUserPage from "./pages/adminPanel/pages/userMamangement/EditUserPage";
 import AdminFlightsPage from "./pages/adminPanel/pages/adminEvents/AdminFlightsPage";
 import SkyDiveEventTermsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventTermsPage";
-import MyTicketsPage from "./pages/userPanel/MyTicketsPAge";
+import MyTicketsPage from "./pages/userPanel/MyTicketsPage";
+import JumpRecordsPage from "./pages/userPanel/JumpRecordsPage";
 
 function App() {
   // useEffect(()=>{
@@ -81,6 +82,7 @@ function App() {
               <Route Component={SkyDiveEventTermsPage} path=":eventId/terms"></Route>
             </Route>
             <Route Component={MyTicketsPage} path="tickets"></Route>
+            <Route Component={JumpRecordsPage} path="jumps"></Route>
             <Route Component={PaymentPage} path="payment"></Route>
           </Route>
           <Route Component={AuthContainer} path="auth">

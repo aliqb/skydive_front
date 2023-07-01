@@ -89,7 +89,7 @@ const MyTicketsPage: React.FC = () => {
   return (
     <SDCard>
       <h1 className="text-center font-bold text-xl py-5">بلیت‌های من</h1>
-      <div className="py-5 px-8">
+      <div className="py-5 md:px-8">
         {isPending && (
           <div className="flex justify-center mt-8">
             <SDSpinner size={28} />

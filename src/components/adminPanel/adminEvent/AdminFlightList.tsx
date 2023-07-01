@@ -43,9 +43,11 @@ const AdminFlighList: React.FC<{ dayId: string; date: string }> = ({
     setShowAddModal(true);
   }
 
-  function onCloseAddModal() {
+  function onCloseAddModal(submitted: boolean) {
     setShowAddModal(false);
-    fetchFlights(dayId);
+    if (submitted) {
+      fetchFlights(dayId);
+    }
   }
 
   async function removeFlights() {
