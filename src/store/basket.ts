@@ -117,7 +117,14 @@ export const removeTicketFromBasket = createAsyncThunk(
 const basketSlice = createSlice({
   name: "basket",
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    reset:(state)=>{
+      state.basket = null;
+      state.changingTicket = null;
+      state.error = '';
+      state.loading = false;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchBasket.pending, (state) => {
@@ -164,4 +171,4 @@ const basketSlice = createSlice({
 });
 
 export default basketSlice.reducer;
-// export const basketAction
+export const basketActions = basketSlice.actions

@@ -19,6 +19,7 @@ import useConfirm from "../../../../hooks/useConfirm";
 import { toast } from "react-toastify";
 import CostModal from "../../../../components/adminPanel/adminEvent/CostModal";
 import { useNavigate } from "react-router-dom";
+import TermsAndConditionsModal from "../../../../components/adminPanel/adminEvent/TermsAndConditionsModal";
 
 const AdminEvents: React.FC = () => {
   const [selectedValue, setSelectedValue] = useState<string>("");
@@ -28,6 +29,7 @@ const AdminEvents: React.FC = () => {
   const [editingEvent, setEditingEvent] = useState<SkyDiveEvent>();
   const [processedData, setProcessedData] = useState<SkyDiveEvent[]>([]);
   const [costTargetEvent, setCostTargetEvent] = useState<SkyDiveEvent>();
+  const [termsTartgetEvent, setTermsTargetEvent] = useState<SkyDiveEvent>();
 
   const navigate = useNavigate();
 
@@ -50,6 +52,7 @@ const AdminEvents: React.FC = () => {
     BaseResponse<string>
   >();
 
+  const { sendRequest: publishRequest } = useAPi<null, BaseResponse<null>>();
 
   const [ConfirmModal, confirmation] = useConfirm(
     " رویداد شما حذف خواهد شد. آیا مطمئن هستید؟ ",
@@ -65,12 +68,20 @@ const AdminEvents: React.FC = () => {
     setShowModal(false);
   };
 
+  const handleCloseTermsModal = (submitted: boolean) => {
+    if (submitted) {
+      fetchEvents(selectedValue, startDate, endDate);
+    }
+    setTermsTargetEvent(undefined);
+  };
+
   const onCreate = () => {
     setShowModal(true);
   };
 
   const onEdit = (item: SkyDiveEvent) => {
     setEditingEvent(item);
+    setShowModal(true);
   };
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -110,8 +121,8 @@ const AdminEvents: React.FC = () => {
     {
       field: "",
       headerName: "قوانین و شرایط",
-      onClick: (item) => {
-        console.log(item);
+      onClick: (item: SkyDiveEvent) => {
+        setTermsTargetEvent(item);
       },
       template: "ویرایش",
     },
@@ -130,18 +141,6 @@ const AdminEvents: React.FC = () => {
         <StatusIndicator isActive={item.isActive}></StatusIndicator>
       ),
     },
-    // {
-    //   field: 'termsAndConditions',
-    //   headerName: 'کد',
-    // },
-    // {
-    //   field: 'cost',
-    //   headerName: 'کد',
-    // },
-    // {
-    //   field: 'code',
-    //   headerName: 'کد',
-    // },
   ]);
 
   const fetchEvents = useCallback(
@@ -189,6 +188,22 @@ const AdminEvents: React.FC = () => {
     }
   };
 
+  const onPublishEvent = (item: SkyDiveEvent) => {
+    publishRequest(
+      {
+        url: `/SkyDiveEvents/PublishEvent/${item.id}`,
+        method: "put",
+      },
+      (response) => {
+        toast.success(response.message);
+        fetchEvents(selectedValue, startDate, endDate);
+      },
+      (error) => {
+        toast.error(error?.message);
+      }
+    );
+  };
+
   useEffect(() => {
     fetchEvents(selectedValue, startDate, endDate);
   }, [selectedValue, sendRequest, fetchEvents, startDate, endDate]);
@@ -221,12 +236,6 @@ const AdminEvents: React.FC = () => {
     fetchLastCode();
   }, [lastCodeSendRequest]);
 
-  useEffect(() => {
-    if (editingEvent) {
-      setShowModal(true);
-    }
-  }, [editingEvent]);
-
   if (isPending) {
     return (
       <div className="flex justify-center items-center h-3/4">
@@ -251,9 +260,16 @@ const AdminEvents: React.FC = () => {
       />
       {costTargetEvent && (
         <CostModal
-          onCloseModal={()=>setCostTargetEvent(undefined)}
+          onCloseModal={() => setCostTargetEvent(undefined)}
           rowId={costTargetEvent.id}
           showModal={!!costTargetEvent.id}
+        />
+      )}
+      {termsTartgetEvent && (
+        <TermsAndConditionsModal
+          showModal={!!termsTartgetEvent}
+          skyDiveEvent={termsTartgetEvent}
+          onCloseModal={handleCloseTermsModal}
         />
       )}
       <div className="flex justify-between gap-3 flex-wrap">
@@ -340,11 +356,9 @@ const AdminEvents: React.FC = () => {
               {
                 icon: <BiToggleLeft size="1.5rem" color="#e02424" />,
                 descriptions: "فعال کردن",
-                // showField:'isActive',
+                showField:'!isActive',
                 // disableField: '!isActive',
-                onClick: (item) => {
-                  console.log(item);
-                },
+                onClick: onPublishEvent,
               },
             ],
             moreActions: [
@@ -352,7 +366,7 @@ const AdminEvents: React.FC = () => {
                 icon: <BsAirplaneEngines size="1.5rem" />,
                 descriptions: "پروازها",
                 onClick: (item) => {
-                  navigate(`${item.id}/flights`)
+                  navigate(`${item.id}/flights`);
                 },
               },
             ],

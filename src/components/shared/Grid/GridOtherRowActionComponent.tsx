@@ -13,9 +13,9 @@ function GridRowOtherActionComponent<T>(props: {
     const invert = field.includes("!");
     if (invert) {
       field = field.slice(1);
-      mustShow = !(props.row.data as any)[props.action.showField];
+      mustShow = !(props.row.data as any)[field];
     } else {
-      mustShow = !!(props.row.data as any)[props.action.showField];
+      mustShow = !!(props.row.data as any)[field];
     }
   }
 
@@ -24,17 +24,30 @@ function GridRowOtherActionComponent<T>(props: {
     const invert = field.includes("!");
     if (invert) {
       field = field.slice(1);
-      musDisable = (props.row.data as any)[props.action.disableField];
+      musDisable = (props.row.data as any)[field];
     } else {
-      musDisable = !(props.row.data as any)[props.action.disableField];
+      musDisable = !(props.row.data as any)[field];
     }
   }
   return mustShow ? (
-    <SDTooltip
-      content={props.action.descriptions}
-      trigger="hover"
-      placement="bottom"
-    >
+    props.action.descriptions ? (
+      <SDTooltip
+        content={props.action.descriptions}
+        trigger="hover"
+        placement="bottom"
+      >
+        <button
+          onClick={(event) => {
+            event.stopPropagation();
+            props.action.onClick(props.row.data);
+          }}
+          disabled={musDisable}
+          className="disabled:opacity-70 disabled:cursor-not-allowed"
+        >
+          {props.action.icon}
+        </button>
+      </SDTooltip>
+    ) : (
       <button
         onClick={(event) => {
           event.stopPropagation();
@@ -45,7 +58,7 @@ function GridRowOtherActionComponent<T>(props: {
       >
         {props.action.icon}
       </button>
-    </SDTooltip>
+    )
   ) : (
     <></>
   );
