@@ -16,8 +16,8 @@ const Home: React.FC = () => {
       href:''
     },
     {
-      tilte: 'رویدادها',
-      href:''
+      tilte: 'بلیت‌های من',
+      href:'/tickets'
     },
     {
       tilte: 'قوانین و شرایط',

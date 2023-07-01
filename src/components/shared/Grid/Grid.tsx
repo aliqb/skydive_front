@@ -55,7 +55,7 @@ function Grid<T>({
 
         <div className="overflow-x-auto w-full">
           <div>
-            <Table hoverable className="text-right border">
+            <Table hoverable className="text-right border border-gray-300">
               <Table.Head>
                 {colDefs.map((column, index) => (
                   <Table.HeadCell key={index}>
