@@ -36,7 +36,7 @@ const SkyDiveEventTermsPage: React.FC = () => {
           <h1 className="text-center font-bold text-lg">
             قوانین و شرایط رویداد
           </h1>
-          <div className="flex justify-between px-8 my-7 flex-wrap gap-6">
+          <div className="flex justify-between px-12 my-7 flex-wrap gap-6">
             <SkydiveEventField
               title="نام"
               value={eventRepsonse.content.title}
