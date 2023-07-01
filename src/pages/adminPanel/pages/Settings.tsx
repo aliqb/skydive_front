@@ -4,7 +4,7 @@ import { userType } from '../../../models/usermanagement.models';
 import { BaseResponse } from '../../../models/shared.models';
 import SDSpinner from '../../../components/shared/Spinner';
 
-type UserType = 'همراه با مربی' | 'آزاد' | 'ویژه';
+type UserType = userType['title'];
 type UserTicket = 'آزاد' | 'چارتر' | 'همراه با مربی' | 'ویژه';
 
 const Settings: React.FC = () => {
@@ -20,11 +20,24 @@ const Settings: React.FC = () => {
     آزاد: [],
     ویژه: [],
   });
+  const [userTypes, setUserTypes] = useState<UserType[]>([]);
 
   useEffect(() => {
-    sendRequest({
-      url: '/UserTypes',
-    });
+    sendRequest(
+      {
+        url: '/UserTypes',
+      },
+      (response) => {
+        if (response?.content.length > 0) {
+          const userTypeTitles = response?.content.map(
+            (item: userType) => item.title
+          ) as UserType[];
+          setSelectedUserTypes(userTypeTitles);
+          setUserTypes(userTypeTitles); // Set the userTypes array
+          console.log(response?.content);
+        }
+      }
+    );
   }, [sendRequest]);
 
   const handleUserTypeClick = (userType: UserType) => {
@@ -55,8 +68,6 @@ const Settings: React.FC = () => {
     });
   };
 
-  const userTypes: UserType[] = ['همراه با مربی', 'آزاد', 'ویژه'];
-
   const allowedTicketTypes: { [key in UserType]: UserTicket[] } = {
     'همراه با مربی': ['آزاد', 'چارتر', 'همراه با مربی', 'ویژه'],
     آزاد: ['آزاد', 'چارتر', 'همراه با مربی', 'ویژه'],
@@ -70,6 +81,7 @@ const Settings: React.FC = () => {
       </div>
     );
   }
+
   return (
     <>
       <div className="container mx-auto p-4">
@@ -87,6 +99,7 @@ const Settings: React.FC = () => {
                 style={{
                   border: '1px solid gray',
                   borderRadius: '0.5rem',
+                  transition: 'background-color 0.3s',
                 }}
               >
                 <button
@@ -94,6 +107,9 @@ const Settings: React.FC = () => {
                     selectedUserTypes.includes(userType) ? 'text-blue-600' : ''
                   }`}
                   onClick={() => handleUserTypeClick(userType)}
+                  style={{
+                    transition: 'color 0.3s',
+                  }}
                 >
                   {userType}
                 </button>
