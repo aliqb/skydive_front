@@ -30,11 +30,24 @@ function GridRowOtherActionComponent<T>(props: {
     }
   }
   return mustShow ? (
-    <SDTooltip
-      content={props.action.descriptions}
-      trigger="hover"
-      placement="bottom"
-    >
+    props.action.descriptions ? (
+      <SDTooltip
+        content={props.action.descriptions}
+        trigger="hover"
+        placement="bottom"
+      >
+        <button
+          onClick={(event) => {
+            event.stopPropagation();
+            props.action.onClick(props.row.data);
+          }}
+          disabled={musDisable}
+          className="disabled:opacity-70 disabled:cursor-not-allowed"
+        >
+          {props.action.icon}
+        </button>
+      </SDTooltip>
+    ) : (
       <button
         onClick={(event) => {
           event.stopPropagation();
@@ -45,7 +58,7 @@ function GridRowOtherActionComponent<T>(props: {
       >
         {props.action.icon}
       </button>
-    </SDTooltip>
+    )
   ) : (
     <></>
   );
