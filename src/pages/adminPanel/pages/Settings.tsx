@@ -32,6 +32,11 @@ const Settings: React.FC = () => {
     ویژه: [],
   });
   const [userTypes, setUserTypes] = useState<userType[]>([]);
+  const [isOpen, setIsOpen] = useState<{ [key in UserType]: boolean }>({
+    'همراه با مربی': false,
+    آزاد: false,
+    ویژه: false,
+  });
 
   useEffect(() => {
     sendRequest(
@@ -71,6 +76,11 @@ const Settings: React.FC = () => {
     } else {
       setSelectedUserTypes([...selectedUserTypes, userType]);
     }
+
+    setIsOpen((prevState) => ({
+      ...prevState,
+      [userType]: !prevState[userType],
+    }));
   };
 
   const handleAddTicket = (userType: UserType, ticket: UserTicket) => {
@@ -150,7 +160,7 @@ const Settings: React.FC = () => {
                   }}
                 >
                   <button
-                    className={`p-4 text-lg font-bold w-full text-right ${
+                    className={`p-4 text-lg font-bold w-full text-right flex items-center ${
                       selectedUserTypes.includes(userType.title)
                         ? 'text-blue-600'
                         : ''
@@ -160,8 +170,42 @@ const Settings: React.FC = () => {
                       transition: 'color 0.3s',
                     }}
                   >
-                    {userType.title}
+                    <div className="flex items-center">
+                      {isOpen[userType.title] ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="w-6 h-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="w-6 h-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M15.75 19.5L8.25 12l7.5-7.5"
+                          />
+                        </svg>
+                      )}
+                      <span className="ml-2">{userType.title}</span>
+                    </div>
                   </button>
+
                   {selectedUserTypes.includes(userType.title) && (
                     <ul className="space-y-2 p-4">
                       {allowedTicketTypes[userType.title] &&
@@ -213,7 +257,6 @@ const Settings: React.FC = () => {
                                   />
                                 </svg>
                                 <span className="ml-2">
-                                  {' '}
                                   {inPendingPost && <SDSpinner color="blue" />}
                                   افزودن
                                 </span>
