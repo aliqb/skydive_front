@@ -81,3 +81,4 @@ export interface UserRequest {
   password: string,
   userTypeId: string
 }
+
