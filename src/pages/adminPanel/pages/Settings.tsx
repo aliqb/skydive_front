@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import useApi from '../../../hooks/useApi';
 import { userType } from '../../../models/usermanagement.models';
-import { BaseResponse } from '../../../models/shared.models';
+import { BaseResponse, TicketType } from '../../../models/shared.models';
 import SDSpinner from '../../../components/shared/Spinner';
 
 type UserType = userType['title'];
-type UserTicket = 'آزاد' | 'چارتر' | 'همراه با مربی' | 'ویژه';
 
 const Settings: React.FC = () => {
   const { sendRequest, isPending } = useApi<null, BaseResponse<userType[]>>();
   const [selectedUserTypes, setSelectedUserTypes] = useState<UserType[]>([]);
   const [selectedTickets, setSelectedTickets] = useState<{
-    [key in UserType]: UserTicket[];
-  }>({
-    'همراه با مربی': [],
-    آزاد: [],
-    ویژه: [],
-  });
+    [key in UserType]: TicketType[];
+  }>({});
   const [userTypes, setUserTypes] = useState<UserType[]>([]);
 
   useEffect(() => {
@@ -26,10 +21,21 @@ const Settings: React.FC = () => {
       },
       (response) => {
         if (response?.content.length > 0) {
-          const userTypeTitles = response?.content.map(
+          const userTypeTitles = response.content.map(
             (item: userType) => item.title
           ) as UserType[];
           setUserTypes(userTypeTitles);
+
+          const updatedAllowedTicketTypes: { [key in UserType]: TicketType[] } =
+            {};
+          response.content.forEach((item: userType) => {
+            updatedAllowedTicketTypes[item.title] = item.allowedTicketTypes.map(
+              (ticketType: TicketType) => ({
+                ...ticketType,
+              })
+            );
+          });
+          setSelectedTickets(updatedAllowedTicketTypes);
         }
       }
     );
@@ -45,7 +51,7 @@ const Settings: React.FC = () => {
     }
   };
 
-  const handleAddTicket = (userType: UserType, ticket: UserTicket) => {
+  const handleAddTicket = (userType: UserType, ticket: TicketType) => {
     setSelectedTickets((prevState) => {
       const updatedTickets = { ...prevState };
       updatedTickets[userType] = [...prevState[userType], ticket];
@@ -53,7 +59,7 @@ const Settings: React.FC = () => {
     });
   };
 
-  const handleRemoveTicket = (userType: UserType, ticket: UserTicket) => {
+  const handleRemoveTicket = (userType: UserType, ticket: TicketType) => {
     setSelectedTickets((prevState) => {
       const updatedTickets = { ...prevState };
       updatedTickets[userType] = prevState[userType].filter(
@@ -61,12 +67,6 @@ const Settings: React.FC = () => {
       );
       return updatedTickets;
     });
-  };
-
-  const allowedTicketTypes: { [key in UserType]: UserTicket[] } = {
-    'همراه با مربی': ['آزاد', 'چارتر', 'همراه با مربی', 'ویژه'],
-    آزاد: ['آزاد', 'چارتر', 'همراه با مربی', 'ویژه'],
-    ویژه: ['آزاد', 'چارتر', 'همراه با مربی', 'ویژه'],
   };
 
   if (isPending) {
@@ -110,81 +110,78 @@ const Settings: React.FC = () => {
                 </button>
                 {selectedUserTypes.includes(userType) && (
                   <ul className="space-y-2 p-4">
-                    {allowedTicketTypes[userType] &&
-                      allowedTicketTypes[userType].map((ticketType) => (
-                        <li
-                          key={ticketType}
-                          className={`flex items-center ${
-                            selectedTickets[userType] &&
-                            selectedTickets[userType].includes(ticketType)
-                              ? 'text-black'
-                              : 'text-black'
+                    {selectedTickets[userType]?.map((ticketType) => (
+                      <li
+                        key={ticketType.id}
+                        className={`flex items-center ${
+                          selectedTickets[userType]?.includes(ticketType)
+                            ? 'text-black'
+                            : 'text-black'
+                        }`}
+                      >
+                        <span
+                          className={`px-2 ml-4 py-1 rounded-md ${
+                            selectedTickets[userType]?.includes(ticketType)
+                              ? 'bg-green-200'
+                              : 'bg-white'
                           }`}
                         >
-                          <span
-                            className={`px-2 ml-4 py-1 rounded-md ${
-                              selectedTickets[userType] &&
-                              selectedTickets[userType].includes(ticketType)
-                                ? 'bg-green-200'
-                                : 'bg-white'
-                            }`}
+                          {ticketType.title}
+                        </span>
+                        {!selectedTickets[userType]?.includes(ticketType) && (
+                          <button
+                            className="px-2 py-1 rounded-md bg-green-200 ml-2 flex items-center"
+                            onClick={() =>
+                              handleAddTicket(userType, ticketType)
+                            }
                           >
-                            {ticketType}
-                          </span>
-                          {!selectedTickets[userType]?.includes(ticketType) && (
-                            <button
-                              className="px-2 py-1 rounded-md bg-green-200 ml-2 flex items-center"
-                              onClick={() =>
-                                handleAddTicket(userType, ticketType)
-                              }
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-6 h-6"
                             >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="w-6 h-6"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M12 4.5v15m7.5-7.5h-15"
-                                />
-                              </svg>
-                              <span className="ml-2">افزودن</span>
-                            </button>
-                          )}
-                          {selectedTickets[userType]?.includes(ticketType) && (
-                            <button
-                              className={`px-2 py-1 rounded-md bg-red-200 ml-2 flex items-center ${
-                                selectedTickets[userType]?.includes(ticketType)
-                                  ? 'text-black'
-                                  : ''
-                              }`}
-                              onClick={() =>
-                                handleRemoveTicket(userType, ticketType)
-                              }
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M12 4.5v15m7.5-7.5h-15"
+                              />
+                            </svg>
+                            <span className="ml-2">افزودن</span>
+                          </button>
+                        )}
+                        {selectedTickets[userType]?.includes(ticketType) && (
+                          <button
+                            className={`px-2 py-1 rounded-md bg-red-200 ml-2 flex items-center ${
+                              selectedTickets[userType]?.includes(ticketType)
+                                ? 'text-black'
+                                : ''
+                            }`}
+                            onClick={() =>
+                              handleRemoveTicket(userType, ticketType)
+                            }
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="w-6 h-6"
                             >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="w-6 h-6"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M19.5 12h-15"
-                                />
-                              </svg>
-                              <span className="ml-2">حذف</span>
-                            </button>
-                          )}
-                        </li>
-                      ))}
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M19.5 12h-15"
+                              />
+                            </svg>
+                            <span className="ml-2">حذف</span>
+                          </button>
+                        )}
+                      </li>
+                    ))}
                   </ul>
                 )}
               </li>
