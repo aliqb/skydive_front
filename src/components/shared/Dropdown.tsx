@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useState, useEffect, useRef, MouseEvent } from "react";
 import { Link } from "react-router-dom";
 
@@ -18,15 +19,22 @@ const SDDropdown: React.FC<SDDropdownProps> = ({
 }) => {
   const [show, setShow] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  function toggleShow(event: MouseEvent<HTMLButtonElement>) {
-    event.stopPropagation();
+  function toggleShow() {
+    // event.stopPropagation();
     setShow((show) => !show);
   }
 
   useEffect(() => {
     function handleClickOutside(event: Event) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      // console.log(buttonRef.current,event.currentTarget,buttonRef.current !== event.currentTarget)
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        !buttonRef.current?.contains(event.target as Node)
+      ) {
         setShow(false);
       }
     }
@@ -39,20 +47,31 @@ const SDDropdown: React.FC<SDDropdownProps> = ({
   }, []);
 
   useEffect(() => {
-    function calculateMenuHeight() {
-      if (menuRef.current) {
+    function calculateMenuRect() {
+      if (menuRef.current && containerRef.current) {
         const list = menuRef.current.querySelector("ul");
-        // const menuItemHeight = menuItems.length > 0 ? menuItems[0].offsetHeight : 0;
-        // const menuHeight = menuItems.length * menuItemHeight;
-        menuRef.current.style.height = `${list?.offsetHeight}px`;
+        const height = list!.offsetHeight;
+        menuRef.current.style.height = `${height}px`;
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        const offset = 40;
+        let topOffset = containerRect.top + offset;
+        const isOverflow = topOffset + height > windowHeight;
+        if (isOverflow) {
+          topOffset = containerRect.top - height + offset;
+        }
+        menuRef.current.style.top = `${topOffset}px`;
+        menuRef.current.style.left = `${containerRect.left}px`;
       }
     }
 
-    calculateMenuHeight();
+    if (show) {
+      calculateMenuRect();
+    }
   }, [show]);
 
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}>
       <button
         onClick={toggleShow}
         id="dropdownDividerButton"
@@ -61,6 +80,7 @@ const SDDropdown: React.FC<SDDropdownProps> = ({
           buttonClassName || ""
         } font-medium rounded-lg  px-4 py-2.5 text-center inline-flex items-center  h-[40px]`}
         type="button"
+        ref={buttonRef}
       >
         {children}
         {withChevron && (
@@ -86,7 +106,7 @@ const SDDropdown: React.FC<SDDropdownProps> = ({
         id="dropdownDivider"
         className={`${
           !show && "hidden"
-        } z-20 absolute top-[43px] left-0 inset-y-1 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600 overflow-y-auto`}
+        } z-20 fixed top-[43px] left-0 inset-y-1 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600 overflow-y-auto`}
         ref={menuRef}
       >
         <ul
@@ -130,15 +150,22 @@ export const SDDropDownItem: React.FC<SDDropdownItemProps> = ({
   href,
   title,
   icon,
-  disabled = false
+  disabled = false,
 }) => {
   return (
     <li
       onClick={handleLiClick}
-      className={`${!disabled ? ' hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white' : 'opacity-70' } block  `}
+      className={`${
+        !disabled
+          ? " hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+          : "opacity-70"
+      } block  `}
     >
       {mode === "Link" ? (
-        <Link to={href || ""} onClick={(event)=>disabled && event.preventDefault()} >
+        <Link
+          to={href || ""}
+          onClick={(event) => disabled && event.preventDefault()}
+        >
           <div className="flex gap-2 items-center px-4 py-3">
             {icon ? icon : ""}
             {title}

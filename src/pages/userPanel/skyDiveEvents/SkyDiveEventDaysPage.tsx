@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import SDCard from "../../../components/shared/Card";
 import SkyDiveEventDayItem from "../../../components/skyDiveEvents/SkyDiveEventDayItem";
 import { useEffect } from "react";
@@ -9,6 +9,8 @@ import {
   SkyDiveEventDay,
 } from "../../../models/skyDiveEvents.models";
 import SDSpinner from "../../../components/shared/Spinner";
+import {useState} from 'react';
+import { sortDate } from "../../../utils";
 
 const SkyDiveEventDaysPage: React.FC = () => {
   const params = useParams();
@@ -19,9 +21,10 @@ const SkyDiveEventDaysPage: React.FC = () => {
   } = useAPi<null, BaseResponse<SkyDiveEvent>>();
   const {
     sendRequest: requestDays,
-    data: days,
     isPending: daysPending,
   } = useAPi<null, BaseResponse<SkyDiveEventDay[]>>();
+
+  const [days, setDays] = useState<SkyDiveEventDay[]>();
 
   useEffect(() => {
     function getEvnetDetail(eventId: string) {
@@ -33,6 +36,8 @@ const SkyDiveEventDaysPage: React.FC = () => {
     function getDays(eventId: string) {
       requestDays({
         url: `/SkyDiveEvents/EventDays/${eventId}`,
+      },(response)=>{
+        setDays(sortDate<SkyDiveEventDay>(response.content,'date'))
       });
     }
 
@@ -53,12 +58,11 @@ const SkyDiveEventDaysPage: React.FC = () => {
           <p>{event?.content.duration}</p>
           <p>{event?.content.capacity} ظرفیت خالی</p>
         </div>
-        <a className="text-blue-700 font-semibold">قوانین و شرایط</a>
+        <Link target="_blank" to={`/events/${event?.content.id}/terms`} className="text-blue-700 font-semibold">قوانین و شرایط</Link>
       </header>
       <main className="w-full flex flex-wrap">
         {days &&
-          days.content
-            .sort((a, b) => a.date.localeCompare(b.date))
+          days
             .map((item, index) => {
               return (
                 <div key={index} className=" my-3 px-3 w-full md:w-1/2">

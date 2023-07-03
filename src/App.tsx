@@ -27,7 +27,7 @@ import Home from "./pages/userPanel/Home";
 import SkyDiveEventsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventPage";
 
 import UserManagement from "./pages/adminPanel/pages/userMamangement/UserManagement";
-import AdminEvents from "./pages/adminPanel/pages/AdminEvents";
+import AdminEvents from "./pages/adminPanel/pages/adminEvents/AdminEvents";
 import Settings from "./pages/adminPanel/pages/Settings";
 import SendMessage from "./pages/adminPanel/pages/SendMessage";
 import Reports from "./pages/adminPanel/pages/Reports";
@@ -38,6 +38,10 @@ import UserDetailPage from "./pages/adminPanel/pages/userMamangement/userDetail/
 import AdminUserDocument from "./pages/adminPanel/pages/userMamangement/userDetail/AdminUserDocument";
 import CreateUserPage from "./pages/adminPanel/pages/userMamangement/CreateUserPage";
 import EditUserPage from "./pages/adminPanel/pages/userMamangement/EditUserPage";
+import AdminFlightsPage from "./pages/adminPanel/pages/adminEvents/AdminFlightsPage";
+import SkyDiveEventTermsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventTermsPage";
+import MyTicketsPage from "./pages/userPanel/MyTicketsPage";
+import JumpRecordsPage from "./pages/userPanel/JumpRecordsPage";
 import Messages from './pages/userPanel/Messages';
 
 function App() {
@@ -77,7 +81,10 @@ function App() {
                 Component={SkyDiveEventFlightsPage}
                 path=":eventId/flights"
               ></Route>
+              <Route Component={SkyDiveEventTermsPage} path=":eventId/terms"></Route>
             </Route>
+            <Route Component={MyTicketsPage} path="tickets"></Route>
+            <Route Component={JumpRecordsPage} path="jumps"></Route>
             <Route Component={PaymentPage} path="payment"></Route>
           </Route>
           <Route Component={AuthContainer} path="auth">
@@ -107,7 +114,10 @@ function App() {
               <Route Component={AdminUserDocument} path="documents"></Route>
             </Route>
             <Route Component={EditUserPage} path="users/:userId/edit"></Route>
-            <Route Component={AdminEvents} path="events"></Route>
+            <Route Component={Outlet} path="events">
+              <Route Component={AdminEvents} path=""></Route>
+              <Route Component={AdminFlightsPage} path=":eventId/flights"></Route>
+            </Route>
             <Route Component={Settings} path="settings"></Route>
             <Route Component={SendMessage} path="sendMessage"></Route>
             <Route Component={Reports} path="reports"></Route>

@@ -16,12 +16,12 @@ const Home: React.FC = () => {
       href:''
     },
     {
-      tilte: 'رویدادها',
-      href:''
+      tilte: 'بلیت‌های من',
+      href:'/tickets'
     },
     {
-      tilte: 'قوانین و شرایط',
-      href:''
+      tilte: 'سوابق پرش',
+      href:'/jumps'
     }
   ]
   const statusBgColorMap = new Map([

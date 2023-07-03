@@ -1,6 +1,5 @@
 import { Table } from "flowbite-react";
 import { useState, useEffect } from "react";
-import CostModal from "../../adminPanel/CostModal";
 import { ColDef, GridRow, GridRowActions } from "./grid.types";
 import SDTooltip from "../Tooltip";
 import GridRowOtherActionComponent from "./GridOtherRowActionComponent";
@@ -25,8 +24,6 @@ function Grid<T>({
   onRemoveRow,
   rowActions = { edit: true, remove: true, otherActions: [], moreActions: [] },
 }: GridProps<T>) {
-  const [openModal, setOpenModal] = useState(false);
-  const [selectedRowId, setSelectedRowId] = useState("");
   const [gridRows, setGridRows] = useState<GridRow<T>[]>([]);
 
   useEffect(() => {
@@ -43,13 +40,6 @@ function Grid<T>({
     }
   };
 
-  const handleOnOpenModal = (id?: string) => {
-    setSelectedRowId(id || "");
-    setOpenModal(true);
-  };
-  const handleOnCloseModal = () => {
-    setOpenModal(false);
-  };
   {
     return (
       <>
@@ -65,7 +55,7 @@ function Grid<T>({
 
         <div className="overflow-x-auto w-full">
           <div>
-            <Table hoverable className="text-right">
+            <Table hoverable className="text-right border border-gray-300">
               <Table.Head>
                 {colDefs.map((column, index) => (
                   <Table.HeadCell key={index}>
@@ -166,7 +156,7 @@ function Grid<T>({
                               />
                             );
                           })}
-                          {rowActions.moreActions?.length && (
+                          {rowActions.moreActions && rowActions.moreActions.length > 0 && (
                             <GridRowMoreActionComponent
                               actions={rowActions.moreActions}
                               row={row}

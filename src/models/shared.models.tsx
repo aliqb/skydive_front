@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+    ClassicEditor: any;
+  }
+}
+
 export interface LinkWithIcon {
   icon: React.ReactNode;
   path: string;
@@ -80,6 +86,7 @@ export interface BasketModel {
   id: string;
   createdAt: string;
   updatedAt: string;
+  skyDiveEventId: string;
 }
 
 export interface BasketTicketModel {
@@ -98,7 +105,7 @@ export interface AggregatedTicket {
   amount: number;
   type: string;
   flightNumber: number;
-  ticketMembers:BasketTicketModel[]
+  ticketMembers: BasketTicketModel[];
 }
 
 export interface ChangingTicketRequest {

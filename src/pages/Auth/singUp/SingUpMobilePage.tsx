@@ -55,7 +55,7 @@ const SignUpMobilePage: React.FC = () => {
       () => {
         setFinalPending(false);
         navigateToNextPage()
-      }
+      ,()=>setFinalPending(false)}
     );
   }
 
@@ -76,7 +76,7 @@ const SignUpMobilePage: React.FC = () => {
         );
         requestOtp(data.phone);
       }
-    );
+    ,()=>setFinalPending(false));
   }
 
   return (

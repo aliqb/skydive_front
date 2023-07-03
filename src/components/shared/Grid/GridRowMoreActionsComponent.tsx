@@ -18,10 +18,10 @@ function GridRowMoreActionComponent<T>(props: {
         if (invert) {
           field = field.slice(1);
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          mustDisable = (row.data as any)[action.disableField];
+          mustDisable = (row.data as any)[field];
         } else {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          mustDisable = !(row.data as any)[action.disableField];
+          mustDisable = !(row.data as any)[field];
         }
       }
       return mustDisable;
@@ -49,8 +49,8 @@ function GridRowMoreActionComponent<T>(props: {
         return {
           title: action.descriptions,
           mode: "Button",
-          onClick: (event) => {
-            event.stopPropagation();
+          onClick: () => {
+            // event.stopPropagation();
             action.onClick(props.row.data);
           },
           icon: action.icon,

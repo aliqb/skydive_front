@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, isPending } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { UserDatail } from "../models/usermanagement.models";
 import { axiosIntance } from "../hooks/useApi";
 import { AxiosError, AxiosResponse } from "axios";
