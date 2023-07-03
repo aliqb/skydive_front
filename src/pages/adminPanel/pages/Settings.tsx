@@ -15,8 +15,14 @@ interface AssignTicketTypes {
 }
 
 const Settings: React.FC = () => {
-  const { sendRequest, isPending } = useApi<null, BaseResponse<userType[]>>();
-
+  const { sendRequest, isPending, data } = useApi<
+    null,
+    BaseResponse<userType[]>
+  >();
+  const { sendRequest: sendPostRequest, isPending: inPendingPost } = useApi<
+    null,
+    BaseResponse<null>
+  >();
   const [selectedUserTypes, setSelectedUserTypes] = useState<UserType[]>([]);
   const [selectedTickets, setSelectedTickets] = useState<{
     [key in UserType]: UserTicket[];
@@ -25,7 +31,7 @@ const Settings: React.FC = () => {
     آزاد: [],
     ویژه: [],
   });
-  const [userTypes, setUserTypes] = useState<UserType[]>([]);
+  const [userTypes, setUserTypes] = useState<userType[]>([]);
 
   useEffect(() => {
     sendRequest(
@@ -34,10 +40,7 @@ const Settings: React.FC = () => {
       },
       (response) => {
         if (response?.content.length > 0) {
-          const userTypeTitles = response?.content.map(
-            (item: userType) => item.title
-          ) as UserType[];
-          setUserTypes(userTypeTitles);
+          setUserTypes(response.content);
 
           const initialSelectedTickets: {
             [key in UserType]: UserTicket[];
@@ -71,11 +74,34 @@ const Settings: React.FC = () => {
   };
 
   const handleAddTicket = (userType: UserType, ticket: UserTicket) => {
-    setSelectedTickets((prevState) => {
-      const updatedTickets = { ...prevState };
-      updatedTickets[userType] = [...prevState[userType], ticket];
-      return updatedTickets;
-    });
+    const userTypeObj = userTypes.find((u) => u.title === userType);
+
+    if (userTypeObj) {
+      const ticketObj = userTypeObj.allowedTicketTypes.find(
+        (ticketType) => ticketType.title === ticket
+      );
+
+      if (ticketObj) {
+        const assignTicketTypes: AssignTicketTypes = {
+          userTypeId: userTypeObj.id,
+          ticketTypes: [ticketObj.id],
+        };
+
+        sendPostRequest(
+          {
+            url: '/UserTypes/AssignTicketType',
+            method: 'post',
+            data: assignTicketTypes,
+          },
+          (response) => {
+            toast.success(response.message);
+          },
+          (error) => {
+            toast.error(error?.message);
+          }
+        );
+      }
+    }
   };
 
   const handleRemoveTicket = (userType: UserType, ticket: UserTicket) => {
@@ -92,7 +118,7 @@ const Settings: React.FC = () => {
     'همراه با مربی': ['همراه با مربی', 'آزاد', 'چارتر', 'ویژه'],
     آزاد: ['همراه با مربی', 'آزاد', 'چارتر', 'ویژه'],
     ویژه: ['همراه با مربی', 'آزاد', 'چارتر', 'ویژه'],
-  } as { [key in UserType]: UserTicket[] };
+  };
 
   if (isPending) {
     return (
@@ -111,9 +137,9 @@ const Settings: React.FC = () => {
             <ul className="space-y-4">
               {userTypes.map((userType) => (
                 <li
-                  key={userType}
+                  key={userType.title}
                   className={`flex flex-col ${
-                    selectedUserTypes.includes(userType)
+                    selectedUserTypes.includes(userType.title)
                       ? 'bg-black-200 text-blue-600'
                       : 'bg-white'
                   }`}
@@ -125,47 +151,51 @@ const Settings: React.FC = () => {
                 >
                   <button
                     className={`p-4 text-lg font-bold w-full text-right ${
-                      selectedUserTypes.includes(userType)
+                      selectedUserTypes.includes(userType.title)
                         ? 'text-blue-600'
                         : ''
                     }`}
-                    onClick={() => handleUserTypeClick(userType)}
+                    onClick={() => handleUserTypeClick(userType.title)}
                     style={{
                       transition: 'color 0.3s',
                     }}
                   >
-                    {userType}
+                    {userType.title}
                   </button>
-                  {selectedUserTypes.includes(userType) && (
+                  {selectedUserTypes.includes(userType.title) && (
                     <ul className="space-y-2 p-4">
-                      {allowedTicketTypes[userType] &&
-                        allowedTicketTypes[userType].map((ticketType) => (
+                      {allowedTicketTypes[userType.title] &&
+                        allowedTicketTypes[userType.title].map((ticketType) => (
                           <li
                             key={ticketType}
                             className={`flex items-center ${
-                              selectedTickets[userType] &&
-                              selectedTickets[userType].includes(ticketType)
+                              selectedTickets[userType.title] &&
+                              selectedTickets[userType.title].includes(
+                                ticketType
+                              )
                                 ? 'text-black'
                                 : 'text-black'
                             }`}
                           >
                             <span
                               className={`px-2 ml-4 py-1 rounded-md ${
-                                selectedTickets[userType] &&
-                                selectedTickets[userType].includes(ticketType)
+                                selectedTickets[userType.title] &&
+                                selectedTickets[userType.title].includes(
+                                  ticketType
+                                )
                                   ? 'bg-green-200'
                                   : 'bg-white'
                               }`}
                             >
                               {ticketType}
                             </span>
-                            {!selectedTickets[userType]?.includes(
+                            {!selectedTickets[userType.title]?.includes(
                               ticketType
                             ) && (
                               <button
                                 className="px-2 py-1 rounded-md bg-green-200 ml-2 flex items-center"
                                 onClick={() =>
-                                  handleAddTicket(userType, ticketType)
+                                  handleAddTicket(userType.title, ticketType)
                                 }
                               >
                                 <svg
@@ -182,22 +212,26 @@ const Settings: React.FC = () => {
                                     d="M12 4.5v15m7.5-7.5h-15"
                                   />
                                 </svg>
-                                <span className="ml-2">افزودن</span>
+                                <span className="ml-2">
+                                  {' '}
+                                  {inPendingPost && <SDSpinner color="blue" />}
+                                  افزودن
+                                </span>
                               </button>
                             )}
-                            {selectedTickets[userType]?.includes(
+                            {selectedTickets[userType.title]?.includes(
                               ticketType
                             ) && (
                               <button
                                 className={`px-2 py-1 rounded-md bg-red-200 ml-2 flex items-center ${
-                                  selectedTickets[userType]?.includes(
+                                  selectedTickets[userType.title]?.includes(
                                     ticketType
                                   )
                                     ? 'text-black'
                                     : ''
                                 }`}
                                 onClick={() =>
-                                  handleRemoveTicket(userType, ticketType)
+                                  handleRemoveTicket(userType.title, ticketType)
                                 }
                               >
                                 <svg

@@ -55,6 +55,10 @@ export interface userType {
   createdAt: string;
   updatedAt: string;
 }
+export interface ticketType {
+  id: string;
+  title: string;
+}
 
 interface AllowedTicketType {
   title: string
