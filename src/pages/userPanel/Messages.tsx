@@ -11,7 +11,7 @@ const Messages: React.FC = () => {
     null,
     BaseResponse<UserMessages[]>
   >();
-  useEffect(() => {
+  const fetchUserMessages = () => {
     sendRequest({
       url: '/UserMessages',
       params: {
@@ -19,7 +19,12 @@ const Messages: React.FC = () => {
         pageIndex: 1,
       },
     });
-  }, [sendRequest]);
+  };
+
+  useEffect(() => {
+    fetchUserMessages();
+  }, []);
+
 
   const loading = (
     <div className="flex justify-center pt-6 w-full">
@@ -37,6 +42,7 @@ const Messages: React.FC = () => {
       </div>
     </>
   );
+
   return (
     <SDCard className="border flex flex-col mb-6 px-12">
       <div>
