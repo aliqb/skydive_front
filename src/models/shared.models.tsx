@@ -1,5 +1,6 @@
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ClassicEditor: any;
   }
 }
@@ -116,4 +117,9 @@ export interface RequestTicketItem {
   flightLoadId: string;
   ticketTypeId: string;
   userCode: string | null;
+}
+
+
+export interface SelectPageEvent { 
+  selected: number;
 }

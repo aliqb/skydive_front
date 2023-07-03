@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 import useAPi from "../../hooks/useApi";
-import { BaseResponse } from "../../models/shared.models";
+import { BaseResponse, SelectPageEvent } from "../../models/shared.models";
 import { SkyDiveEvent } from "../../models/skyDiveEvents.models";
 import SkyDiveEventCard from "./SkyDiveEventCard";
 import SDSpinner from "../shared/Spinner";
@@ -15,43 +15,55 @@ const SkyDiveEventList: React.FC<SkyDiveEventListProps> = (props) => {
     null,
     BaseResponse<SkyDiveEvent[]>
   >();
+  const pageSize = 12;
+  const [pageCount, setPageCount] = useState<number>();
+
+  const fetchEvents = useCallback(
+    (id: string, pageIndex = 1) => {
+      sendRequest(
+        {
+          url: "/SkyDiveEvents",
+          params: {
+            statusId: id,
+            pageIndex: pageIndex,
+            pageSize: pageSize,
+          },
+        },
+        (response) => {
+          setPageCount(response.total / pageSize);
+        }
+      );
+    },
+    [sendRequest]
+  );
 
   useEffect(() => {
-    sendRequest({
-      url: "/SkyDiveEvents",
-      params: {
-        statusId: props.id,
-        pageIndex: 1,
-        pageSize: 100000,
-      },
-    });
-  }, [props.id, sendRequest]);
+    fetchEvents(props.id);
+  }, [props.id, fetchEvents]);
 
-  if (isPending) {
-    return (
-      <div className="flex justify-center py-24">
-        <SDSpinner size={28} />
-      </div>
-    );
-  }
-
-  const handlePageClick = (event: { selected: number }) => {
-    console.log(event);
+  const handlePageClick = (event: SelectPageEvent) => {
+    fetchEvents(props.id, event.selected+1);
   };
 
   return (
-    data && (
-      <div>
-        <div className="p-6 flex flex-wrap ">
-          {data.content.map((item, index) => (
+    <div>
+      <div className="p-6 flex flex-wrap ">
+        {data?.content && !isPending ? (
+          data.content.map((item, index) => (
             <div
               key={index}
               className=" my-3 px-2 w-full sm:w-1/2 md:w-1/3 lg:w-1/4"
             >
               <SkyDiveEventCard {...item} />
             </div>
-          ))}
-        </div>
+          ))
+        ) : (
+          <div className="flex justify-center py-24 w-full">
+            <SDSpinner size={28} />
+          </div>
+        )}
+      </div>
+      {pageCount && pageCount > 1 && (
         <ReactPaginate
           breakLabel="..."
           nextLabel={
@@ -72,7 +84,7 @@ const SkyDiveEventList: React.FC<SkyDiveEventListProps> = (props) => {
           }
           onPageChange={handlePageClick}
           pageRangeDisplayed={5}
-          pageCount={20}
+          pageCount={pageCount}
           previousLabel={
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -90,16 +102,18 @@ const SkyDiveEventList: React.FC<SkyDiveEventListProps> = (props) => {
             </svg>
           }
           renderOnZeroPageCount={null}
-          containerClassName="flex gap-5 border justify-center"
+          containerClassName="flex gap-5  justify-center"
           nextClassName="flex items-center"
           previousClassName="flex items-center"
-          pageLinkClassName="p-1 block hover:text-primary-400"
+          pageLinkClassName="p-1 block hover:text-primary-400 transition-all ease-linear duration-75"
+          nextLinkClassName="p-1 block hover:text-primary-400 transition-all ease-linear duration-75"
+          previousLinkClassName="p-1 block hover:text-primary-400 transition-all ease-linear duration-75"
           breakClassName="p-1 block hover:text-primary-400"
           activeClassName="text-primary-500"
           pageClassName="text-base "
         />
-      </div>
-    )
+      )}
+    </div>
   );
 };
 
