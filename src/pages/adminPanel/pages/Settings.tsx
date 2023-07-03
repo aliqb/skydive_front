@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import useAPi from '../../../hooks/useApi';
+import useApi from '../../../hooks/useApi';
 import { userType } from '../../../models/usermanagement.models';
 import { BaseResponse } from '../../../models/shared.models';
 import SDSpinner from '../../../components/shared/Spinner';
@@ -8,10 +8,7 @@ type UserType = userType['title'];
 type UserTicket = 'آزاد' | 'چارتر' | 'همراه با مربی' | 'ویژه';
 
 const Settings: React.FC = () => {
-  const { sendRequest, data, isPending } = useAPi<
-    null,
-    BaseResponse<userType[]>
-  >();
+  const { sendRequest, isPending } = useApi<null, BaseResponse<userType[]>>();
   const [selectedUserTypes, setSelectedUserTypes] = useState<UserType[]>([]);
   const [selectedTickets, setSelectedTickets] = useState<{
     [key in UserType]: UserTicket[];
@@ -32,9 +29,7 @@ const Settings: React.FC = () => {
           const userTypeTitles = response?.content.map(
             (item: userType) => item.title
           ) as UserType[];
-          setSelectedUserTypes(userTypeTitles);
-          setUserTypes(userTypeTitles); // Set the userTypes array
-          console.log(response?.content);
+          setUserTypes(userTypeTitles);
         }
       }
     );
@@ -115,78 +110,81 @@ const Settings: React.FC = () => {
                 </button>
                 {selectedUserTypes.includes(userType) && (
                   <ul className="space-y-2 p-4">
-                    {allowedTicketTypes[userType].map((ticketType) => (
-                      <li
-                        key={ticketType}
-                        className={`flex items-center ${
-                          selectedTickets[userType]?.includes(ticketType)
-                            ? 'text-black'
-                            : 'text-black'
-                        }`}
-                      >
-                        <span
-                          className={`px-2 ml-4 py-1 rounded-md ${
-                            selectedTickets[userType]?.includes(ticketType)
-                              ? 'bg-green-200'
-                              : 'bg-white'
+                    {allowedTicketTypes[userType] &&
+                      allowedTicketTypes[userType].map((ticketType) => (
+                        <li
+                          key={ticketType}
+                          className={`flex items-center ${
+                            selectedTickets[userType] &&
+                            selectedTickets[userType].includes(ticketType)
+                              ? 'text-black'
+                              : 'text-black'
                           }`}
                         >
-                          {ticketType}
-                        </span>
-                        {!selectedTickets[userType]?.includes(ticketType) && (
-                          <button
-                            className="px-2 py-1 rounded-md bg-green-200 ml-2 flex items-center"
-                            onClick={() =>
-                              handleAddTicket(userType, ticketType)
-                            }
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M12 4.5v15m7.5-7.5h-15"
-                              />
-                            </svg>
-                            <span className="ml-2">افزودن</span>
-                          </button>
-                        )}
-                        {selectedTickets[userType]?.includes(ticketType) && (
-                          <button
-                            className={`px-2 py-1 rounded-md bg-red-200 ml-2 flex items-center ${
-                              selectedTickets[userType]?.includes(ticketType)
-                                ? 'text-black'
-                                : ''
+                          <span
+                            className={`px-2 ml-4 py-1 rounded-md ${
+                              selectedTickets[userType] &&
+                              selectedTickets[userType].includes(ticketType)
+                                ? 'bg-green-200'
+                                : 'bg-white'
                             }`}
-                            onClick={() =>
-                              handleRemoveTicket(userType, ticketType)
-                            }
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-6 h-6"
+                            {ticketType}
+                          </span>
+                          {!selectedTickets[userType]?.includes(ticketType) && (
+                            <button
+                              className="px-2 py-1 rounded-md bg-green-200 ml-2 flex items-center"
+                              onClick={() =>
+                                handleAddTicket(userType, ticketType)
+                              }
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M19.5 12h-15"
-                              />
-                            </svg>
-                            <span className="ml-2">حذف</span>
-                          </button>
-                        )}
-                      </li>
-                    ))}
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-6 h-6"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M12 4.5v15m7.5-7.5h-15"
+                                />
+                              </svg>
+                              <span className="ml-2">افزودن</span>
+                            </button>
+                          )}
+                          {selectedTickets[userType]?.includes(ticketType) && (
+                            <button
+                              className={`px-2 py-1 rounded-md bg-red-200 ml-2 flex items-center ${
+                                selectedTickets[userType]?.includes(ticketType)
+                                  ? 'text-black'
+                                  : ''
+                              }`}
+                              onClick={() =>
+                                handleRemoveTicket(userType, ticketType)
+                              }
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-6 h-6"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M19.5 12h-15"
+                                />
+                              </svg>
+                              <span className="ml-2">حذف</span>
+                            </button>
+                          )}
+                        </li>
+                      ))}
                   </ul>
                 )}
               </li>
