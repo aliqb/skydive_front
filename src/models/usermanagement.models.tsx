@@ -82,3 +82,7 @@ export interface UserRequest {
   userTypeId: string
 }
 
+export interface AssignTicketTypes {
+  userTypeId: string;
+  ticketTypes: string[];
+}

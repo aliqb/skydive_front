@@ -4,12 +4,19 @@ import { userType } from '../../../models/usermanagement.models';
 import { BaseResponse } from '../../../models/shared.models';
 import SDSpinner from '../../../components/shared/Spinner';
 import SDCard from '../../../components/shared/Card';
+import { toast } from 'react-toastify';
 
 type UserType = userType['title'];
 type UserTicket = 'آزاد' | 'چارتر' | 'همراه با مربی' | 'ویژه';
 
+interface AssignTicketTypes {
+  userTypeId: string;
+  ticketTypes: string[];
+}
+
 const Settings: React.FC = () => {
   const { sendRequest, isPending } = useApi<null, BaseResponse<userType[]>>();
+
   const [selectedUserTypes, setSelectedUserTypes] = useState<UserType[]>([]);
   const [selectedTickets, setSelectedTickets] = useState<{
     [key in UserType]: UserTicket[];
@@ -31,6 +38,23 @@ const Settings: React.FC = () => {
             (item: userType) => item.title
           ) as UserType[];
           setUserTypes(userTypeTitles);
+
+          const initialSelectedTickets: {
+            [key in UserType]: UserTicket[];
+          } = {
+            'همراه با مربی': [],
+            آزاد: [],
+            ویژه: [],
+          };
+
+          response?.content.forEach((userType) => {
+            initialSelectedTickets[userType.title] =
+              userType.allowedTicketTypes.map(
+                (ticketType) => ticketType.title
+              ) || [];
+          });
+
+          setSelectedTickets(initialSelectedTickets);
         }
       }
     );
@@ -65,10 +89,10 @@ const Settings: React.FC = () => {
   };
 
   const allowedTicketTypes: { [key in UserType]: UserTicket[] } = {
-    'همراه با مربی': ['آزاد', 'چارتر', 'همراه با مربی', 'ویژه'],
-    آزاد: ['آزاد', 'چارتر', 'همراه با مربی', 'ویژه'],
-    ویژه: ['آزاد', 'چارتر', 'همراه با مربی', 'ویژه'],
-  };
+    'همراه با مربی': ['همراه با مربی', 'آزاد', 'چارتر', 'ویژه'],
+    آزاد: ['همراه با مربی', 'آزاد', 'چارتر', 'ویژه'],
+    ویژه: ['همراه با مربی', 'آزاد', 'چارتر', 'ویژه'],
+  } as { [key in UserType]: UserTicket[] };
 
   if (isPending) {
     return (
@@ -82,7 +106,7 @@ const Settings: React.FC = () => {
     <>
       <SDCard>
         <div className="container mx-auto p-4">
-          <div className="bg-gray-100 p-4">
+          <div className="bg-gray-100 p-4 rounded">
             <h2 className="text-2xl font-bold mb-4">نوع کاربر</h2>
             <ul className="space-y-4">
               {userTypes.map((userType) => (
