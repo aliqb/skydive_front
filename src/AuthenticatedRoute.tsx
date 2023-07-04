@@ -10,13 +10,13 @@ interface AutenticateGuardProps {
 }
 const AuthenticatedRoute: React.FC<AutenticateGuardProps> = (props) => {
   const navigate = useNavigate();
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const headerSet = useAppSelector((state) => state.auth.httpHeaderSet);
   const dispatch = useAppDispatch();
   const {sendRequest} = useAPi<null,BaseResponse<UserGeneralInfo>>();
 
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!headerSet) {
       const authDataJson = localStorage.getItem("authData");
       if (authDataJson) {
         const authData: AuthData = JSON.parse(authDataJson);
@@ -31,9 +31,9 @@ const AuthenticatedRoute: React.FC<AutenticateGuardProps> = (props) => {
     },(response)=>{
       dispatch(authActions.setUserGenralInfo(response.content))
     })
-  }, [isAuthenticated]);
+  }, [headerSet,sendRequest,dispatch,navigate]);
 
-  return <>{isAuthenticated && <props.component></props.component>}</>;
+  return <>{headerSet && <props.component></props.component>}</>;
 };
 
 export default AuthenticatedRoute;
