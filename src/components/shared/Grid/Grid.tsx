@@ -12,6 +12,7 @@ import GridRowOtherActionComponent from "./GridOtherRowActionComponent";
 import GridRowMoreActionComponent from "./GridRowMoreActionsComponent";
 import ReactPaginate from "react-paginate";
 import { SelectPageEvent } from "../../../models/shared.models";
+import SDSpinner from "../Spinner";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface GridProps<T = any> {
   data?: T[];
@@ -42,6 +43,7 @@ function Grid<T>({
   const [total, setTotal] = useState<number>();
   const [selectedPage, setSelectedPage] = useState(0);
   const [pageSize, setPageSize] = useState<number | null>(defaultPageSize);
+  const [isPending, setIsPending] = useState<boolean>(false);
 
   const makeGridRows = useCallback((items: T[], colDefs: ColDef<T>[]) => {
     const rows: GridRow[] = items.map((item) => {
@@ -56,12 +58,14 @@ function Grid<T>({
       makeGridRows(data, colDefs);
     }
     if (getData) {
+      setIsPending(true);
       getData(
         { pageIndex: 1, pageSize: pageSize === null ? 100000 : pageSize },
         (items: T[], total: number) => {
           makeGridRows(items, colDefs);
           setTotal(total);
           setSelectedPage(0);
+          setIsPending(false);
         }
       );
     }
@@ -86,11 +90,13 @@ function Grid<T>({
         return;
       }
       if (getData) {
+        setIsPending(true);
         getData(
           { pageIndex: event.selected + 1, pageSize: pageSize },
           (items: T[], total: number) => {
             makeGridRows(items, colDefs);
             setTotal(total);
+            setIsPending(false);
           }
         );
       }
@@ -113,7 +119,18 @@ function Grid<T>({
                 {/* <Table.HeadCell>عملیات</Table.HeadCell> */}
               </Table.Head>
               <Table.Body className="divide-y">
-                {gridRows.map((row, index) => (
+                {isPending && (
+                  <Table.Row>
+                    <Table.Cell
+                      colSpan={colDefs.length + Number(Boolean(rowActions))}
+                    >
+                      <div className="flex justify-center py-12">
+                        <SDSpinner color="blue" size={28} />
+                      </div>
+                    </Table.Cell>
+                  </Table.Row>
+                )}
+                {!isPending &&  gridRows.map((row, index) => (
                   <Table.Row
                     onDoubleClick={(event) => {
                       event.stopPropagation();
