@@ -334,7 +334,6 @@ const AdminEvents: React.FC = () => {
       <div className="mt-6">
         <Grid<SkyDiveEvent>
           getData={fetchEvents}
-          pageSize={5}
           colDefs={colDefs}
           onEditRow={onEdit}
           ref={gridRef}

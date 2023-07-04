@@ -57,7 +57,8 @@ function MainGrid<T = any>(
   ref: ForwardedRef<GridRef>
 ) {
   const [gridRows, setGridRows] = useState<GridRow<T>[]>([]);
-  const [total, setTotal] = useState<number>();
+  // const [total, setTotal] = useState<number>();
+  const [pageCount,setPageCount] = useState<number>();
   const [selectedPage, setSelectedPage] = useState(0);
   const [pageSize, setPageSize] = useState<number | null>(defaultPageSize);
   const [isPending, setIsPending] = useState<boolean>(false);
@@ -79,7 +80,9 @@ function MainGrid<T = any>(
         { pageIndex: 1, pageSize: pageSize === null ? 100000 : pageSize },
         (items: T[], total: number) => {
           makeGridRows(items, colDefs);
-          setTotal(total);
+          if(pageSize){
+            setPageCount(Math.ceil(total / pageSize));
+          }
           setSelectedPage(0);
           setIsPending(false);
         }
@@ -115,7 +118,9 @@ function MainGrid<T = any>(
           { pageIndex: event.selected + 1, pageSize: pageSize },
           (items: T[], total: number) => {
             makeGridRows(items, colDefs);
-            setTotal(total);
+            if(pageSize){
+              setPageCount(Math.ceil(total / pageSize));
+            }
             setIsPending(false);
           }
         );
@@ -264,7 +269,7 @@ function MainGrid<T = any>(
             </Table>
           </div>
         </div>
-        {pageSize !== null && (
+        {pageCount && pageCount > 1 && (
           <ReactPaginate
             breakLabel="..."
             forcePage={selectedPage}
@@ -286,7 +291,7 @@ function MainGrid<T = any>(
             }
             onPageChange={handlePageClick}
             pageRangeDisplayed={3}
-            pageCount={Math.ceil((total || 0) / pageSize)}
+            pageCount={pageCount}
             previousLabel={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
