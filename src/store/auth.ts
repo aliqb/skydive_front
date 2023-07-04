@@ -18,6 +18,7 @@ interface AuthState {
   userStatusDisplay: string;
   isAdmin: boolean;
   genralInfoSet: boolean,
+  httpHeaderSet: boolean;
 }
 
 const initialState: AuthState = {
@@ -36,6 +37,7 @@ const initialState: AuthState = {
   userStatusDisplay: '',
   isAdmin: false,
   genralInfoSet: false,
+  httpHeaderSet: false
 };
 
 const authSlice = createSlice({
@@ -83,6 +85,9 @@ const authSlice = createSlice({
         state.enteredPhone = '';
         state.enteredUsername = '';
         state.genralInfoSet = true;
+    },
+    setHttpHeader:(state)=>{
+      state.httpHeaderSet = true;
     }
   },
 });

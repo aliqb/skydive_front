@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import SDCard from "../../components/shared/Card";
 import useAPi from "../../hooks/useApi";
 import { MyTicket } from "../../models/myTickets.models";
 import { BaseResponse } from "../../models/shared.models";
-import { ColDef } from "../../components/shared/Grid/grid.types";
-import SDSpinner from "../../components/shared/Spinner";
+import { ColDef, GridGetData } from "../../components/shared/Grid/grid.types";
 import Grid from "../../components/shared/Grid/Grid";
 import { Link } from "react-router-dom";
 import PdfPrintButton from "../../components/shared/PdfPrintButton";
@@ -12,8 +11,6 @@ import PdfPrintButton from "../../components/shared/PdfPrintButton";
 const MyTicketsPage: React.FC = () => {
   const {
     sendRequest,
-    isPending,
-    data: myTicketsResponse,
   } = useAPi<null, BaseResponse<MyTicket[]>>();
 
   const [colDefs] = useState<ColDef<MyTicket>[]>([
@@ -72,51 +69,46 @@ const MyTicketsPage: React.FC = () => {
     },
   ]);
 
-  const fetchTickets = useCallback(() => {
-    sendRequest({
-      url: "/reservations/myTickets",
-      params: {
-        pageSize: 10000,
-        pageIndex: 1,
-      },
-    });
-  }, [sendRequest]);
-
-  useEffect(() => {
-    fetchTickets();
-  }, [fetchTickets]);
+  const fetchTickets = useCallback<GridGetData<MyTicket>>(
+    (gridParams, setRows) => {
+      sendRequest(
+        {
+          url: "/reservations/myTickets",
+          params: {
+            pageSize: gridParams.pageSize,
+            pageIndex: gridParams.pageIndex,
+          },
+        },
+        (response) => {
+          setRows(response.content, response.total);
+        }
+      );
+    },
+    [sendRequest]
+  );
 
   return (
     <SDCard>
       <h1 className="text-center font-bold text-xl py-5">بلیت‌های من</h1>
       <div className="py-5 md:px-8">
-        {isPending && (
-          <div className="flex justify-center mt-8">
-            <SDSpinner size={28} />
-          </div>
-        )}
-        {myTicketsResponse?.content && !isPending && (
-          <Grid<MyTicket>
-            colDefs={colDefs}
-            data={myTicketsResponse.content}
-            rowActions={{
-              edit: false,
-              remove: false,
-              otherActions: [
-                {
-                  icon: (
-                    <div className="text-red-600 font-semibold">
-                      درخواست کنسل
-                    </div>
-                  ),
-                  onClick: (item: MyTicket) => console.log(item),
-                  descriptions: "",
-                  showField: "voidable",
-                },
-              ],
-            }}
-          />
-        )}
+        <Grid<MyTicket>
+          colDefs={colDefs}
+          getData={fetchTickets}
+          rowActions={{
+            edit: false,
+            remove: false,
+            otherActions: [
+              {
+                icon: (
+                  <div className="text-red-600 font-semibold">درخواست کنسل</div>
+                ),
+                onClick: (item: MyTicket) => console.log(item),
+                descriptions: "",
+                showField: "voidable",
+              },
+            ],
+          }}
+        />
       </div>
     </SDCard>
   );

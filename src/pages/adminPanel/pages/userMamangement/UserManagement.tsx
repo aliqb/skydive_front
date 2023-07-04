@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useCallback } from "react";
 import Grid from "../../../../components/shared/Grid/Grid";
 import SDButton from "../../../../components/shared/Button";
 import SDDatepicker from "../../../../components/shared/DatePicker";
@@ -7,18 +7,18 @@ import {
   BaseResponse,
   UserStatusesPersianMap,
 } from "../../../../models/shared.models";
-import SDSpinner from "../../../../components/shared/Spinner";
 import { Link, useNavigate } from "react-router-dom";
 import { UserListItem } from "../../../../models/usermanagement.models";
-import { ColDef } from "../../../../components/shared/Grid/grid.types";
+import {
+  ColDef,
+  GridGetData,
+} from "../../../../components/shared/Grid/grid.types";
 
 const UserManagement: React.FC = () => {
-  const { sendRequest, errors, isPending } = useAPi<
-    null,
-    BaseResponse<UserListItem[]>
-  >();
-  const [result, setResult] = useState<UserListItem[]>([]);
+  const { sendRequest, errors } = useAPi<null, BaseResponse<UserListItem[]>>();
   const [selectedValue, setSelectedValue] = useState<string>("");
+  const [minDate, setMinDate] = useState<string>();
+  const [maxDate, setMaxDate] = useState<string>();
   const [colDefs] = useState<ColDef<UserListItem>[]>([
     {
       field: "code",
@@ -75,34 +75,57 @@ const UserManagement: React.FC = () => {
     navigate(`${user.id}/edit`);
   }
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      await sendRequest(
+  const fetchUsers = useCallback<GridGetData<UserListItem>>(
+    (gridParams, setRows) => {
+      sendRequest(
         {
           url: "/Admin/GetUsers",
           params: {
-            pagesize: 10000,
-            pageindex: 1,
-            userStatus: selectedValue.toLowerCase(),
+            pagesize: gridParams.pageSize,
+            pageindex: gridParams.pageIndex,
+            userStatus: selectedValue,
+            minDate: minDate,
+            maxDate: maxDate,
           },
         },
         (response) => {
           const result = response.content;
-          setResult(result);
+          // setResult(result);
+          setRows(result, response.total);
         }
       );
-    };
+    },
+    [sendRequest, selectedValue, minDate, maxDate]
+  );
 
-    fetchUsers();
-  }, [selectedValue, sendRequest]);
+  // useEffect(() => {
+  //   const fetchUsers = async () => {
+  //     await sendRequest(
+  //       {
+  //         url: "/Admin/GetUsers",
+  //         params: {
+  //           pagesize: 10000,
+  //           pageindex: 1,
+  //           userStatus: selectedValue.toLowerCase(),
+  //         },
+  //       },
+  //       (response) => {
+  //         const result = response.content;
+  //         setResult(result);
+  //       }
+  //     );
+  //   };
 
-  if (isPending) {
-    return (
-      <div className="flex justify-center items-center h-3/4">
-        <SDSpinner size={16} />
-      </div>
-    );
-  }
+  //   fetchUsers();
+  // }, [selectedValue, sendRequest]);
+
+  // if (isPending) {
+  //   return (
+  //     <div className="flex justify-center items-center h-3/4">
+  //       <SDSpinner size={16} />
+  //     </div>
+  //   );
+  // }
 
   if (errors) {
     return <div>Error: {errors.message}</div>;
@@ -140,7 +163,7 @@ const UserManagement: React.FC = () => {
         </div>
         <div className="flex items-center">
           <div>
-            <p> تاریخ :</p>
+            <p> تاریخ ثبت نام :</p>
           </div>
           <div className="mr-5">
             <SDDatepicker
@@ -148,6 +171,9 @@ const UserManagement: React.FC = () => {
               name="expireDate"
               required={true}
               placeholder="از :"
+              onOpenPickNewDate={false}
+              value={minDate}
+              onChange={setMinDate}
             ></SDDatepicker>
           </div>
           <div className="mr-5">
@@ -156,13 +182,17 @@ const UserManagement: React.FC = () => {
               name="expireDate"
               required={true}
               placeholder="تا :"
+              onOpenPickNewDate={false}
+              value={maxDate}
+              onChange={setMaxDate}
             ></SDDatepicker>
           </div>
         </div>
       </div>
       <div className="mt-6">
         <Grid<UserListItem>
-          data={result}
+          // data={result}
+          getData={fetchUsers}
           onDoubleClick={goToDetail}
           colDefs={colDefs}
           rowActions={{ edit: true, remove: false }}

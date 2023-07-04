@@ -91,6 +91,7 @@ const AdminFlightTicketsGrid: React.FC<AdminFlightTicketsGridProps> = ({
       <Grid
         colDefs={colDefs}
         data={tickets}
+        pageSize={null}
         onEditRow={onEdit}
         onRemoveRow={onRemove}
       ></Grid>
