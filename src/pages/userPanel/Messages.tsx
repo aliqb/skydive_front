@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import SDSpinner from '../../components/shared/Spinner';
 import { UserMessages } from '../../models/messages.models';
 import { BaseResponse } from '../../models/shared.models';
