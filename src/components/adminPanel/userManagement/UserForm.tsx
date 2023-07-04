@@ -156,7 +156,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               name="userTypeId"
               register={register}
               errors={formErrors}
-              options={{ required: "فیلد الزامی است." }}
+              options={{ required: 'فیلد الزامی است.' }}
             >
               <option value=""></option>;
               {userTypes?.content &&
@@ -172,10 +172,10 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               register={register}
               name="nationalCode"
               options={{
-                required: "فیلد الزامی است.",
+                required: 'فیلد الزامی است.',
                 pattern: {
                   value: /^\d{10}$/,
-                  message: "کد ملی باید 10 رقم باشد.",
+                  message: 'کد ملی باید 10 رقم باشد.',
                 },
               }}
               errors={formErrors}
@@ -184,7 +184,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               control={control}
               name="birthDate"
               options={{
-                required: "فیلد الزامی است.",
+                required: 'فیلد الزامی است.',
               }}
               errors={formErrors}
               type="date"
@@ -246,22 +246,22 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               disabled={true}
               errors={formErrors}
               ltr={true}
-              defaultValue={props.userDetail?.userCode || ""}
+              defaultValue={props.userDetail?.userCode || ''}
             />
             <UserFormInput
               register={register}
               name="username"
               ltr={true}
               options={{
-                required: "فیلد الزامی است.",
+                required: 'فیلد الزامی است.',
                 pattern: {
                   value: /^[\da-zA-z]*$/,
                   message:
-                    "نام کاربری فقط باید شامل اعداد و حروف انگلیسی باشد.",
+                    'نام کاربری فقط باید شامل اعداد و حروف انگلیسی باشد.',
                 },
                 minLength: {
                   value: 5,
-                  message: "نام کاربری حداقل باید 5 کاراکتر باشد.",
+                  message: 'نام کاربری حداقل باید 5 کاراکتر باشد.',
                 },
               }}
               errors={formErrors}
@@ -291,12 +291,12 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 name="password"
                 errors={formErrors}
                 options={{
-                  required: "فیلد الزامی است.",
+                  required: 'فیلد الزامی است.',
                   pattern: {
                     value:
                       /^(?=.*\d)(?=.*[A-Za-z])[\dA-Za-z!@#$%^&*\-()+=]{6,}$/,
                     message:
-                      "رمز عبور حداقل 6 کاراکتر و شامل اعداد و حروف انگلیسی باشد.",
+                      'رمز عبور حداقل 6 کاراکتر و شامل اعداد و حروف انگلیسی باشد.',
                   },
                 }}
                 type="password"
@@ -311,7 +311,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               options={{
                 pattern: {
                   value: /^\S+@\S+$/i,
-                  message: "مقدار وارد شده صحیح نیست.",
+                  message: 'مقدار وارد شده صحیح نیست.',
                 },
               }}
             />
@@ -321,10 +321,10 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               errors={formErrors}
               ltr={true}
               options={{
-                required: "فیلد اجباری است.",
+                required: 'فیلد اجباری است.',
                 pattern: {
                   value: /(\+98|0|0098)9\d{9}$/,
-                  message: "شماره موبایل صحیح نیست.",
+                  message: 'شماره موبایل صحیح نیست.',
                 },
               }}
             />
@@ -363,7 +363,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
           </div>
           <div className="flex w-full pb-6 md:w-1/2   lg:w-5/12">
             <label className="font-semibold ml-12 h-12 leading-[3rem]  w-2">
-              مبایل
+              موبایل
             </label>
             <UserFormInput
               register={register}
@@ -372,7 +372,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               options={{
                 pattern: {
                   value: /(\+98|0|0098)9\d{9}$/,
-                  message: "شماره موبایل صحیح نیست.",
+                  message: 'شماره موبایل صحیح نیست.',
                 },
               }}
             />

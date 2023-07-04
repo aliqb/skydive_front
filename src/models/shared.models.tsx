@@ -118,7 +118,12 @@ export interface RequestTicketItem {
   ticketTypeId: string;
   userCode: string | null;
 }
-
+export interface TicketType {
+  title: string;
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface SelectPageEvent { 
   selected: number;

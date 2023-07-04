@@ -42,6 +42,7 @@ import AdminFlightsPage from "./pages/adminPanel/pages/adminEvents/AdminFlightsP
 import SkyDiveEventTermsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventTermsPage";
 import MyTicketsPage from "./pages/userPanel/MyTicketsPage";
 import JumpRecordsPage from "./pages/userPanel/JumpRecordsPage";
+import Messages from './pages/userPanel/Messages';
 
 function App() {
   // useEffect(()=>{
@@ -69,6 +70,7 @@ function App() {
           >
             <Route Component={Home} path=""></Route>
             <Route Component={Account} path="account"></Route>
+            <Route Component={Messages} path="messages"></Route>
             <Route Component={Outlet} path="events">
               <Route Component={SkyDiveEventsPage} path=":statusId?"></Route>
               <Route
