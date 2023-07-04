@@ -1,10 +1,14 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState, useRef } from "react";
 import useAPi from "../../hooks/useApi";
 import { JumpRecord } from "../../models/jumps.models";
 import { BaseResponse } from "../../models/shared.models";
-import { ColDef } from "../../components/shared/Grid/grid.types";
+import {
+  ColDef,
+  GridGetData,
+  GridParams,
+  GridRef,
+} from "../../components/shared/Grid/grid.types";
 import SDCard from "../../components/shared/Card";
-import SDSpinner from "../../components/shared/Spinner";
 import Grid from "../../components/shared/Grid/Grid";
 import SDButton from "../../components/shared/Button";
 import JumpRecordModal from "../../components/userPanel/JumpRecordModal";
@@ -12,8 +16,6 @@ import JumpRecordModal from "../../components/userPanel/JumpRecordModal";
 const JumpRecordsPage: React.FC = () => {
   const {
     sendRequest,
-    isPending,
-    data: recordsResponse,
   } = useAPi<null, BaseResponse<JumpRecord[]>>();
 
   const [colDefs] = useState<ColDef<JumpRecord>[]>([
@@ -57,33 +59,39 @@ const JumpRecordsPage: React.FC = () => {
         item.confirmed ? "تأیید شده" : "تأیید نشده",
     },
   ]);
+  const gridRef = useRef<GridRef>(null);
 
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  function openModal(){
+  function openModal() {
     setShowModal(true);
   }
 
   function onCloseModal(submitted: boolean) {
     if (submitted) {
-      fetchRecords();
+      gridRef.current?.refresh();
     }
     setShowModal(false);
   }
 
-  const fetchRecords = useCallback(() => {
-    sendRequest({
-      url: "/jumpRecords",
-      params: {
-        pageSize: 10000,
-        pageIndex: 1,
-      },
-    });
-  }, [sendRequest]);
-
-  useEffect(() => {
-    fetchRecords();
-  }, [fetchRecords]);
+  const fetchRecords = useCallback<GridGetData<JumpRecord>>(
+    (gridParams: GridParams, setRows) => {
+      console.log("here");
+      sendRequest(
+        {
+          url: "/jumpRecords",
+          params: {
+            pageSize: gridParams.pageSize,
+            pageIndex: gridParams.pageIndex,
+          },
+        },
+        (reponse) => {
+          setRows(reponse.content, reponse.total);
+        }
+      );
+    },
+    [sendRequest]
+  );
 
   return (
     <>
@@ -91,23 +99,19 @@ const JumpRecordsPage: React.FC = () => {
       <SDCard>
         <h1 className="text-center font-bold text-xl py-5">سوابق پرش</h1>
         <div className="py-5 md:px-8">
-          {isPending && (
-            <div className="flex justify-center mt-8">
-              <SDSpinner size={28} />
+          <>
+            <div className="mb-2">
+              <SDButton color="primary" onClick={openModal}>
+                + جدید
+              </SDButton>
             </div>
-          )}
-          {recordsResponse?.content && !isPending && (
-            <>
-              <div className="mb-2">
-                <SDButton color="primary" onClick={openModal}>+ جدید</SDButton>
-              </div>
-              <Grid<JumpRecord>
-                colDefs={colDefs}
-                data={recordsResponse.content}
-                rowActions={null}
-              />
-            </>
-          )}
+            <Grid<JumpRecord>
+              colDefs={colDefs}
+              getData={fetchRecords}
+              rowActions={null}
+              ref={gridRef}
+            />
+          </>
         </div>
       </SDCard>
     </>

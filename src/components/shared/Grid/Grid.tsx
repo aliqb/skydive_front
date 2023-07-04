@@ -269,7 +269,7 @@ function MainGrid<T = any>(
             </Table>
           </div>
         </div>
-        {pageCount && pageCount > 1 && (
+        {!!pageCount && pageCount > 1 && (
           <ReactPaginate
             breakLabel="..."
             forcePage={selectedPage}
