@@ -1,6 +1,6 @@
 import { Table } from "flowbite-react";
-import { useState, useEffect } from "react";
-import { ColDef, GridRow, GridRowActions } from "./grid.types";
+import { useState, useEffect, useCallback } from "react";
+import { ColDef, GridGetData, GridParams, GridRow, GridRowActions } from "./grid.types";
 import SDTooltip from "../Tooltip";
 import GridRowOtherActionComponent from "./GridOtherRowActionComponent";
 import GridRowMoreActionComponent from "./GridRowMoreActionsComponent";
@@ -8,8 +8,9 @@ import ReactPaginate from "react-paginate";
 import { SelectPageEvent } from "../../../models/shared.models";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface GridProps<T = any> {
-  data: T[];
-  colDefs: ColDef[];
+  data?: T[];
+  getData?: GridGetData<T>;
+  colDefs: ColDef<T>[];
   // fetchData?: () => void;
   onDoubleClick?: (data: T) => void;
   rowActions?: GridRowActions<T> | null;
@@ -24,16 +25,29 @@ function Grid<T>({
   onDoubleClick,
   onEditRow,
   onRemoveRow,
+  getData,
   rowActions = { edit: true, remove: true, otherActions: [], moreActions: [] },
 }: GridProps<T>) {
   const [gridRows, setGridRows] = useState<GridRow<T>[]>([]);
 
-  useEffect(() => {
-    const rows: GridRow[] = data.map((item) => {
+  const makeGridRows = useCallback((items: T[], colDefs: ColDef<T>[]) => {
+    const rows: GridRow[] = items.map((item) => {
       return new GridRow<T>(item, colDefs);
     });
+
     setGridRows(rows);
-  }, [data, colDefs]);
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      makeGridRows(data, colDefs);
+    }
+    if (getData) {
+      getData({ pageIndex: 1, pageSize: 10 }, (items: T[]) => {
+        makeGridRows(items, colDefs);
+      });
+    }
+  }, [data, colDefs, makeGridRows, getData]);
 
   const onRowDobuleClisk = (item: T) => {
     console.log(item);
@@ -42,9 +56,9 @@ function Grid<T>({
     }
   };
 
-  const handlePageClick = (event:SelectPageEvent)=>{
-    console.log(event)
-  }
+  const handlePageClick = (event: SelectPageEvent) => {
+    console.log(event);
+  };
 
   {
     return (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Grid from "../../../../components/shared/Grid/Grid";
 import SDButton from "../../../../components/shared/Button";
 import SDDatepicker from "../../../../components/shared/DatePicker";
@@ -10,7 +10,7 @@ import {
 import SDSpinner from "../../../../components/shared/Spinner";
 import { Link, useNavigate } from "react-router-dom";
 import { UserListItem } from "../../../../models/usermanagement.models";
-import { ColDef } from "../../../../components/shared/Grid/grid.types";
+import { ColDef, GridGetData, GridParams } from "../../../../components/shared/Grid/grid.types";
 
 const UserManagement: React.FC = () => {
   const { sendRequest, errors, isPending } = useAPi<
@@ -75,34 +75,52 @@ const UserManagement: React.FC = () => {
     navigate(`${user.id}/edit`);
   }
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      await sendRequest(
-        {
-          url: "/Admin/GetUsers",
-          params: {
-            pagesize: 10000,
-            pageindex: 1,
-            userStatus: selectedValue.toLowerCase(),
-          },
+  const fetchUsers = useCallback<GridGetData<UserListItem>>((gridParams,setRows)=>{
+    sendRequest(
+      {
+        url: "/Admin/GetUsers",
+        params: {
+          pagesize: 10000,
+          pageindex: 1,
+          userStatus: selectedValue.toLowerCase(),
         },
-        (response) => {
-          const result = response.content;
-          setResult(result);
-        }
-      );
-    };
-
-    fetchUsers();
-  }, [selectedValue, sendRequest]);
-
-  if (isPending) {
-    return (
-      <div className="flex justify-center items-center h-3/4">
-        <SDSpinner size={16} />
-      </div>
+      },
+      (response) => {
+        const result = response.content;
+        // setResult(result);
+        setRows(result)
+      }
     );
-  }
+  },[sendRequest,selectedValue])
+
+  // useEffect(() => {
+  //   const fetchUsers = async () => {
+  //     await sendRequest(
+  //       {
+  //         url: "/Admin/GetUsers",
+  //         params: {
+  //           pagesize: 10000,
+  //           pageindex: 1,
+  //           userStatus: selectedValue.toLowerCase(),
+  //         },
+  //       },
+  //       (response) => {
+  //         const result = response.content;
+  //         setResult(result);
+  //       }
+  //     );
+  //   };
+
+  //   fetchUsers();
+  // }, [selectedValue, sendRequest]);
+
+  // if (isPending) {
+  //   return (
+  //     <div className="flex justify-center items-center h-3/4">
+  //       <SDSpinner size={16} />
+  //     </div>
+  //   );
+  // }
 
   if (errors) {
     return <div>Error: {errors.message}</div>;
@@ -162,7 +180,8 @@ const UserManagement: React.FC = () => {
       </div>
       <div className="mt-6">
         <Grid<UserListItem>
-          data={result}
+          // data={result}
+          getData={fetchUsers}
           onDoubleClick={goToDetail}
           colDefs={colDefs}
           rowActions={{ edit: true, remove: false }}

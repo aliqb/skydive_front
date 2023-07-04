@@ -69,4 +69,9 @@ export interface GridRowOtherAction<T>{
 }
 
 
+export interface GridParams{
+  pageIndex: number;
+  pageSize: number;
+}
 
+export type GridGetData<T> = (gridParams: GridParams, setRows: (items: T[]) => void) => void;
