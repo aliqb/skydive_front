@@ -1,4 +1,4 @@
-import React, {  useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import Grid from "../../../../components/shared/Grid/Grid";
 import SDButton from "../../../../components/shared/Button";
 import SDDatepicker from "../../../../components/shared/DatePicker";
@@ -15,11 +15,10 @@ import {
 } from "../../../../components/shared/Grid/grid.types";
 
 const UserManagement: React.FC = () => {
-  const { sendRequest, errors } = useAPi<
-    null,
-    BaseResponse<UserListItem[]>
-  >();
+  const { sendRequest, errors } = useAPi<null, BaseResponse<UserListItem[]>>();
   const [selectedValue, setSelectedValue] = useState<string>("");
+  const [minDate, setMinDate] = useState<string>();
+  const [maxDate, setMaxDate] = useState<string>();
   const [colDefs] = useState<ColDef<UserListItem>[]>([
     {
       field: "code",
@@ -84,7 +83,9 @@ const UserManagement: React.FC = () => {
           params: {
             pagesize: gridParams.pageSize,
             pageindex: gridParams.pageIndex,
-            userStatus: selectedValue.toLowerCase(),
+            userStatus: selectedValue,
+            minDate: minDate,
+            maxDate: maxDate,
           },
         },
         (response) => {
@@ -94,7 +95,7 @@ const UserManagement: React.FC = () => {
         }
       );
     },
-    [sendRequest, selectedValue]
+    [sendRequest, selectedValue, minDate, maxDate]
   );
 
   // useEffect(() => {
@@ -162,7 +163,7 @@ const UserManagement: React.FC = () => {
         </div>
         <div className="flex items-center">
           <div>
-            <p> تاریخ :</p>
+            <p> تاریخ ثبت نام :</p>
           </div>
           <div className="mr-5">
             <SDDatepicker
@@ -170,6 +171,9 @@ const UserManagement: React.FC = () => {
               name="expireDate"
               required={true}
               placeholder="از :"
+              onOpenPickNewDate={false}
+              value={minDate}
+              onChange={setMinDate}
             ></SDDatepicker>
           </div>
           <div className="mr-5">
@@ -178,6 +182,9 @@ const UserManagement: React.FC = () => {
               name="expireDate"
               required={true}
               placeholder="تا :"
+              onOpenPickNewDate={false}
+              value={maxDate}
+              onChange={setMaxDate}
             ></SDDatepicker>
           </div>
         </div>
