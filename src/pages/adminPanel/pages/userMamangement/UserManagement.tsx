@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, {  useState, useCallback } from "react";
 import Grid from "../../../../components/shared/Grid/Grid";
 import SDButton from "../../../../components/shared/Button";
 import SDDatepicker from "../../../../components/shared/DatePicker";
@@ -7,17 +7,18 @@ import {
   BaseResponse,
   UserStatusesPersianMap,
 } from "../../../../models/shared.models";
-import SDSpinner from "../../../../components/shared/Spinner";
 import { Link, useNavigate } from "react-router-dom";
 import { UserListItem } from "../../../../models/usermanagement.models";
-import { ColDef, GridGetData, GridParams } from "../../../../components/shared/Grid/grid.types";
+import {
+  ColDef,
+  GridGetData,
+} from "../../../../components/shared/Grid/grid.types";
 
 const UserManagement: React.FC = () => {
-  const { sendRequest, errors, isPending } = useAPi<
+  const { sendRequest, errors } = useAPi<
     null,
     BaseResponse<UserListItem[]>
   >();
-  const [result, setResult] = useState<UserListItem[]>([]);
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [colDefs] = useState<ColDef<UserListItem>[]>([
     {
@@ -75,23 +76,26 @@ const UserManagement: React.FC = () => {
     navigate(`${user.id}/edit`);
   }
 
-  const fetchUsers = useCallback<GridGetData<UserListItem>>((gridParams,setRows)=>{
-    sendRequest(
-      {
-        url: "/Admin/GetUsers",
-        params: {
-          pagesize: 10000,
-          pageindex: 1,
-          userStatus: selectedValue.toLowerCase(),
+  const fetchUsers = useCallback<GridGetData<UserListItem>>(
+    (gridParams, setRows) => {
+      sendRequest(
+        {
+          url: "/Admin/GetUsers",
+          params: {
+            pagesize: gridParams.pageSize,
+            pageindex: gridParams.pageIndex,
+            userStatus: selectedValue.toLowerCase(),
+          },
         },
-      },
-      (response) => {
-        const result = response.content;
-        // setResult(result);
-        setRows(result)
-      }
-    );
-  },[sendRequest,selectedValue])
+        (response) => {
+          const result = response.content;
+          // setResult(result);
+          setRows(result, response.total);
+        }
+      );
+    },
+    [sendRequest, selectedValue]
+  );
 
   // useEffect(() => {
   //   const fetchUsers = async () => {
