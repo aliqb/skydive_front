@@ -5,10 +5,11 @@ import { BaseResponse } from '../../../models/shared.models';
 import SDCard from '../../shared/Card';
 import { toast } from 'react-toastify';
 import SDSpinner from '../../shared/Spinner';
+import SDButton from '../../shared/Button';
 
 const MessagesItem: React.FC<UserMessages> = (props) => {
   const { sendRequest, isPending } = useApi<null, BaseResponse<null>>();
-  const { fetchUserMessages } = useApi<null, BaseResponse<UserMessages[]>>();
+  // const { fetchUserMessages } = useApi<null, BaseResponse<UserMessages[]>>();
 
   const [isFullTextShown, setIsFullTextShown] = useState(false);
   const maxLength = 80;
@@ -62,44 +63,52 @@ const MessagesItem: React.FC<UserMessages> = (props) => {
             />
           </svg>
         </div>
-        <div>
-          <div className="flex mb-5 items-center">
-            <p className="text-green-400 text-sm">در {props.createdAt}</p>
-          </div>
-          <div className="flex mb-5 items-center">
-            <p className="text-black-400 font-bold">{props.title}</p>
-          </div>
-          <div className="flex mb-5 items-center">
-            <p className={textClass}>{displayedText}</p>
-            {shouldShowMoreButton && (
-              <button onClick={handleMoreClick} className="text-blue-500">
-                بیشتر
-              </button>
+        <div className="flex flex-grow">
+          <div className="flex flex-col flex-grow">
+            <div className="flex mb-5 items-center">
+              <p className="text-green-400 text-sm">در {props.createdAt}</p>
+            </div>
+            <div className="flex mb-5 items-center">
+              <p className="text-black-400 font-bold">{props.title}</p>
+            </div>
+            <div className="flex mb-5 items-center">
+              <p className={textClass}>{displayedText}</p>
+              {shouldShowMoreButton && (
+                <button onClick={handleMoreClick} className="text-blue-500">
+                  بیشتر
+                </button>
+              )}
+            </div>
+            {!props.visited && (
+              <div className="flex items-center ">
+                <SDButton
+                  onClick={markAsRead}
+                  className="read-button hover:bg-gray-200 transition-colors duration-300 bg-orange-400 text-white rounded ml-4 text-sm"
+                  style={{ backgroundColor: 'rgb(245, 158, 11)' }}
+                  disabled={isPending}
+                >
+                  <span className="flex items-center">
+                    {isPending && <SDSpinner />}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-5 h-5 inline-block mr-1"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    علامت‌گذاری به عنوان خوانده شده
+                  </span>
+                </SDButton>
+              </div>
             )}
           </div>
-          {!props.visited && (
-            <button
-              onClick={markAsRead}
-              className="read-button hover:bg-gray-200 transition-colors duration-300 bg-orange-400 text-white px-3 py-1 rounded-md mt-4 text-sm"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-5 h-5 inline-block mr-1"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              {isPending && <SDSpinner />}
-              علامت‌گذاری به عنوان خوانده شده
-            </button>
-          )}
         </div>
       </div>
     </SDCard>
