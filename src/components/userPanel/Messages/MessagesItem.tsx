@@ -9,9 +9,10 @@ import SDButton from '../../shared/Button';
 
 const MessagesItem: React.FC<UserMessages> = (props) => {
   const { sendRequest, isPending } = useApi<null, BaseResponse<null>>();
-  // const { fetchUserMessages } = useApi<null, BaseResponse<UserMessages[]>>();
 
   const [isFullTextShown, setIsFullTextShown] = useState(false);
+  const [isRead, setIsRead] = useState(props.visited);
+
   const maxLength = 80;
 
   const handleMoreClick = () => {
@@ -25,7 +26,7 @@ const MessagesItem: React.FC<UserMessages> = (props) => {
   const shouldShowMoreButton =
     !isFullTextShown && props.text.length > maxLength;
 
-  const textClass = props.visited ? 'text-black-400' : 'text-blue-400';
+  const textClass = isRead ? 'text-black-400' : 'text-blue-400';
 
   const markAsRead = () => {
     sendRequest(
@@ -35,7 +36,7 @@ const MessagesItem: React.FC<UserMessages> = (props) => {
       },
       (response) => {
         toast.success(response.message);
-        fetchUserMessages();
+        setIsRead(true);
       }
     );
   };
@@ -43,8 +44,8 @@ const MessagesItem: React.FC<UserMessages> = (props) => {
   return (
     <SDCard>
       <div
-        className={`flex gap-11 items-center border-b py-8 last:border-none ${
-          props.visited ? 'read' : 'unread'
+        className={`flex gap-11 items-center border-b border-gray-300 pb-6 ${
+          isRead ? 'read' : 'unread'
         }`}
       >
         <div className="hidden sm:block">
@@ -79,7 +80,7 @@ const MessagesItem: React.FC<UserMessages> = (props) => {
                 </button>
               )}
             </div>
-            {!props.visited && (
+            {!isRead && (
               <div className="flex items-center ">
                 <SDButton
                   onClick={markAsRead}
