@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import useApi from '../../../hooks/useApi';
-import { userType } from '../../../models/usermanagement.models';
+import { userType, ticketType } from '../../../models/usermanagement.models';
 import { BaseResponse } from '../../../models/shared.models';
 import SDSpinner from '../../../components/shared/Spinner';
 import SDCard from '../../../components/shared/Card';
 import { toast } from 'react-toastify';
 
 type UserType = userType['title'];
-type UserTicket = 'آزاد' | 'چارتر' | 'همراه با مربی' | 'ویژه';
+type UserTicket = ticketType['title'];
 
 interface AssignTicketTypes {
   userTypeId: string;
@@ -15,12 +15,9 @@ interface AssignTicketTypes {
 }
 
 const Settings: React.FC = () => {
-  const { sendRequest, isPending, data } = useApi<
-    null,
-    BaseResponse<userType[]>
-  >();
+  const { sendRequest, isPending } = useApi<null, BaseResponse<userType[]>>();
   const { sendRequest: sendPostRequest, isPending: inPendingPost } = useApi<
-    null,
+    AssignTicketTypes,
     BaseResponse<null>
   >();
   const [selectedUserTypes, setSelectedUserTypes] = useState<UserType[]>([]);
