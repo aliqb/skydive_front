@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import Grid from "../../../../components/shared/Grid/Grid";
 import SDButton from "../../../../components/shared/Button";
 import SDDatepicker from "../../../../components/shared/DatePicker";
@@ -9,9 +9,8 @@ import {
   SkyDiveEvent,
 } from "../../../../models/skyDiveEvents.models";
 import { BaseResponse } from "../../../../models/shared.models";
-import SDSpinner from "../../../../components/shared/Spinner";
 import AdminEventModal from "../../../../components/adminPanel/adminEvent/AdminEventModal";
-import { ColDef } from "../../../../components/shared/Grid/grid.types";
+import { ColDef, GridGetData, GridRef } from "../../../../components/shared/Grid/grid.types";
 import StatusIndicator from "../../../../components/shared/StatusIndicator";
 import { BiToggleLeft } from "react-icons/bi";
 import { BsAirplaneEngines } from "react-icons/bs";
@@ -27,13 +26,12 @@ const AdminEvents: React.FC = () => {
   const [endDate, setEndtDate] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
   const [editingEvent, setEditingEvent] = useState<SkyDiveEvent>();
-  const [processedData, setProcessedData] = useState<SkyDiveEvent[]>([]);
   const [costTargetEvent, setCostTargetEvent] = useState<SkyDiveEvent>();
   const [termsTartgetEvent, setTermsTargetEvent] = useState<SkyDiveEvent>();
-
+  const gridRef = useRef<GridRef>(null);
   const navigate = useNavigate();
 
-  const { sendRequest, errors, isPending } = useAPi<
+  const { sendRequest, errors } = useAPi<
     NewEvent,
     BaseResponse<SkyDiveEvent[]>
   >();
@@ -61,7 +59,7 @@ const AdminEvents: React.FC = () => {
 
   const handleCloseEntryModal = (submitted: boolean) => {
     if (submitted) {
-      fetchEvents(selectedValue, startDate, endDate);
+      gridRef.current?.refresh();
     }
     setEditingEvent(undefined);
     setCostTargetEvent(undefined);
@@ -70,7 +68,7 @@ const AdminEvents: React.FC = () => {
 
   const handleCloseTermsModal = (submitted: boolean) => {
     if (submitted) {
-      fetchEvents(selectedValue, startDate, endDate);
+      gridRef.current?.refresh();
     }
     setTermsTargetEvent(undefined);
   };
@@ -143,15 +141,15 @@ const AdminEvents: React.FC = () => {
     },
   ]);
 
-  const fetchEvents = useCallback(
-    (selectedStatus: string, startDate: string, endDate: string) => {
+  const fetchEvents = useCallback<GridGetData<SkyDiveEvent>>(
+    (gridParams,setRows) => {
       sendRequest(
         {
           url: "/SkyDiveEvents",
           params: {
-            pagesize: 10,
-            pageindex: 1,
-            Statusid: selectedStatus,
+            pagesize: gridParams.pageSize,
+            pageindex: gridParams.pageIndex,
+            Statusid: selectedValue,
             start: startDate,
             end: endDate,
           },
@@ -162,11 +160,11 @@ const AdminEvents: React.FC = () => {
               const voidableString = item.voidable ? "هست" : "نیست";
               return { ...item, voidableString };
             }) || [];
-          setProcessedData(processedData);
+          setRows(processedData, response.total)
         }
       );
     },
-    [sendRequest]
+    [sendRequest, selectedValue, startDate, endDate]
   );
 
   const onRemove = async (item: SkyDiveEvent) => {
@@ -179,7 +177,7 @@ const AdminEvents: React.FC = () => {
         },
         (response) => {
           toast.success(response.message);
-          fetchEvents(selectedValue, startDate, endDate);
+          gridRef.current?.refresh();
         },
         (error) => {
           toast.error(error?.message);
@@ -196,7 +194,7 @@ const AdminEvents: React.FC = () => {
       },
       (response) => {
         toast.success(response.message);
-        fetchEvents(selectedValue, startDate, endDate);
+        gridRef.current?.refresh();
       },
       (error) => {
         toast.error(error?.message);
@@ -204,9 +202,6 @@ const AdminEvents: React.FC = () => {
     );
   };
 
-  useEffect(() => {
-    fetchEvents(selectedValue, startDate, endDate);
-  }, [selectedValue, sendRequest, fetchEvents, startDate, endDate]);
 
   useEffect(() => {
     const fetchEventStatuses = () => {
@@ -236,13 +231,6 @@ const AdminEvents: React.FC = () => {
     fetchLastCode();
   }, [lastCodeSendRequest]);
 
-  if (isPending) {
-    return (
-      <div className="flex justify-center items-center h-3/4">
-        <SDSpinner size={16} />
-      </div>
-    );
-  }
 
   if (errors) {
     return <div>Error: {errors.message}</div>;
@@ -345,9 +333,11 @@ const AdminEvents: React.FC = () => {
       </div>
       <div className="mt-6">
         <Grid<SkyDiveEvent>
-          data={processedData}
+          getData={fetchEvents}
+          pageSize={5}
           colDefs={colDefs}
           onEditRow={onEdit}
+          ref={gridRef}
           onRemoveRow={onRemove}
           rowActions={{
             edit: true,
