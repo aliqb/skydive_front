@@ -48,12 +48,16 @@ export interface CheckUserInfoRequest{
 }
 
 export interface userType {
-  isDefault: boolean
-  title: string
-  allowedTicketTypes: AllowedTicketType[]
-  id: string
-  createdAt: string
-  updatedAt: string
+  isDefault: boolean;
+  title: string;
+  allowedTicketTypes: AllowedTicketType[];
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface ticketType {
+  id: string;
+  title: string;
 }
 
 interface AllowedTicketType {
@@ -80,4 +84,9 @@ export interface UserRequest {
   emergencyPhone: string
   password: string,
   userTypeId: string
+}
+
+export interface AssignTicketTypes {
+  userTypeId: string;
+  ticketTypes: string[];
 }
