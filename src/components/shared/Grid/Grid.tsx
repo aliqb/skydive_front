@@ -4,6 +4,8 @@ import { ColDef, GridRow, GridRowActions } from "./grid.types";
 import SDTooltip from "../Tooltip";
 import GridRowOtherActionComponent from "./GridOtherRowActionComponent";
 import GridRowMoreActionComponent from "./GridRowMoreActionsComponent";
+import ReactPaginate from "react-paginate";
+import { SelectPageEvent } from "../../../models/shared.models";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface GridProps<T = any> {
   data: T[];
@@ -40,19 +42,13 @@ function Grid<T>({
     }
   };
 
+  const handlePageClick = (event:SelectPageEvent)=>{
+    console.log(event)
+  }
+
   {
     return (
-      <>
-        {/* {openModal && (
-          <CostModal
-            showModal={openModal}
-            onOpenModal={handleOnOpenModal}
-            onCloseModal={handleOnCloseModal}
-            fetchData={fetchData}
-            rowId={selectedRowId}
-          />
-        )} */}
-
+      <div>
         <div className="overflow-x-auto w-full">
           <div>
             <Table hoverable className="text-right border border-gray-300">
@@ -147,21 +143,23 @@ function Grid<T>({
                               </button>
                             </SDTooltip>
                           )}
-                          {rowActions.otherActions && rowActions.otherActions.map((action, index) => {
-                            return (
-                              <GridRowOtherActionComponent
-                                key={index}
-                                action={action}
+                          {rowActions.otherActions &&
+                            rowActions.otherActions.map((action, index) => {
+                              return (
+                                <GridRowOtherActionComponent
+                                  key={index}
+                                  action={action}
+                                  row={row}
+                                />
+                              );
+                            })}
+                          {rowActions.moreActions &&
+                            rowActions.moreActions.length > 0 && (
+                              <GridRowMoreActionComponent
+                                actions={rowActions.moreActions}
                                 row={row}
                               />
-                            );
-                          })}
-                          {rowActions.moreActions && rowActions.moreActions.length > 0 && (
-                            <GridRowMoreActionComponent
-                              actions={rowActions.moreActions}
-                              row={row}
-                            />
-                          )}
+                            )}
                         </div>
                       </Table.Cell>
                     )}
@@ -171,7 +169,55 @@ function Grid<T>({
             </Table>
           </div>
         </div>
-      </>
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-5 h-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15.75 19.5L8.25 12l7.5-7.5"
+              />
+            </svg>
+          }
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={5}
+          pageCount={10}
+          previousLabel={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-5 h-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M8.25 4.5l7.5 7.5-7.5 7.5"
+              />
+            </svg>
+          }
+          renderOnZeroPageCount={null}
+          containerClassName="flex gap-5  justify-end bg-gray-50 py-2 pl-4"
+          nextClassName="flex items-center"
+          previousClassName="flex items-center"
+          pageLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
+          nextLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
+          previousLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
+          breakClassName="p-1 block hover:text-cyan-400"
+          activeClassName="text-cyan-500"
+          pageClassName="text-base "
+        />
+      </div>
     );
   }
 }
