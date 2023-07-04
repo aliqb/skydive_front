@@ -74,4 +74,4 @@ export interface GridParams{
   pageSize: number;
 }
 
-export type GridGetData<T> = (gridParams: GridParams, setRows: (items: T[]) => void) => void;
+export type GridGetData<T> = (gridParams: GridParams, setRows: (items: T[],total:number) => void) => void;

@@ -1,6 +1,12 @@
 import { Table } from "flowbite-react";
 import { useState, useEffect, useCallback } from "react";
-import { ColDef, GridGetData, GridParams, GridRow, GridRowActions } from "./grid.types";
+import {
+  ColDef,
+  GridGetData,
+  GridParams,
+  GridRow,
+  GridRowActions,
+} from "./grid.types";
 import SDTooltip from "../Tooltip";
 import GridRowOtherActionComponent from "./GridOtherRowActionComponent";
 import GridRowMoreActionComponent from "./GridRowMoreActionsComponent";
@@ -16,6 +22,8 @@ interface GridProps<T = any> {
   rowActions?: GridRowActions<T> | null;
   onEditRow?: (item: T) => void;
   onRemoveRow?: (item: T) => void;
+  pageSize?: number | null;
+  onPagination?: (gridParams: GridParams) => void;
 }
 
 function Grid<T>({
@@ -27,8 +35,13 @@ function Grid<T>({
   onRemoveRow,
   getData,
   rowActions = { edit: true, remove: true, otherActions: [], moreActions: [] },
+  pageSize: defaultPageSize = 10,
+  onPagination,
 }: GridProps<T>) {
   const [gridRows, setGridRows] = useState<GridRow<T>[]>([]);
+  const [total, setTotal] = useState<number>();
+  const [selectedPage, setSelectedPage] = useState(0);
+  const [pageSize, setPageSize] = useState<number | null>(defaultPageSize);
 
   const makeGridRows = useCallback((items: T[], colDefs: ColDef<T>[]) => {
     const rows: GridRow[] = items.map((item) => {
@@ -43,11 +56,20 @@ function Grid<T>({
       makeGridRows(data, colDefs);
     }
     if (getData) {
-      getData({ pageIndex: 1, pageSize: 10 }, (items: T[]) => {
-        makeGridRows(items, colDefs);
-      });
+      getData(
+        { pageIndex: 1, pageSize: pageSize === null ? 100000 : pageSize },
+        (items: T[], total: number) => {
+          makeGridRows(items, colDefs);
+          setTotal(total);
+          setSelectedPage(0);
+        }
+      );
     }
-  }, [data, colDefs, makeGridRows, getData]);
+  }, [data, colDefs, makeGridRows, getData, pageSize]);
+
+  useEffect(() => {
+    setPageSize(defaultPageSize);
+  }, [defaultPageSize]);
 
   const onRowDobuleClisk = (item: T) => {
     console.log(item);
@@ -57,7 +79,22 @@ function Grid<T>({
   };
 
   const handlePageClick = (event: SelectPageEvent) => {
-    console.log(event);
+    if (pageSize !== null) {
+      setSelectedPage(event.selected);
+      if (onPagination) {
+        onPagination({ pageIndex: event.selected, pageSize: pageSize });
+        return;
+      }
+      if (getData) {
+        getData(
+          { pageIndex: event.selected + 1, pageSize: pageSize },
+          (items: T[], total: number) => {
+            makeGridRows(items, colDefs);
+            setTotal(total);
+          }
+        );
+      }
+    }
   };
 
   {
@@ -183,54 +220,57 @@ function Grid<T>({
             </Table>
           </div>
         </div>
-        <ReactPaginate
-          breakLabel="..."
-          nextLabel={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-5 h-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 19.5L8.25 12l7.5-7.5"
-              />
-            </svg>
-          }
-          onPageChange={handlePageClick}
-          pageRangeDisplayed={5}
-          pageCount={10}
-          previousLabel={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-5 h-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8.25 4.5l7.5 7.5-7.5 7.5"
-              />
-            </svg>
-          }
-          renderOnZeroPageCount={null}
-          containerClassName="flex gap-5  justify-end bg-gray-50 py-2 pl-4"
-          nextClassName="flex items-center"
-          previousClassName="flex items-center"
-          pageLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
-          nextLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
-          previousLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
-          breakClassName="p-1 block hover:text-cyan-400"
-          activeClassName="text-cyan-500"
-          pageClassName="text-base "
-        />
+        {pageSize !== null && (
+          <ReactPaginate
+            breakLabel="..."
+            forcePage={selectedPage}
+            nextLabel={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 19.5L8.25 12l7.5-7.5"
+                />
+              </svg>
+            }
+            onPageChange={handlePageClick}
+            pageRangeDisplayed={3}
+            pageCount={Math.ceil((total || 0) / pageSize)}
+            previousLabel={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            }
+            renderOnZeroPageCount={null}
+            containerClassName="flex gap-5  justify-end bg-gray-50 py-2 pl-4"
+            nextClassName="flex items-center"
+            previousClassName="flex items-center"
+            pageLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
+            nextLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
+            previousLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
+            breakClassName="p-1 block hover:text-cyan-400"
+            activeClassName="text-cyan-500"
+            pageClassName="text-base "
+          />
+        )}
       </div>
     );
   }
