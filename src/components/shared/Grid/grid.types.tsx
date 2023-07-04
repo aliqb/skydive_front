@@ -75,3 +75,7 @@ export interface GridParams{
 }
 
 export type GridGetData<T> = (gridParams: GridParams, setRows: (items: T[],total:number) => void) => void;
+
+export interface GridRef {
+  refresh: ()=>void
+}
