@@ -6,24 +6,28 @@ import { UserStatuses } from "../../models/shared.models";
 const Home: React.FC = () => {
   const name = useAppSelector(state=>state.auth.name);
   const authState = useAppSelector(state=>state.auth);
-  const links : HomeLinkProps[] = [
+  const links: HomeLinkProps[] = [
     {
       tilte: 'رویدادها',
-      href:'/events'
+      href: '/events',
     },
     {
       tilte: 'قوانین و شرایط',
-      href:''
+      href: '',
     },
     {
       tilte: 'بلیت‌های من',
-      href:'/tickets'
+      href: '/tickets',
     },
     {
       tilte: 'سوابق پرش',
-      href:'/jumps'
-    }
-  ]
+      href: '/jumps',
+    },
+    {
+      tilte: 'سوابق تراکنش ها',
+      href: '/transactions',
+    },
+  ];
   const statusBgColorMap = new Map([
     [UserStatuses.AWAITING_COMPLETION, 'bg-yellow-300'],
     [UserStatuses.PENDING, 'bg-yellow-300'],

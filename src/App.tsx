@@ -43,6 +43,7 @@ import SkyDiveEventTermsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventT
 import MyTicketsPage from "./pages/userPanel/MyTicketsPage";
 import JumpRecordsPage from "./pages/userPanel/JumpRecordsPage";
 import Messages from './pages/userPanel/Messages';
+import MyTransactionsPage from './pages/userPanel/MyTransactionsPage';
 
 function App() {
   // useEffect(()=>{
@@ -81,9 +82,13 @@ function App() {
                 Component={SkyDiveEventFlightsPage}
                 path=":eventId/flights"
               ></Route>
-              <Route Component={SkyDiveEventTermsPage} path=":eventId/terms"></Route>
+              <Route
+                Component={SkyDiveEventTermsPage}
+                path=":eventId/terms"
+              ></Route>
             </Route>
             <Route Component={MyTicketsPage} path="tickets"></Route>
+            <Route Component={MyTransactionsPage} path="transactions"></Route>
             <Route Component={JumpRecordsPage} path="jumps"></Route>
             <Route Component={PaymentPage} path="payment"></Route>
           </Route>
@@ -116,7 +121,10 @@ function App() {
             <Route Component={EditUserPage} path="users/:userId/edit"></Route>
             <Route Component={Outlet} path="events">
               <Route Component={AdminEvents} path=""></Route>
-              <Route Component={AdminFlightsPage} path=":eventId/flights"></Route>
+              <Route
+                Component={AdminFlightsPage}
+                path=":eventId/flights"
+              ></Route>
             </Route>
             <Route Component={Settings} path="settings"></Route>
             <Route Component={SendMessage} path="sendMessage"></Route>
