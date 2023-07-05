@@ -16,12 +16,16 @@ const Home: React.FC = () => {
       href: '',
     },
     {
-      tilte: 'بلیت‌های من',
-      href: '/tickets',
-    },
-    {
       tilte: 'سوابق پرش',
       href: '/jumps',
+    },
+    {
+      tilte: 'کیف پول',
+      href: '/wallet',
+    },
+    {
+      tilte: 'بلیت‌های من',
+      href: '/tickets',
     },
     {
       tilte: 'سوابق تراکنش ها',
