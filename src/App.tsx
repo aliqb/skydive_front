@@ -44,6 +44,7 @@ import MyTicketsPage from "./pages/userPanel/MyTicketsPage";
 import JumpRecordsPage from "./pages/userPanel/JumpRecordsPage";
 import Messages from './pages/userPanel/Messages';
 import MyTransactionsPage from './pages/userPanel/MyTransactionsPage';
+import Wallet from './pages/userPanel/Wallet';
 
 function App() {
   // useEffect(()=>{
@@ -89,6 +90,7 @@ function App() {
             </Route>
             <Route Component={MyTicketsPage} path="tickets"></Route>
             <Route Component={MyTransactionsPage} path="transactions"></Route>
+            <Route Component={Wallet} path="wallet"></Route>
             <Route Component={JumpRecordsPage} path="jumps"></Route>
             <Route Component={PaymentPage} path="payment"></Route>
           </Route>
