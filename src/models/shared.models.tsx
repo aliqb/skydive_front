@@ -24,12 +24,10 @@ export interface UserPersonalInfo {
   nationalCode: string;
   birthDate: string;
   email?: string;
-  cityId: string | null;
-  state?: string;
-  city?: string;
+  cityAndState:string | null;
   address?: string;
-  weight?: number;
-  height?: number;
+  weight: number | null;
+  height: number | null;
   createdAt?: string;
   updatedAt?: string;
   emergencyContact?: string;

@@ -53,3 +53,14 @@ export const  DocumnetStatus = {
   EXPIRED : "Expired",
   CONFIRMED : "Confirmed",
 }
+
+
+export interface PersonalInfoEditableFormData {
+  email: string;
+  cityAndState: string | null;
+  address: string;
+  height: number | null;
+  weight: number | null;
+  emergencyContact: string;
+  emergencyPhone: string;
+}
