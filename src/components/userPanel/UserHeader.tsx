@@ -7,6 +7,7 @@ import Basket from "../shared/Basket/Basket";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { MouseEventHandler, useEffect, useState } from "react";
 import Logo from "../shared/Logo";
+import NotifBadge from "../shared/NotifBadge";
 
 const UserHeader: React.FC = () => {
   const name = useAppSelector((state) => state.auth.name);
@@ -28,15 +29,15 @@ const UserHeader: React.FC = () => {
       location.pathname.includes("payment")
     ) {
       setCartIsInBody(true);
-    }else{
-      setCartIsInBody(false)
+    } else {
+      setCartIsInBody(false);
     }
   }, [location]);
   // const navigate = use
-  const dropdownItems: DropDownItem[] = [
+  const [dropdownItems, setDropdownItems] = useState<DropDownItem[]>([
     {
-      title: 'حساب کاربری',
-      href: '/account',
+      title: "حساب کاربری",
+      href: "/account",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -55,8 +56,13 @@ const UserHeader: React.FC = () => {
       ),
     },
     {
-      title: 'پیام های من',
-      href: '/messages',
+      title: (
+        <div className="flex justify-between items-center">
+          <div className="ml-3">پیام‌های من</div>
+          <NotifBadge value={5}  />
+        </div>
+      ),
+      href: "/messages",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -75,8 +81,8 @@ const UserHeader: React.FC = () => {
       ),
     },
     {
-      title: 'خروج',
-      mode: 'Button',
+      title: "خروج",
+      mode: "Button",
       onClick: logOut,
       icon: (
         <svg
@@ -95,7 +101,7 @@ const UserHeader: React.FC = () => {
         </svg>
       ),
     },
-  ];
+  ]);
 
   function logOut() {
     dispatch(authActions.logOut());
@@ -105,7 +111,9 @@ const UserHeader: React.FC = () => {
       <div className="bg-primary-500 h-[60px] flex items-center fixed w-full top-0 z-20">
         <Link to="/" className="mr-4 flex items-center">
           <Logo className="w-14" />
-          <h1 className="text-white font-bold text-lg hidden xs:block">باشگاه سقوط آزاد ایرانیان</h1>
+          <h1 className="text-white font-bold text-lg hidden xs:block">
+            باشگاه سقوط آزاد ایرانیان
+          </h1>
         </Link>
         <div className="mr-auto ml-12 flex text-white">
           <button
@@ -122,7 +130,10 @@ const UserHeader: React.FC = () => {
             )}
           </button>
           <SDDropdown items={dropdownItems}>
-            <span>{name}</span>
+            <div className="relative pl-1">
+              <NotifBadge value={5} className="-left-2 -top-1 absolute" />
+              <span>{name}</span>
+            </div>
           </SDDropdown>
         </div>
       </div>
