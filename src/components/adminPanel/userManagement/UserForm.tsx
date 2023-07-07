@@ -11,6 +11,7 @@ import useAPi from "../../../hooks/useApi";
 import { BaseResponse } from "../../../models/shared.models";
 import { City, CityDto } from "../../../models/account.models";
 import UserFormSelect from "./UserFormSelect";
+import { phoneInputValidator } from "../../../utils";
 
 interface UserFormProps {
   userDetail?: UserDatail;
@@ -319,6 +320,8 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               register={register}
               name="phone"
               errors={formErrors}
+              maxLength={14}
+              {...phoneInputValidator}
               ltr={true}
               options={{
                 required: 'فیلد اجباری است.',
@@ -369,6 +372,8 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               register={register}
               name="emergencyPhone"
               errors={formErrors}
+              maxLength={14}
+              {...phoneInputValidator}
               options={{
                 pattern: {
                   value: /(\+98|0|0098)9\d{9}$/,

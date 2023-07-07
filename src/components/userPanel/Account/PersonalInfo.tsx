@@ -10,6 +10,7 @@ import { City, CityDto } from "../../../models/account.models";
 import { useAppDispatch } from "../../../hooks/reduxHooks";
 import { accoutnActions } from "../../../store/account";
 import SDSelect from "../../shared/Select";
+import { phoneInputValidator } from "../../../utils";
 
 interface PersonalInfoProps {
   onSubmit: () => void;
@@ -246,6 +247,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
                   },
                 })}
                 type="text"
+                maxLength={14}
+                {...phoneInputValidator}
                 id="lastName"
                 className="ltr"
                 invalid={!!errors.emergencyPhone}

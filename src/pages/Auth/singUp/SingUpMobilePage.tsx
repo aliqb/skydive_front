@@ -8,6 +8,7 @@ import useAPi from "../../../hooks/useApi";
 import { OTPRequest, OTPResponse } from "../../../models/auth.models";
 import { BaseResponse } from "../../../models/shared.models";
 import { authActions } from "../../../store/auth";
+import { phoneInputValidator} from "../../../utils";
 
 
 const SignUpMobilePage: React.FC = () => {
@@ -110,6 +111,8 @@ const SignUpMobilePage: React.FC = () => {
             })}
             type="text"
             id="input-group-1"
+            maxLength={14}
+            {...phoneInputValidator}
             className={`${
               errors.phone
                 ? "border-red-500 focus:ring-red-500 focus:border-red-500"
