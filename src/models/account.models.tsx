@@ -30,6 +30,10 @@ export interface DocumentItem {
   id?:string
 }
 
+export interface DocumentItemModel extends DocumentItem{
+  withDate?: boolean
+}
+
 export interface PersonalInfoEditRequest extends Omit<UserPersonalInfo, "id"> {
   medicalDocument?: DocumentItem;
   logBookDocument?: DocumentItem;

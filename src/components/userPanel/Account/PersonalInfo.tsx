@@ -21,7 +21,7 @@ interface PersonalInfoProps {
 const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
   const {
     register,
-    formState: { errors, touchedFields,isValid },
+    formState: { errors, touchedFields },
     handleSubmit,
     trigger,
     setValue,
@@ -296,7 +296,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
           </div>
         </div>
         <div className="w-full flex justify-center ">
-          <SDButton className="w-full md:w-1/2" color="primary" type="submit" disabled={!isValid}>
+          <SDButton className="w-full md:w-1/2" color="primary" type="submit">
             مرحله بعد
           </SDButton>
         </div>

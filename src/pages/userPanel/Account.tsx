@@ -7,6 +7,7 @@ import PersonalInfo from "../../components/userPanel/Account/PersonalInfo";
 import { TabsRef } from "flowbite-react";
 import useAPi from "../../hooks/useApi";
 import {
+  DocumentItemModel,
   DocumentsList,
   PersonalInfoEditRequest,
   PersonalInfoEditableFormData,
@@ -15,7 +16,11 @@ import { BaseResponse, UserGeneralInfo } from "../../models/shared.models";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import useConfirm from "../../hooks/useConfirm";
 import { toast } from "react-toastify";
-import { accoutnActions } from "../../store/account";
+import {
+  UserDocumentsFieldType,
+  UserDocumentsFields,
+  accoutnActions,
+} from "../../store/account";
 import { useNavigate } from "react-router-dom";
 import { authActions } from "../../store/auth";
 import { useForm } from "react-hook-form";
@@ -24,6 +29,7 @@ const Account: React.FC = () => {
   const [, setActiveTab] = useState<number>(0);
   const accountState = useAppSelector((state) => state.account);
   const tabsRef = useRef<TabsRef>(null);
+  const [anyInvalidDocument, setAnyInvalidDocument] = useState<boolean>();
   const props = { setActiveTab, tabsRef };
   const personalInfoForm = useForm<PersonalInfoEditableFormData>({
     mode: "onTouched",
@@ -77,20 +83,39 @@ const Account: React.FC = () => {
     getDcouments();
   }, []);
 
+  useEffect(() => {
+    const documentFiels: UserDocumentsFieldType[] = [
+      UserDocumentsFields.attorneyDocument,
+      UserDocumentsFields.logBookDocument,
+      UserDocumentsFields.medicalDocument,
+      UserDocumentsFields.nationalCardDocument,
+    ];
+    const anyInvalidDocument = documentFiels.some((field) => {
+      const documentData: DocumentItemModel = accountState[field];
+      return (
+        !documentData.fileId ||
+        (documentData.withDate && !documentData.expirationDate)
+      );
+    });
+    setAnyInvalidDocument(anyInvalidDocument);
+  }, [accountState]);
+
   function onPersonalInfoSubmit() {
     props.tabsRef.current?.setActiveTab(2);
   }
 
   async function sendAllInformations() {
-    const personalInfo = accountState.personalInfo;
-    if (
-      (accountState.attorneyDocument?.fileId &&
-        !accountState.attorneyDocument?.expirationDate) ||
-      (accountState.medicalDocument?.fileId &&
-        !accountState.medicalDocument?.expirationDate)
-    ) {
+    if (anyInvalidDocument) {
       return;
     }
+
+    if (!personalInfoForm.formState.isValid) {
+      toast.error("اطلاعات شخصی را کامل کنید.");
+      props.tabsRef.current?.setActiveTab(1);
+      return;
+    }
+    const personalInfo = accountState.personalInfo;
+
     const confirmed = await confirmation();
     if (confirmed) {
       const body: PersonalInfoEditRequest = {
@@ -183,9 +208,11 @@ const Account: React.FC = () => {
             title={
               <div>
                 مدارک ارسالی
-                <span className="mr-3 !text-xs !text-red-600">
-                  (تکمیل نشده)
-                </span>
+                {anyInvalidDocument && (
+                  <span className="mr-3 !text-xs !text-red-600">
+                    (تکمیل نشده)
+                  </span>
+                )}
               </div>
             }
           >
