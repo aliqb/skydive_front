@@ -128,3 +128,8 @@ export interface TicketType {
 export interface SelectPageEvent { 
   selected: number;
 }
+
+export interface PagingParams{
+  pageIndex:number,
+  pageSize?: number
+}

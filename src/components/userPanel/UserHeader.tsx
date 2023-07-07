@@ -33,6 +33,7 @@ const UserHeader: React.FC = () => {
       setCartIsInBody(false);
     }
   }, [location]);
+
   // const navigate = use
   const [dropdownItems, setDropdownItems] = useState<DropDownItem[]>([
     {

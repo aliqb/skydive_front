@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { UserMessages } from '../../../models/messages.models';
+import { UserMessage } from '../../../models/messages.models';
 import useApi from '../../../hooks/useApi';
 import { BaseResponse } from '../../../models/shared.models';
 import SDCard from '../../shared/Card';
@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import SDSpinner from '../../shared/Spinner';
 import SDButton from '../../shared/Button';
 
-const MessagesItem: React.FC<UserMessages> = (props) => {
+const MessagesItem: React.FC<UserMessage> = (props) => {
   const { sendRequest, isPending } = useApi<null, BaseResponse<null>>();
 
   const [isFullTextShown, setIsFullTextShown] = useState(false);

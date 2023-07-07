@@ -1,4 +1,4 @@
-export interface UserMessages {
+export interface UserMessage {
   text: string;
   title: string;
   visited: boolean;

@@ -3,6 +3,7 @@ import UserHeader from "../../components/userPanel/UserHeader";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { fetchBasket } from "../../store/basket";
+import { fetchMessages } from "../../store/messages";
 
 const UserPanelContainer: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -10,6 +11,7 @@ const UserPanelContainer: React.FC = () => {
   useEffect(() => {
     if (genralInfoSet) {
       dispatch(fetchBasket());
+      dispatch(fetchMessages({}))
     }
   }, [dispatch, genralInfoSet]);
   return (
