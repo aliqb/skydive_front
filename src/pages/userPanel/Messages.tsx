@@ -44,7 +44,7 @@ const Messages: React.FC = () => {
   );
 
   return (
-    <SDCard className="border flex flex-col mb-6 px-12">
+    <SDCard className="border flex flex-col mb-6 px-12 !border-red">
       <div>
         {isPending && loading}
         {data && !isPending && body}
