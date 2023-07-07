@@ -42,9 +42,9 @@ const MessagesItem: React.FC<UserMessages> = (props) => {
   };
 
   return (
-    <SDCard>
+    <SDCard className='mb-2 !border'>
       <div
-        className={`flex gap-11 items-center border-b border-gray-300 pb-6 ${
+        className={`flex gap-11 items-center   pb-6 ${
           isRead ? 'read' : 'unread'
         }`}
       >

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import SDSpinner from '../../components/shared/Spinner';
 import { UserMessages } from '../../models/messages.models';
 import { BaseResponse } from '../../models/shared.models';
@@ -11,7 +11,7 @@ const Messages: React.FC = () => {
     null,
     BaseResponse<UserMessages[]>
   >();
-  const fetchUserMessages = () => {
+  const fetchUserMessages = useCallback(() => {
     sendRequest({
       url: '/UserMessages',
       params: {
@@ -19,11 +19,11 @@ const Messages: React.FC = () => {
         pageIndex: 1,
       },
     });
-  };
+  },[sendRequest])
 
   useEffect(() => {
     fetchUserMessages();
-  }, []);
+  }, [fetchUserMessages]);
 
 
   const loading = (
@@ -45,7 +45,7 @@ const Messages: React.FC = () => {
 
   return (
     <SDCard className="border flex flex-col mb-6 px-12 !border-red">
-      <div>
+      <div className='flex justify-center'>
         {isPending && loading}
         {data && !isPending && body}
       </div>
