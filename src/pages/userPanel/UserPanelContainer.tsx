@@ -4,15 +4,20 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { fetchBasket } from "../../store/basket";
 import { fetchMessages } from "../../store/messages";
-
 const UserPanelContainer: React.FC = () => {
   const dispatch = useAppDispatch();
   const genralInfoSet = useAppSelector((state) => state.auth.genralInfoSet);
   useEffect(() => {
+    let interval: number;
     if (genralInfoSet) {
+      console.log('here')
       dispatch(fetchBasket());
       dispatch(fetchMessages({}))
+       interval = setInterval(()=>{
+        dispatch(fetchMessages({}))
+      },60000)
     }
+    return ()=>clearInterval(interval)
   }, [dispatch, genralInfoSet]);
   return (
     <div className="w-screen h-screen flex flex-col ">
