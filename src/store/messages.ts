@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { UserMessage } from "../models/messages.models";
+import { UserMessage, UserMessageResponse } from "../models/messages.models";
 import { axiosIntance } from "../hooks/useApi";
 import { AxiosError, AxiosResponse } from "axios";
-import { BaseResponse, PagingParams } from "../models/shared.models";
+import {  PagingParams } from "../models/shared.models";
 
 interface MessagesState{
     messages:UserMessage[],
+    total: number,
     unReadCount: number,
     isLoading: boolean,
     error: string
@@ -14,6 +15,7 @@ interface MessagesState{
 const initialState : MessagesState = {
     messages: [],
     unReadCount: 0,
+    total: 0,
     error: '',
     isLoading: false
 }
@@ -22,14 +24,14 @@ export const fetchMessages = createAsyncThunk('messages/fetchMessages',async (pa
     try {
         const response = await axiosIntance.get<
           null,
-          AxiosResponse<BaseResponse<UserMessage[]>>
+          AxiosResponse<UserMessageResponse>
         >("/UserMessages",{
             params:{
                 pageIndex: pagingParmas.pageIndex || 1,
                 pageSize: pagingParmas.pageSize || 10
             }
         });
-        return response.data.content;
+        return response.data;
       } catch (error) {
         const axiosError: AxiosError<{ message: string }> = error as AxiosError<{
           message: string;
@@ -50,7 +52,9 @@ const messgeSlice = createSlice({
         builder.addCase(fetchMessages.fulfilled,(state,action)=>{
             state.error= "";
             state.isLoading = false;
-            state.messages = action.payload
+            state.messages = action.payload.content
+            state.total = action.payload.total
+            state.unReadCount = action.payload.notVisited
         })
         builder.addCase(fetchMessages.rejected,(state,action)=>{
             state.error = action.error.message || "";
