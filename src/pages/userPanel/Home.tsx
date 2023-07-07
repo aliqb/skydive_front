@@ -39,7 +39,10 @@ const Home: React.FC = () => {
       <div className="mb-6">
         <div className="text-center">
           <p className="mb-2 text-lg">{name}</p>
+          <div className="flex justify-center items-center">
+          <p className="ml-2 font-semibold text-sm">وضعیت حساب کاربری:</p>
           <p className={`${statusBgColorMap.get(authState.userStatus)} text-xs  inline py-1 px-3 rounded-2xl`}>{authState.userStatusDisplay}</p>
+          </div>
         </div>
       </div>
       <div className="flex flex-wrap justify-center">
