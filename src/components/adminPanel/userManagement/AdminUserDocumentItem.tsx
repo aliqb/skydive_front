@@ -108,6 +108,7 @@ const AdminUserDocumentItem: React.FC<AdminUserDocumentItemProp> = ({
         <UserDocumentStatusLabel
           status={documentData?.status || ""}
           display={documentData?.statusDisplay || ""}
+          isUploading={false}
         ></UserDocumentStatusLabel>
 
         {withDate && documentData?.expirationDate && (

@@ -35,7 +35,6 @@ const EditUserPage: React.FC = () => {
         method: "put",
         data: {
           ...data,
-          cityId: data.cityId || null,
           email: data.email || null,
         },
       },
