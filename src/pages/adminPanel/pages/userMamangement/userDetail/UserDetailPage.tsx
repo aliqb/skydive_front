@@ -212,7 +212,7 @@ const UserDetailPage: React.FC = () => {
                   <p className="pb-6">
                     {userManagementState.userDetail.birthDate}
                   </p>
-                  <p className="pb-6">{userManagementState.userDetail.city}</p>
+                  <p className="pb-6">{userManagementState.userDetail.cityAndState}</p>
                   <p className="pb-6">
                     {userManagementState.userDetail.address}
                   </p>
