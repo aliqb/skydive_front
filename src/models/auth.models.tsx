@@ -6,12 +6,12 @@ export interface AuthData {
   refreshToken: string;
   expiresIn: number;
   isAdmin: boolean;
-  registrationCompleted: boolean
+  personalInformationCompleted: boolean,
+  securityInformationCompleted: boolean
 }
 
 
 export interface UserSecurityInformation{
-    id: string;
     username: string;
     password: string;
 }

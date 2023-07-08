@@ -17,8 +17,10 @@ interface AuthState {
   mobile: string;
   userStatusDisplay: string;
   isAdmin: boolean;
-  genralInfoSet: boolean,
+  genralInfoSet: boolean;
   httpHeaderSet: boolean;
+  personalInformationCompleted: boolean,
+  securityInformationCompleted: boolean
 }
 
 const initialState: AuthState = {
@@ -28,16 +30,18 @@ const initialState: AuthState = {
   token: "",
   userId: "",
   refreshToken: "",
-  userStatus: '',
-  userType: '',
-  name: '',
-  username: '',
-  code: '',
-  mobile: '',
-  userStatusDisplay: '',
+  userStatus: "",
+  userType: "",
+  name: "",
+  username: "",
+  code: "",
+  mobile: "",
+  userStatusDisplay: "",
   isAdmin: false,
   genralInfoSet: false,
-  httpHeaderSet: false
+  httpHeaderSet: false,
+  personalInformationCompleted: false,
+  securityInformationCompleted: false,
 };
 
 const authSlice = createSlice({
@@ -55,7 +59,9 @@ const authSlice = createSlice({
       state.token = action.payload.authToken;
       state.refreshToken = action.payload.refreshToken;
       state.isAuthenticated = true;
-      state.isAdmin = action.payload.isAdmin
+      state.isAdmin = action.payload.isAdmin;
+      state.securityInformationCompleted = action.payload.securityInformationCompleted;
+      state.personalInformationCompleted = action.payload.personalInformationCompleted;
     },
     signUpPhone: (
       state,
@@ -72,23 +78,23 @@ const authSlice = createSlice({
       // state.enteredPhone = "";
       // state.enteredUsername = "";
       // state.code =""
-      return {...initialState}
+      return { ...initialState };
     },
-    setUserGenralInfo:(state, action: PayloadAction<UserGeneralInfo>)=>{
-        state.name = `${action.payload.firstName} ${action.payload.lastName}`;
-        state.userStatus = action.payload.userStatus;
-        state.userStatusDisplay = action.payload.userStatusDisplay;
-        state.userType = action.payload.userType;
-        state.username = action.payload.userName;
-        state.code = action.payload.code;
-        state.mobile = action.payload.mobile;
-        state.enteredPhone = '';
-        state.enteredUsername = '';
-        state.genralInfoSet = true;
+    setUserGenralInfo: (state, action: PayloadAction<UserGeneralInfo>) => {
+      state.name = `${action.payload.firstName} ${action.payload.lastName}`;
+      state.userStatus = action.payload.userStatus;
+      state.userStatusDisplay = action.payload.userStatusDisplay;
+      state.userType = action.payload.userType;
+      state.username = action.payload.userName;
+      state.code = action.payload.code;
+      state.mobile = action.payload.mobile;
+      state.enteredPhone = "";
+      state.enteredUsername = "";
+      state.genralInfoSet = true;
     },
-    setHttpHeader:(state)=>{
+    setHttpHeader: (state) => {
       state.httpHeaderSet = true;
-    }
+    },
   },
 });
 

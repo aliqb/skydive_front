@@ -41,6 +41,14 @@ const OTPLoginPage: React.FC = () => {
           navigate("/admin");
           return;
         }
+        if(!response.content.personalInformationCompleted){
+          navigate("/auth/signup/personal");
+          return;
+        }
+        if(!response.content.securityInformationCompleted){
+          navigate("/auth/signup/user-info");
+          return;
+        }
         navigate("/");
       }
     );

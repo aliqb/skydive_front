@@ -11,14 +11,21 @@ export default function AuthContainer() {
     setWasAuthenticated(!!authDataJson);
   }, []);
   return (authState.isAuthenticated || wasAuthenticated) &&
-    !(authState.enteredPhone || authState.enteredUsername) ? (
+    !(
+      authState.enteredPhone ||
+      authState.enteredUsername ||
+      !authState.personalInformationCompleted ||
+      !authState.securityInformationCompleted
+    ) ? (
     <Navigate to="/" />
   ) : (
     <div className="container px-1 m-auto py-1 flex justify-center items-center min-h-full">
       <div className="w-full sm:w-5/6 flex flex-col items-center max-w-lg rounded-md border">
         <div className="pt-5 border-b w-11/12 flex justify-center flex-col items-center">
           <Logo className="w-52" />
-          <h1 className="font-bold text-xl hidden xs:block text-center  my-4">باشگاه سقوط آزاد ایرانیان</h1>
+          <h1 className="font-bold text-xl hidden xs:block text-center  my-4">
+            باشگاه سقوط آزاد ایرانیان
+          </h1>
         </div>
         <Outlet></Outlet>
       </div>

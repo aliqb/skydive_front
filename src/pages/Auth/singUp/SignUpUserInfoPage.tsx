@@ -7,7 +7,6 @@ import SDLabel from "../../../components/shared/Label";
 import PasswordInput from "../../../components/shared/PasswordInput";
 import SDSpinner from "../../../components/shared/Spinner";
 import SDTextInput from "../../../components/shared/TextInput";
-import { useAppSelector } from "../../../hooks/reduxHooks";
 import useAPi from "../../../hooks/useApi";
 import { UserSecurityInformation } from "../../../models/auth.models";
 
@@ -26,7 +25,6 @@ const SingUpUserInfoPage: React.FC = () => {
     mode: "onTouched",
   });
 
-  const userId = useAppSelector((state) => state.auth.userId);
 
   const {
     sendRequest,
@@ -45,7 +43,6 @@ const SingUpUserInfoPage: React.FC = () => {
         url: "/Users/UserSecurityInformationCompletion",
         method: "post",
         data: {
-          id: userId,
           username: data.username,
           password: data.password,
         },
