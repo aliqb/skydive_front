@@ -13,6 +13,7 @@ import { OTPRequest, OTPResponse } from "../../../models/auth.models";
 import ChangePasswordModal from "./ChangePasswordModal";
 import UserStatusLabel from "../../shared/UserStatusLabel";
 import { GenralSettings } from "../../../models/generalSettings.models";
+import { removeAuthDataFromLocal } from "../../../utils/authUtils";
 
 interface AccountInfoFormData {
   username: string;
@@ -34,7 +35,7 @@ const AccountInfo: React.FC = () => {
     null,
     BaseResponse<GenralSettings>
   >();
-  const [statusDescription, setStatusDescription] = useState<string>('');
+  const [statusDescription, setStatusDescription] = useState<string>("");
 
   const [ConfirmModal, confirmation] = useConfirm(
     "حساب کاربری شما غیر فعال خواهد شد. آیا مطمئن هستید؟ ",
@@ -52,13 +53,18 @@ const AccountInfo: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    sendSettingsRequest({
-      url: "/settings",
-    },(response)=>{
-      const statusInfo  = response.content.userStatusInfo.find(item=>item.status === authState.userStatus);
-      setStatusDescription(statusInfo?.description || '')
-    });
-  }, [sendSettingsRequest,authState.userStatus]);
+    sendSettingsRequest(
+      {
+        url: "/settings",
+      },
+      (response) => {
+        const statusInfo = response.content.userStatusInfo.find(
+          (item) => item.status === authState.userStatus
+        );
+        setStatusDescription(statusInfo?.description || "");
+      }
+    );
+  }, [sendSettingsRequest, authState.userStatus]);
 
   async function onInactiveAccount() {
     const confirm = await confirmation();
@@ -70,6 +76,7 @@ const AccountInfo: React.FC = () => {
         },
         (response) => {
           toast.success(response.message);
+          removeAuthDataFromLocal();
           dispatch(authActions.logOut());
         },
         (error) => {

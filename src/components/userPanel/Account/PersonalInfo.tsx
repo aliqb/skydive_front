@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { PersonalInfoEditableFormData } from "../../../models/account.models";
 import { useAppDispatch } from "../../../hooks/reduxHooks";
 import { accoutnActions } from "../../../store/account";
-import { phoneInputValidator } from "../../../utils";
+import { phoneInputValidator } from "../../../utils/shared";
 
 interface PersonalInfoProps {
   onSubmit: () => void;

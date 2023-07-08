@@ -2,21 +2,25 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAppSelector } from "../../hooks/reduxHooks";
 import { useEffect, useState } from "react";
 import Logo from "../../components/shared/Logo";
+import { getAuthDataFromLocal } from "../../utils/authUtils";
 
 export default function AuthContainer() {
   const authState = useAppSelector((state) => state.auth);
   const [wasAuthenticated, setWasAuthenticated] = useState<boolean>(false);
   useEffect(() => {
-    const authDataJson = localStorage.getItem("authData");
-    setWasAuthenticated(!!authDataJson);
+    const authData = getAuthDataFromLocal();
+    console.log(authState);
+    setWasAuthenticated(
+      !!authData &&
+        authData.personalInformationCompleted &&
+        authData.securityInformationCompleted
+    );
   }, []);
-  return (authState.isAuthenticated || wasAuthenticated) &&
-    !(
-      authState.enteredPhone ||
-      authState.enteredUsername ||
-      !authState.personalInformationCompleted ||
-      !authState.securityInformationCompleted
-    ) ? (
+  return ((authState.isAuthenticated &&
+    authState.personalInformationCompleted &&
+    authState.securityInformationCompleted) ||
+    wasAuthenticated) &&
+    !authState.enteredPhone ? (
     <Navigate to="/" />
   ) : (
     <div className="container px-1 m-auto py-1 flex justify-center items-center min-h-full">

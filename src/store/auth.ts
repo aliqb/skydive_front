@@ -55,7 +55,6 @@ const authSlice = createSlice({
       state.enteredPhone = action.payload;
     },
     setToken: (state, action: PayloadAction<AuthData>) => {
-      localStorage.setItem("authData", JSON.stringify(action.payload));
       state.token = action.payload.authToken;
       state.refreshToken = action.payload.refreshToken;
       state.isAuthenticated = true;
@@ -71,13 +70,6 @@ const authSlice = createSlice({
       state.userId = action.payload.id;
     },
     logOut: () => {
-      localStorage.removeItem("authData");
-      // state.token = "";
-      // state.refreshToken = "";
-      // state.isAuthenticated = false;
-      // state.enteredPhone = "";
-      // state.enteredUsername = "";
-      // state.code =""
       return { ...initialState };
     },
     setUserGenralInfo: (state, action: PayloadAction<UserGeneralInfo>) => {
@@ -95,6 +87,12 @@ const authSlice = createSlice({
     setHttpHeader: (state) => {
       state.httpHeaderSet = true;
     },
+    completePersonalInformation:(state) => {
+      state.personalInformationCompleted = true;
+    },
+    completeSecurityInformation:(state) => {
+      state.securityInformationCompleted = true;
+    }
   },
 });
 

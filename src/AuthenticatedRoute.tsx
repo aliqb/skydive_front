@@ -5,6 +5,7 @@ import { AuthData } from "./models/auth.models";
 import { authActions } from "./store/auth";
 import useAPi from "./hooks/useApi";
 import { BaseResponse, UserGeneralInfo } from "./models/shared.models";
+import { getAuthDataFromLocal, setAuthDataInLocal } from "./utils/authUtils";
 interface AutenticateGuardProps {
   component: React.ComponentType;
 }
@@ -16,9 +17,10 @@ const AuthenticatedRoute: React.FC<AutenticateGuardProps> = (props) => {
 
   useEffect(() => {
     if (!headerSet) {
-      const authDataJson = localStorage.getItem("authData");
-      if (authDataJson) {
-        const authData: AuthData = JSON.parse(authDataJson);
+      const authData = getAuthDataFromLocal();
+      if (authData) {
+        setAuthDataInLocal(authData);
+        dispatch(authActions.setToken(authData));
         if (!authData.isAdmin) {
           if (!authData.personalInformationCompleted) {
             navigate("/auth/signup/personal");
@@ -29,7 +31,6 @@ const AuthenticatedRoute: React.FC<AutenticateGuardProps> = (props) => {
             return;
           }
         }
-        dispatch(authActions.setToken(authData));
       } else {
         navigate("/auth");
       }

@@ -8,7 +8,7 @@ import useAPi from "../../../hooks/useApi";
 import { OTPRequest, OTPResponse } from "../../../models/auth.models";
 import { BaseResponse } from "../../../models/shared.models";
 import { authActions } from "../../../store/auth";
-import { phoneInputValidator } from "../../../utils";
+import { phoneInputValidator } from "../../../utils/shared";
 import { GenralSettings } from "../../../models/generalSettings.models";
 import {useEffect} from 'react';
 

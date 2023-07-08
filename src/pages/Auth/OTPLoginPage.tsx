@@ -8,6 +8,7 @@ import useAPi, { axiosIntance } from "../../hooks/useApi";
 import { AuthData } from "../../models/auth.models";
 import { BaseResponse } from "../../models/shared.models";
 import { authActions } from "../../store/auth";
+import { setAuthDataInLocal } from "../../utils/authUtils";
 
 
 const OTPLoginPage: React.FC = () => {
@@ -36,6 +37,7 @@ const OTPLoginPage: React.FC = () => {
         },
       },
       (response) => {
+        setAuthDataInLocal(response.content);
         dispatch(authActions.setToken(response.content));
         if (response.content.isAdmin) {
           navigate("/admin");

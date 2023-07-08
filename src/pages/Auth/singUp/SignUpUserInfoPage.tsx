@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import SDAlert from "../../../components/shared/Alert";
@@ -9,6 +9,9 @@ import SDSpinner from "../../../components/shared/Spinner";
 import SDTextInput from "../../../components/shared/TextInput";
 import useAPi from "../../../hooks/useApi";
 import { UserSecurityInformation } from "../../../models/auth.models";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
+import { authActions } from "../../../store/auth";
+import { updateAuthDataInLocal } from "../../../utils/authUtils";
 
 interface UserInfoFormData {
   username: string;
@@ -33,9 +36,18 @@ const SingUpUserInfoPage: React.FC = () => {
   } = useAPi<UserSecurityInformation>();
 
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const passwordRef = useRef<string | undefined>();
   passwordRef.current = watch("password", "");
+
+  const isAuthenticated = useAppSelector(state=>state.auth.isAuthenticated)
+
+  useEffect(()=>{
+    if(!isAuthenticated){
+      navigate('/auth')
+    }
+  },[isAuthenticated,navigate])
 
   function onSubmit(data: UserInfoFormData) {
     sendRequest(
@@ -47,7 +59,11 @@ const SingUpUserInfoPage: React.FC = () => {
           password: data.password,
         },
       },
-      () => navigate("/")
+      () => {
+        updateAuthDataInLocal({securityInformationCompleted:true})
+        dispatch(authActions.completeSecurityInformation())
+        navigate("/")
+      }
     );
   }
   return (

@@ -10,7 +10,7 @@ import {
 import SkydiveEventField from "../../../../components/shared/SkydiveEventField";
 import SDSpinner from "../../../../components/shared/Spinner";
 import AdminFlighList from "../../../../components/adminPanel/adminEvent/AdminFlightList";
-import { sortDate } from "../../../../utils";
+import { sortDate } from "../../../../utils/shared";
 
 const AdminFlightsPage: React.FC = () => {
   const params = useParams();

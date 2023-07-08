@@ -8,6 +8,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { MouseEventHandler, useEffect, useState } from "react";
 import Logo from "../shared/Logo";
 import NotifBadge from "../shared/NotifBadge";
+import { removeAuthDataFromLocal } from "../../utils/authUtils";
 
 const UserHeader: React.FC = () => {
   const name = useAppSelector((state) => state.auth.name);
@@ -90,6 +91,7 @@ const UserHeader: React.FC = () => {
         title: "خروج",
         mode: "Button",
         onClick: () => {
+          removeAuthDataFromLocal();
           dispatch(authActions.logOut());
         },
         icon: (

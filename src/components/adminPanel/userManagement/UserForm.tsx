@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import useAPi from "../../../hooks/useApi";
 import { BaseResponse } from "../../../models/shared.models";
 import UserFormSelect from "./UserFormSelect";
-import { phoneInputValidator } from "../../../utils";
+import { phoneInputValidator } from "../../../utils/shared";
 
 interface UserFormProps {
   userDetail?: UserDatail;
