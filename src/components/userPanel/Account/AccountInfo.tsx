@@ -8,10 +8,11 @@ import useConfirm from "../../../hooks/useConfirm";
 import useAPi from "../../../hooks/useApi";
 import { toast } from "react-toastify";
 import { authActions } from "../../../store/auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { OTPRequest, OTPResponse } from "../../../models/auth.models";
 import ChangePasswordModal from "./ChangePasswordModal";
 import UserStatusLabel from "../../shared/UserStatusLabel";
+import { GenralSettings } from "../../../models/generalSettings.models";
 
 interface AccountInfoFormData {
   username: string;
@@ -29,6 +30,11 @@ const AccountInfo: React.FC = () => {
   });
 
   const authState = useAppSelector((state) => state.auth);
+  const { sendRequest: sendSettingsRequest } = useAPi<
+    null,
+    BaseResponse<GenralSettings>
+  >();
+  const [statusDescription, setStatusDescription] = useState<string>('');
 
   const [ConfirmModal, confirmation] = useConfirm(
     "حساب کاربری شما غیر فعال خواهد شد. آیا مطمئن هستید؟ ",
@@ -36,7 +42,8 @@ const AccountInfo: React.FC = () => {
   );
 
   const { sendRequest: sendInavtivate } = useAPi<null, BaseResponse<string>>();
-  const [startChangePassword, setStartChangePassword] = useState<boolean>(false);
+  const [startChangePassword, setStartChangePassword] =
+    useState<boolean>(false);
   const { sendRequest: sendOtpRequest, isPending: otpPending } = useAPi<
     OTPRequest,
     OTPResponse
@@ -44,6 +51,14 @@ const AccountInfo: React.FC = () => {
 
   const dispatch = useAppDispatch();
 
+  useEffect(() => {
+    sendSettingsRequest({
+      url: "/settings",
+    },(response)=>{
+      const statusInfo  = response.content.userStatusInfo.find(item=>item.status === authState.userStatus);
+      setStatusDescription(statusInfo?.description || '')
+    });
+  }, [sendSettingsRequest,authState.userStatus]);
 
   async function onInactiveAccount() {
     const confirm = await confirmation();
@@ -65,26 +80,36 @@ const AccountInfo: React.FC = () => {
   }
 
   function onStartChangePassword() {
-
-    sendOtpRequest({
-      url: "/Users/OtpRequest",
-      method: "post",
-      data: { username: authState.mobile },
-    },()=>{
-      setStartChangePassword(true)
-    },(error)=>toast.error(error?.message));
+    sendOtpRequest(
+      {
+        url: "/Users/OtpRequest",
+        method: "post",
+        data: { username: authState.mobile },
+      },
+      () => {
+        setStartChangePassword(true);
+      },
+      (error) => toast.error(error?.message)
+    );
   }
 
   return (
     <div className="flex flex-col items-center">
       <ConfirmModal />
-      <ChangePasswordModal phone={authState.mobile} show={startChangePassword} onClose={()=>setStartChangePassword(false)} />
+      <ChangePasswordModal
+        phone={authState.mobile}
+        show={startChangePassword}
+        onClose={() => setStartChangePassword(false)}
+      />
       <div className="flex flex-col items-center mb-10">
         <div className="flex gap-4 mb-3">
           <p className="text-slate-500">وضعیت حساب کاربری</p>
-          <UserStatusLabel status={authState.userStatus} display={authState.userStatusDisplay} />
+          <UserStatusLabel
+            status={authState.userStatus}
+            display={authState.userStatusDisplay}
+          />
           <SDTooltip
-            content="باید تایید شود."
+            content={statusDescription}
             trigger="hover"
             placement="bottom"
           >
@@ -157,7 +182,7 @@ const AccountInfo: React.FC = () => {
             <button
               type="button"
               className="text-green-500 mb-2 font-semibold text-sm pl-2"
-              disabled={otpPending }
+              disabled={otpPending}
               onClick={onStartChangePassword}
             >
               ویرایش
