@@ -157,7 +157,7 @@ const AccountInfo: React.FC = () => {
             <button
               type="button"
               className="text-green-500 mb-2 font-semibold text-sm pl-2"
-              disabled={otpPending}
+              disabled={otpPending }
               onClick={onStartChangePassword}
             >
               ویرایش

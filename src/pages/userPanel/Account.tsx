@@ -12,7 +12,7 @@ import {
   PersonalInfoEditRequest,
   PersonalInfoEditableFormData,
 } from "../../models/account.models";
-import { BaseResponse, UserGeneralInfo } from "../../models/shared.models";
+import { BaseResponse, UserGeneralInfo, UserStatuses } from "../../models/shared.models";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import useConfirm from "../../hooks/useConfirm";
 import { toast } from "react-toastify";
@@ -30,6 +30,8 @@ const Account: React.FC = () => {
   const accountState = useAppSelector((state) => state.account);
   const tabsRef = useRef<TabsRef>(null);
   const [anyInvalidDocument, setAnyInvalidDocument] = useState<boolean>();
+  const [isApproveAwaiting,setIsApproveAwaiting] = useState<boolean>(false);
+  const userStatus = useAppSelector(state=>state.auth.userStatus)
   const props = { setActiveTab, tabsRef };
   const personalInfoForm = useForm<PersonalInfoEditableFormData>({
     mode: "onTouched",
@@ -99,6 +101,10 @@ const Account: React.FC = () => {
     });
     setAnyInvalidDocument(anyInvalidDocument);
   }, [accountState]);
+
+  useEffect(()=>{
+    setIsApproveAwaiting(userStatus === UserStatuses.PENDING)
+  },[userStatus])
 
   function onPersonalInfoSubmit() {
     props.tabsRef.current?.setActiveTab(2);
@@ -202,6 +208,7 @@ const Account: React.FC = () => {
             <PersonalInfo
               onSubmit={onPersonalInfoSubmit}
               formHook={personalInfoForm}
+              disableAll={isApproveAwaiting}
             />
           </SDTabs.Item>
           <SDTabs.Item

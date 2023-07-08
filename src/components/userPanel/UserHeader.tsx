@@ -142,7 +142,7 @@ const UserHeader: React.FC = () => {
               {unReadMessagesCount > 0 && (
                 <NotifBadge
                   value={unReadMessagesCount}
-                  className="-left-2 -top-1 absolute"
+                  className="-left-2 -top-2 absolute"
                 />
               )}
               <span>{name}</span>

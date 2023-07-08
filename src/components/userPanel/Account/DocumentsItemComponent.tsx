@@ -1,11 +1,12 @@
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
+import { DocumnetStatus } from "../../../models/account.models";
 import { UserDocumentsFieldType, accoutnActions } from "../../../store/account";
 import SDDatepicker from "../../shared/DatePicker";
 import SDLabel from "../../shared/Label";
 import LabeledFileInput from "../../shared/LabeledFileInput";
 import UserDocumentStatusLabel from "../../shared/UserDocumentStatusLabel";
 import DocumentsItemErrorsComponent from "./DocumentsItemErrorsComponent";
-import {useState} from 'react';
+import { useState } from "react";
 
 interface DocumentItemProps {
   field: UserDocumentsFieldType;
@@ -20,7 +21,7 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
 }) => {
   const documentData = useAppSelector((state) => state.account[field]);
   const dispatch = useAppDispatch();
-  const [isUploading,setIsUploading] = useState<boolean>(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
   function onFileUpload(id: string) {
     setIsUploading(true);
     dispatch(accoutnActions.setDocumnetFile({ field: field, fileId: id }));
@@ -40,14 +41,17 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
   return (
     <div className="flex justify-between mb-10 items-center flex-wrap">
       <div className=" basis-1/3  xs:basis-1/2 md:basis-1/3">
-        <p className="text-slate-500 ">{title}
-        {(!documentData?.fileId || (documentData.withDate && !documentData?.expirationDate)) && <span className="text-red-600 mr-1">*</span>}
+        <p className="text-slate-500 ">
+          {title}
+          {(!documentData?.fileId ||
+            (documentData.withDate && !documentData?.expirationDate)) && (
+            <span className="text-red-600 mr-1">*</span>
+          )}
         </p>
         {documentData.withDate && (
           <div className="relative pt-5">
             <SDLabel className="absolute bg-white text-sm top-2 px-1 right-2">
               تاریخ انقضا
-
             </SDLabel>
             <SDDatepicker
               inputClass=" !xs:w-40 text-center !bg-white border-slate-500"
@@ -64,7 +68,7 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
           </div>
         )}
         {validation && documentData && (
-          <DocumentsItemErrorsComponent documentData={documentData}  />
+          <DocumentsItemErrorsComponent documentData={documentData} />
           // <p className="text-red-600 text-sm pr-2 mt-2">
           //   تاریخ انقضا برای این مدرک الزامی است.
           // </p>
@@ -76,6 +80,7 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
           title={title}
           onUpload={onFileUpload}
           onRemove={onFileRemove}
+          disabled={documentData.status === DocumnetStatus.PENDING}
         />
       </div>
       <UserDocumentStatusLabel

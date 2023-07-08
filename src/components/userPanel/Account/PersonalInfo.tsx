@@ -6,9 +6,7 @@ import SDTextInput from "../../shared/TextInput";
 import useAPi from "../../../hooks/useApi";
 import { BaseResponse, UserPersonalInfo } from "../../../models/shared.models";
 import { useEffect } from "react";
-import {
-  PersonalInfoEditableFormData,
-} from "../../../models/account.models";
+import { PersonalInfoEditableFormData } from "../../../models/account.models";
 import { useAppDispatch } from "../../../hooks/reduxHooks";
 import { accoutnActions } from "../../../store/account";
 import { phoneInputValidator } from "../../../utils";
@@ -16,6 +14,7 @@ import { phoneInputValidator } from "../../../utils";
 interface PersonalInfoProps {
   onSubmit: () => void;
   formHook: UseFormReturn<PersonalInfoEditableFormData>;
+  disableAll: boolean;
 }
 
 const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
@@ -144,6 +143,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
             type="email"
             id="email"
             className="ltr"
+            disabled={props.disableAll}
             invalid={!!errors.email && touchedFields.email}
           />
           {errors.email?.message && touchedFields.email && (
@@ -163,6 +163,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
             id="cityId"
             {...register("cityAndState", { required: "فیلد اجباری است." })}
             invalid={!!errors.cityAndState && touchedFields.cityAndState}
+            disabled={props.disableAll}
           ></SDTextInput>
           {errors.cityAndState?.message && touchedFields.cityAndState && (
             <p className="text-red-600 text-sm pr-2 mt-2">
@@ -179,6 +180,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
             {...register("address", { required: "فیلد اجباری است." })}
             type="address"
             id="address"
+            disabled={props.disableAll}
             invalid={!!errors.address && touchedFields.address}
           />
           {errors.address?.message && touchedFields.address && (
@@ -203,6 +205,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
               type="number"
               id="height"
               className="ltr"
+              disabled={props.disableAll}
               invalid={!!errors.height && touchedFields.height}
             />
             {errors.height?.message && touchedFields.height && (
@@ -225,6 +228,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
               })}
               type="number"
               id="weight"
+              disabled={props.disableAll}
               invalid={!!errors.weight && touchedFields.weight}
               className="ltr"
             />
@@ -250,6 +254,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
                   required: "فیلد اجباری است.",
                 })}
                 type="text"
+                disabled={props.disableAll}
                 id="emergencyContact"
                 invalid={
                   !!errors.emergencyContact && touchedFields.emergencyContact
@@ -275,9 +280,11 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
                     value: /(\+98|0|0098)9\d{9}$/,
                     message: "شماره موبایل صحیح نیست.",
                   },
+
                   required: "فیلد اجباری است.",
                 })}
                 type="text"
+                disabled={props.disableAll}
                 maxLength={14}
                 {...phoneInputValidator}
                 id="emergencyPhone"
