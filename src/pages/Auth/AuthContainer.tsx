@@ -2,22 +2,34 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAppSelector } from "../../hooks/reduxHooks";
 import { useEffect, useState } from "react";
 import Logo from "../../components/shared/Logo";
+import { getAuthDataFromLocal } from "../../utils/authUtils";
 
 export default function AuthContainer() {
   const authState = useAppSelector((state) => state.auth);
   const [wasAuthenticated, setWasAuthenticated] = useState<boolean>(false);
   useEffect(() => {
-    const authDataJson = localStorage.getItem("authData");
-    setWasAuthenticated(!!authDataJson);
+    const authData = getAuthDataFromLocal();
+    console.log(authState);
+    setWasAuthenticated(
+      !!authData &&
+        authData.personalInformationCompleted &&
+        authData.securityInformationCompleted
+    );
   }, []);
-  return (authState.isAuthenticated || wasAuthenticated) &&
-    !(authState.enteredPhone || authState.enteredUsername) ? (
+  return ((authState.isAuthenticated &&
+    authState.personalInformationCompleted &&
+    authState.securityInformationCompleted) ||
+    wasAuthenticated) &&
+    !authState.enteredPhone ? (
     <Navigate to="/" />
   ) : (
     <div className="container px-1 m-auto py-1 flex justify-center items-center min-h-full">
       <div className="w-full sm:w-5/6 flex flex-col items-center max-w-lg rounded-md border">
-        <div className="pt-5 border-b w-11/12 flex justify-center">
+        <div className="pt-5 border-b w-11/12 flex justify-center flex-col items-center">
           <Logo className="w-52" />
+          <h1 className="font-bold text-xl hidden xs:block text-center  my-4">
+            باشگاه سقوط آزاد ایرانیان
+          </h1>
         </div>
         <Outlet></Outlet>
       </div>

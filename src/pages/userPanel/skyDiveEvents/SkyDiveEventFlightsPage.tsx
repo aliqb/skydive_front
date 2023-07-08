@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import FlightList from "../../../components/skyDiveEvents/FlightList";
 import Basket from "../../../components/shared/Basket/Basket";
 import BookButton from "../../../components/shared/Basket/‌BookButton";
-import { sortDate } from "../../../utils";
+import { sortDate } from "../../../utils/shared";
 
 const SkyDiveEventFlightsPage: React.FC = () => {
   const params = useParams();

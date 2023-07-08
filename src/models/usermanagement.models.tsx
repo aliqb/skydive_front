@@ -23,8 +23,7 @@ export interface UserDatail {
   userTypeId: string;
   nationalCode: string;
   birthDate: string;
-  city: string;
-  cityId: string;
+  cityAndState: string;
   address: string;
   userCode: number;
   email: string;
@@ -76,7 +75,7 @@ export interface UserRequest {
   birthDate: string
   username: string
   email: string | null,
-  cityId: string | null,
+  cityAndState: string | null,
   address: string
   height: number
   weight: number

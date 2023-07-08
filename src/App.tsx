@@ -46,13 +46,6 @@ import Messages from './pages/userPanel/Messages';
 import MyTransactionsPage from './pages/userPanel/MyTransactionsPage';
 
 function App() {
-  // useEffect(()=>{
-  //   const authDataJson = localStorage.getItem('authData');
-  //   if(authDataJson){
-  //     const authData : AuthData = JSON.parse(authDataJson);
-  //     dispatch(authActions.setToken(authData))
-  //   }
-  // },[dispatch])
   return (
     <>
       <ToastContainer

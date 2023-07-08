@@ -9,8 +9,8 @@ import UserFormInput from "./UserFormInput";
 import { useEffect, useState } from "react";
 import useAPi from "../../../hooks/useApi";
 import { BaseResponse } from "../../../models/shared.models";
-import { City, CityDto } from "../../../models/account.models";
 import UserFormSelect from "./UserFormSelect";
+import { phoneInputValidator } from "../../../utils/shared";
 
 interface UserFormProps {
   userDetail?: UserDatail;
@@ -30,40 +30,15 @@ const UserForm: React.FC<UserFormProps> = (props) => {
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const { sendRequest: sendCitiesRequest } = useAPi<
-    null,
-    BaseResponse<CityDto[]>
-  >();
+
 
   const { sendRequest: sendUserTypesRequest, data: userTypes } = useAPi<
     null,
     BaseResponse<userType[]>
   >();
 
-  const [cities, setCities] = useState<City[]>([]);
 
   useEffect(() => {
-    function getCities() {
-      sendCitiesRequest(
-        {
-          url: "/cities",
-          params: {
-            pageSize: 10000,
-            pageIndex: 1,
-          },
-        },
-        (response) => {
-          const cities = response.content
-            .map(
-              (item) => new City(item.id, item.state, item.province, item.city)
-            )
-            .sort((c1, c2) =>
-              c1.locationString.localeCompare(c2.locationString)
-            );
-          setCities(cities);
-        }
-      );
-    }
 
     function getUserTypes() {
       sendUserTypesRequest({
@@ -74,17 +49,15 @@ const UserForm: React.FC<UserFormProps> = (props) => {
         },
       });
     }
-
-    getCities();
     getUserTypes();
-  }, [props.userDetail, sendCitiesRequest, sendUserTypesRequest]);
+  }, [props.userDetail, sendUserTypesRequest]);
 
   useEffect(() => {
     function setFormValue(userDetail: UserDatail) {
       reset({
         address: userDetail.address,
         birthDate: userDetail.birthDate,
-        cityId: userDetail.cityId,
+        cityAndState: userDetail.cityAndState,
         email: userDetail.email,
         emergencyContact: userDetail.emergencyContact,
         emergencyPhone: userDetail.emergencyPhone,
@@ -102,7 +75,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
     if (props.userDetail) {
       setFormValue(props.userDetail);
     }
-  }, [props.userDetail, cities, userTypes, reset]);
+  }, [props.userDetail, userTypes, reset]);
 
   function onSubmit(data: UserRequest) {
     setIsSubmitting(true);
@@ -191,22 +164,13 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               required={true}
             />
 
-            <UserFormSelect
-              name="cityId"
+            <UserFormInput
+              name="cityAndState"
               register={register}
               errors={formErrors}
               options={{}}
             >
-              <option value=""></option>;
-              {cities &&
-                cities.map((city, index) => {
-                  return (
-                    <option key={index} value={city.id}>
-                      {city.locationString}
-                    </option>
-                  );
-                })}
-            </UserFormSelect>
+            </UserFormInput>
             <UserFormInput
               register={register}
               name="address"
@@ -319,6 +283,8 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               register={register}
               name="phone"
               errors={formErrors}
+              maxLength={14}
+              {...phoneInputValidator}
               ltr={true}
               options={{
                 required: 'فیلد اجباری است.',
@@ -369,6 +335,8 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               register={register}
               name="emergencyPhone"
               errors={formErrors}
+              maxLength={14}
+              {...phoneInputValidator}
               options={{
                 pattern: {
                   value: /(\+98|0|0098)9\d{9}$/,

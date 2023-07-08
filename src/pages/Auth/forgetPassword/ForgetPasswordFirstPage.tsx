@@ -7,6 +7,7 @@ import { authActions } from "../../../store/auth";
 import useAPi from "../../../hooks/useApi";
 import { OTPRequest, OTPResponse } from "../../../models/auth.models";
 import SDSpinner from "../../../components/shared/Spinner";
+import { phoneInputValidator } from "../../../utils/shared";
 const ForgetPasswordFirstPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -64,6 +65,8 @@ const ForgetPasswordFirstPage: React.FC = () => {
               },
             })}
             type="text"
+            maxLength={14}
+            {...phoneInputValidator}
             id="input-group-1"
             className={`${
               errors.phone

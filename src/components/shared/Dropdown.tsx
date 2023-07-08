@@ -134,7 +134,7 @@ export interface DropDownItem {
   onClick?: (event: MouseEvent<HTMLElement>) => void;
   mode?: "Link" | "Button";
   href?: string;
-  title: string;
+  title: React.ReactNode;
   icon?: React.ReactNode;
   disabled?: boolean;
 }

@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
-import { UserMessages } from '../../../models/messages.models';
-import useApi from '../../../hooks/useApi';
-import { BaseResponse } from '../../../models/shared.models';
+import { UserMessage } from '../../../models/messages.models';
 import SDCard from '../../shared/Card';
-import { toast } from 'react-toastify';
 import SDSpinner from '../../shared/Spinner';
 import SDButton from '../../shared/Button';
+import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks';
+import { readMessage } from '../../../store/messages';
 
-const MessagesItem: React.FC<UserMessages> = (props) => {
-  const { sendRequest, isPending } = useApi<null, BaseResponse<null>>();
+const MessagesItem: React.FC<UserMessage> = (props) => {
 
   const [isFullTextShown, setIsFullTextShown] = useState(false);
-  const [isRead, setIsRead] = useState(props.visited);
+  const changingMessageId = useAppSelector(state=>state.messages.changingMessageid)
 
   const maxLength = 80;
 
@@ -21,31 +19,24 @@ const MessagesItem: React.FC<UserMessages> = (props) => {
 
   const displayedText = isFullTextShown
     ? props.text
-    : `${props.text.substring(0, maxLength)}...`;
+    : `${props.text.substring(0, maxLength)}`;
 
   const shouldShowMoreButton =
     !isFullTextShown && props.text.length > maxLength;
 
-  const textClass = isRead ? 'text-black-400' : 'text-blue-400';
+  const textClass = props.visited ? 'text-black-400' : 'text-blue-400';
+
+  const dispatch = useAppDispatch();
 
   const markAsRead = () => {
-    sendRequest(
-      {
-        url: `/UserMessages/${props.id}`,
-        method: 'put',
-      },
-      (response) => {
-        toast.success(response.message);
-        setIsRead(true);
-      }
-    );
+    dispatch(readMessage(props.id))
   };
 
   return (
-    <SDCard>
+    <SDCard className='mb-2 !border'>
       <div
-        className={`flex gap-11 items-center border-b border-gray-300 pb-6 ${
-          isRead ? 'read' : 'unread'
+        className={`flex gap-11 items-center   pb-6 ${
+          props.visited ? 'read' : 'unread'
         }`}
       >
         <div className="hidden sm:block">
@@ -73,23 +64,23 @@ const MessagesItem: React.FC<UserMessages> = (props) => {
               <p className="text-black-400 font-bold">{props.title}</p>
             </div>
             <div className="flex mb-5 items-center">
-              <p className={textClass}>{displayedText}</p>
+              <p className={textClass}>{displayedText.length > maxLength ?  + '...' : displayedText}</p>
               {shouldShowMoreButton && (
                 <button onClick={handleMoreClick} className="text-blue-500">
                   بیشتر
                 </button>
               )}
             </div>
-            {!isRead && (
+            {!props.visited && (
               <div className="flex items-center ">
                 <SDButton
                   onClick={markAsRead}
                   className="read-button hover:bg-gray-200 transition-colors duration-300 bg-orange-400 text-white rounded ml-4 text-sm"
                   style={{ backgroundColor: 'rgb(245, 158, 11)' }}
-                  disabled={isPending}
+                  disabled={changingMessageId === props.id}
                 >
                   <span className="flex items-center">
-                    {isPending && <SDSpinner />}
+                    {changingMessageId === props.id && <SDSpinner />}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"

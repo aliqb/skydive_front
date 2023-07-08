@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import SDAlert from "../../../components/shared/Alert";
@@ -7,9 +7,11 @@ import SDLabel from "../../../components/shared/Label";
 import PasswordInput from "../../../components/shared/PasswordInput";
 import SDSpinner from "../../../components/shared/Spinner";
 import SDTextInput from "../../../components/shared/TextInput";
-import { useAppSelector } from "../../../hooks/reduxHooks";
 import useAPi from "../../../hooks/useApi";
 import { UserSecurityInformation } from "../../../models/auth.models";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
+import { authActions } from "../../../store/auth";
+import { updateAuthDataInLocal } from "../../../utils/authUtils";
 
 interface UserInfoFormData {
   username: string;
@@ -26,7 +28,6 @@ const SingUpUserInfoPage: React.FC = () => {
     mode: "onTouched",
   });
 
-  const userId = useAppSelector((state) => state.auth.userId);
 
   const {
     sendRequest,
@@ -35,9 +36,18 @@ const SingUpUserInfoPage: React.FC = () => {
   } = useAPi<UserSecurityInformation>();
 
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const passwordRef = useRef<string | undefined>();
   passwordRef.current = watch("password", "");
+
+  const isAuthenticated = useAppSelector(state=>state.auth.isAuthenticated)
+
+  useEffect(()=>{
+    if(!isAuthenticated){
+      navigate('/auth')
+    }
+  },[isAuthenticated,navigate])
 
   function onSubmit(data: UserInfoFormData) {
     sendRequest(
@@ -45,12 +55,15 @@ const SingUpUserInfoPage: React.FC = () => {
         url: "/Users/UserSecurityInformationCompletion",
         method: "post",
         data: {
-          id: userId,
           username: data.username,
           password: data.password,
         },
       },
-      () => navigate("/")
+      () => {
+        updateAuthDataInLocal({securityInformationCompleted:true})
+        dispatch(authActions.completeSecurityInformation())
+        navigate("/")
+      }
     );
   }
   return (
