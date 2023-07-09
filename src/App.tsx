@@ -44,6 +44,7 @@ import MyTicketsPage from "./pages/userPanel/MyTicketsPage";
 import JumpRecordsPage from "./pages/userPanel/JumpRecordsPage";
 import Messages from './pages/userPanel/Messages';
 import MyTransactionsPage from './pages/userPanel/MyTransactionsPage';
+import AdminJumpRecoreds from "./pages/adminPanel/pages/userMamangement/userDetail/AdminJumpRecoreds";
 
 function App() {
   return (
@@ -110,6 +111,7 @@ function App() {
             <Route Component={CreateUserPage} path="users/create"></Route>
             <Route Component={UserDetailPage} path="users/:userId">
               <Route Component={AdminUserDocument} path="documents"></Route>
+              <Route Component={AdminJumpRecoreds} path="jumps"></Route>
             </Route>
             <Route Component={EditUserPage} path="users/:userId/edit"></Route>
             <Route Component={Outlet} path="events">
