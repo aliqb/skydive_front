@@ -1,5 +1,4 @@
 import { useFieldArray, useForm } from "react-hook-form";
-import SDCard from "../../shared/Card";
 import { GenralSettings } from "../../../models/generalSettings.models";
 import useAPi from "../../../hooks/useApi";
 import {
@@ -70,75 +69,60 @@ const GeneralSettings: React.FC = () => {
   }
 
   return (
-    <SDCard className="pt-0 px-0 pb-2 border border-blue-100">
-      <div className="  p-4 bg-blue-900 text-white rounded-t-lg">
-        <h6 className="font-bold text-lg ">تنظیمات عمومی</h6>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div>
+        <SDLabel htmlFor="termsAndConditionsUrl">لینک شرایط و قوانین:</SDLabel>
+        <SDTextInput
+          className="ltr"
+          disabled={isGetPending}
+          id="termsAndConditionsUrl"
+          {...register("termsAndConditionsUrl", {
+            required: "این فیلد اجباری است.",
+          })}
+        />
+        {formErrors.termsAndConditionsUrl?.message && (
+          <p className="text-red-600 text-xs pr-2 mt-2">
+            {formErrors.termsAndConditionsUrl.message}
+          </p>
+        )}
       </div>
-      <div className="py-8 px-6">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div>
-            <SDLabel htmlFor="termsAndConditionsUrl">
-              لینک شرایط و قوانین:
-            </SDLabel>
-            <SDTextInput
-              className="ltr"
-              disabled={isGetPending}
-              id="termsAndConditionsUrl"
-              {...register("termsAndConditionsUrl", {
-                required: "این فیلد اجباری است.",
-              })}
-            />
-            {formErrors.termsAndConditionsUrl?.message && (
-              <p className="text-red-600 text-xs pr-2 mt-2">
-                {formErrors.termsAndConditionsUrl.message}
-              </p>
-            )}
-          </div>
-          <div className="mt-10">
-            <h6 className="text-slate-700 font-semibold text-lg mb-4">
-              توضیحات وضعیت‌ها
-            </h6>
-            {fields.map((field, index) => {
-              return (
-                <div key={field.id} className="mb-6">
-                  <SDLabel htmlFor={field.status}>
-                    {UserStatusesPersianMap.get(field.status)}
-                  </SDLabel>
-                  <SDTextInput
-                    id={field.status}
-                    disabled={isGetPending}
-                    {...register(
-                      `userStatusInfo.${index}.description` as const,
-                      {
-                        required: "این فیلد اجباری است.",
-                      }
-                    )}
-                  />
-                  {formErrors?.userStatusInfo?.[index]?.description && (
-                    <p className="text-red-600 text-xs pr-2 mt-2">
-                      {
-                        formErrors?.userStatusInfo?.[index]?.description
-                          ?.message
-                      }
-                    </p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-          <div className="mt-8 flex justify-center">
-            <SDButton
-              className="w-full max-w-sm !bg-blue-900"
-              disabled={isGetPending || isSaving}
-              type="submit"
-            >
-              {isSaving && <SDSpinner />}
-              ذخیره
-            </SDButton>
-          </div>
-        </form>
+      <div className="mt-10">
+        <h6 className="text-slate-700 font-semibold text-lg mb-4">
+          توضیحات وضعیت‌ها
+        </h6>
+        {fields.map((field, index) => {
+          return (
+            <div key={field.id} className="mb-6">
+              <SDLabel htmlFor={field.status}>
+                {UserStatusesPersianMap.get(field.status)}
+              </SDLabel>
+              <SDTextInput
+                id={field.status}
+                disabled={isGetPending}
+                {...register(`userStatusInfo.${index}.description` as const, {
+                  required: "این فیلد اجباری است.",
+                })}
+              />
+              {formErrors?.userStatusInfo?.[index]?.description && (
+                <p className="text-red-600 text-xs pr-2 mt-2">
+                  {formErrors?.userStatusInfo?.[index]?.description?.message}
+                </p>
+              )}
+            </div>
+          );
+        })}
       </div>
-    </SDCard>
+      <div className="mt-8 flex justify-center">
+        <SDButton
+          className="w-full max-w-sm !bg-blue-900"
+          disabled={isGetPending || isSaving}
+          type="submit"
+        >
+          {isSaving && <SDSpinner />}
+          ذخیره
+        </SDButton>
+      </div>
+    </form>
   );
 };
 
