@@ -270,9 +270,10 @@ const UserDetailPage: React.FC = () => {
         <ul className="flex w-full">
           <li className="flex-grow text-center">
             <NavLink
+              end={true}
               className={(nav) =>
                 `${
-                  !nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
+                  nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
                 } pb-4 block hover:border-b-2 text-gray-500 hover:text-gray-600 hover:border-gray-300  transition-all ease-linear duration-75`
               }
               to={""}
