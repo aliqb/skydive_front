@@ -1,4 +1,4 @@
-export interface MyTransactions {
+export interface UserTransaction {
   date: string;
   ticketNumber: string;
   eventName: string;

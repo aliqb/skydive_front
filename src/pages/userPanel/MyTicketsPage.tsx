@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import SDCard from "../../components/shared/Card";
 import useAPi from "../../hooks/useApi";
-import { UserTicket } from "../../models/myTickets.models";
+import { UserTicket } from "../../models/tickets.models";
 import { BaseResponse } from "../../models/shared.models";
 import { ColDef, GridGetData } from "../../components/shared/Grid/grid.types";
 import Grid from "../../components/shared/Grid/Grid";

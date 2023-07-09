@@ -10,7 +10,7 @@ import {
   TicketStatuses,
   TicketStatusesPersianMap,
   UserTicket,
-} from "../../../../../models/myTickets.models";
+} from "../../../../../models/tickets.models";
 import { BaseResponse } from "../../../../../models/shared.models";
 import Grid from "../../../../../components/shared/Grid/Grid";
 
