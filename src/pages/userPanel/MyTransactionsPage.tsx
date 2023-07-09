@@ -6,12 +6,12 @@ import { BaseResponse } from '../../models/shared.models';
 import { ColDef, GridGetData } from '../../components/shared/Grid/grid.types';
 import Grid from '../../components/shared/Grid/Grid';
 import PdfPrintButton from '../../components/shared/PdfPrintButton';
-import { MyTransactions } from '../../models/myTransactions';
+import { UserTransaction } from '../../models/transactions.models.tsx';
 
 const MyTransactionsPage: React.FC = () => {
-  const { sendRequest } = useAPi<null, BaseResponse<MyTransactions[]>>();
+  const { sendRequest } = useAPi<null, BaseResponse<UserTransaction[]>>();
 
-  const [colDefs] = useState<ColDef<MyTransactions>[]>([
+  const [colDefs] = useState<ColDef<UserTransaction>[]>([
     {
       field: 'date',
       headerName: 'تاریخ پرداخت',
@@ -35,7 +35,7 @@ const MyTransactionsPage: React.FC = () => {
     {
       field: 'type',
       headerName: 'نوع',
-      cellRenderer: (item: MyTransactions) => {
+      cellRenderer: (item: UserTransaction) => {
         const displayText = item.type === 'Confirmed' ? 'تائید' : 'ابطال';
         return <span>{displayText}</span>;
       },
@@ -47,7 +47,7 @@ const MyTransactionsPage: React.FC = () => {
     {
       field: '',
       headerName: 'فاکتور',
-      cellRenderer: (item: MyTransactions) => {
+      cellRenderer: (item: UserTransaction) => {
         return (
           <PdfPrintButton
             pdfUrl={`${import.meta.env.VITE_BASE_API_URL}/transactions/Print/${
@@ -60,7 +60,7 @@ const MyTransactionsPage: React.FC = () => {
     },
   ]);
 
-  const fetchTickets = useCallback<GridGetData<MyTransactions>>(
+  const fetchTickets = useCallback<GridGetData<UserTransaction>>(
     (gridParams, setRows) => {
       sendRequest(
         {
@@ -82,7 +82,7 @@ const MyTransactionsPage: React.FC = () => {
     <SDCard>
       <h1 className="text-center font-bold text-xl py-5">تراکنش های من</h1>
       <div className="py-5 md:px-8">
-        <Grid<MyTransactions>
+        <Grid<UserTransaction>
           colDefs={colDefs}
           getData={fetchTickets}
           rowActions={null}
