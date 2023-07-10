@@ -227,7 +227,7 @@ const CostModal: React.FC<CostModalProps> = ({
                                   );
                                 },
                               })}
-                              type="number"
+                              numeric={true}
                               id={`amount-${index}`}
                               className="ltr"
                               invalid={

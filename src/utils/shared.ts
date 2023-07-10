@@ -54,7 +54,8 @@ export const phoneInputChangeValidationHandler: React.ChangeEventHandler<
 > = (event) => {
   let value = event.target.value;
   value = replacePersianArabics(value)
-  event.target.value = value.replace(/[^\d+]/g, "");
+  value = value.replace(/[^\d+]/g, "");
+  event.target.value = value;
 };
 
 export const phonePastValidationHandler: React.ClipboardEventHandler<
@@ -70,7 +71,7 @@ export const phonePastValidationHandler: React.ClipboardEventHandler<
 export const phoneInputValidator = {
   // onKeyDown: phoneKeyDownValidationHandler,
   // onPaste: phonePastValidationHandler,
-  onChange: phoneInputChangeValidationHandler,
+  onInput: phoneInputChangeValidationHandler,
 };
 
 export const persianCharRange = [

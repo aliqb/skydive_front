@@ -202,7 +202,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
                 valueAsNumber: true,
                 required: "فیلد اجباری است.",
               })}
-              type="number"
+              numeric={true}
               id="height"
               className="ltr"
               disabled={props.disableAll}
@@ -226,7 +226,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
                 valueAsNumber: true,
                 required: "فیلد اجباری است.",
               })}
-              type="number"
+              numeric={true}
               id="weight"
               disabled={props.disableAll}
               invalid={!!errors.weight && touchedFields.weight}

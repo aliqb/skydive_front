@@ -195,7 +195,7 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
             </SDLabel>
             <SDTextInput
               className="ltr"
-              type="number"
+              numeric={true}
               id="height"
               invalid={!!formErrors.height}
               {...register("height", {
@@ -217,7 +217,7 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
             <div className="flex justify-between items-center">
               <div className="px-5">
                 <SDTextInput
-                  type="number"
+                  numeric={true}
                   id="minutes"
                   placeholder="mm"
                   className="ltr text-center placeholder:!text-center"
@@ -238,7 +238,7 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
               <span className="text-3xl">:</span>
               <div className="px-5">
                 <SDTextInput
-                  type="number"
+                  numeric={true}
                   id="hours"
                   placeholder="hh"
                   className="ltr text-center placeholder:!text-center"

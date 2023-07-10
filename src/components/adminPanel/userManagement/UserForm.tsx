@@ -324,7 +324,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               <UserFormInput
                 register={register}
                 name="height"
-                type="number"
+                numeric={true}
                 errors={formErrors}
                 options={{}}
                 ltr={true}
@@ -332,7 +332,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               <UserFormInput
                 register={register}
                 name="weight"
-                type="number"
+                numeric={true}
                 errors={formErrors}
                 options={{}}
                 ltr={true}

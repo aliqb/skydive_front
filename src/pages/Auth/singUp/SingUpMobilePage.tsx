@@ -10,7 +10,7 @@ import { BaseResponse } from "../../../models/shared.models";
 import { authActions } from "../../../store/auth";
 import { Regexes, phoneInputValidator } from "../../../utils/shared";
 import { GenralSettings } from "../../../models/generalSettings.models";
-import {useEffect} from 'react';
+import { useEffect } from "react";
 
 const SignUpMobilePage: React.FC = () => {
   const {
@@ -31,7 +31,7 @@ const SignUpMobilePage: React.FC = () => {
     OTPResponse
   >();
 
-  const { sendRequest: sendSettingsRequest, data:settingsResponse } = useAPi<
+  const { sendRequest: sendSettingsRequest, data: settingsResponse } = useAPi<
     null,
     BaseResponse<GenralSettings>
   >();
@@ -44,11 +44,11 @@ const SignUpMobilePage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  useEffect(()=>{
+  useEffect(() => {
     sendSettingsRequest({
-      url: '/settings'
-    })
-  },[sendSettingsRequest])
+      url: "/settings",
+    });
+  }, [sendSettingsRequest]);
 
   function onChangeAcceptance(evenet: ChangeEvent<HTMLInputElement>) {
     setAcceptRules(!!evenet.target.value);
@@ -115,6 +115,7 @@ const SignUpMobilePage: React.FC = () => {
             </svg>
           </div>
           <input
+            {...phoneInputValidator}
             {...register("phone", {
               required: "لطفا شماره موبایل خود را وارد کنید.",
               pattern: {
@@ -125,7 +126,6 @@ const SignUpMobilePage: React.FC = () => {
             type="text"
             id="input-group-1"
             maxLength={14}
-            {...phoneInputValidator}
             className={`${
               errors.phone
                 ? "border-red-500 focus:ring-red-500 focus:border-red-500"
@@ -160,7 +160,11 @@ const SignUpMobilePage: React.FC = () => {
           htmlFor="red-radio"
           className="mr-2 text-sm font-medium text-gray-900 dark:text-gray-300"
         >
-          <a href={settingsResponse?.content.termsAndConditionsUrl || ''} target="_blank" className="inline-block ml-1 text-blue-600">
+          <a
+            href={settingsResponse?.content.termsAndConditionsUrl || ""}
+            target="_blank"
+            className="inline-block ml-1 text-blue-600"
+          >
             قوانین
           </a>
           را مطالعه کرده‌ام و می‌پذیرم.

@@ -57,10 +57,10 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
     data: tickeTypeResponse,
   } = useAPi<null, BaseResponse<SkyDiveEventTicketType[]>>();
 
-  const {
-    sendRequest: saveRequest,
-    isPending: savePending
-  } = useAPi<AddFlightRequest,BaseResponse<null>>();
+  const { sendRequest: saveRequest, isPending: savePending } = useAPi<
+    AddFlightRequest,
+    BaseResponse<null>
+  >();
 
   const [totalCapacity, setTotalCapacity] = useState<number>();
 
@@ -70,16 +70,20 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
   }
 
   function onSubmit(data: AddFlightRequest) {
-    saveRequest({
-      url:`/SkyDiveEvents/AddFlight/${dayId}`,
-      data: data,
-      method: 'post'
-    },(response)=>{
-      toast.success(response.message)
-      resetModal(true);
-    },(error)=>{
-      toast.error(error?.message)
-    })
+    saveRequest(
+      {
+        url: `/SkyDiveEvents/AddFlight/${dayId}`,
+        data: data,
+        method: "post",
+      },
+      (response) => {
+        toast.success(response.message);
+        resetModal(true);
+      },
+      (error) => {
+        toast.error(error?.message);
+      }
+    );
   }
 
   function addTicket() {
@@ -197,7 +201,7 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                   تعداد پرواز
                 </SDLabel>
                 <SDTextInput
-                  type="number"
+                  numeric={true}
                   id="flightQty"
                   invalid={!!formErrors.flightQty}
                   {...register("flightQty", {
@@ -219,7 +223,7 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                   غیر قابل رزرو
                 </SDLabel>
                 <SDTextInput
-                  type="number"
+                  numeric={true}
                   id="voidableQty"
                   invalid={!!formErrors.voidableQty}
                   {...register("voidableQty", {
@@ -276,7 +280,7 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                     </div>
                     <div className="w-4/12 px-5 pl-1">
                       <SDTextInput
-                        type="number"
+                        numeric={true}
                         id={`qty-${index}`}
                         {...register(`ticketTypes.${index}.qty` as const, {
                           required: "فیلد اجباری است.",
@@ -352,7 +356,7 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                 color="primary"
                 type="submit"
                 className="w-full !bg-blue-900"
-                  disabled={savePending}
+                disabled={savePending}
               >
                 {savePending && <SDSpinner color="blue" />}
                 افزودن
