@@ -112,7 +112,7 @@ const UserHeader: React.FC = () => {
 
   return (
     <>
-      <div className="bg-primary-500 h-[60px] flex items-center fixed w-full top-0 z-20">
+      <div className="bg-primary-500 h-[60px] flex items-center w-full top-0 z-20">
         <Link to="/" className="mr-4 flex items-center">
           <Logo className="w-14" />
           <h1 className="text-white font-bold text-lg hidden xs:block">
