@@ -243,7 +243,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 options={{
                   required: "فیلد الزامی است.",
                   pattern: {
-                    value: /^[\da-zA-z]*$/,
+                    value: Regexes.username,
                     message:
                       "نام کاربری فقط باید شامل اعداد و حروف انگلیسی باشد.",
                   },
@@ -285,8 +285,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                   options={{
                     required: "فیلد الزامی است.",
                     pattern: {
-                      value:
-                        /^(?=.*\d)(?=.*[A-Za-z])[\dA-Za-z!@#$%^&*\-()+=]{6,}$/,
+                      value: Regexes.password,
                       message:
                         "رمز عبور حداقل 6 کاراکتر و شامل اعداد و حروف انگلیسی باشد.",
                     },
