@@ -9,49 +9,80 @@ import { BaseResponse, UserStatuses } from "../../models/shared.models";
 import { useState, useEffect } from "react";
 
 const Home: React.FC = () => {
-  const name = useAppSelector((state) => state.auth.name);
-  const authState = useAppSelector((state) => state.auth);
   const { sendRequest: sendSettingsRequest } = useAPi<
     null,
     BaseResponse<GenralSettings>
   >();
   const [links, setLinks] = useState<HomeLinkProps[]>([]);
+  const name = useAppSelector((state) => state.auth.name);
+  const authState = useAppSelector((state) => state.auth);
+  
+  const defaultLinks: HomeLinkProps[] = [
+    {
+      tilte: 'رویدادها',
+      href: '/events',
+    },
+    {
+      tilte: 'قوانین و شرایط',
+      href: '',
+    },
+    {
+      tilte: 'سوابق پرش',
+      href: '/jumps',
+    },
+    {
+      tilte: 'کیف پول',
+      href: '/wallet',
+    },
+    {
+      tilte: 'بلیت‌های من',
+      href: '/tickets',
+    },
+    {
+      tilte: 'سوابق تراکنش ها',
+      href: '/transactions',
+    },
+  ];
+
   const statusBgColorMap = new Map([
-    [UserStatuses.AWAITING_COMPLETION, "bg-yellow-300"],
-    [UserStatuses.PENDING, "bg-yellow-300"],
-    [UserStatuses.ACTIVE, "bg-green-200"],
-    [UserStatuses.INACTIVE, "bg-red-500"],
+    [UserStatuses.AWAITING_COMPLETION, 'bg-yellow-300'],
+    [UserStatuses.PENDING, 'bg-yellow-300'],
+    [UserStatuses.ACTIVE, 'bg-green-200'],
+    [UserStatuses.INACTIVE, 'bg-red-500'],
   ]);
 
-  useEffect(()=>{
-    sendSettingsRequest({
-      url: '/settings'
-    },(response)=>{
-      setLinks([
-        {
-          tilte: 'رویدادها',
-          href: '/events',
-        },
-        {
-          tilte: 'قوانین و شرایط',
-          href: response.content.termsAndConditionsUrl,
-          target: '_blank'
-        },
-        {
-          tilte: 'بلیت‌های من',
-          href: '/tickets',
-        },
-        {
-          tilte: 'سوابق پرش',
-          href: '/jumps',
-        },
-        {
-          tilte: 'سوابق تراکنش ها',
-          href: '/transactions',
-        },
-      ])
-    })
-  },[sendSettingsRequest])
+  useEffect(() => {
+    sendSettingsRequest(
+      {
+        url: '/settings',
+      },
+      (response) => {
+        setLinks([
+          {
+            tilte: 'رویدادها',
+            href: '/events',
+          },
+          {
+            tilte: 'قوانین و شرایط',
+            href: response.content.termsAndConditionsUrl,
+            target: '_blank',
+          },
+          {
+            tilte: 'بلیت‌های من',
+            href: '/tickets',
+          },
+          {
+            tilte: 'سوابق پرش',
+            href: '/jumps',
+          },
+          {
+            tilte: 'سوابق تراکنش ها',
+            href: '/transactions',
+          },
+        ]);
+      }
+    );
+  }, [sendSettingsRequest]);
 
   return (
     <SDCard className="flex justify-center">
