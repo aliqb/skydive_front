@@ -7,6 +7,7 @@ import SDSpinner from "../../shared/Spinner";
 interface DocumentsProp {
   onSubmit: () => Promise<void>;
   isPending: boolean;
+  disableAll: boolean;
 }
 
 const Documents: React.FC<DocumentsProp> = (props) => {
@@ -33,21 +34,25 @@ const Documents: React.FC<DocumentsProp> = (props) => {
               field={UserDocumentsFields.nationalCardDocument}
               title="کارت ملی"
               validation={isSubmitted}
+              disable={props.disableAll}
             />
             <DocumentItemComponent
               field={UserDocumentsFields.logBookDocument}
               title="صفحه آخر Log Book"
               validation={isSubmitted}
+              disable={props.disableAll}
             />
             <DocumentItemComponent
               field={UserDocumentsFields.attorneyDocument}
               title="وکالتنامه محضری"
               validation={isSubmitted}
+              disable={props.disableAll}
             />
             <DocumentItemComponent
               field={UserDocumentsFields.medicalDocument}
               title="مدارک پزشکی"
               validation={isSubmitted}
+              disable={props.disableAll}
             />
           </div>
           <div className="flex justify-center">
@@ -56,7 +61,7 @@ const Documents: React.FC<DocumentsProp> = (props) => {
               type="submit"
               className="basis-full xs:basis-1/2"
               onClick={onSubmit}
-              disabled={props.isPending}
+              disabled={props.isPending || props.disableAll}
             >
               {props.isPending && <SDSpinner />}
               ذخیره

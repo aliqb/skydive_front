@@ -223,7 +223,7 @@ const Account: React.FC = () => {
               </div>
             }
           >
-            <Documents onSubmit={sendAllInformations} isPending={isPending} />
+            <Documents onSubmit={sendAllInformations} isPending={isPending} disableAll={isApproveAwaiting} />
           </SDTabs.Item>
         </SDTabs.Group>
       </SDCard>

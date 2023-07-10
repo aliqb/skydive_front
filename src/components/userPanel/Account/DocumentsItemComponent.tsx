@@ -12,12 +12,14 @@ interface DocumentItemProps {
   field: UserDocumentsFieldType;
   title: string;
   validation?: boolean;
+  disable: boolean;
 }
 
 const DocumentItemComponent: React.FC<DocumentItemProps> = ({
   title,
   validation,
   field,
+  disable
 }) => {
   const documentData = useAppSelector((state) => state.account[field]);
   const dispatch = useAppDispatch();
@@ -80,7 +82,7 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
           title={title}
           onUpload={onFileUpload}
           onRemove={onFileRemove}
-          disabled={documentData.status === DocumnetStatus.PENDING}
+          disabled={documentData.status === DocumnetStatus.PENDING || disable }
         />
       </div>
       <UserDocumentStatusLabel

@@ -307,7 +307,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
           </div>
         </div>
         <div className="w-full flex justify-center ">
-          <SDButton className="w-full md:w-1/2" color="primary" type="submit">
+          <SDButton className="w-full md:w-1/2" color="primary" type="submit" disabled={props.disableAll}>
             مرحله بعد
           </SDButton>
         </div>
