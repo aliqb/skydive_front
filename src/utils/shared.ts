@@ -14,6 +14,25 @@ export function sortDate<T>(data: T[], dateField: keyof T): T[] {
   });
 }
 
+export function replacePersianArabics(value: string) {
+  if (value === null || value === undefined) {
+    return value;
+  }
+  const persianCharCodeZero = "۰".charCodeAt(0);
+  value = value.toString();
+  value = value.replace(/[\u06f0-\u06f9]/g, (w) => {
+    //[0-9] persian
+    return (w.charCodeAt(0) - persianCharCodeZero).toString();
+  });
+
+  const arabicCharCodeZero = "٠".charCodeAt(0); //it look same as persian zero but nicode is different
+  value = value.replace(/[\u0660-\u0669]/g, (w) => {
+    // [0-9] arabic
+    return (w.charCodeAt(0) - arabicCharCodeZero).toString();
+  });
+  return value;
+}
+
 export const phoneKeyDownValidationHandler: React.KeyboardEventHandler<
   HTMLInputElement
 > = (event) => {
@@ -30,6 +49,14 @@ export const phoneKeyDownValidationHandler: React.KeyboardEventHandler<
   }
 };
 
+export const phoneInputChangeValidationHandler: React.ChangeEventHandler<
+  HTMLInputElement
+> = (event) => {
+  let value = event.target.value;
+  value = replacePersianArabics(value)
+  event.target.value = value.replace(/[^\d+]/g, "");
+};
+
 export const phonePastValidationHandler: React.ClipboardEventHandler<
   HTMLInputElement
 > = (event) => {
@@ -41,8 +68,9 @@ export const phonePastValidationHandler: React.ClipboardEventHandler<
 };
 
 export const phoneInputValidator = {
-  onKeyDown: phoneKeyDownValidationHandler,
-  onPaste: phonePastValidationHandler,
+  // onKeyDown: phoneKeyDownValidationHandler,
+  // onPaste: phonePastValidationHandler,
+  onChange: phoneInputChangeValidationHandler,
 };
 
 export const persianCharRange = [
@@ -53,7 +81,9 @@ export const persianCharRange = [
 export const Regexes = {
   mobile: /(\+98|0|0098)9\d{9}$/,
   // eslint-disable-next-line no-misleading-character-class
-  persianName: /^([\u06A9\u06AF\u06C0\u06CC\u060C\u067E\u0670\u0686\u0698\u0621-\u063A\u0641-\u0654]+[\s\u200C]?)+$/,
+  persianName:
+    // eslint-disable-next-line no-misleading-character-class
+    /^([\u06A9\u06AF\u06C0\u06CC\u060C\u067E\u0670\u0686\u0698\u0621-\u063A\u0641-\u0654]+[\s\u200C]?)+$/,
   password: /^(?=.*\d)(?=.*[A-Za-z])[\dA-Za-z!@#$%^&*\-()+=]{6,}$/,
-  username: /^[\da-zA-z]*$/
+  username: /^[\da-zA-z]*$/,
 };
