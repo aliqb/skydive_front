@@ -30,9 +30,9 @@ const Account: React.FC = () => {
   const accountState = useAppSelector((state) => state.account);
   const tabsRef = useRef<TabsRef>(null);
   const [anyInvalidDocument, setAnyInvalidDocument] = useState<boolean>();
-  const [isApproveAwaiting,setIsApproveAwaiting] = useState<boolean>(false);
   const userStatus = useAppSelector(state=>state.auth.userStatus)
   const props = { setActiveTab, tabsRef };
+  const anyDocChange = useAppSelector(state=>state.account.anyDocChange)
   const personalInfoForm = useForm<PersonalInfoEditableFormData>({
     mode: "onTouched",
   });
@@ -102,9 +102,6 @@ const Account: React.FC = () => {
     setAnyInvalidDocument(anyInvalidDocument);
   }, [accountState]);
 
-  useEffect(()=>{
-    setIsApproveAwaiting(userStatus === UserStatuses.PENDING)
-  },[userStatus])
 
   function onPersonalInfoSubmit() {
     props.tabsRef.current?.setActiveTab(2);
@@ -208,7 +205,7 @@ const Account: React.FC = () => {
             <PersonalInfo
               onSubmit={onPersonalInfoSubmit}
               formHook={personalInfoForm}
-              disableAll={isApproveAwaiting}
+              disableAll={userStatus === UserStatuses.PENDING}
             />
           </SDTabs.Item>
           <SDTabs.Item
@@ -223,7 +220,7 @@ const Account: React.FC = () => {
               </div>
             }
           >
-            <Documents onSubmit={sendAllInformations} isPending={isPending} disableAll={isApproveAwaiting} />
+            <Documents onSubmit={sendAllInformations} isPending={isPending} userStatus={userStatus} anyChange={anyDocChange || personalInfoForm.formState.isDirty} />
           </SDTabs.Item>
         </SDTabs.Group>
       </SDCard>

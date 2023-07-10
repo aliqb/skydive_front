@@ -1,18 +1,26 @@
 import SDButton from "../../shared/Button";
-import {  useState } from "react";
+import {  useEffect, useState } from "react";
 import DocumentItemComponent from "./DocumentsItemComponent";
 import { UserDocumentsFields } from "../../../store/account";
 import SDSpinner from "../../shared/Spinner";
+import { UserStatuses } from "../../../models/shared.models";
 
 interface DocumentsProp {
   onSubmit: () => Promise<void>;
   isPending: boolean;
-  disableAll: boolean;
+  userStatus: string;
+  anyChange: boolean;
 }
 
 const Documents: React.FC<DocumentsProp> = (props) => {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [disableAll,setDisableAll] = useState<boolean>(false);
 
+  useEffect(()=>{
+    if(props.userStatus === UserStatuses.PENDING){
+      setDisableAll(true);
+    }
+  },[props.userStatus])
 
 
   async function onSubmit() {
@@ -34,25 +42,25 @@ const Documents: React.FC<DocumentsProp> = (props) => {
               field={UserDocumentsFields.nationalCardDocument}
               title="کارت ملی"
               validation={isSubmitted}
-              disable={props.disableAll}
+              disable={disableAll}
             />
             <DocumentItemComponent
               field={UserDocumentsFields.logBookDocument}
               title="صفحه آخر Log Book"
               validation={isSubmitted}
-              disable={props.disableAll}
+              disable={disableAll}
             />
             <DocumentItemComponent
               field={UserDocumentsFields.attorneyDocument}
               title="وکالتنامه محضری"
               validation={isSubmitted}
-              disable={props.disableAll}
+              disable={disableAll}
             />
             <DocumentItemComponent
               field={UserDocumentsFields.medicalDocument}
               title="مدارک پزشکی"
               validation={isSubmitted}
-              disable={props.disableAll}
+              disable={disableAll}
             />
           </div>
           <div className="flex justify-center">
@@ -61,7 +69,7 @@ const Documents: React.FC<DocumentsProp> = (props) => {
               type="submit"
               className="basis-full xs:basis-1/2"
               onClick={onSubmit}
-              disabled={props.isPending || props.disableAll}
+              disabled={props.isPending || disableAll || (props.userStatus === UserStatuses.ACTIVE && !props.anyChange)}
             >
               {props.isPending && <SDSpinner />}
               ذخیره

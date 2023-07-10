@@ -19,7 +19,7 @@ const UserDocumentStatusLabel: React.FC<UserDocumentStatusLabelProps> = (
   ]);
   return (
     <p
-      className={`${statusColorMap.get(props.status || "")} ${
+      className={`${props.isUploading ? statusColorMap.get("") : statusColorMap.get(props.status || "")} ${
         props.isUploading &&
         (props.status === DocumnetStatus.NOT_LOADED || props.status === "")
           ? "opacity-70"

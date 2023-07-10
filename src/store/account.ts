@@ -8,6 +8,7 @@ interface AccountState{
     logBookDocument: DocumentItemModel;
     attorneyDocument: DocumentItemModel;
     nationalCardDocument: DocumentItemModel;
+    anyDocChange: boolean;
 }
 
 const initialState : AccountState = {
@@ -15,7 +16,8 @@ const initialState : AccountState = {
     medicalDocument:  {fileId:'', withDate: true},
     logBookDocument:  {fileId:''},
     attorneyDocument:  {fileId:'', withDate: true},
-    nationalCardDocument:  {fileId:''}
+    nationalCardDocument:  {fileId:''},
+    anyDocChange: false
 }
 
 export const UserDocumentsFields = {
@@ -45,6 +47,7 @@ const accountSlice = createSlice({
         setDocumnetFile:(state, action:PayloadAction<{field:UserDocumentsFieldType,fileId: string}>)=>{
             const payload = action.payload;
             const document = state[action.payload.field];
+            state.anyDocChange = true;
             if(!document){
                 state[action.payload.field] = {
                     fileId: payload.fileId
@@ -56,6 +59,7 @@ const accountSlice = createSlice({
         setDocumnetExpireDate:(state, action:PayloadAction<{field:UserDocumentsFieldType,date: string}>)=>{
             const payload = action.payload;
             const document = state[action.payload.field];
+            state.anyDocChange = true;
             if(!document){
                 state[action.payload.field] = {
                     fileId: '',
