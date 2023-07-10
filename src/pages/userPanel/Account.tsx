@@ -12,7 +12,11 @@ import {
   PersonalInfoEditRequest,
   PersonalInfoEditableFormData,
 } from "../../models/account.models";
-import { BaseResponse, UserGeneralInfo, UserStatuses } from "../../models/shared.models";
+import {
+  BaseResponse,
+  UserGeneralInfo,
+  UserStatuses,
+} from "../../models/shared.models";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import useConfirm from "../../hooks/useConfirm";
 import { toast } from "react-toastify";
@@ -30,9 +34,9 @@ const Account: React.FC = () => {
   const accountState = useAppSelector((state) => state.account);
   const tabsRef = useRef<TabsRef>(null);
   const [anyInvalidDocument, setAnyInvalidDocument] = useState<boolean>();
-  const userStatus = useAppSelector(state=>state.auth.userStatus)
+  const userStatus = useAppSelector((state) => state.auth.userStatus);
   const props = { setActiveTab, tabsRef };
-  const anyDocChange = useAppSelector(state=>state.account.anyDocChange)
+  const anyDocChange = useAppSelector((state) => state.account.anyDocChange);
   const personalInfoForm = useForm<PersonalInfoEditableFormData>({
     mode: "onTouched",
   });
@@ -101,7 +105,6 @@ const Account: React.FC = () => {
     });
     setAnyInvalidDocument(anyInvalidDocument);
   }, [accountState]);
-
 
   function onPersonalInfoSubmit() {
     props.tabsRef.current?.setActiveTab(2);
@@ -192,8 +195,8 @@ const Account: React.FC = () => {
           </SDTabs.Item>
           <SDTabs.Item
             title={
-              <div>
-                اطلاعات شخصی
+              <div className="flex flex-wrap gap-3 items-center justify-center text-center">
+                <span>اطلاعات شخصی</span>
                 {!personalInfoForm.formState.isValid && (
                   <span className="mr-3 !text-xs !text-red-600">
                     (تکمیل نشده)
@@ -210,17 +213,20 @@ const Account: React.FC = () => {
           </SDTabs.Item>
           <SDTabs.Item
             title={
-              <div>
-                مدارک ارسالی
+              <div className="flex flex-wrap gap-3 items-center justify-center text-center">
+                <span>مدارک ارسالی</span>
                 {anyInvalidDocument && (
-                  <span className="mr-3 !text-xs !text-red-600">
-                    (تکمیل نشده)
-                  </span>
+                  <span className=" !text-xs !text-red-600">(تکمیل نشده)</span>
                 )}
               </div>
             }
           >
-            <Documents onSubmit={sendAllInformations} isPending={isPending} userStatus={userStatus} anyChange={anyDocChange || personalInfoForm.formState.isDirty} />
+            <Documents
+              onSubmit={sendAllInformations}
+              isPending={isPending}
+              userStatus={userStatus}
+              anyChange={anyDocChange || personalInfoForm.formState.isDirty}
+            />
           </SDTabs.Item>
         </SDTabs.Group>
       </SDCard>
