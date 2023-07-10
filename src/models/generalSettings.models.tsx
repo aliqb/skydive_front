@@ -4,8 +4,8 @@ export interface GenralSettings {
   termsAndConditionsUrl: string;
   userStatusInfo: UserStatusInfo[];
   id: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface UserStatusInfo {
