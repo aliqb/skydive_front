@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { PersonalInfoEditableFormData } from "../../../models/account.models";
 import { useAppDispatch } from "../../../hooks/reduxHooks";
 import { accoutnActions } from "../../../store/account";
-import { phoneInputValidator } from "../../../utils/shared";
+import { Regexes, phoneInputValidator } from "../../../utils/shared";
 
 interface PersonalInfoProps {
   onSubmit: () => void;
@@ -252,6 +252,10 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
               <SDTextInput
                 {...register("emergencyContact", {
                   required: "فیلد اجباری است.",
+                  pattern: {
+                    value: Regexes.persianName,
+                    message: "نام باید فارسی باشد.",
+                  },
                 })}
                 type="text"
                 disabled={props.disableAll}
@@ -277,7 +281,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
               <SDTextInput
                 {...register("emergencyPhone", {
                   pattern: {
-                    value: /(\+98|0|0098)9\d{9}$/,
+                    value: Regexes.mobile,
                     message: "شماره موبایل صحیح نیست.",
                   },
 

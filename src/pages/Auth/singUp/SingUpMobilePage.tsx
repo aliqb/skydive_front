@@ -8,7 +8,7 @@ import useAPi from "../../../hooks/useApi";
 import { OTPRequest, OTPResponse } from "../../../models/auth.models";
 import { BaseResponse } from "../../../models/shared.models";
 import { authActions } from "../../../store/auth";
-import { phoneInputValidator } from "../../../utils/shared";
+import { Regexes, phoneInputValidator } from "../../../utils/shared";
 import { GenralSettings } from "../../../models/generalSettings.models";
 import {useEffect} from 'react';
 
@@ -118,7 +118,7 @@ const SignUpMobilePage: React.FC = () => {
             {...register("phone", {
               required: "لطفا شماره موبایل خود را وارد کنید.",
               pattern: {
-                value: /(\+98|0|0098)9\d{9}$/,
+                value: Regexes.mobile,
                 message: "شماره موبایل صحیح نیست.",
               },
             })}

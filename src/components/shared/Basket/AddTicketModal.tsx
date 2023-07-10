@@ -109,10 +109,10 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
           {owner === "other" && (
             <div className="mb-3">
               <div>
-                <SDLabel htmlFor="firstName">کد کاربر</SDLabel>
+                <SDLabel htmlFor="userCode">کد کاربر</SDLabel>
                 <SDTextInput
                   type="text"
-                  id="firstName"
+                  id="userCode"
                   invalid={!!errors.userCode}
                   {...register("userCode", { required: "فیلد الزامی است" })}
                 />

@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import useAPi from "../../../hooks/useApi";
 import { BaseResponse } from "../../../models/shared.models";
 import UserFormSelect from "./UserFormSelect";
-import { phoneInputValidator } from "../../../utils/shared";
+import { Regexes, phoneInputValidator } from "../../../utils/shared";
 import ResetUserPasswordModal from "./ResetUserPasswordModal";
 
 interface UserFormProps {
@@ -75,8 +75,8 @@ const UserForm: React.FC<UserFormProps> = (props) => {
     }
   }, [props.userDetail, userTypes, reset]);
 
-  function openPasswordModal(){
-    setShowPasswordModal(true)
+  function openPasswordModal() {
+    setShowPasswordModal(true);
   }
 
   function onSubmit(data: UserRequest) {
@@ -132,11 +132,23 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 register={register}
                 name="firstName"
                 errors={formErrors}
+                options={{
+                  pattern: {
+                    value: Regexes.persianName,
+                    message: "نام باید فارسی باشد.",
+                  },
+                }}
               />
               <UserFormInput
                 register={register}
                 name="lastName"
                 errors={formErrors}
+                options={{
+                  pattern: {
+                    value: Regexes.persianName,
+                    message: "نام خانوادگی باید فارسی باشد.",
+                  },
+                }}
               />
               <UserFormSelect
                 name="userTypeId"
@@ -244,7 +256,11 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               />
               {props.userDetail ? (
                 <div className="mb-6 h-12 flex flex-col justify-center">
-                  <SDButton className="w-12 h-12" color="light" onClick={openPasswordModal}>
+                  <SDButton
+                    className="w-12 h-12"
+                    color="light"
+                    onClick={openPasswordModal}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -301,7 +317,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 options={{
                   required: "فیلد اجباری است.",
                   pattern: {
-                    value: /(\+98|0|0098)9\d{9}$/,
+                    value: Regexes.mobile,
                     message: "شماره موبایل صحیح نیست.",
                   },
                 }}
@@ -336,7 +352,12 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 register={register}
                 name="emergencyContact"
                 errors={formErrors}
-                options={{}}
+                options={{
+                  pattern: {
+                    value: Regexes.persianName,
+                    message: "نام باید فارسی باشد.",
+                  },
+                }}
               />
             </div>
             <div className="flex w-full pb-6 md:w-1/2   lg:w-5/12">
@@ -351,7 +372,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 {...phoneInputValidator}
                 options={{
                   pattern: {
-                    value: /(\+98|0|0098)9\d{9}$/,
+                    value: Regexes.mobile,
                     message: "شماره موبایل صحیح نیست.",
                   },
                 }}
