@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import CartableItem from "../../../components/adminPanel/cartable/CartableItem";
 import SDCard from "../../../components/shared/Card";
 import useAPi from "../../../hooks/useApi";
@@ -6,41 +6,52 @@ import {
   CartableMessage,
   CartableRequestTypesPersianMap,
 } from "../../../models/cartable.models";
-import { BaseResponse } from "../../../models/shared.models";
+import { BaseResponse, SelectPageEvent } from "../../../models/shared.models";
 import SDLabel from "../../../components/shared/Label";
 import SDSpinner from "../../../components/shared/Spinner";
+import ReactPaginate from "react-paginate";
 
 const Cartable: React.FC = () => {
   const { sendRequest, isPending, data } = useAPi<
     null,
     BaseResponse<CartableMessage[]>
   >();
-
+  const pageSize = 10;
   const [selectedType, setSelectedType] = useState<string>("");
+  const [pageCount, setPageCount] = useState<number>();
 
   const onChangeType: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
     setSelectedType(event.target.value);
   };
 
-  useEffect(() => {
-    sendRequest({
-      url: "/Admin/AdminCartableMessages",
-      params: {
-        pageSize: 1000000000,
-        pageIndex: 1,
-        requestType: selectedType
+  const fetchItems = useCallback((selectedType: string, pageIndex = 1) => {
+    sendRequest(
+      {
+        url: "/Admin/AdminCartableMessages",
+        params: {
+          pageSize: pageSize,
+          pageIndex: pageIndex,
+          requestType: selectedType,
+        },
       },
-    });
-  }, [sendRequest,selectedType]);
+      (response) => {
+        setPageCount(response.total / pageSize);
+      }
+    );
+  }, [sendRequest]);
+
+  useEffect(() => {
+    fetchItems(selectedType);
+  }, [fetchItems, selectedType]);
 
   const loading = (
     <div className="flex justify-center pt-6 w-full">
-      <SDSpinner size={20} />
+      <SDSpinner size={20} color="blue" />
     </div>
   );
 
   const body = (
-    <>
+    <div className="flex flex-wrap-reverse">
       <div className="w-full lg:w-9/12">
         {data &&
           data.content.map((item, index) => {
@@ -65,13 +76,67 @@ const Cartable: React.FC = () => {
           )}
         </select>
       </div>
-    </>
+    </div>
   );
 
+  const handlePageClick = (event: SelectPageEvent) => {
+    fetchItems(selectedType, event.selected + 1);
+  };
+
   return (
-    <SDCard className="flex flex-wrap-reverse">
+    <SDCard >
       {isPending && loading}
-      {(data && !isPending) && body}
+      {data && !isPending && body}
+      {pageCount && pageCount > 1 && (
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-5 h-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15.75 19.5L8.25 12l7.5-7.5"
+              />
+            </svg>
+          }
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={5}
+          pageCount={pageCount}
+          previousLabel={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-5 h-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M8.25 4.5l7.5 7.5-7.5 7.5"
+              />
+            </svg>
+          }
+          renderOnZeroPageCount={null}
+          containerClassName="flex w-full gap-5  justify-center"
+          nextClassName="flex items-center"
+          previousClassName="flex items-center"
+          pageLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
+          nextLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
+          previousLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
+          breakClassName="p-1 block hover:text-cyan-400"
+          activeClassName="text-cyan-500"
+          pageClassName="text-base "
+        />
+      )}
     </SDCard>
   );
 };
