@@ -10,6 +10,7 @@ import useAPi from "../../hooks/useApi";
 import { AuthData, OTPRequest, OTPResponse } from "../../models/auth.models";
 import { BaseResponse } from "../../models/shared.models";
 import { authActions } from "../../store/auth";
+import { setAuthDataInLocal } from "../../utils/authUtils";
 
 const PasswordLoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -57,6 +58,7 @@ const PasswordLoginPage: React.FC = () => {
         data: { username: enteredUsername, password: password },
       },
       (response) => {
+        setAuthDataInLocal(response.content);
         dispatch(authActions.setToken(response.content));
         if (response.content.isAdmin) {
           navigate("/admin");

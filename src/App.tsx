@@ -42,18 +42,16 @@ import AdminFlightsPage from "./pages/adminPanel/pages/adminEvents/AdminFlightsP
 import SkyDiveEventTermsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventTermsPage";
 import MyTicketsPage from "./pages/userPanel/MyTicketsPage";
 import JumpRecordsPage from "./pages/userPanel/JumpRecordsPage";
+import Messages from "./pages/userPanel/Messages";
+import MyTransactionsPage from "./pages/userPanel/MyTransactionsPage";
+import AdminJumpRecoreds from "./pages/adminPanel/pages/userMamangement/userDetail/AdminJumpRecoreds";
+import UserTickets from "./pages/adminPanel/pages/userMamangement/userDetail/UserTickets";
+import UserTransactions from "./pages/adminPanel/pages/userMamangement/userDetail/UserTransactions";
 import Messages from './pages/userPanel/Messages';
 import MyTransactionsPage from './pages/userPanel/MyTransactionsPage';
 import Wallet from './pages/userPanel/Wallet';
 
 function App() {
-  // useEffect(()=>{
-  //   const authDataJson = localStorage.getItem('authData');
-  //   if(authDataJson){
-  //     const authData : AuthData = JSON.parse(authDataJson);
-  //     dispatch(authActions.setToken(authData))
-  //   }
-  // },[dispatch])
   return (
     <>
       <ToastContainer
@@ -118,7 +116,10 @@ function App() {
             <Route Component={UserManagement} path="users"></Route>
             <Route Component={CreateUserPage} path="users/create"></Route>
             <Route Component={UserDetailPage} path="users/:userId">
+              <Route Component={UserTickets} path=""></Route>
+              <Route Component={UserTransactions} path="transactions"></Route>
               <Route Component={AdminUserDocument} path="documents"></Route>
+              <Route Component={AdminJumpRecoreds} path="jumps"></Route>
             </Route>
             <Route Component={EditUserPage} path="users/:userId/edit"></Route>
             <Route Component={Outlet} path="events">

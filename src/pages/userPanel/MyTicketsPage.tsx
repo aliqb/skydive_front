@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import SDCard from "../../components/shared/Card";
 import useAPi from "../../hooks/useApi";
-import { MyTicket } from "../../models/myTickets.models";
+import { UserTicket } from "../../models/tickets.models";
 import { BaseResponse } from "../../models/shared.models";
 import { ColDef, GridGetData } from "../../components/shared/Grid/grid.types";
 import Grid from "../../components/shared/Grid/Grid";
@@ -11,9 +11,9 @@ import PdfPrintButton from "../../components/shared/PdfPrintButton";
 const MyTicketsPage: React.FC = () => {
   const {
     sendRequest,
-  } = useAPi<null, BaseResponse<MyTicket[]>>();
+  } = useAPi<null, BaseResponse<UserTicket[]>>();
 
-  const [colDefs] = useState<ColDef<MyTicket>[]>([
+  const [colDefs] = useState<ColDef<UserTicket>[]>([
     {
       field: "ticketNumber",
       headerName: "شماره بلیت",
@@ -37,7 +37,7 @@ const MyTicketsPage: React.FC = () => {
     {
       field: "",
       headerName: "قوانین و شرایط",
-      cellRenderer: (item: MyTicket) => {
+      cellRenderer: (item: UserTicket) => {
         return (
           <Link
             to={`/events/${item.skyDiveEventId}/terms`}
@@ -52,7 +52,7 @@ const MyTicketsPage: React.FC = () => {
     {
       field: "",
       headerName: "تصویر بلیت",
-      cellRenderer: (item: MyTicket) => {
+      cellRenderer: (item: UserTicket) => {
         return (
           <PdfPrintButton
             pdfUrl={`${
@@ -69,7 +69,7 @@ const MyTicketsPage: React.FC = () => {
     },
   ]);
 
-  const fetchTickets = useCallback<GridGetData<MyTicket>>(
+  const fetchTickets = useCallback<GridGetData<UserTicket>>(
     (gridParams, setRows) => {
       sendRequest(
         {
@@ -91,7 +91,7 @@ const MyTicketsPage: React.FC = () => {
     <SDCard>
       <h1 className="text-center font-bold text-xl py-5">بلیت‌های من</h1>
       <div className="py-5 md:px-8">
-        <Grid<MyTicket>
+        <Grid<UserTicket>
           colDefs={colDefs}
           getData={fetchTickets}
           rowActions={{
@@ -102,7 +102,7 @@ const MyTicketsPage: React.FC = () => {
                 icon: (
                   <div className="text-red-600 font-semibold">درخواست کنسل</div>
                 ),
-                onClick: (item: MyTicket) => console.log(item),
+                onClick: (item: UserTicket) => console.log(item),
                 descriptions: "",
                 showField: "voidable",
               },

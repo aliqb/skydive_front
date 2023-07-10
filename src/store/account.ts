@@ -1,21 +1,21 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { DocumentItem, DocumentsList } from "../models/account.models";
+import {  DocumentItemModel, DocumentsList } from "../models/account.models";
 import { UserPersonalInfo } from "../models/shared.models";
 
 interface AccountState{
     personalInfo: UserPersonalInfo | null;
-    medicalDocument: DocumentItem | undefined;
-    logBookDocument: DocumentItem | undefined;
-    attorneyDocument: DocumentItem | undefined;
-    nationalCardDocument: DocumentItem | undefined;
+    medicalDocument: DocumentItemModel;
+    logBookDocument: DocumentItemModel;
+    attorneyDocument: DocumentItemModel;
+    nationalCardDocument: DocumentItemModel;
 }
 
 const initialState : AccountState = {
     personalInfo:  null,
-    medicalDocument:  undefined,
-    logBookDocument:  undefined,
-    attorneyDocument:  undefined,
-    nationalCardDocument:  undefined
+    medicalDocument:  {fileId:'', withDate: true},
+    logBookDocument:  {fileId:''},
+    attorneyDocument:  {fileId:'', withDate: true},
+    nationalCardDocument:  {fileId:''}
 }
 
 export const UserDocumentsFields = {
@@ -37,10 +37,10 @@ const accountSlice = createSlice({
         },
         setDocuments:(state,action: PayloadAction<DocumentsList>)=>{
             const payload = action.payload;
-            state.medicalDocument = payload.medicalDocument || undefined;
-            state.logBookDocument = payload.logBookDocument || undefined;
-            state.attorneyDocument = payload.attorneyDocument || undefined;
-            state.nationalCardDocument = payload.nationalCardDocument || undefined;
+            state.medicalDocument = payload.medicalDocument || {fileId:'', withDate:true};
+            state.logBookDocument = payload.logBookDocument || {fileId: ''};
+            state.attorneyDocument = payload.attorneyDocument || {fileId: '', withDate:true};
+            state.nationalCardDocument = payload.nationalCardDocument || {fileId: ''};
         },
         setDocumnetFile:(state, action:PayloadAction<{field:UserDocumentsFieldType,fileId: string}>)=>{
             const payload = action.payload;

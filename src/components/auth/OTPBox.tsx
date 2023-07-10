@@ -62,6 +62,7 @@ const OTPBox: React.FC<OTPInputProp> = (props) => {
           renderInput={renderInput}
           containerStyle="ltr justify-center w-full mb-3"
           shouldAutoFocus={true}
+          inputType="number"
         />
         <div className="text-sm">
           {canRefresh ? (

@@ -32,29 +32,29 @@ const Documents: React.FC<DocumentsProp> = (props) => {
             <DocumentItemComponent
               field={UserDocumentsFields.nationalCardDocument}
               title="کارت ملی"
+              validation={isSubmitted}
             />
             <DocumentItemComponent
               field={UserDocumentsFields.logBookDocument}
               title="صفحه آخر Log Book"
+              validation={isSubmitted}
             />
             <DocumentItemComponent
               field={UserDocumentsFields.attorneyDocument}
               title="وکالتنامه محضری"
-              withDate={true}
               validation={isSubmitted}
             />
             <DocumentItemComponent
               field={UserDocumentsFields.medicalDocument}
               title="مدارک پزشکی"
-              withDate={true}
               validation={isSubmitted}
             />
           </div>
-          <div className="flex justify-end">
+          <div className="flex justify-center">
             <SDButton
-              color="primary"
+              color="success"
               type="submit"
-              className="basis-full xs:basis-1/3 xs:max-w-[200px]"
+              className="basis-full xs:basis-1/2"
               onClick={onSubmit}
               disabled={props.isPending}
             >

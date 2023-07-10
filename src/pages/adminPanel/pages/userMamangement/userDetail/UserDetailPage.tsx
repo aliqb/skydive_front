@@ -1,24 +1,24 @@
-import { Link, NavLink, Outlet, useParams } from 'react-router-dom';
-import SDButton from '../../../../../components/shared/Button';
-import SDCard from '../../../../../components/shared/Card';
-import useAPi from '../../../../../hooks/useApi';
+import { Link, NavLink, Outlet, useParams } from "react-router-dom";
+import SDButton from "../../../../../components/shared/Button";
+import SDCard from "../../../../../components/shared/Card";
+import useAPi from "../../../../../hooks/useApi";
 import {
   BaseResponse,
   UserStatuses,
-} from '../../../../../models/shared.models';
-import { CheckUserInfoRequest } from '../../../../../models/usermanagement.models';
-import { useEffect } from 'react';
-import UserStatusLabel from '../../../../../components/shared/UserStatusLabel';
-import SDSpinner from '../../../../../components/shared/Spinner';
-import { toast } from 'react-toastify';
+} from "../../../../../models/shared.models";
+import { CheckUserInfoRequest } from "../../../../../models/usermanagement.models";
+import { useEffect } from "react";
+import UserStatusLabel from "../../../../../components/shared/UserStatusLabel";
+import SDSpinner from "../../../../../components/shared/Spinner";
+import { toast } from "react-toastify";
 import {
   useAppDispatch,
   useAppSelector,
-} from '../../../../../hooks/reduxHooks';
+} from "../../../../../hooks/reduxHooks";
 import {
   fetchUserDetail,
   usermanagementActions,
-} from '../../../../../store/usermanagement';
+} from "../../../../../store/usermanagement";
 
 const UserDetailPage: React.FC = () => {
   const params = useParams();
@@ -39,12 +39,12 @@ const UserDetailPage: React.FC = () => {
   function checkInfo(id: string, confirm: boolean) {
     sendCheckRequest(
       {
-        url: '/Admin/CheckUserPersonalInformation',
+        url: "/Admin/CheckUserPersonalInformation",
         data: {
           id: id,
           isConfirmed: confirm,
         },
-        method: 'put',
+        method: "put",
       },
       (response) => {
         toast.success(response.message);
@@ -200,7 +200,7 @@ const UserDetailPage: React.FC = () => {
                     {userManagementState.userDetail.firstName}
                   </p>
                   <p className="pb-6">
-                    {' '}
+                    {" "}
                     {userManagementState.userDetail.lastName}
                   </p>
                   <p className="pb-6">
@@ -212,7 +212,9 @@ const UserDetailPage: React.FC = () => {
                   <p className="pb-6">
                     {userManagementState.userDetail.birthDate}
                   </p>
-                  <p className="pb-6">{userManagementState.userDetail.city}</p>
+                  <p className="pb-6">
+                    {userManagementState.userDetail.cityAndState}
+                  </p>
                   <p className="pb-6">
                     {userManagementState.userDetail.address}
                   </p>
@@ -233,7 +235,7 @@ const UserDetailPage: React.FC = () => {
                     {userManagementState.userDetail.userCode}
                   </p>
                   <p className="pb-6">
-                    {' '}
+                    {" "}
                     {userManagementState.userDetail.userCode}
                   </p>
                   <p className="pb-6">•••••••</p>
@@ -256,7 +258,8 @@ const UserDetailPage: React.FC = () => {
                   <p>{userManagementState.userDetail.emergencyContact}</p>
                 </div>
                 <div className="flex w-full pb-6 md:w-1/2   lg:w-5/12">
-                  موبایل <p>{userManagementState.userDetail.emergencyPhone}</p>
+                  <p className="font-semibold ml-12">موبایل</p>
+                  <p>{userManagementState.userDetail.emergencyPhone}</p>
                 </div>
               </div>
             </div>
@@ -267,12 +270,13 @@ const UserDetailPage: React.FC = () => {
         <ul className="flex w-full">
           <li className="flex-grow text-center">
             <NavLink
+              end={true}
               className={(nav) =>
                 `${
-                  !nav.isActive && 'border-b-2 !border-blue-500 !text-blue-500'
+                  nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
                 } pb-4 block hover:border-b-2 text-gray-500 hover:text-gray-600 hover:border-gray-300  transition-all ease-linear duration-75`
               }
-              to={''}
+              to={""}
             >
               بلیت‌ها
             </NavLink>
@@ -281,12 +285,36 @@ const UserDetailPage: React.FC = () => {
             <NavLink
               className={(nav) =>
                 `${
-                  nav.isActive && 'border-b-2 !border-blue-500 !text-blue-500'
+                  nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
+                } pb-4 block hover:border-b-2 text-gray-500 hover:text-blue-400 hover:border-blue-300  transition-all ease-linear duration-75`
+              }
+              to="transactions"
+            >
+              تراکنش‌ها
+            </NavLink>
+          </li>
+          <li className="flex-grow text-center">
+            <NavLink
+              className={(nav) =>
+                `${
+                  nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
                 } pb-4 block hover:border-b-2 text-gray-500 hover:text-blue-400 hover:border-blue-300  transition-all ease-linear duration-75`
               }
               to="documents"
             >
               مدارک
+            </NavLink>
+          </li>
+          <li className="flex-grow text-center">
+            <NavLink
+              className={(nav) =>
+                `${
+                  nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
+                } pb-4 block hover:border-b-2 text-gray-500 hover:text-blue-400 hover:border-blue-300  transition-all ease-linear duration-75`
+              }
+              to="jumps"
+            >
+              سوابق پرش
             </NavLink>
           </li>
         </ul>

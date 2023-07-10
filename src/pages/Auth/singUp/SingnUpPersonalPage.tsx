@@ -8,6 +8,10 @@ import SDTextInput from "../../../components/shared/TextInput";
 import useAPi from "../../../hooks/useApi";
 import { UserPersonalInfo } from "../../../models/shared.models";
 import SDDatepicker from "../../../components/shared/DatePicker";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
+import { authActions } from "../../../store/auth";
+import { updateAuthDataInLocal } from "../../../utils/authUtils";
+import {useEffect} from 'react';
 
 
 
@@ -27,6 +31,15 @@ const SingUpPersonaPage: React.FC = () => {
     mode: "onTouched",
   });
 
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector(state=>state.auth.isAuthenticated)
+
+  useEffect(()=>{
+    if(!isAuthenticated){
+      navigate('/auth')
+    }
+  },[isAuthenticated,navigate])
+
   function navigateToNextPage() {
     navigate("../user-info");
   }
@@ -38,7 +51,11 @@ const SingUpPersonaPage: React.FC = () => {
         data: data,
         method: "post",
       },
-      () => navigateToNextPage()
+      () => {
+        updateAuthDataInLocal({personalInformationCompleted:true})
+        dispatch(authActions.completePersonalInformation())
+        navigateToNextPage()
+      }
     );
   }
 
