@@ -4,6 +4,7 @@ import SDDropdown, { DropDownItem } from "../shared/Dropdown";
 import HumbergerButton from "../shared/HumbergerButtom";
 import { ShellElement } from "../shared/PanelShell";
 import { authActions } from "../../store/auth";
+import { removeAuthDataFromLocal } from "../../utils/authUtils";
 
 const AdminHeader: React.FC<ShellElement> = (props) => {
   const name = useAppSelector(state=>state.auth.name);
@@ -33,6 +34,7 @@ const AdminHeader: React.FC<ShellElement> = (props) => {
   ];
 
   function logOut(){
+    removeAuthDataFromLocal()
     dispatch(authActions.logOut());
   }
   return (

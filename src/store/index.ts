@@ -3,13 +3,15 @@ import authReducer from './auth';
 import accountReducer from './account';
 import basketReducer  from './basket';
 import userManagementReducer from './usermanagement';
+import messages from './messages';
 
 const store = configureStore({
     reducer: {
         auth: authReducer,
         account: accountReducer,
         basket: basketReducer,
-        userManagement: userManagementReducer
+        userManagement: userManagementReducer,
+        messages: messages
     }
 })
 

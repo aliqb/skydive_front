@@ -50,13 +50,6 @@ import UserTransactions from './pages/adminPanel/pages/userMamangement/userDetai
 import Wallet from './pages/userPanel/Wallet';
 
 function App() {
-  // useEffect(()=>{
-  //   const authDataJson = localStorage.getItem('authData');
-  //   if(authDataJson){
-  //     const authData : AuthData = JSON.parse(authDataJson);
-  //     dispatch(authActions.setToken(authData))
-  //   }
-  // },[dispatch])
   return (
     <>
       <ToastContainer
@@ -120,7 +113,10 @@ function App() {
             <Route Component={UserManagement} path="users"></Route>
             <Route Component={CreateUserPage} path="users/create"></Route>
             <Route Component={UserDetailPage} path="users/:userId">
+              <Route Component={UserTickets} path=""></Route>
+              <Route Component={UserTransactions} path="transactions"></Route>
               <Route Component={AdminUserDocument} path="documents"></Route>
+              <Route Component={AdminJumpRecoreds} path="jumps"></Route>
             </Route>
             <Route Component={EditUserPage} path="users/:userId/edit"></Route>
             <Route Component={Outlet} path="events">

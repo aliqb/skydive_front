@@ -8,7 +8,9 @@ import useAPi from "../../../hooks/useApi";
 import { OTPRequest, OTPResponse } from "../../../models/auth.models";
 import { BaseResponse } from "../../../models/shared.models";
 import { authActions } from "../../../store/auth";
-
+import { phoneInputValidator } from "../../../utils/shared";
+import { GenralSettings } from "../../../models/generalSettings.models";
+import {useEffect} from 'react';
 
 const SignUpMobilePage: React.FC = () => {
   const {
@@ -19,23 +21,34 @@ const SignUpMobilePage: React.FC = () => {
     mode: "onTouched",
   });
 
-  const {
-    sendRequest,
-    errors: apiErrors,
-  } = useAPi<{ phone: string }, BaseResponse<string>>();
+  const { sendRequest, errors: apiErrors } = useAPi<
+    { phone: string },
+    BaseResponse<string>
+  >();
 
   const { sendRequest: sendOtpRequest, errors: otpErrors } = useAPi<
     OTPRequest,
     OTPResponse
   >();
 
-  const [finalPending, setFinalPending] = useState<boolean>(false)
+  const { sendRequest: sendSettingsRequest, data:settingsResponse } = useAPi<
+    null,
+    BaseResponse<GenralSettings>
+  >();
+
+  const [finalPending, setFinalPending] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
 
   const [acceptRules, setAcceptRules] = useState<boolean>(false);
 
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    sendSettingsRequest({
+      url: '/settings'
+    })
+  },[sendSettingsRequest])
 
   function onChangeAcceptance(evenet: ChangeEvent<HTMLInputElement>) {
     setAcceptRules(!!evenet.target.value);
@@ -54,8 +67,8 @@ const SignUpMobilePage: React.FC = () => {
       },
       () => {
         setFinalPending(false);
-        navigateToNextPage()
-      ,()=>setFinalPending(false)}
+        navigateToNextPage(), () => setFinalPending(false);
+      }
     );
   }
 
@@ -63,7 +76,7 @@ const SignUpMobilePage: React.FC = () => {
     if (!acceptRules) {
       return;
     }
-    setFinalPending(true)
+    setFinalPending(true);
     sendRequest(
       {
         url: "/users/register",
@@ -75,8 +88,9 @@ const SignUpMobilePage: React.FC = () => {
           authActions.signUpPhone({ phone: data.phone, id: reponse.content })
         );
         requestOtp(data.phone);
-      }
-    ,()=>setFinalPending(false));
+      },
+      () => setFinalPending(false)
+    );
   }
 
   return (
@@ -110,6 +124,8 @@ const SignUpMobilePage: React.FC = () => {
             })}
             type="text"
             id="input-group-1"
+            maxLength={14}
+            {...phoneInputValidator}
             className={`${
               errors.phone
                 ? "border-red-500 focus:ring-red-500 focus:border-red-500"
@@ -119,8 +135,13 @@ const SignUpMobilePage: React.FC = () => {
           />
         </div>
         <div className="">
-          <SDButton className="w-full" type="submit" color="success" disabled={finalPending}>
-            {(finalPending) && <SDSpinner />}
+          <SDButton
+            className="w-full"
+            type="submit"
+            color="success"
+            disabled={finalPending}
+          >
+            {finalPending && <SDSpinner />}
             ادامه
           </SDButton>
         </div>
@@ -139,7 +160,7 @@ const SignUpMobilePage: React.FC = () => {
           htmlFor="red-radio"
           className="mr-2 text-sm font-medium text-gray-900 dark:text-gray-300"
         >
-          <a href="" className="inline-block ml-1 text-blue-600">
+          <a href={settingsResponse?.content.termsAndConditionsUrl || ''} target="_blank" className="inline-block ml-1 text-blue-600">
             قوانین
           </a>
           را مطالعه کرده‌ام و می‌پذیرم.

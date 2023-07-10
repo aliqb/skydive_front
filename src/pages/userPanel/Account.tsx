@@ -7,22 +7,35 @@ import PersonalInfo from "../../components/userPanel/Account/PersonalInfo";
 import { TabsRef } from "flowbite-react";
 import useAPi from "../../hooks/useApi";
 import {
+  DocumentItemModel,
   DocumentsList,
   PersonalInfoEditRequest,
+  PersonalInfoEditableFormData,
 } from "../../models/account.models";
-import { BaseResponse, UserGeneralInfo } from "../../models/shared.models";
+import { BaseResponse, UserGeneralInfo, UserStatuses } from "../../models/shared.models";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import useConfirm from "../../hooks/useConfirm";
 import { toast } from "react-toastify";
-import { accoutnActions } from "../../store/account";
+import {
+  UserDocumentsFieldType,
+  UserDocumentsFields,
+  accoutnActions,
+} from "../../store/account";
 import { useNavigate } from "react-router-dom";
 import { authActions } from "../../store/auth";
+import { useForm } from "react-hook-form";
 
 const Account: React.FC = () => {
   const [, setActiveTab] = useState<number>(0);
   const accountState = useAppSelector((state) => state.account);
   const tabsRef = useRef<TabsRef>(null);
+  const [anyInvalidDocument, setAnyInvalidDocument] = useState<boolean>();
+  const [isApproveAwaiting,setIsApproveAwaiting] = useState<boolean>(false);
+  const userStatus = useAppSelector(state=>state.auth.userStatus)
   const props = { setActiveTab, tabsRef };
+  const personalInfoForm = useForm<PersonalInfoEditableFormData>({
+    mode: "onTouched",
+  });
   const { sendRequest, isPending } = useAPi<
     PersonalInfoEditRequest,
     BaseResponse<null>
@@ -33,7 +46,10 @@ const Account: React.FC = () => {
     BaseResponse<DocumentsList>
   >();
 
-  const {sendRequest:sendUserInfoRequest} = useAPi<null,BaseResponse<UserGeneralInfo>>();
+  const { sendRequest: sendUserInfoRequest } = useAPi<
+    null,
+    BaseResponse<UserGeneralInfo>
+  >();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -43,12 +59,15 @@ const Account: React.FC = () => {
     "تکمیل اطلاعات و ارسال"
   );
 
-  function getUserInfo(){
-    sendUserInfoRequest({
-      url:'/Users/GetUserInformation'
-    },(response)=>{
-      dispatch(authActions.setUserGenralInfo(response.content))
-    })
+  function getUserInfo() {
+    sendUserInfoRequest(
+      {
+        url: "/Users/GetUserInformation",
+      },
+      (response) => {
+        dispatch(authActions.setUserGenralInfo(response.content));
+      }
+    );
   }
 
   function getDcouments() {
@@ -66,20 +85,43 @@ const Account: React.FC = () => {
     getDcouments();
   }, []);
 
+  useEffect(() => {
+    const documentFiels: UserDocumentsFieldType[] = [
+      UserDocumentsFields.attorneyDocument,
+      UserDocumentsFields.logBookDocument,
+      UserDocumentsFields.medicalDocument,
+      UserDocumentsFields.nationalCardDocument,
+    ];
+    const anyInvalidDocument = documentFiels.some((field) => {
+      const documentData: DocumentItemModel = accountState[field];
+      return (
+        !documentData.fileId ||
+        (documentData.withDate && !documentData.expirationDate)
+      );
+    });
+    setAnyInvalidDocument(anyInvalidDocument);
+  }, [accountState]);
+
+  useEffect(()=>{
+    setIsApproveAwaiting(userStatus === UserStatuses.PENDING)
+  },[userStatus])
+
   function onPersonalInfoSubmit() {
     props.tabsRef.current?.setActiveTab(2);
   }
 
   async function sendAllInformations() {
-    const personalInfo = accountState.personalInfo;
-    if (
-      (accountState.attorneyDocument?.fileId &&
-        !accountState.attorneyDocument?.expirationDate) ||
-      (accountState.medicalDocument?.fileId &&
-        !accountState.medicalDocument?.expirationDate)
-    ) {
+    if (anyInvalidDocument) {
       return;
     }
+
+    if (!personalInfoForm.formState.isValid) {
+      toast.error("اطلاعات شخصی را کامل کنید.");
+      props.tabsRef.current?.setActiveTab(1);
+      return;
+    }
+    const personalInfo = accountState.personalInfo;
+
     const confirmed = await confirmation();
     if (confirmed) {
       const body: PersonalInfoEditRequest = {
@@ -88,26 +130,39 @@ const Account: React.FC = () => {
         lastName: personalInfo?.lastName || "",
         nationalCode: personalInfo?.nationalCode || "",
         address: personalInfo?.address,
-        cityId: personalInfo?.cityId || null,
+        cityAndState: personalInfo?.cityAndState || null,
         email: personalInfo?.email,
         emergencyContact: personalInfo?.emergencyContact,
         emergencyPhone: personalInfo?.emergencyPhone,
-        height: personalInfo?.height,
-        weight: personalInfo?.weight,
-        nationalCardDocument: (accountState.nationalCardDocument && accountState.nationalCardDocument.fileId) ? {
-          fileId: accountState.nationalCardDocument.fileId,
-        } :  undefined,
-        attorneyDocument: (accountState.attorneyDocument && accountState.attorneyDocument) ? {
-          fileId: accountState.attorneyDocument.fileId,
-          expirationDate: accountState.attorneyDocument.expirationDate,
-        } :  undefined,
-        logBookDocument: (accountState.logBookDocument && accountState.logBookDocument.fileId) ? {
-          fileId: accountState.logBookDocument.fileId,
-        } : undefined,
-        medicalDocument: (accountState.medicalDocument && accountState.medicalDocument.fileId) ? {
-          fileId: accountState.medicalDocument.fileId,
-          expirationDate: accountState.medicalDocument.expirationDate,
-        } : undefined,
+        height: personalInfo?.height || null,
+        weight: personalInfo?.weight || null,
+        nationalCardDocument:
+          accountState.nationalCardDocument &&
+          accountState.nationalCardDocument.fileId
+            ? {
+                fileId: accountState.nationalCardDocument.fileId,
+              }
+            : undefined,
+        attorneyDocument:
+          accountState.attorneyDocument && accountState.attorneyDocument
+            ? {
+                fileId: accountState.attorneyDocument.fileId,
+                expirationDate: accountState.attorneyDocument.expirationDate,
+              }
+            : undefined,
+        logBookDocument:
+          accountState.logBookDocument && accountState.logBookDocument.fileId
+            ? {
+                fileId: accountState.logBookDocument.fileId,
+              }
+            : undefined,
+        medicalDocument:
+          accountState.medicalDocument && accountState.medicalDocument.fileId
+            ? {
+                fileId: accountState.medicalDocument.fileId,
+                expirationDate: accountState.medicalDocument.expirationDate,
+              }
+            : undefined,
       };
       sendRequest(
         {
@@ -119,7 +174,7 @@ const Account: React.FC = () => {
           toast.success(response.message);
           getDcouments();
           getUserInfo();
-          navigate('/');
+          navigate("/");
         },
         (error) => toast.error(error?.message)
       );
@@ -138,10 +193,36 @@ const Account: React.FC = () => {
           <SDTabs.Item active title="اطلاعات کاربری">
             <AccountInfo></AccountInfo>
           </SDTabs.Item>
-          <SDTabs.Item title="اطلاعات شخصی">
-            <PersonalInfo onSubmit={onPersonalInfoSubmit} />
+          <SDTabs.Item
+            title={
+              <div>
+                اطلاعات شخصی
+                {!personalInfoForm.formState.isValid && (
+                  <span className="mr-3 !text-xs !text-red-600">
+                    (تکمیل نشده)
+                  </span>
+                )}
+              </div>
+            }
+          >
+            <PersonalInfo
+              onSubmit={onPersonalInfoSubmit}
+              formHook={personalInfoForm}
+              disableAll={isApproveAwaiting}
+            />
           </SDTabs.Item>
-          <SDTabs.Item title="مدارک ارسالی">
+          <SDTabs.Item
+            title={
+              <div>
+                مدارک ارسالی
+                {anyInvalidDocument && (
+                  <span className="mr-3 !text-xs !text-red-600">
+                    (تکمیل نشده)
+                  </span>
+                )}
+              </div>
+            }
+          >
             <Documents onSubmit={sendAllInformations} isPending={isPending} />
           </SDTabs.Item>
         </SDTabs.Group>

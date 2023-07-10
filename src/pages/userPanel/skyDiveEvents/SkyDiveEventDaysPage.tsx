@@ -10,7 +10,7 @@ import {
 } from "../../../models/skyDiveEvents.models";
 import SDSpinner from "../../../components/shared/Spinner";
 import {useState} from 'react';
-import { sortDate } from "../../../utils";
+import { sortDate } from "../../../utils/shared";
 
 const SkyDiveEventDaysPage: React.FC = () => {
   const params = useParams();

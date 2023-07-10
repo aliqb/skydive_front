@@ -30,6 +30,10 @@ export interface DocumentItem {
   id?:string
 }
 
+export interface DocumentItemModel extends DocumentItem{
+  withDate?: boolean
+}
+
 export interface PersonalInfoEditRequest extends Omit<UserPersonalInfo, "id"> {
   medicalDocument?: DocumentItem;
   logBookDocument?: DocumentItem;
@@ -52,4 +56,15 @@ export const  DocumnetStatus = {
   PENDING : "Pending",
   EXPIRED : "Expired",
   CONFIRMED : "Confirmed",
+}
+
+
+export interface PersonalInfoEditableFormData {
+  email: string;
+  cityAndState: string | null;
+  address: string;
+  height: number | null;
+  weight: number | null;
+  emergencyContact: string;
+  emergencyPhone: string;
 }

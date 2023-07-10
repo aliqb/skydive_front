@@ -1,51 +1,37 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { useForm } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import SDButton from "../../shared/Button";
 import SDLabel from "../../shared/Label";
 import SDTextInput from "../../shared/TextInput";
 import useAPi from "../../../hooks/useApi";
 import { BaseResponse, UserPersonalInfo } from "../../../models/shared.models";
-import { useEffect, useState } from "react";
-import { City, CityDto } from "../../../models/account.models";
+import { useEffect } from "react";
+import { PersonalInfoEditableFormData } from "../../../models/account.models";
 import { useAppDispatch } from "../../../hooks/reduxHooks";
 import { accoutnActions } from "../../../store/account";
-import SDSelect from "../../shared/Select";
+import { phoneInputValidator } from "../../../utils/shared";
 
 interface PersonalInfoProps {
   onSubmit: () => void;
+  formHook: UseFormReturn<PersonalInfoEditableFormData>;
+  disableAll: boolean;
 }
-interface PersonalInfoEditableFormData {
-  email: string;
-  cityId: string | null;
-  address: string;
-  height: number;
-  weight: number;
-  emergencyContact: string;
-  emergencyPhone: string;
-}
+
 const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
   const {
     register,
-    formState: { errors },
+    formState: { errors, touchedFields },
     handleSubmit,
-    reset,
-  } = useForm<PersonalInfoEditableFormData>({
-    mode: "onTouched",
-  });
+    trigger,
+    setValue,
+  } = props.formHook;
 
   const { sendRequest: getInfo, data: personalInfo } = useAPi<
     null,
     BaseResponse<UserPersonalInfo>
   >();
 
-  const { sendRequest: sendCitiesRequest } = useAPi<
-    null,
-    BaseResponse<CityDto[]>
-  >();
-
   const dispatch = useAppDispatch();
-
-  const [cities, setCities] = useState<City[]>([]);
 
   useEffect(() => {
     getInfo(
@@ -57,55 +43,34 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
         dispatch(accoutnActions.setPersonalInfo(response.content));
       }
     );
-
-  }, [getInfo,dispatch]);
+  }, [getInfo, dispatch]);
 
   useEffect(() => {
-    function getCities() {
-      sendCitiesRequest(
-        {
-          url: "/cities",
-          params: {
-            pageSize: 10000,
-            pageIndex: 1,
-          },
-        },
-        (response) => {
-          const cities = response.content
-            .map(
-              (item) => new City(item.id, item.state, item.province, item.city)
-            )
-            .sort((c1, c2) =>
-              c1.locationString.localeCompare(c2.locationString)
-            );
-          setCities(cities);
-        }
-      );
-    }
-    if(personalInfo?.content){
-      getCities();
-    }
-  }, [personalInfo, sendCitiesRequest]);
-
-  useEffect(()=>{
     function setFormValue(info: UserPersonalInfo) {
-      reset({
-        address: info.address,
-        cityId: info.cityId || null,
-        email: info.email,
-        emergencyContact: info.emergencyContact,
-        emergencyPhone: info.emergencyPhone,
-        height: info.height,
-        weight: info.weight,
-      });
+      // reset({
+      //   address: info.address,
+      //   cityAndState: info.cityAndState || "",
+      //   email: info.email,
+      //   emergencyContact: info.emergencyContact,
+      //   emergencyPhone: info.emergencyPhone,
+      //   height: info.height,
+      //   weight: info.weight,
+      // });
+      setValue("address", info.address || "");
+      setValue("cityAndState", info.cityAndState || "");
+      setValue("email", info.email || "");
+      setValue("emergencyContact", info.emergencyContact || "");
+      setValue("emergencyPhone", info.emergencyPhone || "");
+      setValue("height", info.height || null);
+      setValue("weight", info.weight || null);
+
+      trigger();
     }
 
-    if(personalInfo?.content){
-      setFormValue(personalInfo.content)
+    if (personalInfo?.content) {
+      setFormValue(personalInfo.content);
     }
-  },[cities,personalInfo,reset])
-
-
+  }, [personalInfo, trigger, setValue]);
 
   function onSubmit(data: PersonalInfoEditableFormData) {
     const info: UserPersonalInfo = {
@@ -163,9 +128,13 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
           </div>
         </div>
         <div className="mb-6 w-full">
-          <SDLabel htmlFor="email">ایمیل</SDLabel>
+          <SDLabel htmlFor="email">
+            ایمیل
+            {errors.email?.message && <span className="text-red-600">*</span>}
+          </SDLabel>
           <SDTextInput
             {...register("email", {
+              required: "فیلد اجباری است.",
               pattern: {
                 value: /^\S+@\S+$/i,
                 message: "مقدار وارد شده صحیح نیست.",
@@ -174,96 +143,167 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
             type="email"
             id="email"
             className="ltr"
-            invalid={!!errors.email}
+            disabled={props.disableAll}
+            invalid={!!errors.email && touchedFields.email}
           />
-          {errors.email?.message && (
+          {errors.email?.message && touchedFields.email && (
             <p className="text-red-600 text-sm pr-2 mt-2">
               {errors.email.message}
             </p>
           )}
         </div>
         <div className="mb-6 w-full">
-          <SDLabel htmlFor="cityId">استان و شهر اقامت</SDLabel>
-          {/* <SDTextInput {...register("cityId")} type="cityId" id="cityId" /> */}
-          {personalInfo && (
-            <SDSelect
-              id="cityId"
-              {...register("cityId")}
-            >
-              <option value=""></option>
-              {cities.map((city, index) => {
-                return (
-                  <option key={index} value={city.id}>
-                    {city.locationString}
-                  </option>
-                );
-              })}
-            </SDSelect>
+          <SDLabel htmlFor="cityId">
+            استان و شهر اقامت
+            {errors.cityAndState?.message && (
+              <span className="text-red-600">*</span>
+            )}
+          </SDLabel>
+          <SDTextInput
+            id="cityId"
+            {...register("cityAndState", { required: "فیلد اجباری است." })}
+            invalid={!!errors.cityAndState && touchedFields.cityAndState}
+            disabled={props.disableAll}
+          ></SDTextInput>
+          {errors.cityAndState?.message && touchedFields.cityAndState && (
+            <p className="text-red-600 text-sm pr-2 mt-2">
+              {errors.cityAndState.message}
+            </p>
           )}
         </div>
         <div className=" w-full mb-6">
-          <SDLabel htmlFor="address">نشانی</SDLabel>
-          <SDTextInput {...register("address")} type="address" id="address" />
+          <SDLabel htmlFor="address">
+            نشانی
+            {errors.address?.message && <span className="text-red-600">*</span>}
+          </SDLabel>
+          <SDTextInput
+            {...register("address", { required: "فیلد اجباری است." })}
+            type="address"
+            id="address"
+            disabled={props.disableAll}
+            invalid={!!errors.address && touchedFields.address}
+          />
+          {errors.address?.message && touchedFields.address && (
+            <p className="text-red-600 text-sm pr-2 mt-2">
+              {errors.address.message}
+            </p>
+          )}
         </div>
         <div className="mb-6 w-full flex gap-6">
           <div className="w-1/2 ">
-            <SDLabel htmlFor="firstName">قد (سانتی متر)</SDLabel>
+            <SDLabel htmlFor="height">
+              قد (سانتی متر)
+              {errors.height?.message && (
+                <span className="text-red-600">*</span>
+              )}
+            </SDLabel>
             <SDTextInput
-              {...register("height", { valueAsNumber: true })}
+              {...register("height", {
+                valueAsNumber: true,
+                required: "فیلد اجباری است.",
+              })}
               type="number"
-              id="firstName"
+              id="height"
               className="ltr"
+              disabled={props.disableAll}
+              invalid={!!errors.height && touchedFields.height}
             />
+            {errors.height?.message && touchedFields.height && (
+              <p className="text-red-600 text-sm pr-2 mt-2">
+                {errors.height.message}
+              </p>
+            )}
           </div>
           <div className="w-1/2">
-            <SDLabel htmlFor="lastName">وزن (کیلوگرم)</SDLabel>
+            <SDLabel htmlFor="weight">
+              وزن (کیلوگرم)
+              {errors.weight?.message && (
+                <span className="text-red-600">*</span>
+              )}
+            </SDLabel>
             <SDTextInput
-              {...register("weight", { valueAsNumber: true })}
+              {...register("weight", {
+                valueAsNumber: true,
+                required: "فیلد اجباری است.",
+              })}
               type="number"
-              id="lastName"
+              id="weight"
+              disabled={props.disableAll}
+              invalid={!!errors.weight && touchedFields.weight}
               className="ltr"
             />
+            {errors.weight?.message && touchedFields.weight && (
+              <p className="text-red-600 text-sm pr-2 mt-2">
+                {errors.weight.message}
+              </p>
+            )}
           </div>
         </div>
         <div className="w-full mt-8">
           <p className="text-slate-700 mb-4">اطلاعات تماس اضطراری</p>
           <div className="mb-6 w-full flex gap-6">
             <div className="w-1/2 ">
-              <SDLabel htmlFor="firstName">نام</SDLabel>
+              <SDLabel htmlFor="emergencyContact">
+                نام
+                {errors.emergencyContact?.message && (
+                  <span className="text-red-600">*</span>
+                )}
+              </SDLabel>
               <SDTextInput
-                {...register("emergencyContact")}
+                {...register("emergencyContact", {
+                  required: "فیلد اجباری است.",
+                })}
                 type="text"
-                id="firstName"
+                disabled={props.disableAll}
+                id="emergencyContact"
+                invalid={
+                  !!errors.emergencyContact && touchedFields.emergencyContact
+                }
               />
+              {errors.emergencyContact?.message &&
+                touchedFields.emergencyContact && (
+                  <p className="text-red-600 text-sm pr-2 mt-2">
+                    {errors.emergencyContact.message}
+                  </p>
+                )}
             </div>
             <div className="w-1/2">
-              <SDLabel htmlFor="lastName">موبایل</SDLabel>
+              <SDLabel htmlFor="emergencyPhone">
+                موبایل
+                {errors.emergencyPhone?.message && (
+                  <span className="text-red-600">*</span>
+                )}
+              </SDLabel>
               <SDTextInput
                 {...register("emergencyPhone", {
                   pattern: {
                     value: /(\+98|0|0098)9\d{9}$/,
                     message: "شماره موبایل صحیح نیست.",
                   },
+
+                  required: "فیلد اجباری است.",
                 })}
                 type="text"
-                id="lastName"
+                disabled={props.disableAll}
+                maxLength={14}
+                {...phoneInputValidator}
+                id="emergencyPhone"
                 className="ltr"
-                invalid={!!errors.emergencyPhone}
+                invalid={
+                  !!errors.emergencyPhone && touchedFields.emergencyPhone
+                }
               />
-              {errors.emergencyPhone?.message && (
-                <p className="text-red-600 text-sm pr-2 mt-2">
-                  {errors.emergencyPhone.message}
-                </p>
-              )}
+              {errors.emergencyPhone?.message &&
+                touchedFields.emergencyPhone && (
+                  <p className="text-red-600 text-sm pr-2 mt-2">
+                    {errors.emergencyPhone.message}
+                  </p>
+                )}
             </div>
           </div>
         </div>
-        <div className="w-full flex justify-end md:w-1/2 md:pr-3">
-          <SDButton
-            className="w-full"
-            color="primary"
-            type="submit"
-          >
+        <div className="w-full flex justify-center ">
+          <SDButton className="w-full md:w-1/2" color="primary" type="submit">
             مرحله بعد
           </SDButton>
         </div>

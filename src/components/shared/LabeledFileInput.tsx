@@ -8,7 +8,8 @@ interface LabeledFileInputProps {
   field?: string;
   url?: string;
   onUpload: (id: string) => void;
-  onRemove?: ()=>void;
+  onRemove?: () => void;
+  disabled?: boolean;
 }
 const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
   accepFiles = "",
@@ -16,10 +17,11 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
   field = "file",
   url = "/file",
   onUpload,
-  onRemove
+  onRemove,
+  disabled = false,
 }) => {
   const { sendRequest, errors, isPending } = useAPi<FormData, string>();
-  const [uploadedFile, setUploadedFile] = useState<File|null>();
+  const [uploadedFile, setUploadedFile] = useState<File | null>();
   function onChange(event: FormEvent) {
     const files = (event.target as HTMLInputElement).files;
     if (!files || !files.length) {
@@ -35,13 +37,13 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
         method: "post",
       },
       (response) => {
-        setUploadedFile(file)
-        onUpload(response)
+        setUploadedFile(file);
+        onUpload(response);
       }
     );
   }
 
-  function resetUploadedFile(){
+  function resetUploadedFile() {
     setUploadedFile(null);
     onRemove && onRemove();
   }
@@ -51,7 +53,9 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
       {!(isPending || errors || uploadedFile) && (
         <label
           htmlFor={title}
-          className="text-blue-700 font-semibold cursor-pointer"
+          className={`text-blue-700 font-semibold ${
+            disabled ? "cursor-not-allowed opacity-70" : "cursor-pointer"
+          }`}
         >
           بارگذاری فایل
         </label>
@@ -64,7 +68,12 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
       )}
       {uploadedFile && (
         <span className="flex">
-          <button className="text-red-600 ml-2 block translate-y-[2px]" onClick={resetUploadedFile}>X</button>
+          <button
+            className="text-red-600 ml-2 block translate-y-[2px]"
+            onClick={resetUploadedFile}
+          >
+            X
+          </button>
           <a
             className="text-blue-700 inline-block max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap ltr"
             href={URL.createObjectURL(uploadedFile)}
@@ -80,6 +89,7 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
         className="hidden"
         accept={accepFiles}
         onChange={onChange}
+        disabled={disabled}
       />
     </div>
   );
