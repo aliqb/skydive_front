@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import useApi from '../../../hooks/useApi';
 import { BaseResponse } from '../../../models/shared.models';
-import { userType, ticketType } from '../../../models/usermanagement.models';
+import { userType } from '../../../models/usermanagement.models';
 import SDSpinner from '../../shared/Spinner';
+import UserTypesList from './UserTypesList';
+import TicketTypesList from './TicketTypesList';
 import { SkyDiveEventTicketType } from '../../../models/skyDiveEvents.models';
-
-type UserType = userType['title'];
-type UserTicket = ticketType['title'];
 
 interface AssignTicketTypes {
   userTypeId: string;
@@ -16,7 +15,7 @@ interface AssignTicketTypes {
 
 const UserTypeSettings: React.FC = () => {
   const { sendRequest, isPending } = useApi<null, BaseResponse<userType[]>>();
-  const { sendRequest: sendPostRequest, isPending: isPendingPost } = useApi<
+  const { sendRequest: sendPostRequest } = useApi<
     AssignTicketTypes,
     BaseResponse<null>
   >();
@@ -24,14 +23,14 @@ const UserTypeSettings: React.FC = () => {
     null,
     BaseResponse<SkyDiveEventTicketType[]>
   >();
-  const [selectedUserTypes, setSelectedUserTypes] = useState<UserType[]>([]);
+  const [selectedUserTypes, setSelectedUserTypes] = useState<string[]>([]);
   const [selectedTickets, setSelectedTickets] = useState<{
-    [key in UserType]: UserTicket[];
+    [key: string]: string[];
   }>({});
   const [userTypes, setUserTypes] = useState<userType[]>([]);
-  const [isOpen, setIsOpen] = useState<{ [key in UserType]: boolean }>({});
+  const [isOpen, setIsOpen] = useState<{ [key: string]: boolean }>({});
   const [allowedTicketTypes, setAllowedTicketTypes] = useState<{
-    [key in UserType]: UserTicket[];
+    [key: string]: string[];
   }>({});
 
   useEffect(() => {
@@ -44,7 +43,7 @@ const UserTypeSettings: React.FC = () => {
           acc[currentTicket.title].push(currentTicket.title);
           return acc;
         },
-        {} as { [key in UserType]: UserTicket[] }
+        {} as { [key: string]: string[] }
       );
       setAllowedTicketTypes(ticketTypesByUserType);
     });
@@ -55,7 +54,7 @@ const UserTypeSettings: React.FC = () => {
       if (response?.content.length > 0) {
         setUserTypes(response.content);
 
-        const initialSelectedTickets: { [key in UserType]: UserTicket[] } = {};
+        const initialSelectedTickets: { [key: string]: string[] } = {};
 
         response?.content.forEach((userType) => {
           initialSelectedTickets[userType.title] =
@@ -68,21 +67,7 @@ const UserTypeSettings: React.FC = () => {
     });
   }, [sendRequest]);
 
-  const isTicketAllowedForUserType = (
-    userType: UserType,
-    ticket: UserTicket
-  ) => {
-    const userTypeObj = userTypes.find((u) => u.title === userType);
-    if (userTypeObj) {
-      const ticketObj = userTypeObj.allowedTicketTypes.find(
-        (t) => t.title === ticket
-      );
-      return Boolean(ticketObj);
-    }
-    return false;
-  };
-
-  const handleUserTypeClick = (userType: UserType) => {
+  const handleUserTypeClick = (userType: string) => {
     if (selectedUserTypes.includes(userType)) {
       setSelectedUserTypes((prevSelectedUserTypes) =>
         prevSelectedUserTypes.filter((type) => type !== userType)
@@ -100,38 +85,35 @@ const UserTypeSettings: React.FC = () => {
     }));
   };
 
-  const handleAddTicket = (userType: UserType, ticket: UserTicket) => {
-    const userTypeObj = userTypes.find((u) => u.title === userType);
+  const handleAddTicket = (userType: userType, ticketTypeUserType: string) => {
+    console.log('Adding ticket:', userType, ticketTypeUserType);
 
-    if (userTypeObj) {
-      const ticketObj = userTypeObj.allowedTicketTypes.find(
-        (t) => t.title === ticket
+    const ticketObj = userType.allowedTicketTypes.find(
+      (t) => t.title === ticketTypeUserType
+    );
+    if (ticketObj) {
+      const assignTicketTypes: AssignTicketTypes = {
+        userTypeId: userType.id,
+        ticketTypes: [ticketObj.id],
+      };
+
+      sendPostRequest(
+        {
+          url: '/UserTypes/AssignTicketType',
+          method: 'post',
+          data: assignTicketTypes,
+        },
+        (response) => {
+          toast.success(response.message);
+        },
+        (error) => {
+          toast.error(error?.message);
+        }
       );
-
-      if (ticketObj) {
-        const assignTicketTypes: AssignTicketTypes = {
-          userTypeId: userTypeObj.id,
-          ticketTypes: [ticketObj.id],
-        };
-
-        sendPostRequest(
-          {
-            url: '/UserTypes/AssignTicketType',
-            method: 'post',
-            data: assignTicketTypes,
-          },
-          (response) => {
-            toast.success(response.message);
-          },
-          (error) => {
-            toast.error(error?.message);
-          }
-        );
-      }
     }
   };
 
-  const handleRemoveTicket = (userType: UserType, ticket: UserTicket) => {
+  const handleRemoveTicket = (userType: string, ticket: string) => {
     setSelectedTickets((prevState) => {
       const updatedTickets = { ...prevState };
       updatedTickets[userType] = prevState[userType].filter(
@@ -151,121 +133,28 @@ const UserTypeSettings: React.FC = () => {
 
   return (
     <>
-      <ul className="space-y-4">
-        {userTypes.map((userType) => (
-          <li
-            key={userType.title}
-            className={`flex flex-col ${
-              selectedUserTypes.includes(userType.title)
-                ? 'bg-black-200'
-                : 'bg-white'
-            }`}
-            style={{
-              border: '1px solid gray',
-              borderRadius: '0.5rem',
-              transition: 'background-color 0.3s',
-            }}
-          >
-            <button
-              className={`p-4 text-lg font-bold w-full text-right flex items-center ${
-                selectedUserTypes.includes(userType.title)
-                  ? 'text-blue-600'
-                  : ''
-              }`}
-              onClick={() => handleUserTypeClick(userType.title)}
-              style={{
-                transition: 'color 0.3s',
-              }}
-            >
-              <div className="flex items-center">
-                {isOpen[userType.title] ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15.75 19.5L8.25 12l7.5-7.5"
-                    />
-                  </svg>
-                )}
-                <span>{userType.title}</span>
-              </div>
-            </button>
-            {selectedUserTypes.includes(userType.title) && (
-              <ul className="space-y-2 p-4">
-                {Object.entries(allowedTicketTypes).map(
-                  ([ticketTypeUserType]) => (
-                    <li
-                      key={ticketTypeUserType}
-                      className={`flex items-center justify-between ${
-                        selectedTickets[userType.title] &&
-                        selectedTickets[userType.title].includes(
-                          ticketTypeUserType
-                        )
-                          ? 'text-red-700'
-                          : ''
-                      }`}
-                    >
-                      <span className="text-md">{ticketTypeUserType}</span>
-                      <div>
-                        {selectedTickets[userType.title] &&
-                        selectedTickets[userType.title].includes(
-                          ticketTypeUserType
-                        ) ? (
-                          <button
-                            className="px-2 py-1 rounded-md bg-red-200 ml-2 flex items-center"
-                            onClick={() =>
-                              handleRemoveTicket(
-                                userType.title,
-                                ticketTypeUserType
-                              )
-                            }
-                          >
-                            - حذف
-                          </button>
-                        ) : (
-                          <button
-                            className="px-2 py-1 rounded-md bg-green-200 ml-2 flex items-center"
-                            onClick={() =>
-                              handleAddTicket(
-                                userType.title,
-                                ticketTypeUserType
-                              )
-                            }
-                          >
-                            + افزودن
-                          </button>
-                        )}
-                      </div>
-                    </li>
-                  )
-                )}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ul>
+      <UserTypesList
+        userTypes={userTypes}
+        selectedUserTypes={selectedUserTypes}
+        handleUserTypeClick={handleUserTypeClick}
+        isOpen={isOpen}
+      />
+      {selectedUserTypes.map((selectedUserType) => {
+        const userType = userTypes.find((u) => u.title === selectedUserType);
+        if (userType) {
+          return (
+            <TicketTypesList
+              key={selectedUserType}
+              userType={userType}
+              selectedTickets={selectedTickets}
+              allowedTicketTypes={allowedTicketTypes}
+              handleAddTicket={handleAddTicket}
+              handleRemoveTicket={handleRemoveTicket}
+            />
+          );
+        }
+        return null;
+      })}
     </>
   );
 };
