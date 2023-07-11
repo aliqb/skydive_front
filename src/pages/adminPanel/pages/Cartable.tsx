@@ -10,35 +10,63 @@ import { BaseResponse, SelectPageEvent } from "../../../models/shared.models";
 import SDLabel from "../../../components/shared/Label";
 import SDSpinner from "../../../components/shared/Spinner";
 import ReactPaginate from "react-paginate";
+import SDTextInput from "../../../components/shared/TextInput";
+import SDSelect from "../../../components/shared/Select";
+import { toast } from "react-toastify";
 
 const Cartable: React.FC = () => {
   const { sendRequest, isPending, data } = useAPi<
     null,
     BaseResponse<CartableMessage[]>
   >();
+
+  const {sendRequest:sendDeleteRequest} = useAPi<null,BaseResponse<null>>();
+
   const pageSize = 10;
   const [selectedType, setSelectedType] = useState<string>("");
   const [pageCount, setPageCount] = useState<number>();
+  const [pageIndex,setPageIndex] = useState<number>(1);
 
   const onChangeType: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
     setSelectedType(event.target.value);
   };
 
-  const fetchItems = useCallback((selectedType: string, pageIndex = 1) => {
-    sendRequest(
-      {
-        url: "/Admin/AdminCartableMessages",
-        params: {
-          pageSize: pageSize,
-          pageIndex: pageIndex,
-          requestType: selectedType,
+  const fetchItems = useCallback(
+    (selectedType: string, pageIndex = 1) => {
+      sendRequest(
+        {
+          url: "/Admin/AdminCartableMessages",
+          params: {
+            pageSize: pageSize,
+            pageIndex: pageIndex,
+            requestType: selectedType,
+          },
         },
-      },
-      (response) => {
-        setPageCount(response.total / pageSize);
-      }
-    );
-  }, [sendRequest]);
+        (response) => {
+          setPageCount(response.total / pageSize);
+        }
+      );
+    },
+    [sendRequest]
+  );
+
+  const deleteMessage = (id:string)=>{
+    sendDeleteRequest({
+      url: `/admin/removeFromCartable/${id}`,
+      method: 'delete'
+    },(response)=>{
+      toast.success(response.message)
+      fetchItems(selectedType,pageIndex)
+    },(error)=>{
+      toast.error(error?.message)
+    })
+  }
+
+  const handlePageClick = (event: SelectPageEvent) => {
+    const selectedPage = event.selected + 1;
+    setPageIndex(selectedPage)
+    fetchItems(selectedType, selectedPage);
+  };
 
   useEffect(() => {
     fetchItems(selectedType);
@@ -55,36 +83,39 @@ const Cartable: React.FC = () => {
       <div className="w-full lg:w-9/12">
         {data &&
           data.content.map((item, index) => {
-            return <CartableItem key={index} {...item} />;
+            return <CartableItem key={index} {...item} onDelete={deleteMessage} />;
           })}
       </div>
-      <div className="w-full lg:w-3/12 md:pr-3">
-        <SDLabel htmlFor="type">نوع درخواست</SDLabel>
-        <select
-          id="type"
-          value={selectedType}
-          onChange={onChangeType}
-          className="max-w-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        >
-          <option value="">همه</option>
-          {Array.from(CartableRequestTypesPersianMap.entries()).map(
-            ([key, value]) => (
-              <option key={key} value={key} className="text-right">
-                {value}
-              </option>
-            )
-          )}
-        </select>
+      <div className="w-full  md:pr-3 flex flex-wrap lg:flex-col lg:w-3/12">
+        <div className="w-1/2 h-auto lg:w-full pl-6 lg:pl-0 mb-8">
+          <SDLabel htmlFor="type">نوع درخواست</SDLabel>
+          <SDSelect
+            id="type"
+            value={selectedType}
+            onChange={onChangeType}
+          >
+            <option value="">همه</option>
+            {Array.from(CartableRequestTypesPersianMap.entries()).map(
+              ([key, value]) => (
+                <option key={key} value={key} className="text-right">
+                  {value}
+                </option>
+              )
+            )}
+          </SDSelect>
+        </div>
+        <div className="w-1/2 h-auto lg:w-full mb-8">
+          <SDLabel htmlFor="type">‌درخواست‌کننده</SDLabel>
+          <SDTextInput />
+        </div>
       </div>
     </div>
   );
 
-  const handlePageClick = (event: SelectPageEvent) => {
-    fetchItems(selectedType, event.selected + 1);
-  };
+
 
   return (
-    <SDCard >
+    <SDCard>
       {isPending && loading}
       {data && !isPending && body}
       {pageCount && pageCount > 1 && (

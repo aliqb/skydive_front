@@ -198,7 +198,7 @@ const Account: React.FC = () => {
               <div className="flex flex-wrap gap-3 items-center justify-center text-center">
                 <span>اطلاعات شخصی</span>
                 {!personalInfoForm.formState.isValid && (
-                  <span className="mr-3 !text-xs !text-red-600">
+                  <span className="!text-xs !text-red-600">
                     (تکمیل نشده)
                   </span>
                 )}
