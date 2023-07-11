@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
-import useApi from "../../../hooks/useApi";
-import { BaseResponse } from "../../../models/shared.models";
-import { userType, ticketType } from "../../../models/usermanagement.models";
-import SDSpinner from "../../shared/Spinner";
+import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import useApi from '../../../hooks/useApi';
+import { BaseResponse } from '../../../models/shared.models';
+import { userType, ticketType } from '../../../models/usermanagement.models';
+import SDSpinner from '../../shared/Spinner';
+import { SkyDiveEventTicketType } from '../../../models/skyDiveEvents.models';
 
-type UserType = userType["title"];
-type UserTicket = ticketType["title"];
+type UserType = userType['title'];
+type UserTicket = ticketType['title'];
 
 interface AssignTicketTypes {
   userTypeId: string;
@@ -15,62 +16,82 @@ interface AssignTicketTypes {
 
 const UserTypeSettings: React.FC = () => {
   const { sendRequest, isPending } = useApi<null, BaseResponse<userType[]>>();
-  const { sendRequest: sendPostRequest, isPending: inPendingPost } = useApi<
+  const { sendRequest: sendPostRequest, isPending: isPendingPost } = useApi<
     AssignTicketTypes,
     BaseResponse<null>
+  >();
+  const { sendRequest: getTicketTypesRequest } = useApi<
+    null,
+    BaseResponse<SkyDiveEventTicketType[]>
   >();
   const [selectedUserTypes, setSelectedUserTypes] = useState<UserType[]>([]);
   const [selectedTickets, setSelectedTickets] = useState<{
     [key in UserType]: UserTicket[];
-  }>({
-    "همراه با مربی": [],
-    آزاد: [],
-    ویژه: [],
-  });
+  }>({});
   const [userTypes, setUserTypes] = useState<userType[]>([]);
-  const [isOpen, setIsOpen] = useState<{ [key in UserType]: boolean }>({
-    "همراه با مربی": false,
-    آزاد: false,
-    ویژه: false,
-  });
+  const [isOpen, setIsOpen] = useState<{ [key in UserType]: boolean }>({});
+  const [allowedTicketTypes, setAllowedTicketTypes] = useState<{
+    [key in UserType]: UserTicket[];
+  }>({});
 
   useEffect(() => {
-    sendRequest(
-      {
-        url: "/UserTypes",
-      },
-      (response) => {
-        if (response?.content.length > 0) {
-          setUserTypes(response.content);
+    getTicketTypesRequest({ url: '/SkyDiveEventTicketType' }, (response) => {
+      const ticketTypesByUserType = response.content.reduce(
+        (acc, currentTicket) => {
+          if (!acc[currentTicket.title]) {
+            acc[currentTicket.title] = [];
+          }
+          acc[currentTicket.title].push(currentTicket.title);
+          return acc;
+        },
+        {} as { [key in UserType]: UserTicket[] }
+      );
+      setAllowedTicketTypes(ticketTypesByUserType);
+    });
+  }, [getTicketTypesRequest]);
 
-          const initialSelectedTickets: {
-            [key in UserType]: UserTicket[];
-          } = {
-            "همراه با مربی": [],
-            آزاد: [],
-            ویژه: [],
-          };
+  useEffect(() => {
+    sendRequest({ url: '/UserTypes' }, (response) => {
+      if (response?.content.length > 0) {
+        setUserTypes(response.content);
 
-          response?.content.forEach((userType) => {
-            initialSelectedTickets[userType.title] =
-              userType.allowedTicketTypes.map(
-                (ticketType) => ticketType.title
-              ) || [];
-          });
+        const initialSelectedTickets: { [key in UserType]: UserTicket[] } = {};
 
-          setSelectedTickets(initialSelectedTickets);
-        }
+        response?.content.forEach((userType) => {
+          initialSelectedTickets[userType.title] =
+            userType.allowedTicketTypes.map((ticketType) => ticketType.title) ||
+            [];
+        });
+
+        setSelectedTickets(initialSelectedTickets);
       }
-    );
+    });
   }, [sendRequest]);
+
+  const isTicketAllowedForUserType = (
+    userType: UserType,
+    ticket: UserTicket
+  ) => {
+    const userTypeObj = userTypes.find((u) => u.title === userType);
+    if (userTypeObj) {
+      const ticketObj = userTypeObj.allowedTicketTypes.find(
+        (t) => t.title === ticket
+      );
+      return Boolean(ticketObj);
+    }
+    return false;
+  };
 
   const handleUserTypeClick = (userType: UserType) => {
     if (selectedUserTypes.includes(userType)) {
-      setSelectedUserTypes(
-        selectedUserTypes.filter((type) => type !== userType)
+      setSelectedUserTypes((prevSelectedUserTypes) =>
+        prevSelectedUserTypes.filter((type) => type !== userType)
       );
     } else {
-      setSelectedUserTypes([...selectedUserTypes, userType]);
+      setSelectedUserTypes((prevSelectedUserTypes) => [
+        ...prevSelectedUserTypes,
+        userType,
+      ]);
     }
 
     setIsOpen((prevState) => ({
@@ -84,7 +105,7 @@ const UserTypeSettings: React.FC = () => {
 
     if (userTypeObj) {
       const ticketObj = userTypeObj.allowedTicketTypes.find(
-        (ticketType) => ticketType.title === ticket
+        (t) => t.title === ticket
       );
 
       if (ticketObj) {
@@ -95,8 +116,8 @@ const UserTypeSettings: React.FC = () => {
 
         sendPostRequest(
           {
-            url: "/UserTypes/AssignTicketType",
-            method: "post",
+            url: '/UserTypes/AssignTicketType',
+            method: 'post',
             data: assignTicketTypes,
           },
           (response) => {
@@ -120,12 +141,6 @@ const UserTypeSettings: React.FC = () => {
     });
   };
 
-  const allowedTicketTypes: { [key in UserType]: UserTicket[] } = {
-    "همراه با مربی": ["همراه با مربی", "آزاد", "چارتر", "ویژه"],
-    آزاد: ["همراه با مربی", "آزاد", "چارتر", "ویژه"],
-    ویژه: ["همراه با مربی", "آزاد", "چارتر", "ویژه"],
-  };
-
   if (isPending) {
     return (
       <div className="flex justify-center pt-6 w-full">
@@ -142,24 +157,24 @@ const UserTypeSettings: React.FC = () => {
             key={userType.title}
             className={`flex flex-col ${
               selectedUserTypes.includes(userType.title)
-                ? "bg-black-200 text-blue-600"
-                : "bg-white"
+                ? 'bg-black-200'
+                : 'bg-white'
             }`}
             style={{
-              border: "1px solid gray",
-              borderRadius: "0.5rem",
-              transition: "background-color 0.3s",
+              border: '1px solid gray',
+              borderRadius: '0.5rem',
+              transition: 'background-color 0.3s',
             }}
           >
             <button
               className={`p-4 text-lg font-bold w-full text-right flex items-center ${
                 selectedUserTypes.includes(userType.title)
-                  ? "text-blue-600"
-                  : ""
+                  ? 'text-blue-600'
+                  : ''
               }`}
               onClick={() => handleUserTypeClick(userType.title)}
               style={{
-                transition: "color 0.3s",
+                transition: 'color 0.3s',
               }}
             >
               <div className="flex items-center">
@@ -194,96 +209,58 @@ const UserTypeSettings: React.FC = () => {
                     />
                   </svg>
                 )}
-                <span className="ml-2">{userType.title}</span>
+                <span>{userType.title}</span>
               </div>
             </button>
-
             {selectedUserTypes.includes(userType.title) && (
               <ul className="space-y-2 p-4">
-                {allowedTicketTypes[userType.title] &&
-                  allowedTicketTypes[userType.title].map((ticketType) => (
+                {Object.entries(allowedTicketTypes).map(
+                  ([ticketTypeUserType]) => (
                     <li
-                      key={ticketType}
-                      className={`flex items-center ${
+                      key={ticketTypeUserType}
+                      className={`flex items-center justify-between ${
                         selectedTickets[userType.title] &&
-                        selectedTickets[userType.title].includes(ticketType)
-                          ? "text-black"
-                          : "text-black"
+                        selectedTickets[userType.title].includes(
+                          ticketTypeUserType
+                        )
+                          ? 'text-red-700'
+                          : ''
                       }`}
                     >
-                      <span
-                        className={`px-2 ml-4 py-1 rounded-md ${
-                          selectedTickets[userType.title] &&
-                          selectedTickets[userType.title].includes(ticketType)
-                            ? "bg-green-200"
-                            : "bg-white"
-                        }`}
-                      >
-                        {ticketType}
-                      </span>
-                      {!selectedTickets[userType.title]?.includes(
-                        ticketType
-                      ) && (
-                        <button
-                          className="px-2 py-1 rounded-md bg-green-200 ml-2 flex items-center"
-                          onClick={() =>
-                            handleAddTicket(userType.title, ticketType)
-                          }
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-6 h-6"
+                      <span className="text-md">{ticketTypeUserType}</span>
+                      <div>
+                        {selectedTickets[userType.title] &&
+                        selectedTickets[userType.title].includes(
+                          ticketTypeUserType
+                        ) ? (
+                          <button
+                            className="px-2 py-1 rounded-md bg-red-200 ml-2 flex items-center"
+                            onClick={() =>
+                              handleRemoveTicket(
+                                userType.title,
+                                ticketTypeUserType
+                              )
+                            }
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M12 4.5v15m7.5-7.5h-15"
-                            />
-                          </svg>
-                          <span className="ml-2">
-                            {inPendingPost && <SDSpinner color="blue" />}
-                            افزودن
-                          </span>
-                        </button>
-                      )}
-                      {selectedTickets[userType.title]?.includes(
-                        ticketType
-                      ) && (
-                        <button
-                          className={`px-2 py-1 rounded-md bg-red-200 ml-2 flex items-center ${
-                            selectedTickets[userType.title]?.includes(
-                              ticketType
-                            )
-                              ? "text-black"
-                              : ""
-                          }`}
-                          onClick={() =>
-                            handleRemoveTicket(userType.title, ticketType)
-                          }
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="w-6 h-6"
+                            - حذف
+                          </button>
+                        ) : (
+                          <button
+                            className="px-2 py-1 rounded-md bg-green-200 ml-2 flex items-center"
+                            onClick={() =>
+                              handleAddTicket(
+                                userType.title,
+                                ticketTypeUserType
+                              )
+                            }
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M19.5 12h-15"
-                            />
-                          </svg>
-                          <span className="ml-2">حذف</span>
-                        </button>
-                      )}
+                            + افزودن
+                          </button>
+                        )}
+                      </div>
                     </li>
-                  ))}
+                  )
+                )}
               </ul>
             )}
           </li>
