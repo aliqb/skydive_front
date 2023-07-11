@@ -5,11 +5,13 @@ import {
 } from "../../../models/cartable.models";
 import SDTooltip from "../../shared/Tooltip";
 
-interface CartableItemProps extends CartableMessage{
-  onDelete:(id:string)=>void
+interface CartableItemProps extends CartableMessage {
+  onDelete: (id: string) => void;
 }
 
 const CartableItem: React.FC<CartableItemProps> = (props) => {
+  const [hour, minute] = props.time.split(":");
+  const timeString = [hour, minute].join(":");
   const navigate = useNavigate();
   const onClickTitle: React.MouseEventHandler<HTMLButtonElement> = () => {
     if (props.requestType === CartableRequestTypes.USER_INFORMATION_CONFIRM) {
@@ -17,9 +19,9 @@ const CartableItem: React.FC<CartableItemProps> = (props) => {
     }
   };
 
-  const handleClickDelete : React.MouseEventHandler = ()=>{
-    props.onDelete(props.id)
-  }
+  const handleClickDelete: React.MouseEventHandler = () => {
+    props.onDelete(props.id);
+  };
 
   return (
     <div className="flex gap-11 items-center border-b py-8 last:border-none">
@@ -44,7 +46,11 @@ const CartableItem: React.FC<CartableItemProps> = (props) => {
           <button className="font-bold text-lg ml-6" onClick={onClickTitle}>
             {props.requestTypeDisplay}
           </button>
-          <p className="text-green-400 text-sm">در {props.createdAt}</p>
+          <p className="text-green-400 text-sm">
+            در
+            <span >{props.createdAt}</span>
+            <span className="mx-2">{timeString}</span>
+          </p>
           <div className="mr-10">
             <SDTooltip
               content="حذف"
