@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { PersonalInfoEditableFormData } from "../../../models/account.models";
 import { useAppDispatch } from "../../../hooks/reduxHooks";
 import { accoutnActions } from "../../../store/account";
-import { phoneInputValidator } from "../../../utils/shared";
+import { Regexes, phoneInputValidator } from "../../../utils/shared";
 
 interface PersonalInfoProps {
   onSubmit: () => void;
@@ -202,7 +202,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
                 valueAsNumber: true,
                 required: "فیلد اجباری است.",
               })}
-              type="number"
+              numeric={true}
               id="height"
               className="ltr"
               disabled={props.disableAll}
@@ -226,7 +226,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
                 valueAsNumber: true,
                 required: "فیلد اجباری است.",
               })}
-              type="number"
+              numeric={true}
               id="weight"
               disabled={props.disableAll}
               invalid={!!errors.weight && touchedFields.weight}
@@ -252,6 +252,10 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
               <SDTextInput
                 {...register("emergencyContact", {
                   required: "فیلد اجباری است.",
+                  pattern: {
+                    value: Regexes.persianName,
+                    message: "نام باید فارسی باشد.",
+                  },
                 })}
                 type="text"
                 disabled={props.disableAll}
@@ -277,7 +281,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
               <SDTextInput
                 {...register("emergencyPhone", {
                   pattern: {
-                    value: /(\+98|0|0098)9\d{9}$/,
+                    value: Regexes.mobile,
                     message: "شماره موبایل صحیح نیست.",
                   },
 
@@ -303,7 +307,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
           </div>
         </div>
         <div className="w-full flex justify-center ">
-          <SDButton className="w-full md:w-1/2" color="primary" type="submit">
+          <SDButton className="w-full md:w-1/2" color="primary" type="submit" disabled={props.disableAll}>
             مرحله بعد
           </SDButton>
         </div>

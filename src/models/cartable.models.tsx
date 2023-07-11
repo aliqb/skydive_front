@@ -10,6 +10,7 @@ export interface CartableMessage {
   updatedAt: string;
   applicantCode: number;
   applicantTypeDisplay: string;
+  time: string;
 }
 
 export const CartableRequestTypes = {

@@ -7,6 +7,7 @@ import PasswordInput from "../shared/PasswordInput";
 import SDButton from "../shared/Button";
 import SDSpinner from "../shared/Spinner";
 import { toast } from "react-toastify";
+import { Regexes } from "../../utils/shared";
 
 
 interface ChangePasswordFormData {
@@ -62,7 +63,7 @@ const ResetPasswordFinalComponent: React.FC<ResetPasswordFinalComponentProps> = 
             {...register("password", {
               required: "لطفا رمزعبور خود را وارد کنید.",
               pattern: {
-                value: /^(?=.*\d)(?=.*[A-Za-z])[\dA-Za-z!@#$%^&*\-()+=]{6,}$/,
+                value: Regexes.password,
                 message:
                   "رمز عبور حداقل 6 کاراکتر و شامل اعداد و حروف انگلیسی باشد.",
               },

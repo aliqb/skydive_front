@@ -67,6 +67,7 @@ const PasswordInput: React.FC<PasswordInputProps> = forwardRef(
         <button
           type="button"
           onClick={toggleShowPassword}
+          tabIndex={10}
           className="absolute inset-y-0  flex items-center left-0 pl-3"
         >
           {showPassword ? hidePasswordIcon : showPasswordIcon}

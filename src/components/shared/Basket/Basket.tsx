@@ -95,7 +95,7 @@ const Basket: React.FC<BasketProps> = ({
           )}
         </div>
       ) : (
-         emptyMessage 
+        emptyMessage
       )}
     </>
   );
@@ -127,7 +127,10 @@ const Basket: React.FC<BasketProps> = ({
       {basketState.loading && laodingContainer}
       {basketState.error && errorMessage}
       {basketState.basket && !basketState.loading && body}
-      {!basketState.basket && !basketState.loading && emptyMessage}
+      {!basketState.basket &&
+        !basketState.loading &&
+        !basketState.error &&
+        emptyMessage}
     </SDCard>
   );
 };

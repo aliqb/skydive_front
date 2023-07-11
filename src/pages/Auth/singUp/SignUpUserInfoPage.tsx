@@ -12,6 +12,7 @@ import { UserSecurityInformation } from "../../../models/auth.models";
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { authActions } from "../../../store/auth";
 import { updateAuthDataInLocal } from "../../../utils/authUtils";
+import { Regexes } from "../../../utils/shared";
 
 interface UserInfoFormData {
   username: string;
@@ -28,7 +29,6 @@ const SingUpUserInfoPage: React.FC = () => {
     mode: "onTouched",
   });
 
-
   const {
     sendRequest,
     errors: apiErrors,
@@ -41,13 +41,13 @@ const SingUpUserInfoPage: React.FC = () => {
   const passwordRef = useRef<string | undefined>();
   passwordRef.current = watch("password", "");
 
-  const isAuthenticated = useAppSelector(state=>state.auth.isAuthenticated)
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
-  useEffect(()=>{
-    if(!isAuthenticated){
-      navigate('/auth')
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/auth");
     }
-  },[isAuthenticated,navigate])
+  }, [isAuthenticated, navigate]);
 
   function onSubmit(data: UserInfoFormData) {
     sendRequest(
@@ -60,9 +60,9 @@ const SingUpUserInfoPage: React.FC = () => {
         },
       },
       () => {
-        updateAuthDataInLocal({securityInformationCompleted:true})
-        dispatch(authActions.completeSecurityInformation())
-        navigate("/")
+        updateAuthDataInLocal({ securityInformationCompleted: true });
+        dispatch(authActions.completeSecurityInformation());
+        navigate("/");
       }
     );
   }
@@ -86,7 +86,7 @@ const SingUpUserInfoPage: React.FC = () => {
             {...register("username", {
               required: "فیلد الزامی است.",
               pattern: {
-                value: /^[\da-zA-z]*$/,
+                value: Regexes.username,
                 message: "نام کاربری فقط باید شامل اعداد و حروف انگلیسی باشد.",
               },
               minLength: {
@@ -112,7 +112,7 @@ const SingUpUserInfoPage: React.FC = () => {
             {...register("password", {
               required: "لطفا رمزعبور خود را وارد کنید.",
               pattern: {
-                value: /^(?=.*\d)(?=.*[A-Za-z])[\dA-Za-z!@#$%^&*\-()+=]{6,}$/,
+                value: Regexes.password,
                 message:
                   "رمز عبور حداقل 6 کاراکتر و شامل اعداد و حروف انگلیسی باشد.",
               },

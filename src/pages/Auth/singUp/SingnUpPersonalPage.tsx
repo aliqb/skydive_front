@@ -11,9 +11,8 @@ import SDDatepicker from "../../../components/shared/DatePicker";
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { authActions } from "../../../store/auth";
 import { updateAuthDataInLocal } from "../../../utils/authUtils";
-import {useEffect} from 'react';
-
-
+import { useEffect } from "react";
+import { Regexes } from "../../../utils/shared";
 
 const SingUpPersonaPage: React.FC = () => {
   const navigate = useNavigate();
@@ -32,13 +31,13 @@ const SingUpPersonaPage: React.FC = () => {
   });
 
   const dispatch = useAppDispatch();
-  const isAuthenticated = useAppSelector(state=>state.auth.isAuthenticated)
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
-  useEffect(()=>{
-    if(!isAuthenticated){
-      navigate('/auth')
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/auth");
     }
-  },[isAuthenticated,navigate])
+  }, [isAuthenticated, navigate]);
 
   function navigateToNextPage() {
     navigate("../user-info");
@@ -52,9 +51,9 @@ const SingUpPersonaPage: React.FC = () => {
         method: "post",
       },
       () => {
-        updateAuthDataInLocal({personalInformationCompleted:true})
-        dispatch(authActions.completePersonalInformation())
-        navigateToNextPage()
+        updateAuthDataInLocal({ personalInformationCompleted: true });
+        dispatch(authActions.completePersonalInformation());
+        navigateToNextPage();
       }
     );
   }
@@ -99,6 +98,10 @@ const SingUpPersonaPage: React.FC = () => {
           <SDTextInput
             {...register("firstName", {
               required: "فیلد الزامی است.",
+              pattern: {
+                value: Regexes.persianName,
+                message: "نام باید فارسی باشد.",
+              },
             })}
             type="text"
             id="firstName"
@@ -115,6 +118,10 @@ const SingUpPersonaPage: React.FC = () => {
           <SDTextInput
             {...register("lastName", {
               required: "فیلد الزامی است.",
+              pattern: {
+                value: Regexes.persianName,
+                message: "نام خانوادگی باید فارسی باشد.",
+              },
             })}
             type="text"
             id="lastName"
@@ -142,7 +149,12 @@ const SingUpPersonaPage: React.FC = () => {
           )}
         </div>
         <div>
-          <SDButton type="submit" color="success" className="w-full" disabled={isPending}>
+          <SDButton
+            type="submit"
+            color="success"
+            className="w-full"
+            disabled={isPending}
+          >
             {isPending && <SDSpinner />}
             مرحله بعد
           </SDButton>

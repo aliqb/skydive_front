@@ -1,18 +1,31 @@
 import { InputHTMLAttributes, forwardRef, Ref } from "react";
+import { replacePersianArabics } from "../../utils/shared";
 export interface SDTextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   invalid?: boolean;
+  numeric?: boolean;
 }
 
 const SDTextInput = forwardRef(
   (props: SDTextInputProps, ref: Ref<HTMLInputElement>) => {
     const inputProps = { ...props };
     delete inputProps.invalid;
+    delete inputProps.numeric;
     delete inputProps.className
+
+    const inputHandler : React.ChangeEventHandler<HTMLInputElement> = (event)=>{
+      let value = event.target.value;
+      if(props.numeric){
+        value = replacePersianArabics(value);
+        value = value.replace(/[^0-9]/g,'')
+        event.target.value = value;
+      }
+    }
 
     return (
       <input
         {...inputProps}
         id={props.id}
+        onInput={inputHandler}
         ref={ref}
         className={`${
           props.invalid
