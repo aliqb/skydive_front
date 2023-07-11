@@ -28,7 +28,6 @@ const UserTypeSettings: React.FC = () => {
     [key: string]: string[];
   }>({});
   const [userTypes, setUserTypes] = useState<userType[]>([]);
-  const [isOpen, setIsOpen] = useState<{ [key: string]: boolean }>({});
   const [allowedTicketTypes, setAllowedTicketTypes] = useState<{
     [key: string]: string[];
   }>({});
@@ -78,11 +77,6 @@ const UserTypeSettings: React.FC = () => {
         userType,
       ]);
     }
-
-    setIsOpen((prevState) => ({
-      ...prevState,
-      [userType]: !prevState[userType],
-    }));
   };
 
   const handleAddTicket = (userType: userType, ticketTypeUserType: string) => {
@@ -137,7 +131,6 @@ const UserTypeSettings: React.FC = () => {
         userTypes={userTypes}
         selectedUserTypes={selectedUserTypes}
         handleUserTypeClick={handleUserTypeClick}
-        isOpen={isOpen}
       />
       {selectedUserTypes.map((selectedUserType) => {
         const userType = userTypes.find((u) => u.title === selectedUserType);
