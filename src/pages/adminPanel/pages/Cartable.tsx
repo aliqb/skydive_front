@@ -10,9 +10,9 @@ import { BaseResponse, SelectPageEvent } from "../../../models/shared.models";
 import SDLabel from "../../../components/shared/Label";
 import SDSpinner from "../../../components/shared/Spinner";
 import ReactPaginate from "react-paginate";
-import SDTextInput from "../../../components/shared/TextInput";
 import SDSelect from "../../../components/shared/Select";
 import { toast } from "react-toastify";
+import SearchInput from "../../../components/shared/SearchInput";
 
 const Cartable: React.FC = () => {
   const { sendRequest, isPending, data } = useAPi<
@@ -20,19 +20,16 @@ const Cartable: React.FC = () => {
     BaseResponse<CartableMessage[]>
   >();
 
-  const {sendRequest:sendDeleteRequest} = useAPi<null,BaseResponse<null>>();
+  const { sendRequest: sendDeleteRequest } = useAPi<null, BaseResponse<null>>();
 
   const pageSize = 10;
   const [selectedType, setSelectedType] = useState<string>("");
   const [pageCount, setPageCount] = useState<number>();
-  const [pageIndex,setPageIndex] = useState<number>(1);
-
-  const onChangeType: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    setSelectedType(event.target.value);
-  };
+  const [pageIndex, setPageIndex] = useState<number>(1);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const fetchItems = useCallback(
-    (selectedType: string, pageIndex = 1) => {
+    (selectedType: string, searchTerm = "", pageIndex = 1) => {
       sendRequest(
         {
           url: "/Admin/AdminCartableMessages",
@@ -40,6 +37,7 @@ const Cartable: React.FC = () => {
             pageSize: pageSize,
             pageIndex: pageIndex,
             requestType: selectedType,
+            search: searchTerm,
           },
         },
         (response) => {
@@ -50,27 +48,43 @@ const Cartable: React.FC = () => {
     [sendRequest]
   );
 
-  const deleteMessage = (id:string)=>{
-    sendDeleteRequest({
-      url: `/admin/removeFromCartable/${id}`,
-      method: 'delete'
-    },(response)=>{
-      toast.success(response.message)
-      fetchItems(selectedType,pageIndex)
-    },(error)=>{
-      toast.error(error?.message)
-    })
-  }
+  const deleteMessage = (id: string) => {
+    sendDeleteRequest(
+      {
+        url: `/admin/removeFromCartable/${id}`,
+        method: "delete",
+      },
+      (response) => {
+        toast.success(response.message);
+        fetchItems(selectedType, searchTerm, pageIndex);
+      },
+      (error) => {
+        toast.error(error?.message);
+      }
+    );
+  };
+
+  const onChangeType: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
+    setPageIndex(1);
+    setSelectedType(event.target.value);
+  };
 
   const handlePageClick = (event: SelectPageEvent) => {
     const selectedPage = event.selected + 1;
-    setPageIndex(selectedPage)
-    fetchItems(selectedType, selectedPage);
+    setPageIndex(selectedPage);
+    // fetchItems(selectedType, searchTerm, selectedPage);
   };
 
+  const onSearchTermChange = useCallback((term: string) => {
+    console.log("ffff",term);
+    setSearchTerm(term);
+    setPageIndex(1);
+    // fetchItems(selectedType, term, 1);
+  }, []);
+
   useEffect(() => {
-    fetchItems(selectedType);
-  }, [fetchItems, selectedType]);
+    fetchItems(selectedType, searchTerm, pageIndex);
+  }, [fetchItems, selectedType, pageIndex, searchTerm]);
 
   const loading = (
     <div className="flex justify-center pt-6 w-full">
@@ -83,17 +97,15 @@ const Cartable: React.FC = () => {
       <div className="w-full lg:w-9/12">
         {data &&
           data.content.map((item, index) => {
-            return <CartableItem key={index} {...item} onDelete={deleteMessage} />;
+            return (
+              <CartableItem key={index} {...item} onDelete={deleteMessage} />
+            );
           })}
       </div>
       <div className="w-full  md:pr-3 flex flex-wrap lg:flex-col lg:w-3/12">
         <div className="w-1/2 h-auto lg:w-full pl-6 lg:pl-0 mb-8">
           <SDLabel htmlFor="type">نوع درخواست</SDLabel>
-          <SDSelect
-            id="type"
-            value={selectedType}
-            onChange={onChangeType}
-          >
+          <SDSelect id="type" value={selectedType} onChange={onChangeType}>
             <option value="">همه</option>
             {Array.from(CartableRequestTypesPersianMap.entries()).map(
               ([key, value]) => (
@@ -106,13 +118,12 @@ const Cartable: React.FC = () => {
         </div>
         <div className="w-1/2 h-auto lg:w-full mb-8">
           <SDLabel htmlFor="type">‌درخواست‌کننده</SDLabel>
-          <SDTextInput />
+          {/* <SDTextInput value={searchTerm} onChange={onSearchTermChange} /> */}
+          <SearchInput onSubmit={onSearchTermChange} searchTerm={searchTerm} />
         </div>
       </div>
     </div>
   );
-
-
 
   return (
     <SDCard>
@@ -121,6 +132,7 @@ const Cartable: React.FC = () => {
       {pageCount && pageCount > 1 && (
         <ReactPaginate
           breakLabel="..."
+          forcePage={pageIndex-1}
           nextLabel={
             <svg
               xmlns="http://www.w3.org/2000/svg"
