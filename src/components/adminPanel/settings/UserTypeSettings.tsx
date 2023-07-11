@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import useApi from '../../../hooks/useApi';
 import { BaseResponse } from '../../../models/shared.models';
-import { userType } from '../../../models/usermanagement.models';
+import { userType as UserTypeModel } from '../../../models/usermanagement.models';
 import SDSpinner from '../../shared/Spinner';
 import UserTypesList from './UserTypesList';
 import TicketTypesList from './TicketTypesList';
@@ -14,7 +14,10 @@ interface AssignTicketTypes {
 }
 
 const UserTypeSettings: React.FC = () => {
-  const { sendRequest, isPending } = useApi<null, BaseResponse<userType[]>>();
+  const { sendRequest, isPending } = useApi<
+    null,
+    BaseResponse<UserTypeModel[]>
+  >();
   const { sendRequest: sendPostRequest } = useApi<
     AssignTicketTypes,
     BaseResponse<null>
@@ -27,7 +30,7 @@ const UserTypeSettings: React.FC = () => {
   const [selectedTickets, setSelectedTickets] = useState<{
     [key: string]: string[];
   }>({});
-  const [userTypes, setUserTypes] = useState<userType[]>([]);
+  const [userTypes, setUserTypes] = useState<UserTypeModel[]>([]);
   const [allowedTicketTypes, setAllowedTicketTypes] = useState<{
     [key: string]: string[];
   }>({});
@@ -79,7 +82,10 @@ const UserTypeSettings: React.FC = () => {
     }
   };
 
-  const handleAddTicket = (userType: userType, ticketTypeUserType: string) => {
+  const handleAddTicket = (
+    userType: UserTypeModel,
+    ticketTypeUserType: string
+  ) => {
     console.log('Adding ticket:', userType, ticketTypeUserType);
 
     const ticketObj = userType.allowedTicketTypes.find(
@@ -131,23 +137,11 @@ const UserTypeSettings: React.FC = () => {
         userTypes={userTypes}
         selectedUserTypes={selectedUserTypes}
         handleUserTypeClick={handleUserTypeClick}
+        allowedTicketTypes={allowedTicketTypes}
+        handleAddTicket={handleAddTicket}
+        handleRemoveTicket={handleRemoveTicket}
+        selectedTickets={selectedTickets}
       />
-      {selectedUserTypes.map((selectedUserType) => {
-        const userType = userTypes.find((u) => u.title === selectedUserType);
-        if (userType) {
-          return (
-            <TicketTypesList
-              key={selectedUserType}
-              userType={userType}
-              selectedTickets={selectedTickets}
-              allowedTicketTypes={allowedTicketTypes}
-              handleAddTicket={handleAddTicket}
-              handleRemoveTicket={handleRemoveTicket}
-            />
-          );
-        }
-        return null;
-      })}
     </>
   );
 };

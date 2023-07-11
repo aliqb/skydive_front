@@ -1,9 +1,10 @@
+// TicketTypesList component
 import React from 'react';
 import { userType } from '../../../models/usermanagement.models';
 
 const TicketTypesList: React.FC<{
   userType: userType;
-  selectedTickets: { [key: string]: string[] };
+  selectedTickets: string[];
   allowedTicketTypes: { [key: string]: string[] };
   handleAddTicket: (userType: userType, ticketTypeUserType: string) => void;
   handleRemoveTicket: (userType: string, ticket: string) => void;
@@ -15,7 +16,7 @@ const TicketTypesList: React.FC<{
   handleRemoveTicket,
 }) => {
   const isSelectedTicket = (ticketType: string) =>
-    selectedTickets[userType.title]?.includes(ticketType);
+    selectedTickets.includes(ticketType);
 
   return (
     <ul className="space-y-2 p-4">
