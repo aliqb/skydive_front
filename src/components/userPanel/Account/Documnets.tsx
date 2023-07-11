@@ -63,7 +63,7 @@ const Documents: React.FC<DocumentsProp> = (props) => {
               disable={disableAll}
             />
           </div>
-          <div className="flex justify-center">
+          <div className="flex justify-center pt-6">
             <SDButton
               color="success"
               type="submit"
