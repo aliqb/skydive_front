@@ -80,7 +80,7 @@ const SkyDiveEventFlightsPage: React.FC = () => {
   return (
     <div className="flex relative mt-1 px-5">
       <SDCard className="px-0 pt-0 w-full lg:w-[65vw] border border-gray-200 relative">
-        <header className="flex flex-col items-center sticky top-[60px] bg-white pt-5 rounded-t-lg">
+        <header className="flex flex-col items-center sticky top-0 bg-white pt-5 rounded-t-lg">
           <h2 className="text-center font-bold text-lg">{eventTitle}</h2>
           <nav className="mt-8 flex border-b-2  border-gray-200 w-full">
             <ul className="flex w-full overflow-auto horizental-scrol">
