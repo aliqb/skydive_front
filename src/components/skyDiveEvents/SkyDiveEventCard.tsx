@@ -3,8 +3,12 @@ import SDCard from "../shared/Card";
 import { SkyDiveEvent } from "../../models/skyDiveEvents.models";
 
 const SkyDiveEventCard: React.FC<SkyDiveEvent> = (props) => {
+  // const notReservable = 
   return (
-    <Link to={`/events/${props.id}/days`}>
+    <Link
+      to={`/events/${props.id}/days`}
+      className={!props.reservable ? 'pointer-events-none' : ''}
+    >
       <SDCard className="!p-0 border-gray-200 border ">
         <div className="w-full aspect-[2] relative">
           <img
@@ -16,8 +20,8 @@ const SkyDiveEventCard: React.FC<SkyDiveEvent> = (props) => {
             {props.statusTitle}
           </span>
         </div>
-        <div className="py-4 px-4">
-          <p className="font-bold text-lg">{ props.title }</p>
+        <div className={`${!props.reservable ? 'opacity-70': ''} py-4 px-4`}>
+          <p className="font-bold text-lg">{props.title}</p>
           <div className="flex justify-between mt-2 text-slate-600 flex-wrap">
             <p className="my-1">{props.duration}</p>
             <p className="my-1">{props.capacity} ظرفیت خالی</p>

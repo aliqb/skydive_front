@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AuthData } from "../models/auth.models";
-import { UserGeneralInfo } from "../models/shared.models";
+import { UserGeneralInfo, UserStatusesPersianMap } from "../models/shared.models";
 
 interface AuthState {
   enteredUsername: string;
@@ -83,6 +83,10 @@ const authSlice = createSlice({
       state.enteredPhone = "";
       state.enteredUsername = "";
       state.genralInfoSet = true;
+    },
+    setUserStatus:(state,action: PayloadAction<string>)=>{
+      state.userStatus = action.payload;
+      state.userStatusDisplay = UserStatusesPersianMap.get(action.payload) || ''
     },
     setHttpHeader: (state) => {
       state.httpHeaderSet = true;
