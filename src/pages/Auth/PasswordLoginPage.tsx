@@ -153,6 +153,7 @@ const PasswordLoginPage: React.FC = () => {
             <button
               type="button"
               onClick={toggleShowPassword}
+              tabIndex={10}
               className="absolute inset-y-0  flex items-center left-32"
             >
               {showPassword ? hidePasswordIcon : showPasswordIcon}

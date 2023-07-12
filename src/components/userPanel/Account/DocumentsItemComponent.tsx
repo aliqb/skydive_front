@@ -12,12 +12,14 @@ interface DocumentItemProps {
   field: UserDocumentsFieldType;
   title: string;
   validation?: boolean;
+  disable: boolean;
 }
 
 const DocumentItemComponent: React.FC<DocumentItemProps> = ({
   title,
   validation,
   field,
+  disable,
 }) => {
   const documentData = useAppSelector((state) => state.account[field]);
   const dispatch = useAppDispatch();
@@ -39,9 +41,9 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
   }
 
   return (
-    <div className="flex justify-between mb-10 items-center flex-wrap">
-      <div className=" basis-1/3  xs:basis-1/2 md:basis-1/3">
-        <p className="text-slate-500 ">
+    <div className="flex justify-between i  py-8 border-b last:border-none first:pt-0  flex-wrap xs:border-none items-end">
+      <div className="w-full xs:w-1/2">
+        <p className="text-slate-500 text-center text-lg font-semibold xs:text-base xs:text-right">
           {title}
           {(!documentData?.fileId ||
             (documentData.withDate && !documentData?.expirationDate)) && (
@@ -49,12 +51,12 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
           )}
         </p>
         {documentData.withDate && (
-          <div className="relative pt-5">
-            <SDLabel className="absolute bg-white text-sm top-2 px-1 right-2">
+          <div className="relative pt-5 flex items-center w-[70%] m-auto xs:w-auto mb-4 xs:mb-0 xs:pl-20 sm:pl-28">
+            <SDLabel className="whitespace-nowrap ml-2  !mb-0 bg-white text-sm top-2 px-1 right-2  xs:absolute xs:ml-0">
               تاریخ انقضا
             </SDLabel>
             <SDDatepicker
-              inputClass=" !xs:w-40 text-center !bg-white border-slate-500"
+              inputClass=" text-center !bg-white border-slate-500"
               name="expireDate"
               onChange={onDateChange}
               required={true}
@@ -74,20 +76,24 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
           // </p>
         )}
       </div>
-      <div>
-        <LabeledFileInput
-          accepFiles="application/pdf,image/*"
-          title={title}
-          onUpload={onFileUpload}
-          onRemove={onFileRemove}
-          disabled={documentData.status === DocumnetStatus.PENDING}
-        />
+      <div className={`w-full xs:w-1/2 flex whitespace-nowrap justify-center gap-8 text-center mt-4 xs:mt-0 xs:justify-around items-center ${documentData.withDate ? 'xs:pb-2' : ''}`}>
+        <div >
+          <LabeledFileInput
+            accepFiles="application/pdf,image/*"
+            title={title}
+            onUpload={onFileUpload}
+            onRemove={onFileRemove}
+            disabled={documentData.status === DocumnetStatus.PENDING || disable}
+          />
+        </div>
+        <div >
+          <UserDocumentStatusLabel
+            status={documentData?.status || ""}
+            display={documentData?.statusDisplay || ""}
+            isUploading={isUploading}
+          ></UserDocumentStatusLabel>
+        </div>
       </div>
-      <UserDocumentStatusLabel
-        status={documentData?.status || ""}
-        display={documentData?.statusDisplay || ""}
-        isUploading={isUploading}
-      ></UserDocumentStatusLabel>
     </div>
   );
 };

@@ -4,8 +4,8 @@ import SDDropdown, { DropDownItem } from "../shared/Dropdown";
 import { useDispatch } from "react-redux";
 import { FaShoppingCart } from "react-icons/fa";
 import Basket from "../shared/Basket/Basket";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { MouseEventHandler, useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Logo from "../shared/Logo";
 import NotifBadge from "../shared/NotifBadge";
 import { removeAuthDataFromLocal } from "../../utils/authUtils";
@@ -14,18 +14,12 @@ const UserHeader: React.FC = () => {
   const name = useAppSelector((state) => state.auth.name);
   const dispatch = useDispatch();
   const location = useLocation();
-  const navigate = useNavigate();
   const [cartIsInBody, setCartIsInBody] = useState<boolean>(false);
   const [showBasket, setShowBasket] = useState<boolean>(false);
   const unReadMessagesCount = useAppSelector(
     (state) => state.messages.unReadCount
   );
 
-  const goToPayment: MouseEventHandler = (event) => {
-    event.stopPropagation();
-    setShowBasket(false);
-    navigate("/payment");
-  };
 
   useEffect(() => {
     if (
@@ -118,7 +112,7 @@ const UserHeader: React.FC = () => {
 
   return (
     <>
-      <div className="bg-primary-500 h-[60px] flex items-center fixed w-full top-0 z-20">
+      <div className="bg-primary-500 h-[60px] flex items-center w-full top-0 z-20">
         <Link to="/" className="mr-4 flex items-center">
           <Logo className="w-14" />
           <h1 className="text-white font-bold text-lg hidden xs:block">
@@ -129,7 +123,6 @@ const UserHeader: React.FC = () => {
           <button
             onMouseEnter={() => setShowBasket(true)}
             onMouseLeave={() => setShowBasket(false)}
-            onClick={goToPayment}
             className="ml-1"
           >
             <FaShoppingCart size="1.5rem" />
