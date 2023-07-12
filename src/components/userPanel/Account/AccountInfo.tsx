@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { OTPRequest, OTPResponse } from "../../../models/auth.models";
 import ChangePasswordModal from "./ChangePasswordModal";
 import UserStatusLabel from "../../shared/UserStatusLabel";
-import { GenralSettings } from "../../../models/generalSettings.models";
+import { GenralSettings } from "../../../models/settings.models";
 import { removeAuthDataFromLocal } from "../../../utils/authUtils";
 
 interface AccountInfoFormData {

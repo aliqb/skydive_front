@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
-import useApi from '../../../hooks/useApi';
-import { BaseResponse } from '../../../models/shared.models';
-import { userType as UserTypeModel } from '../../../models/usermanagement.models';
-import SDSpinner from '../../shared/Spinner';
-import UserTypesList from './UserTypesList';
-import { SkyDiveEventTicketType } from '../../../models/skyDiveEvents.models';
-
-interface AssignTicketTypes {
-  userTypeId: string;
-  ticketTypes: string[];
-}
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import useApi from "../../../hooks/useApi";
+import { BaseResponse } from "../../../models/shared.models";
+import {
+  AssignTicketTypes,
+  userType as UserTypeModel,
+} from "../../../models/usermanagement.models";
+import SDSpinner from "../../shared/Spinner";
+import UserTypesList from "./UserTypesList";
+import { SkyDiveEventTicketType } from "../../../models/skyDiveEvents.models";
+import { UnAssignTicketTypes } from "../../../models/settings.models";
 
 const UserTypeSettings: React.FC = () => {
   const { sendRequest, isPending } = useApi<
@@ -18,7 +17,7 @@ const UserTypeSettings: React.FC = () => {
     BaseResponse<UserTypeModel[]>
   >();
   const { sendRequest: sendPostRequest } = useApi<
-    AssignTicketTypes,
+    AssignTicketTypes | UnAssignTicketTypes,
     BaseResponse<null>
   >();
   const { sendRequest: getTicketTypesRequest } = useApi<
@@ -26,40 +25,40 @@ const UserTypeSettings: React.FC = () => {
     BaseResponse<SkyDiveEventTicketType[]>
   >();
 
-  const [selectedUserTypes, setSelectedUserTypes] = useState<string[]>([]);
   const [selectedTickets, setSelectedTickets] = useState<{
     [key: string]: string[];
   }>({});
   const [userTypes, setUserTypes] = useState<UserTypeModel[]>([]);
-  const [allowedTicketTypes, setAllowedTicketTypes] = useState<{
-    [key: string]: string[];
-  }>({});
+  const [allowedTicketTypes, setAllowedTicketTypes] = useState<
+    SkyDiveEventTicketType[]
+  >([]);
 
   useEffect(() => {
-    getTicketTypesRequest({ url: '/SkyDiveEventTicketType' }, (response) => {
-      const ticketTypesByUserType = response.content.reduce(
-        (acc, currentTicket) => {
-          return {
-            ...acc,
-            [currentTicket.title]: [currentTicket.title],
-          };
-        },
-        {} as { [key: string]: string[] }
-      );
-      setAllowedTicketTypes(ticketTypesByUserType);
+    getTicketTypesRequest({ url: "/SkyDiveEventTicketType" }, (response) => {
+      // const ticketTypesByUserType = response.content.reduce(
+      //   (acc, currentTicket) => {
+      //     return {
+      //       ...acc,
+      //       [currentTicket.id]: [currentTicket.id],
+      //     };
+      //   },
+      //   {} as { [key: string]: string[] }
+      // );
+      // console.log(ticketTypesByUserType)
+      setAllowedTicketTypes(response.content);
     });
   }, [getTicketTypesRequest]);
 
   useEffect(() => {
-    sendRequest({ url: '/UserTypes' }, (response) => {
+    sendRequest({ url: "/UserTypes" }, (response) => {
       if (response?.content.length > 0) {
         setUserTypes(response.content);
         setSelectedTickets(
           response.content.reduce((acc, userType) => {
             return {
               ...acc,
-              [userType.title]: userType.allowedTicketTypes.map(
-                (ticketType) => ticketType.title
+              [userType.id]: userType.allowedTicketTypes.map(
+                (ticketType) => ticketType.id //////////
               ),
             };
           }, {})
@@ -68,36 +67,25 @@ const UserTypeSettings: React.FC = () => {
     });
   }, [sendRequest]);
 
-  const handleUserTypeClick = (userType: string) => {
-    setSelectedUserTypes((prevSelectedUserTypes) => {
-      const newSelectedUserTypes = [...prevSelectedUserTypes];
-      const userTypeIndex = newSelectedUserTypes.indexOf(userType);
-      if (userTypeIndex !== -1) {
-        newSelectedUserTypes.splice(userTypeIndex, 1);
-      } else {
-        newSelectedUserTypes.push(userType);
-      }
-      return newSelectedUserTypes;
-    });
-  };
-
-  const handleAddTicket = (userType: string, ticketTypeUserType: string) => {
+  const handleAddTicket = (userTypeId: string, ticketTypeId: string) => {
     const assignTicketTypes: AssignTicketTypes = {
-      userTypeId: userType,
-      ticketTypes: [ticketTypeUserType],
+      userTypeId: userTypeId,
+      ticketTypes: [ticketTypeId],
     };
 
-    sendPostRequest(
+    console.log(assignTicketTypes);
+
+    return sendPostRequest(
       {
-        url: '/UserTypes/AssignTicketType',
-        method: 'post',
+        url: "/UserTypes/AssignTicketType",
+        method: "post",
         data: assignTicketTypes,
       },
       (response) => {
         setSelectedTickets((prevState) => {
           return {
             ...prevState,
-            [userType]: [...prevState[userType], ticketTypeUserType],
+            [userTypeId]: [...prevState[userTypeId], ticketTypeId],
           };
         });
         toast.success(response.message);
@@ -108,20 +96,42 @@ const UserTypeSettings: React.FC = () => {
     );
   };
 
-  const handleRemoveTicket = (userType: string, ticket: string) => {
-    setSelectedTickets((prevState) => {
-      const updatedTickets = { ...prevState };
-      updatedTickets[userType] = prevState[userType].filter(
-        (t) => t !== ticket
-      );
-      return updatedTickets;
-    });
+  const handleRemoveTicket = (userTypeId: string, ticketTypeId: string) => {
+    const ticketTypeIds =
+      selectedTickets[userTypeId].filter((id) => id !== ticketTypeId) || [];
+
+    console.log(ticketTypeIds);
+
+    const body: UnAssignTicketTypes = {
+      userTypeId: userTypeId,
+      ticketTypeId: ticketTypeId,
+    };
+
+    return sendPostRequest(
+      {
+        url: "/UserTypes/UnAssignTicketType",
+        method: "put",
+        data: body,
+      },
+      (response) => {
+        setSelectedTickets((prevState) => {
+          return {
+            ...prevState,
+            [userTypeId]: ticketTypeIds,
+          };
+        });
+        toast.success(response.message);
+      },
+      (error) => {
+        toast.error(error?.message);
+      }
+    );
   };
 
   if (isPending) {
     return (
       <div className="flex justify-center pt-6 w-full">
-        <SDSpinner size={20} />
+        <SDSpinner size={20} color="blue" />
       </div>
     );
   }
@@ -129,8 +139,6 @@ const UserTypeSettings: React.FC = () => {
   return (
     <UserTypesList
       userTypes={userTypes}
-      selectedUserTypes={selectedUserTypes}
-      handleUserTypeClick={handleUserTypeClick}
       allowedTicketTypes={allowedTicketTypes}
       handleAddTicket={handleAddTicket}
       handleRemoveTicket={handleRemoveTicket}

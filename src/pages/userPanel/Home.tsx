@@ -4,7 +4,7 @@ import HomeLink, {
 } from "../../components/userPanel/home/HomeLink";
 import { useAppSelector } from "../../hooks/reduxHooks";
 import useAPi from "../../hooks/useApi";
-import { GenralSettings } from "../../models/generalSettings.models";
+import { GenralSettings } from "../../models/settings.models";
 import { BaseResponse, UserStatuses } from "../../models/shared.models";
 import { useState, useEffect } from "react";
 

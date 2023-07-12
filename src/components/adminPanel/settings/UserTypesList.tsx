@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
 import { userType } from '../../../models/usermanagement.models';
 import TicketTypesList from './TicketTypesList';
+import {  SkyDiveEventTicketType } from '../../../models/skyDiveEvents.models';
 
 const UserTypesList: React.FC<{
   userTypes: userType[];
-  selectedUserTypes: string[];
-  handleUserTypeClick: (userType: string) => void;
-  allowedTicketTypes: { [key: string]: string[] };
-  handleAddTicket: (userType: string, ticketTypeUserType: string) => void;
-  handleRemoveTicket: (userType: string, ticket: string) => void;
+  allowedTicketTypes: SkyDiveEventTicketType[]
+  handleAddTicket: (userType: string, ticketTypeUserType: string) => Promise<void>;
+  handleRemoveTicket: (userType: string, ticket: string) => Promise<void>;
   selectedTickets: { [key: string]: string[] };
 }> = ({
   userTypes,
-  selectedUserTypes,
-  handleUserTypeClick,
   allowedTicketTypes,
   handleAddTicket,
   handleRemoveTicket,
@@ -32,7 +29,7 @@ const UserTypesList: React.FC<{
   return (
     <ul className="space-y-4">
       {userTypes.map((userType) => {
-        const isSelected = selectedUserTypes.includes(userType.title);
+        const isSelected = expandedUserType === userType.title
 
         return (
           <li
@@ -52,7 +49,6 @@ const UserTypesList: React.FC<{
               }`}
               onClick={() => {
                 toggleExpand(userType.title);
-                handleUserTypeClick(userType.title);
               }}
               style={{
                 transition: 'color 0.3s',
@@ -93,11 +89,11 @@ const UserTypesList: React.FC<{
                 <span>{userType.title}</span>
               </div>
             </button>
-            {expandedUserType === userType.title && (
+            {isSelected && (
               <div className="p-4">
                 <TicketTypesList
-                  userType={userType.title}
-                  selectedTickets={selectedTickets[userType.title]}
+                  userTypeId={userType.id}
+                  selectedTickets={selectedTickets[userType.id]}
                   allowedTicketTypes={allowedTicketTypes}
                   handleAddTicket={handleAddTicket}
                   handleRemoveTicket={handleRemoveTicket}
