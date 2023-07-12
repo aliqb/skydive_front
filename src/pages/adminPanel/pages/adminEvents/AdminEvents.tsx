@@ -10,7 +10,11 @@ import {
 } from "../../../../models/skyDiveEvents.models";
 import { BaseResponse } from "../../../../models/shared.models";
 import AdminEventModal from "../../../../components/adminPanel/adminEvent/AdminEventModal";
-import { ColDef, GridGetData, GridRef } from "../../../../components/shared/Grid/grid.types";
+import {
+  ColDef,
+  GridGetData,
+  GridRef,
+} from "../../../../components/shared/Grid/grid.types";
 import StatusIndicator from "../../../../components/shared/StatusIndicator";
 import { BiToggleLeft } from "react-icons/bi";
 import { BsAirplaneEngines } from "react-icons/bs";
@@ -52,9 +56,14 @@ const AdminEvents: React.FC = () => {
 
   const { sendRequest: publishRequest } = useAPi<null, BaseResponse<null>>();
 
-  const [ConfirmModal, confirmation] = useConfirm(
+  const [DeleteConfirmModal, deleteConfirmation] = useConfirm(
     " رویداد شما حذف خواهد شد. آیا مطمئن هستید؟ ",
     "حذف کردن رویداد"
+  );
+
+  const [PublishConfirmModal, publishConfirmation] = useConfirm(
+    "رویداد فعال شده و برای کاربران نمایش داده خواهد شد، آیا مطمئن هستید؟",
+    "فعال کردن رویداد"
   );
 
   const handleCloseEntryModal = (submitted: boolean) => {
@@ -142,7 +151,7 @@ const AdminEvents: React.FC = () => {
   ]);
 
   const fetchEvents = useCallback<GridGetData<SkyDiveEvent>>(
-    (gridParams,setRows) => {
+    (gridParams, setRows) => {
       sendRequest(
         {
           url: "/SkyDiveEvents",
@@ -160,7 +169,7 @@ const AdminEvents: React.FC = () => {
               const voidableString = item.voidable ? "هست" : "نیست";
               return { ...item, voidableString };
             }) || [];
-          setRows(processedData, response.total)
+          setRows(processedData, response.total);
         }
       );
     },
@@ -168,7 +177,7 @@ const AdminEvents: React.FC = () => {
   );
 
   const onRemove = async (item: SkyDiveEvent) => {
-    const confirm = await confirmation();
+    const confirm = await deleteConfirmation();
     if (confirm) {
       sendDeleteRequest(
         {
@@ -186,22 +195,24 @@ const AdminEvents: React.FC = () => {
     }
   };
 
-  const onPublishEvent = (item: SkyDiveEvent) => {
-    publishRequest(
-      {
-        url: `/SkyDiveEvents/PublishEvent/${item.id}`,
-        method: "put",
-      },
-      (response) => {
-        toast.success(response.message);
-        gridRef.current?.refresh();
-      },
-      (error) => {
-        toast.error(error?.message);
-      }
-    );
+  const onPublishEvent = async (item: SkyDiveEvent) => {
+    const confirm = await publishConfirmation();
+    if (confirm) {
+      publishRequest(
+        {
+          url: `/SkyDiveEvents/PublishEvent/${item.id}`,
+          method: "put",
+        },
+        (response) => {
+          toast.success(response.message);
+          gridRef.current?.refresh();
+        },
+        (error) => {
+          toast.error(error?.message);
+        }
+      );
+    }
   };
-
 
   useEffect(() => {
     const fetchEventStatuses = () => {
@@ -231,14 +242,14 @@ const AdminEvents: React.FC = () => {
     fetchLastCode();
   }, [lastCodeSendRequest]);
 
-
   if (errors) {
     return <div>Error: {errors.message}</div>;
   }
 
   return (
     <>
-      <ConfirmModal />
+      <DeleteConfirmModal />
+      <PublishConfirmModal />
       <AdminEventModal
         eventStatusData={eventStatusData?.content}
         lastCode={lastCode?.content || ""}
@@ -345,7 +356,7 @@ const AdminEvents: React.FC = () => {
               {
                 icon: <BiToggleLeft size="1.5rem" color="#e02424" />,
                 descriptions: "فعال کردن",
-                showField:'!isActive',
+                showField: "!isActive",
                 // disableField: '!isActive',
                 onClick: onPublishEvent,
               },

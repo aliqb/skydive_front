@@ -46,6 +46,7 @@ import Messages from "./pages/userPanel/Messages";
 import MyTransactionsPage from "./pages/userPanel/MyTransactionsPage";
 import AdminJumpRecoreds from "./pages/adminPanel/pages/userMamangement/userDetail/AdminJumpRecoreds";
 import UserTickets from "./pages/adminPanel/pages/userMamangement/userDetail/UserTickets";
+import UserTransactions from './pages/adminPanel/pages/userMamangement/userDetail/UserTransactions';
 import UserTransactions from "./pages/adminPanel/pages/userMamangement/userDetail/UserTransactions";
 import Messages from './pages/userPanel/Messages';
 import MyTransactionsPage from './pages/userPanel/MyTransactionsPage';

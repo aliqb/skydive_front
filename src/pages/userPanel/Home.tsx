@@ -2,20 +2,27 @@ import SDCard from "../../components/shared/Card";
 import HomeLink, {
   HomeLinkProps,
 } from "../../components/userPanel/home/HomeLink";
-import { useAppSelector } from "../../hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import useAPi from "../../hooks/useApi";
-import { GenralSettings } from "../../models/generalSettings.models";
+import { GenralSettings } from "../../models/settings.models";
 import { BaseResponse, UserStatuses } from "../../models/shared.models";
 import { useState, useEffect } from "react";
+import { authActions } from "../../store/auth";
 
 const Home: React.FC = () => {
-  const name = useAppSelector((state) => state.auth.name);
-  const authState = useAppSelector((state) => state.auth);
   const { sendRequest: sendSettingsRequest } = useAPi<
     null,
     BaseResponse<GenralSettings>
   >();
   const [links, setLinks] = useState<HomeLinkProps[]>([]);
+  const name = useAppSelector((state) => state.auth.name);
+  const authState = useAppSelector((state) => state.auth);
+  const { sendRequest: sendCheckActiveRequest } = useAPi<
+    null,
+    BaseResponse<boolean>
+  >();
+  const dispatch = useAppDispatch();
+
   const name = useAppSelector(state=>state.auth.name);
   const authState = useAppSelector(state=>state.auth);
   const links: HomeLinkProps[] = [
@@ -50,36 +57,81 @@ const Home: React.FC = () => {
     [UserStatuses.ACTIVE, "bg-green-200"],
     [UserStatuses.INACTIVE, "bg-red-500"],
   ]);
+  
 
-  useEffect(()=>{
-    sendSettingsRequest({
-      url: '/settings'
-    },(response)=>{
-      setLinks([
-        {
-          tilte: 'رویدادها',
-          href: '/events',
-        },
-        {
-          tilte: 'قوانین و شرایط',
-          href: response.content.termsAndConditionsUrl,
-          target: '_blank'
-        },
-        {
-          tilte: 'بلیت‌های من',
-          href: '/tickets',
-        },
-        {
-          tilte: 'سوابق پرش',
-          href: '/jumps',
-        },
-        {
-          tilte: 'سوابق تراکنش ها',
-          href: '/transactions',
-        },
-      ])
-    })
-  },[sendSettingsRequest])
+  useEffect(() => {
+    sendSettingsRequest(
+      {
+        url: "/settings",
+      },
+      (response) => {
+        setLinks([
+          {
+            tilte: "رویدادها",
+            href: "/events",
+          },
+          {
+            tilte: "قوانین و شرایط",
+            href: response.content.termsAndConditionsUrl,
+            newTab: true,
+          },
+          {
+            tilte: "بلیت‌های من",
+            href: "/tickets",
+            needActivation: true
+          },
+          {
+            tilte: "سوابق پرش",
+            href: "/jumps",
+            needActivation: true
+          },
+          {
+            tilte: "سوابق تراکنش ها",
+            href: "/transactions",
+            needActivation: true
+          },
+        ]);
+      },
+      () => {
+        setLinks([
+          {
+            tilte: "رویدادها",
+            href: "/events",
+          },
+          {
+            tilte: "قوانین و شرایط",
+            href: "",
+          },
+          {
+            tilte: "بلیت‌های من",
+            href: "/tickets",
+            needActivation: true
+          },
+          {
+            tilte: "سوابق پرش",
+            href: "/jumps",
+            needActivation: true
+          },
+          {
+            tilte: "سوابق تراکنش ها",
+            href: "/transactions",
+            needActivation: true
+          },
+        ]);
+      }
+    );
+
+    sendCheckActiveRequest(
+      {
+        url: "/Users/CheckIfUserIsActive",
+      },
+      (response) => {
+        if (response.content) {
+          dispatch(authActions.setUserStatus(UserStatuses.ACTIVE));
+        }
+      }
+    );
+  }, [sendSettingsRequest, dispatch, sendCheckActiveRequest,authState.userStatus]);
 
   return (
     <SDCard className="flex justify-center">
@@ -101,7 +153,13 @@ const Home: React.FC = () => {
         </div>
         <div className="flex flex-wrap justify-center">
           {links.map((link, index) => {
-            return <HomeLink key={index} {...link} />;
+            return (
+              <HomeLink
+                key={index}
+                {...link}
+                isActiveUser={authState.userStatus === UserStatuses.ACTIVE}
+              />
+            );
           })}
         </div>
       </main>

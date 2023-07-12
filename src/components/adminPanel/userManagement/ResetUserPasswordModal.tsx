@@ -7,6 +7,7 @@ import useAPi from "../../../hooks/useApi";
 import { BaseResponse } from "../../../models/shared.models";
 import { toast } from "react-toastify";
 import SDSpinner from "../../shared/Spinner";
+import { Regexes } from "../../../utils/shared";
 
 interface ResetUserPasswordModalProps {
   showModal: boolean;
@@ -91,7 +92,7 @@ const ResetUserPasswordModal: React.FC<ResetUserPasswordModalProps> = ({
             {...register("password", {
               required: "فیلد اجباری است.",
               pattern: {
-                value: /^(?=.*\d)(?=.*[A-Za-z])[\dA-Za-z!@#$%^&*\-()+=]{6,}$/,
+                value: Regexes.password,
                 message:
                   "رمز عبور حداقل 6 کاراکتر و شامل اعداد و حروف انگلیسی باشد.",
               },

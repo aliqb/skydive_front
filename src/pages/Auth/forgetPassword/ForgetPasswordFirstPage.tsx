@@ -7,7 +7,7 @@ import { authActions } from "../../../store/auth";
 import useAPi from "../../../hooks/useApi";
 import { OTPRequest, OTPResponse } from "../../../models/auth.models";
 import SDSpinner from "../../../components/shared/Spinner";
-import { phoneInputValidator } from "../../../utils/shared";
+import { Regexes, phoneInputValidator } from "../../../utils/shared";
 const ForgetPasswordFirstPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -60,7 +60,7 @@ const ForgetPasswordFirstPage: React.FC = () => {
             {...register("phone", {
               required: "لطفا شماره موبایل خود را وارد کنید.",
               pattern: {
-                value: /(\+98|0|0098)9\d{9}$/,
+                value: Regexes.mobile,
                 message: "شماره موبایل صحیح نیست.",
               },
             })}

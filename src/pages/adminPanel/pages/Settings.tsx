@@ -6,7 +6,7 @@ const Settings: React.FC = () => {
   return (
     <div className="flex flex-wrap">
       <section className="w-full lg:w-1/2 p-2">
-        <SettingsSectionCard title="نتظیمات عمومی">
+        <SettingsSectionCard title="تنظیمات عمومی">
           <GeneralSettings />
         </SettingsSectionCard>
       </section>
