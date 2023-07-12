@@ -9,7 +9,7 @@ import { OTPRequest, OTPResponse } from "../../../models/auth.models";
 import { BaseResponse } from "../../../models/shared.models";
 import { authActions } from "../../../store/auth";
 import { Regexes, phoneInputValidator } from "../../../utils/shared";
-import { GenralSettings } from "../../../models/generalSettings.models";
+import { GenralSettings } from "../../../models/settings.models";
 import { useEffect } from "react";
 
 const SignUpMobilePage: React.FC = () => {

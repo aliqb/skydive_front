@@ -1,5 +1,5 @@
 import { useFieldArray, useForm } from "react-hook-form";
-import { GenralSettings } from "../../../models/generalSettings.models";
+import { GenralSettings } from "../../../models/settings.models";
 import useAPi from "../../../hooks/useApi";
 import {
   BaseResponse,
