@@ -25,6 +25,7 @@ export interface SkyDiveEvent {
   createdAt: string;
   updatedAt: string;
   duration: string;
+  reservable: boolean;
 }
 
 export interface SkyDiveInlineEventDay {
