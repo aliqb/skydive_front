@@ -34,23 +34,13 @@ const UserTypeSettings: React.FC = () => {
   >([]);
 
   useEffect(() => {
-    getTicketTypesRequest({ url: "/SkyDiveEventTicketType" }, (response) => {
-      // const ticketTypesByUserType = response.content.reduce(
-      //   (acc, currentTicket) => {
-      //     return {
-      //       ...acc,
-      //       [currentTicket.id]: [currentTicket.id],
-      //     };
-      //   },
-      //   {} as { [key: string]: string[] }
-      // );
-      // console.log(ticketTypesByUserType)
+    getTicketTypesRequest({ url: '/SkyDiveEventTicketType' }, (response) => {
       setAllowedTicketTypes(response.content);
     });
   }, [getTicketTypesRequest]);
 
   useEffect(() => {
-    sendRequest({ url: "/UserTypes" }, (response) => {
+    sendRequest({ url: '/UserTypes' }, (response) => {
       if (response?.content.length > 0) {
         setUserTypes(response.content);
         setSelectedTickets(
@@ -58,7 +48,7 @@ const UserTypeSettings: React.FC = () => {
             return {
               ...acc,
               [userType.id]: userType.allowedTicketTypes.map(
-                (ticketType) => ticketType.id //////////
+                (ticketType) => ticketType.id
               ),
             };
           }, {})

@@ -1,6 +1,6 @@
-import { SkyDiveEventTicketType } from "../../../models/skyDiveEvents.models";
-import SDSpinner from "../../shared/Spinner";
-import { useState } from "react";
+import React, { useState } from 'react';
+import { SkyDiveEventTicketType } from '../../../models/skyDiveEvents.models';
+import SDSpinner from '../../shared/Spinner';
 
 const TicketTypesList: React.FC<{
   userTypeId: string;
@@ -41,11 +41,10 @@ const TicketTypesList: React.FC<{
         const isSelected = isSelectedTicket(ticketType.id);
 
         return (
-          <li
-            key={ticketType.id}
-            className="flex items-center justify-between"
-          >
-            <span className={`text-lg ${isSelected ? 'text-green-500' : ''}`}>{ticketType.title}</span>
+          <li key={ticketType.id} className="flex items-center justify-between">
+            <span className={`text-lg ${isSelected ? 'text-green-500' : ''}`}>
+              {ticketType.title}
+            </span>
             <div className="flex-grow flex">
               {isSelected ? (
                 <button
@@ -62,8 +61,8 @@ const TicketTypesList: React.FC<{
               ) : (
                 <button
                   className="px-2 mt-2 py-0.5 rounded-md text-green-700 text-sm bg-green-200 ml-2 flex items-center flex-grow-0  mr-2 disabled:opacity-70"
-                  onClick={(eevnt) => {
-                    eevnt.preventDefault();
+                  onClick={(event) => {
+                    event.preventDefault();
                     onAddClick(ticketType.id);
                   }}
                   disabled={isPending}
