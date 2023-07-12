@@ -1,12 +1,10 @@
-// TicketTypesList component
 import React from 'react';
-import { userType } from '../../../models/usermanagement.models';
 
 const TicketTypesList: React.FC<{
-  userType: userType;
+  userType: string;
   selectedTickets: string[];
   allowedTicketTypes: { [key: string]: string[] };
-  handleAddTicket: (userType: userType, ticketTypeUserType: string) => void;
+  handleAddTicket: (userType: string, ticketTypeUserType: string) => void;
   handleRemoveTicket: (userType: string, ticket: string) => void;
 }> = ({
   userType,
@@ -36,7 +34,7 @@ const TicketTypesList: React.FC<{
                 <button
                   className="px-2 py-1 rounded-md bg-red-200 ml-2 flex items-center flex-grow-0 mr-2"
                   onClick={() =>
-                    handleRemoveTicket(userType.title, ticketTypeUserType)
+                    handleRemoveTicket(userType, ticketTypeUserType)
                   }
                 >
                   - حذف

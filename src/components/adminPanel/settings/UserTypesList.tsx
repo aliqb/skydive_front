@@ -1,4 +1,3 @@
-// UserTypesList component
 import React, { useState } from 'react';
 import { userType } from '../../../models/usermanagement.models';
 import TicketTypesList from './TicketTypesList';
@@ -8,7 +7,7 @@ const UserTypesList: React.FC<{
   selectedUserTypes: string[];
   handleUserTypeClick: (userType: string) => void;
   allowedTicketTypes: { [key: string]: string[] };
-  handleAddTicket: (userType: userType, ticketTypeUserType: string) => void;
+  handleAddTicket: (userType: string, ticketTypeUserType: string) => void;
   handleRemoveTicket: (userType: string, ticket: string) => void;
   selectedTickets: { [key: string]: string[] };
 }> = ({
@@ -97,7 +96,7 @@ const UserTypesList: React.FC<{
             {expandedUserType === userType.title && (
               <div className="p-4">
                 <TicketTypesList
-                  userType={userType}
+                  userType={userType.title}
                   selectedTickets={selectedTickets[userType.title]}
                   allowedTicketTypes={allowedTicketTypes}
                   handleAddTicket={handleAddTicket}

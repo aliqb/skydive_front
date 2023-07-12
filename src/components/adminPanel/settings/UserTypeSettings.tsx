@@ -5,7 +5,6 @@ import { BaseResponse } from '../../../models/shared.models';
 import { userType as UserTypeModel } from '../../../models/usermanagement.models';
 import SDSpinner from '../../shared/Spinner';
 import UserTypesList from './UserTypesList';
-import TicketTypesList from './TicketTypesList';
 import { SkyDiveEventTicketType } from '../../../models/skyDiveEvents.models';
 
 interface AssignTicketTypes {
@@ -26,6 +25,7 @@ const UserTypeSettings: React.FC = () => {
     null,
     BaseResponse<SkyDiveEventTicketType[]>
   >();
+
   const [selectedUserTypes, setSelectedUserTypes] = useState<string[]>([]);
   const [selectedTickets, setSelectedTickets] = useState<{
     [key: string]: string[];
@@ -39,11 +39,10 @@ const UserTypeSettings: React.FC = () => {
     getTicketTypesRequest({ url: '/SkyDiveEventTicketType' }, (response) => {
       const ticketTypesByUserType = response.content.reduce(
         (acc, currentTicket) => {
-          if (!acc[currentTicket.title]) {
-            acc[currentTicket.title] = [];
-          }
-          acc[currentTicket.title].push(currentTicket.title);
-          return acc;
+          return {
+            ...acc,
+            [currentTicket.title]: [currentTicket.title],
+          };
         },
         {} as { [key: string]: string[] }
       );
@@ -55,62 +54,58 @@ const UserTypeSettings: React.FC = () => {
     sendRequest({ url: '/UserTypes' }, (response) => {
       if (response?.content.length > 0) {
         setUserTypes(response.content);
-
-        const initialSelectedTickets: { [key: string]: string[] } = {};
-
-        response?.content.forEach((userType) => {
-          initialSelectedTickets[userType.title] =
-            userType.allowedTicketTypes.map((ticketType) => ticketType.title) ||
-            [];
-        });
-
-        setSelectedTickets(initialSelectedTickets);
+        setSelectedTickets(
+          response.content.reduce((acc, userType) => {
+            return {
+              ...acc,
+              [userType.title]: userType.allowedTicketTypes.map(
+                (ticketType) => ticketType.title
+              ),
+            };
+          }, {})
+        );
       }
     });
   }, [sendRequest]);
 
   const handleUserTypeClick = (userType: string) => {
-    if (selectedUserTypes.includes(userType)) {
-      setSelectedUserTypes((prevSelectedUserTypes) =>
-        prevSelectedUserTypes.filter((type) => type !== userType)
-      );
-    } else {
-      setSelectedUserTypes((prevSelectedUserTypes) => [
-        ...prevSelectedUserTypes,
-        userType,
-      ]);
-    }
+    setSelectedUserTypes((prevSelectedUserTypes) => {
+      const newSelectedUserTypes = [...prevSelectedUserTypes];
+      const userTypeIndex = newSelectedUserTypes.indexOf(userType);
+      if (userTypeIndex !== -1) {
+        newSelectedUserTypes.splice(userTypeIndex, 1);
+      } else {
+        newSelectedUserTypes.push(userType);
+      }
+      return newSelectedUserTypes;
+    });
   };
 
-  const handleAddTicket = (
-    userType: UserTypeModel,
-    ticketTypeUserType: string
-  ) => {
-    console.log('Adding ticket:', userType, ticketTypeUserType);
+  const handleAddTicket = (userType: string, ticketTypeUserType: string) => {
+    const assignTicketTypes: AssignTicketTypes = {
+      userTypeId: userType,
+      ticketTypes: [ticketTypeUserType],
+    };
 
-    const ticketObj = userType.allowedTicketTypes.find(
-      (t) => t.title === ticketTypeUserType
+    sendPostRequest(
+      {
+        url: '/UserTypes/AssignTicketType',
+        method: 'post',
+        data: assignTicketTypes,
+      },
+      (response) => {
+        setSelectedTickets((prevState) => {
+          return {
+            ...prevState,
+            [userType]: [...prevState[userType], ticketTypeUserType],
+          };
+        });
+        toast.success(response.message);
+      },
+      (error) => {
+        toast.error(error?.message);
+      }
     );
-    if (ticketObj) {
-      const assignTicketTypes: AssignTicketTypes = {
-        userTypeId: userType.id,
-        ticketTypes: [ticketObj.id],
-      };
-
-      sendPostRequest(
-        {
-          url: '/UserTypes/AssignTicketType',
-          method: 'post',
-          data: assignTicketTypes,
-        },
-        (response) => {
-          toast.success(response.message);
-        },
-        (error) => {
-          toast.error(error?.message);
-        }
-      );
-    }
   };
 
   const handleRemoveTicket = (userType: string, ticket: string) => {
@@ -132,17 +127,15 @@ const UserTypeSettings: React.FC = () => {
   }
 
   return (
-    <>
-      <UserTypesList
-        userTypes={userTypes}
-        selectedUserTypes={selectedUserTypes}
-        handleUserTypeClick={handleUserTypeClick}
-        allowedTicketTypes={allowedTicketTypes}
-        handleAddTicket={handleAddTicket}
-        handleRemoveTicket={handleRemoveTicket}
-        selectedTickets={selectedTickets}
-      />
-    </>
+    <UserTypesList
+      userTypes={userTypes}
+      selectedUserTypes={selectedUserTypes}
+      handleUserTypeClick={handleUserTypeClick}
+      allowedTicketTypes={allowedTicketTypes}
+      handleAddTicket={handleAddTicket}
+      handleRemoveTicket={handleRemoveTicket}
+      selectedTickets={selectedTickets}
+    />
   );
 };
 
