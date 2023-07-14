@@ -7,6 +7,7 @@ import { ColDef, GridGetData } from "../../components/shared/Grid/grid.types";
 import Grid from "../../components/shared/Grid/Grid";
 import { Link } from "react-router-dom";
 import PdfPrintButton from "../../components/shared/PdfPrintButton";
+import { toast } from "react-toastify";
 
 const MyTicketsPage: React.FC = () => {
   const {
@@ -69,6 +70,10 @@ const MyTicketsPage: React.FC = () => {
     },
   ]);
 
+  const {
+    sendRequest: sendCancelRequest,
+  } = useAPi<null, BaseResponse<null>>();
+
   const fetchTickets = useCallback<GridGetData<UserTicket>>(
     (gridParams, setRows) => {
       sendRequest(
@@ -87,6 +92,17 @@ const MyTicketsPage: React.FC = () => {
     [sendRequest]
   );
 
+  function onCancelTicket(ticket: UserTicket){
+    sendCancelRequest({
+      url: `/Reservations/CancellingTicketRequest/${ticket.id}`,
+      method: 'put'
+    },(reponse)=>{
+      toast.success(reponse.message)
+    },(error)=>{
+      toast.error(error?.message)
+    })
+  }
+
   return (
     <SDCard>
       <h1 className="text-center font-bold text-xl py-5">بلیت‌های من</h1>
@@ -102,7 +118,7 @@ const MyTicketsPage: React.FC = () => {
                 icon: (
                   <div className="text-red-600 font-semibold">درخواست کنسل</div>
                 ),
-                onClick: (item: UserTicket) => console.log(item),
+                onClick: onCancelTicket,
                 descriptions: "",
                 showField: "voidable",
               },
