@@ -23,7 +23,7 @@ const UserPanelContainer: React.FC = () => {
     <div className="w-screen h-screen flex flex-col ">
       <UserHeader></UserHeader>
       <div className=" w-full flex flex-1 relative overflow-hidden">
-        <div className="flex-auto  overflow-auto ltr">
+        <div id="userMainContainer" className="flex-auto  overflow-auto ltr scroll-smooth">
           <div className="rtl">
             <Outlet></Outlet>
           </div>
