@@ -48,6 +48,7 @@ import UserTransactions from './pages/adminPanel/pages/userMamangement/userDetai
 import Messages from './pages/userPanel/Messages';
 import MyTransactionsPage from './pages/userPanel/MyTransactionsPage';
 import Wallet from './pages/userPanel/Wallet';
+import AdminUserWallet from './pages/adminPanel/pages/userMamangement/userDetail/AdminUserWallet';
 
 function App() {
   return (
@@ -118,6 +119,7 @@ function App() {
               <Route Component={UserTransactions} path="transactions"></Route>
               <Route Component={AdminUserDocument} path="documents"></Route>
               <Route Component={AdminJumpRecoreds} path="jumps"></Route>
+              <Route Component={AdminUserWallet} path="wallet"></Route>
             </Route>
             <Route Component={EditUserPage} path="users/:userId/edit"></Route>
             <Route Component={Outlet} path="events">
