@@ -2,7 +2,7 @@ import {  useNavigate } from "react-router-dom";
 import { BsAirplaneEngines } from "react-icons/bs";
 import { toast } from "react-toastify";
 export interface HomeLinkProps {
-  tilte: string;
+  title: string;
   href: string;
   newTab?: boolean;
   isActiveUser?: boolean;
@@ -21,7 +21,7 @@ const HomeLink: React.FC<HomeLinkProps> = (props) => {
       props.needActivation &&
       !props.isActiveUser
     ) {
-      toast.error('ابتدا حساب کاربری خود را تکمیل کنید.')
+      toast.error('ابتدا حساب کاربری خود را تکمیل کنید.');
       return;
     }
     navigate(props.href);
@@ -30,7 +30,7 @@ const HomeLink: React.FC<HomeLinkProps> = (props) => {
     <div className="p-1 my-1 min-w-fit w-1/2 flex justify-center mb-4">
       <button className="inline-flex gap-2 w-52" onClick={handleClick}>
         <BsAirplaneEngines size="1.5rem"></BsAirplaneEngines>
-        <span>{props.tilte}</span>
+        <span>{props.title}</span>
       </button>
     </div>
   );

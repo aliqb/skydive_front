@@ -41,13 +41,10 @@ import EditUserPage from "./pages/adminPanel/pages/userMamangement/EditUserPage"
 import AdminFlightsPage from "./pages/adminPanel/pages/adminEvents/AdminFlightsPage";
 import SkyDiveEventTermsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventTermsPage";
 import MyTicketsPage from "./pages/userPanel/MyTicketsPage";
-import JumpRecordsPage from "./pages/userPanel/JumpRecordsPage";
-import Messages from "./pages/userPanel/Messages";
-import MyTransactionsPage from "./pages/userPanel/MyTransactionsPage";
-import AdminJumpRecoreds from "./pages/adminPanel/pages/userMamangement/userDetail/AdminJumpRecoreds";
-import UserTickets from "./pages/adminPanel/pages/userMamangement/userDetail/UserTickets";
+import JumpRecordsPage from './pages/userPanel/JumpRecordsPage';
+import AdminJumpRecoreds from './pages/adminPanel/pages/userMamangement/userDetail/AdminJumpRecoreds';
+import UserTickets from './pages/adminPanel/pages/userMamangement/userDetail/UserTickets';
 import UserTransactions from './pages/adminPanel/pages/userMamangement/userDetail/UserTransactions';
-import UserTransactions from "./pages/adminPanel/pages/userMamangement/userDetail/UserTransactions";
 import Messages from './pages/userPanel/Messages';
 import MyTransactionsPage from './pages/userPanel/MyTransactionsPage';
 import Wallet from './pages/userPanel/Wallet';

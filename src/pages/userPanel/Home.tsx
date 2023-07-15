@@ -1,129 +1,84 @@
 import SDCard from "../../components/shared/Card";
 import HomeLink, {
   HomeLinkProps,
-} from "../../components/userPanel/home/HomeLink";
-import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
-import useAPi from "../../hooks/useApi";
-import { GenralSettings } from "../../models/settings.models";
-import { BaseResponse, UserStatuses } from "../../models/shared.models";
-import { useState, useEffect } from "react";
-import { authActions } from "../../store/auth";
+} from '../../components/userPanel/home/HomeLink';
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
+import useApi from '../../hooks/useApi';
+import { GeneralSettings } from '../../models/settings.models';
+import { BaseResponse, UserStatuses } from '../../models/shared.models';
+import { useState, useEffect } from 'react';
+import { authActions } from '../../store/auth';
 
 const Home: React.FC = () => {
-  const { sendRequest: sendSettingsRequest } = useAPi<
+  const { sendRequest: sendSettingsRequest } = useApi<
     null,
-    BaseResponse<GenralSettings>
+    BaseResponse<GeneralSettings>
   >();
   const [links, setLinks] = useState<HomeLinkProps[]>([]);
   const name = useAppSelector((state) => state.auth.name);
   const authState = useAppSelector((state) => state.auth);
-  const { sendRequest: sendCheckActiveRequest } = useAPi<
+  const { sendRequest: sendCheckActiveRequest } = useApi<
     null,
     BaseResponse<boolean>
   >();
   const dispatch = useAppDispatch();
 
-  const name = useAppSelector(state=>state.auth.name);
-  const authState = useAppSelector(state=>state.auth);
-  const links: HomeLinkProps[] = [
+  const initialLinks: HomeLinkProps[] = [
     {
-      tilte: 'رویدادها',
+      title: 'رویدادها',
       href: '/events',
     },
     {
-      tilte: 'قوانین و شرایط',
+      title: 'قوانین و شرایط',
       href: '',
     },
     {
-      tilte: 'سوابق پرش',
+      title: 'سوابق پرش',
       href: '/jumps',
     },
     {
-      tilte: 'کیف پول',
+      title: 'کیف پول',
       href: '/wallet',
     },
     {
-      tilte: 'بلیت‌های من',
+      title: 'بلیت‌های من',
       href: '/tickets',
     },
     {
-      tilte: 'سوابق تراکنش ها',
+      title: 'سوابق تراکنش ها',
       href: '/transactions',
     },
   ];
   const statusBgColorMap = new Map([
-    [UserStatuses.AWAITING_COMPLETION, "bg-yellow-300"],
-    [UserStatuses.PENDING, "bg-yellow-300"],
-    [UserStatuses.ACTIVE, "bg-green-200"],
-    [UserStatuses.INACTIVE, "bg-red-500"],
+    [UserStatuses.AWAITING_COMPLETION, 'bg-yellow-300'],
+    [UserStatuses.PENDING, 'bg-yellow-300'],
+    [UserStatuses.ACTIVE, 'bg-green-200'],
+    [UserStatuses.INACTIVE, 'bg-red-500'],
   ]);
-  
 
   useEffect(() => {
     sendSettingsRequest(
       {
-        url: "/settings",
+        url: '/settings',
       },
       (response) => {
         setLinks([
+          ...initialLinks,
           {
-            tilte: "رویدادها",
-            href: "/events",
-          },
-          {
-            tilte: "قوانین و شرایط",
+            title: 'قوانین و شرایط',
             href: response.content.termsAndConditionsUrl,
             newTab: true,
-          },
-          {
-            tilte: "بلیت‌های من",
-            href: "/tickets",
-            needActivation: true
-          },
-          {
-            tilte: "سوابق پرش",
-            href: "/jumps",
-            needActivation: true
-          },
-          {
-            tilte: "سوابق تراکنش ها",
-            href: "/transactions",
-            needActivation: true
           },
         ]);
       },
       () => {
-        setLinks([
-          {
-            tilte: "رویدادها",
-            href: "/events",
-          },
-          {
-            tilte: "قوانین و شرایط",
-            href: "",
-          },
-          {
-            tilte: "بلیت‌های من",
-            href: "/tickets",
-            needActivation: true
-          },
-          {
-            tilte: "سوابق پرش",
-            href: "/jumps",
-            needActivation: true
-          },
-          {
-            tilte: "سوابق تراکنش ها",
-            href: "/transactions",
-            needActivation: true
-          },
-        ]);
+        setLinks(initialLinks);
       }
     );
 
     sendCheckActiveRequest(
       {
-        url: "/Users/CheckIfUserIsActive",
+        url: '/Users/CheckIfUserIsActive',
       },
       (response) => {
         if (response.content) {
@@ -131,7 +86,12 @@ const Home: React.FC = () => {
         }
       }
     );
-  }, [sendSettingsRequest, dispatch, sendCheckActiveRequest,authState.userStatus]);
+  }, [
+    sendSettingsRequest,
+    dispatch,
+    sendCheckActiveRequest,
+    authState.userStatus,
+  ]);
 
   return (
     <SDCard className="flex justify-center">
@@ -152,18 +112,17 @@ const Home: React.FC = () => {
           </div>
         </div>
         <div className="flex flex-wrap justify-center">
-          {links.map((link, index) => {
-            return (
-              <HomeLink
-                key={index}
-                {...link}
-                isActiveUser={authState.userStatus === UserStatuses.ACTIVE}
-              />
-            );
-          })}
+          {links.map((link, index) => (
+            <HomeLink
+              key={index}
+              {...link}
+              isActiveUser={authState.userStatus === UserStatuses.ACTIVE}
+            />
+          ))}
         </div>
       </main>
     </SDCard>
   );
 };
+
 export default Home;

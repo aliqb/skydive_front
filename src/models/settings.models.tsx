@@ -1,6 +1,6 @@
 import { UserStatuses } from "./shared.models";
 
-export interface GenralSettings {
+export interface GeneralSettings {
   termsAndConditionsUrl: string;
   userStatusInfo: UserStatusInfo[];
   id: string;
