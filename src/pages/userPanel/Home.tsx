@@ -35,10 +35,12 @@ const Home: React.FC = () => {
     {
       title: 'سوابق پرش',
       href: '/jumps',
+      needActivation: true,
     },
     {
       title: 'کیف پول',
       href: '/wallet',
+      needActivation: true,
     },
     {
       title: 'بلیت‌های من',
@@ -47,6 +49,7 @@ const Home: React.FC = () => {
     {
       title: 'سوابق تراکنش ها',
       href: '/transactions',
+      needActivation: true,
     },
   ];
   const statusBgColorMap = new Map([
@@ -62,14 +65,7 @@ const Home: React.FC = () => {
         url: '/settings',
       },
       (response) => {
-        setLinks([
-          ...initialLinks,
-          {
-            title: 'قوانین و شرایط',
-            href: response.content.termsAndConditionsUrl,
-            newTab: true,
-          },
-        ]);
+        setLinks([...initialLinks]);
       },
       () => {
         setLinks(initialLinks);
