@@ -1,13 +1,13 @@
 import SDCard from "../../components/shared/Card";
 import HomeLink, {
   HomeLinkProps,
-} from '../../components/userPanel/home/HomeLink';
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
-import useApi from '../../hooks/useApi';
-import { GeneralSettings } from '../../models/settings.models';
-import { BaseResponse, UserStatuses } from '../../models/shared.models';
-import { useState, useEffect } from 'react';
-import { authActions } from '../../store/auth';
+} from "../../components/userPanel/home/HomeLink";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import useApi from "../../hooks/useApi";
+import { GeneralSettings } from "../../models/settings.models";
+import { BaseResponse, UserStatuses } from "../../models/shared.models";
+import { useState, useEffect } from "react";
+import { authActions } from "../../store/auth";
 
 const Home: React.FC = () => {
   const { sendRequest: sendSettingsRequest } = useApi<
@@ -23,48 +23,55 @@ const Home: React.FC = () => {
   >();
   const dispatch = useAppDispatch();
 
-  const initialLinks: HomeLinkProps[] = [
-    {
-      title: 'رویدادها',
-      href: '/events',
-    },
-    {
-      title: 'قوانین و شرایط',
-      href: '',
-    },
-    {
-      title: 'سوابق پرش',
-      href: '/jumps',
-      needActivation: true,
-    },
-    {
-      title: 'کیف پول',
-      href: '/wallet',
-      needActivation: true,
-    },
-    {
-      title: 'بلیت‌های من',
-      href: '/tickets',
-    },
-    {
-      title: 'سوابق تراکنش ها',
-      href: '/transactions',
-      needActivation: true,
-    },
-  ];
   const statusBgColorMap = new Map([
-    [UserStatuses.AWAITING_COMPLETION, 'bg-yellow-300'],
-    [UserStatuses.PENDING, 'bg-yellow-300'],
-    [UserStatuses.ACTIVE, 'bg-green-200'],
-    [UserStatuses.INACTIVE, 'bg-red-500'],
+    [UserStatuses.AWAITING_COMPLETION, "bg-yellow-300"],
+    [UserStatuses.PENDING, "bg-yellow-300"],
+    [UserStatuses.ACTIVE, "bg-green-200"],
+    [UserStatuses.INACTIVE, "bg-red-500"],
   ]);
 
   useEffect(() => {
+    const initialLinks: HomeLinkProps[] = [
+      {
+        title: "رویدادها",
+        href: "/events",
+      },
+      {
+        title: "قوانین و شرایط",
+        href: "",
+      },
+      {
+        title: "سوابق پرش",
+        href: "/jumps",
+        needActivation: true,
+      },
+      {
+        title: "کیف پول",
+        href: "/wallet",
+        needActivation: true,
+      },
+      {
+        title: "بلیت‌های من",
+        href: "/tickets",
+      },
+      {
+        title: "سوابق تراکنش ها",
+        href: "/transactions",
+        needActivation: true,
+      },
+    ];
     sendSettingsRequest(
       {
-        url: '/settings',
+        url: "/settings",
       },
       (response) => {
+        const links = [...initialLinks];
+        links.forEach((link) => {
+          if (link.title === "قوانین و شرایط") {
+            (link.href = response.content.termsAndConditionsUrl),
+              (link.newTab = true);
+          }
+        });
         setLinks([...initialLinks]);
       },
       () => {
@@ -74,7 +81,7 @@ const Home: React.FC = () => {
 
     sendCheckActiveRequest(
       {
-        url: '/Users/CheckIfUserIsActive',
+        url: "/Users/CheckIfUserIsActive",
       },
       (response) => {
         if (response.content) {
