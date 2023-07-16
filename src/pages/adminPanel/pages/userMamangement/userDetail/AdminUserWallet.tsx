@@ -16,17 +16,22 @@ interface WalletData {
   updatedAt: string;
 }
 
+interface chargeWalletData {
+  userId: string | undefined;
+  amount: number;
+}
+
 const AdminUserWallet: React.FC = () => {
   const params = useParams();
 
-  const [balance, setBalance] = useState<number>(0);
   const [paymentAmount, setPaymentAmount] = useState<number>(0);
   const {
     sendRequest,
     isPending,
     data: walletData,
   } = useAPi<null, BaseResponse<WalletData>>();
-
+  const { sendRequest: sendChargeRequest, isPending: isPendingChargeWallet } =
+    useAPi<null, BaseResponse<null>>();
   const fetchWalletData = () => {
     sendRequest({
       url: `/wallets/UserWallet/${params.userId}`,
@@ -37,20 +42,29 @@ const AdminUserWallet: React.FC = () => {
     fetchWalletData();
   }, []);
 
-  const handlePaymentAmountChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const amount = parseInt(event.target.value, 10);
-    setPaymentAmount(amount);
-  };
-
   const handlePayment = () => {
     if (paymentAmount > 0) {
-      const newBalance = balance + paymentAmount;
-      setBalance(newBalance);
-      toast.success('موجودی با موفقیت به روز شد!');
+      const data: chargeWalletData = {
+        userId: params.userId,
+        amount: paymentAmount,
+      };
+
+      sendChargeRequest(
+        {
+          url: '/wallets',
+          method: 'put',
+          data: data,
+        },
+        (response) => {
+          toast.success(response.message);
+        },
+        (error) => {
+          toast.error(error?.message);
+        }
+      );
     }
   };
+
   if (isPending) {
     return (
       <div className="flex justify-center pt-6 w-full">
@@ -58,6 +72,7 @@ const AdminUserWallet: React.FC = () => {
       </div>
     );
   }
+
   return (
     <SDCard className="flex items-center justify-center p-8 bg-red-500">
       <SDCard className="shadow rounded-lg w-1/2 sm:w-full sm:max-w-screen-md flex flex-col items-center">
@@ -83,7 +98,6 @@ const AdminUserWallet: React.FC = () => {
 
           <span className="text-xl m-4 text-gray-600">موجودی :</span>
           <span className="text-lg text-gray-800 ml-2">
-            {' '}
             {walletData?.content ? walletData.content.balance : ''}
           </span>
         </div>
@@ -95,9 +109,17 @@ const AdminUserWallet: React.FC = () => {
             placeholder="مبلغ مورد نظر را وارد کنید"
             className="ltr text-center placeholder:!text-center"
             value={paymentAmount}
-            onChange={handlePaymentAmountChange}
+            onChange={(event) =>
+              setPaymentAmount(parseInt(event.target.value, 10))
+            }
           />
-          <SDButton type="submit" color="success" onClick={handlePayment}>
+          <SDButton
+            type="submit"
+            color="success"
+            onClick={handlePayment}
+            disabled={isPendingChargeWallet}
+          >
+            {isPendingChargeWallet && <SDSpinner size={5} />}
             پرداخت
           </SDButton>
         </div>
