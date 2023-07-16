@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import SDCard from '../../../../../components/shared/Card';
 import SDTextInput from '../../../../../components/shared/TextInput';
@@ -32,17 +32,18 @@ const AdminUserWallet: React.FC = () => {
   } = useAPi<null, BaseResponse<WalletData>>();
   const { sendRequest: sendChargeRequest, isPending: isPendingChargeWallet } =
     useAPi<null, BaseResponse<null>>();
-  const fetchWalletData = () => {
+
+  const fetchWalletData = useCallback(() => {
     sendRequest({
       url: `/wallets/UserWallet/${params.userId}`,
     });
-  };
+  }, [sendRequest, params.userId]);
 
   useEffect(() => {
     fetchWalletData();
-  }, []);
+  }, [fetchWalletData]);
 
-  const handlePayment = () => {
+  const handlePayment = useCallback(() => {
     if (paymentAmount > 0) {
       const data: chargeWalletData = {
         userId: params.userId,
@@ -58,22 +59,23 @@ const AdminUserWallet: React.FC = () => {
         (response) => {
           toast.success(response.message);
           fetchWalletData();
+          setPaymentAmount(0);
         },
         (error) => {
           toast.error(error?.message);
         }
       );
     }
-  };
+  }, [paymentAmount, params.userId, sendChargeRequest, fetchWalletData]);
 
   const handlePaymentAmountChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const value = event.target.value.replace(/,/g, ''); // Remove existing commas
-    const formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Add commas every three digits
+    const value = event.target.value.replace(/,/g, '');
+    const formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
     setPaymentAmount(parseInt(value, 10));
-    event.target.value = formattedValue; // Update the input value with the formatted value
+    event.target.value = formattedValue;
   };
 
   if (isPending) {
