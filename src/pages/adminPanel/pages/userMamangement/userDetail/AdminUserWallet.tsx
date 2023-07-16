@@ -57,12 +57,23 @@ const AdminUserWallet: React.FC = () => {
         },
         (response) => {
           toast.success(response.message);
+          fetchWalletData();
         },
         (error) => {
           toast.error(error?.message);
         }
       );
     }
+  };
+
+  const handlePaymentAmountChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value.replace(/,/g, ''); // Remove existing commas
+    const formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Add commas every three digits
+
+    setPaymentAmount(parseInt(value, 10));
+    event.target.value = formattedValue; // Update the input value with the formatted value
   };
 
   if (isPending) {
@@ -109,10 +120,12 @@ const AdminUserWallet: React.FC = () => {
             id="minutes"
             placeholder="مبلغ مورد نظر را وارد کنید"
             className="ltr text-center placeholder:!text-center ml-4"
-            value={isNaN(paymentAmount) ? '' : paymentAmount.toString()}
-            onChange={(event) =>
-              setPaymentAmount(parseInt(event.target.value, 10))
+            value={
+              isNaN(paymentAmount)
+                ? ''
+                : paymentAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
             }
+            onChange={handlePaymentAmountChange}
           />
 
           <SDButton
@@ -120,7 +133,7 @@ const AdminUserWallet: React.FC = () => {
             color="success"
             onClick={handlePayment}
             disabled={isPendingChargeWallet}
-            className="w-1/4"
+            className="w-1/3"
           >
             {isPendingChargeWallet && <SDSpinner size={5} />}
             شارژ کیف پول
