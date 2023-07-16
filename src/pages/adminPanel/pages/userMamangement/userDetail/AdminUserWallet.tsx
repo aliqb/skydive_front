@@ -108,12 +108,13 @@ const AdminUserWallet: React.FC = () => {
             numeric={true}
             id="minutes"
             placeholder="مبلغ مورد نظر را وارد کنید"
-            className="ltr text-center placeholder:!text-center"
-            value={paymentAmount === 0 ? '' : paymentAmount.toString()}
+            className="ltr text-center placeholder:!text-center ml-4"
+            value={isNaN(paymentAmount) ? '' : paymentAmount.toString()}
             onChange={(event) =>
               setPaymentAmount(parseInt(event.target.value, 10))
             }
           />
+
           <SDButton
             type="submit"
             color="success"
