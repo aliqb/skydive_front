@@ -4,7 +4,7 @@ import SDCard from '../../../../../components/shared/Card';
 import SDTextInput from '../../../../../components/shared/TextInput';
 import SDButton from '../../../../../components/shared/Button';
 import { BaseResponse } from '../../../../../models/shared.models';
-import useAPi from '../../../../../hooks/useApi';
+import useApi from '../../../../../hooks/useApi';
 import { useParams } from 'react-router-dom';
 import SDSpinner from '../../../../../components/shared/Spinner';
 
@@ -16,7 +16,7 @@ interface WalletData {
   updatedAt: string;
 }
 
-interface chargeWalletData {
+interface ChargeWalletData {
   userId: string | undefined;
   amount: number;
 }
@@ -29,9 +29,10 @@ const AdminUserWallet: React.FC = () => {
     sendRequest,
     isPending,
     data: walletData,
-  } = useAPi<null, BaseResponse<WalletData>>();
+  } = useApi<null, BaseResponse<WalletData>>();
+
   const { sendRequest: sendChargeRequest, isPending: isPendingChargeWallet } =
-    useAPi<null, BaseResponse<null>>();
+    useApi<ChargeWalletData, BaseResponse<null>>();
 
   const fetchWalletData = useCallback(() => {
     sendRequest({
@@ -45,7 +46,7 @@ const AdminUserWallet: React.FC = () => {
 
   const handlePayment = useCallback(() => {
     if (paymentAmount > 0) {
-      const data: chargeWalletData = {
+      const data: ChargeWalletData = {
         userId: params.userId,
         amount: paymentAmount,
       };
@@ -88,7 +89,7 @@ const AdminUserWallet: React.FC = () => {
 
   return (
     <SDCard className="flex items-center justify-center p-8 bg-red-500">
-      <SDCard className="shadow rounded-lg w-1/2 sm:w-full sm:max-w-screen-md flex flex-col items-center">
+      <SDCard className="shadow rounded-lg w-full sm:max-w-md md:max-w-lg lg:max-w-xl flex flex-col items-center">
         <h1 className="text-3xl font-bold mb-4 text-center">
           شارژ کیف پول کاربر
         </h1>
@@ -116,12 +117,13 @@ const AdminUserWallet: React.FC = () => {
               : ''}
           </span>
         </div>
-        <div className="flex items-center justify-center w-full space-x-4">
+
+        <div className="flex flex-col md:flex-row items-center justify-center w-full space-y-4 md:space-y-0 md:space-x-4">
           <SDTextInput
             numeric={true}
             id="minutes"
             placeholder="مبلغ مورد نظر را وارد کنید"
-            className="ltr text-center placeholder:!text-center ml-4"
+            className="ltr text-center placeholder:!text-center"
             value={
               isNaN(paymentAmount)
                 ? ''
@@ -135,7 +137,7 @@ const AdminUserWallet: React.FC = () => {
             color="success"
             onClick={handlePayment}
             disabled={isPendingChargeWallet}
-            className="w-1/3"
+            className="w-full md:w-auto lg:w-1/3 "
           >
             {isPendingChargeWallet && <SDSpinner size={5} />}
             شارژ کیف پول
