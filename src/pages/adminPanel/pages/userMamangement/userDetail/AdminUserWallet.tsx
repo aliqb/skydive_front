@@ -98,17 +98,18 @@ const AdminUserWallet: React.FC = () => {
 
           <span className="text-xl m-4 text-gray-600">موجودی :</span>
           <span className="text-lg text-gray-800 ml-2">
-            {walletData?.content ? walletData.content.balance : ''}
+            {walletData?.content
+              ? walletData.content.balance.toLocaleString()
+              : ''}
           </span>
         </div>
         <div className="flex items-center justify-center w-full space-x-4">
-          <h1 className="text-center ml-5 w-1/4">شارژ کیف پول</h1>
           <SDTextInput
             numeric={true}
             id="minutes"
             placeholder="مبلغ مورد نظر را وارد کنید"
             className="ltr text-center placeholder:!text-center"
-            value={paymentAmount}
+            value={paymentAmount === 0 ? '' : paymentAmount.toString()}
             onChange={(event) =>
               setPaymentAmount(parseInt(event.target.value, 10))
             }
@@ -118,9 +119,10 @@ const AdminUserWallet: React.FC = () => {
             color="success"
             onClick={handlePayment}
             disabled={isPendingChargeWallet}
+            className="w-1/4"
           >
             {isPendingChargeWallet && <SDSpinner size={5} />}
-            پرداخت
+            شارژ کیف پول
           </SDButton>
         </div>
       </SDCard>
