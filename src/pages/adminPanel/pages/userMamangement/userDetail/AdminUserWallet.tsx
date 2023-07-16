@@ -1,12 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import SDCard from '../../../../../components/shared/Card';
 import SDTextInput from '../../../../../components/shared/TextInput';
 import SDButton from '../../../../../components/shared/Button';
+import { BaseResponse } from '../../../../../models/shared.models';
+import useAPi from '../../../../../hooks/useApi';
+import { useParams } from 'react-router-dom';
+import SDSpinner from '../../../../../components/shared/Spinner';
+
+interface WalletData {
+  userId: string;
+  balance: number;
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const AdminUserWallet: React.FC = () => {
+  const params = useParams();
+
   const [balance, setBalance] = useState<number>(0);
   const [paymentAmount, setPaymentAmount] = useState<number>(0);
+  const {
+    sendRequest,
+    isPending,
+    data: walletData,
+  } = useAPi<null, BaseResponse<WalletData>>();
+
+  const fetchWalletData = () => {
+    sendRequest({
+      url: `/wallets/UserWallet/${params.userId}`,
+    });
+  };
+
+  useEffect(() => {
+    fetchWalletData();
+  }, []);
 
   const handlePaymentAmountChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -22,9 +51,15 @@ const AdminUserWallet: React.FC = () => {
       toast.success('موجودی با موفقیت به روز شد!');
     }
   };
-
+  if (isPending) {
+    return (
+      <div className="flex justify-center pt-6 w-full">
+        <SDSpinner size={20} color="blue" />
+      </div>
+    );
+  }
   return (
-    <SDCard className="flex items-center justify-center min-h-screen p-8 bg-red-500">
+    <SDCard className="flex items-center justify-center p-8 bg-red-500">
       <SDCard className="shadow rounded-lg w-1/2 sm:w-full sm:max-w-screen-md flex flex-col items-center">
         <h1 className="text-3xl font-bold mb-4 text-center">
           شارژ کیف پول کاربر
@@ -47,7 +82,10 @@ const AdminUserWallet: React.FC = () => {
           </svg>
 
           <span className="text-xl m-4 text-gray-600">موجودی :</span>
-          <span className="text-lg text-gray-800 ml-2">{balance}</span>
+          <span className="text-lg text-gray-800 ml-2">
+            {' '}
+            {walletData?.content ? walletData.content.balance : ''}
+          </span>
         </div>
         <div className="flex items-center justify-center w-full space-x-4">
           <h1 className="text-center ml-5 w-1/4">شارژ کیف پول</h1>
