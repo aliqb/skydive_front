@@ -111,7 +111,7 @@ const AdminUserWallet: React.FC = () => {
           </svg>
 
           <span className="text-xl m-4 text-gray-600">موجودی :</span>
-          <span className="text-lg text-gray-800 ml-2">
+          <span className="whitespace-nowrap">
             {walletData?.content
               ? walletData.content.balance.toLocaleString()
               : ''}
