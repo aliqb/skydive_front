@@ -7,19 +7,11 @@ import { BaseResponse } from '../../../../../models/shared.models';
 import useApi from '../../../../../hooks/useApi';
 import { useParams } from 'react-router-dom';
 import SDSpinner from '../../../../../components/shared/Spinner';
+import { ChargeWalletData, WalletData } from '../../../../../models/wallet';
 
-interface WalletData {
-  userId: string;
-  balance: number;
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-}
 
-interface ChargeWalletData {
-  userId: string | undefined;
-  amount: number;
-}
+
+
 
 const AdminUserWallet: React.FC = () => {
   const params = useParams();
