@@ -6,8 +6,8 @@ import SDButton from "../../components/shared/Button";
 import useAPi from "../../hooks/useApi";
 import { BaseResponse } from "../../models/shared.models";
 import { WalletData } from "../../models/wallet";
-import { isPending } from "@reduxjs/toolkit";
 import SDSpinner from "../../components/shared/Spinner";
+import NumberWithSeperator from "../../components/shared/NumberWithSeperator";
 
 const Wallet: React.FC = () => {
   const [balance, setBalance] = useState<number>(0);
@@ -74,7 +74,9 @@ const Wallet: React.FC = () => {
                 </svg>
                 <span className="text-xl m-4 text-gray-600">موجودی :</span>
               </div>
-              <span className="text-lg text-gray-800 ml-2">{balance}</span>
+              <span className="text-lg text-gray-800 ml-2">
+                <NumberWithSeperator value={balance}></NumberWithSeperator>
+              </span>
             </div>
             <div className="flex flex-col md:flex-row items-center justify-center w-full space-y-4 md:space-y-0 md:space-x-4">
               <div className="text-center md:text-left ml-5 md:w-1/6">

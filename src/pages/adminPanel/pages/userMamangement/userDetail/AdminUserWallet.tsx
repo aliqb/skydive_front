@@ -1,17 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { toast } from 'react-toastify';
-import SDCard from '../../../../../components/shared/Card';
-import SDTextInput from '../../../../../components/shared/TextInput';
-import SDButton from '../../../../../components/shared/Button';
-import { BaseResponse } from '../../../../../models/shared.models';
-import useApi from '../../../../../hooks/useApi';
-import { useParams } from 'react-router-dom';
-import SDSpinner from '../../../../../components/shared/Spinner';
-import { ChargeWalletData, WalletData } from '../../../../../models/wallet';
-
-
-
-
+import React, { useState, useEffect, useCallback } from "react";
+import { toast } from "react-toastify";
+import SDCard from "../../../../../components/shared/Card";
+import SDTextInput from "../../../../../components/shared/TextInput";
+import SDButton from "../../../../../components/shared/Button";
+import { BaseResponse } from "../../../../../models/shared.models";
+import useApi from "../../../../../hooks/useApi";
+import { useParams } from "react-router-dom";
+import SDSpinner from "../../../../../components/shared/Spinner";
+import { ChargeWalletData, WalletData } from "../../../../../models/wallet";
+import NumberWithSeperator from "../../../../../components/shared/NumberWithSeperator";
 
 const AdminUserWallet: React.FC = () => {
   const params = useParams();
@@ -45,8 +42,8 @@ const AdminUserWallet: React.FC = () => {
 
       sendChargeRequest(
         {
-          url: '/wallets',
-          method: 'put',
+          url: "/wallets",
+          method: "put",
           data: data,
         },
         (response) => {
@@ -64,20 +61,20 @@ const AdminUserWallet: React.FC = () => {
   const handlePaymentAmountChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const value = event.target.value.replace(/,/g, '');
-    const formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const value = event.target.value.replace(/,/g, "");
+    const formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
     setPaymentAmount(parseInt(value, 10));
     event.target.value = formattedValue;
   };
 
-  if (isPending) {
-    return (
-      <div className="flex justify-center pt-6 w-full">
-        <SDSpinner size={20} color="blue" />
-      </div>
-    );
-  }
+  // if (isPending) {
+  //   return (
+  //     <div className="flex justify-center pt-6 w-full">
+  //       <SDSpinner size={20} color="blue" />
+  //     </div>
+  //   );
+  // }
 
   return (
     <SDCard className="flex items-center justify-center p-8 bg-red-500">
@@ -85,56 +82,66 @@ const AdminUserWallet: React.FC = () => {
         <h1 className="text-3xl font-bold mb-4 text-center">
           شارژ کیف پول کاربر
         </h1>
+        {isPending ? (
+          <div className="flex justify-center pt-6 w-full">
+            <SDSpinner size={20} color="blue" />
+          </div>
+        ) : (
+          <>
+            <div className="flex items-center mb-8 flex-wrap justify-center">
+              <div className="flex items-center ">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3"
+                  />
+                </svg>
+                <span className="text-xl m-4 text-gray-600">موجودی :</span>
+              </div>
+              <span className="text-lg text-gray-800 ml-2">
+                <NumberWithSeperator
+                  value={walletData?.content.balance || 0}
+                ></NumberWithSeperator>
+              </span>
+            </div>
 
-        <div className="flex items-center mb-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v3"
-            />
-          </svg>
+            <div className="flex flex-col md:flex-row items-center justify-center w-full space-y-4 md:space-y-0 md:space-x-4">
+              <SDTextInput
+                numeric={true}
+                id="minutes"
+                placeholder="مبلغ مورد نظر را وارد کنید"
+                className="ltr text-center placeholder:!text-center"
+                value={
+                  isNaN(paymentAmount)
+                    ? ""
+                    : paymentAmount
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+                onChange={handlePaymentAmountChange}
+              />
 
-          <span className="text-xl m-4 text-gray-600">موجودی :</span>
-          <span className="whitespace-nowrap">
-            {walletData?.content
-              ? walletData.content.balance.toLocaleString()
-              : ''}
-          </span>
-        </div>
-
-        <div className="flex flex-col md:flex-row items-center justify-center w-full space-y-4 md:space-y-0 md:space-x-4">
-          <SDTextInput
-            numeric={true}
-            id="minutes"
-            placeholder="مبلغ مورد نظر را وارد کنید"
-            className="ltr text-center placeholder:!text-center"
-            value={
-              isNaN(paymentAmount)
-                ? ''
-                : paymentAmount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-            }
-            onChange={handlePaymentAmountChange}
-          />
-
-          <SDButton
-            type="submit"
-            color="success"
-            onClick={handlePayment}
-            disabled={isPendingChargeWallet}
-            className="w-full md:w-auto lg:w-1/3 "
-          >
-            {isPendingChargeWallet && <SDSpinner size={5} />}
-            شارژ کیف پول
-          </SDButton>
-        </div>
+              <SDButton
+                type="submit"
+                color="success"
+                onClick={handlePayment}
+                disabled={isPendingChargeWallet}
+                className="w-full md:w-auto lg:w-1/3 "
+              >
+                {isPendingChargeWallet && <SDSpinner size={5} />}
+                شارژ کیف پول
+              </SDButton>
+            </div>
+          </>
+        )}
       </SDCard>
     </SDCard>
   );
