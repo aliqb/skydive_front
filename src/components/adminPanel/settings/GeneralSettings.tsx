@@ -1,5 +1,4 @@
 import { useFieldArray, useForm } from "react-hook-form";
-import { GenralSettings } from "../../../models/settings.models";
 import useAPi from "../../../hooks/useApi";
 import {
   BaseResponse,
@@ -11,15 +10,16 @@ import SDTextInput from "../../shared/TextInput";
 import SDButton from "../../shared/Button";
 import { toast } from "react-toastify";
 import SDSpinner from "../../shared/Spinner";
+import { GeneralSettings } from "../../../models/settings.models";
 
-const GeneralSettings: React.FC = () => {
+const GeneralSettingsComponent: React.FC = () => {
   const {
     register,
     handleSubmit,
     formState: { errors: formErrors },
     control,
     reset,
-  } = useForm<GenralSettings>({
+  } = useForm<GeneralSettings>({
     mode: "onTouched",
   });
   const { fields } = useFieldArray({
@@ -29,11 +29,11 @@ const GeneralSettings: React.FC = () => {
 
   const { sendRequest: getSettingsRequest, isPending: isGetPending } = useAPi<
     null,
-    BaseResponse<GenralSettings>
+    BaseResponse<GeneralSettings>
   >();
 
   const { sendRequest: saveSettingsRequest, isPending: isSaving } = useAPi<
-    GenralSettings,
+    GeneralSettings,
     BaseResponse<null>
   >();
 
@@ -52,7 +52,7 @@ const GeneralSettings: React.FC = () => {
     );
   }, [getSettingsRequest, reset]);
 
-  function onSubmit(data: GenralSettings) {
+  function onSubmit(data: GeneralSettings) {
     saveSettingsRequest(
       {
         url: "/settings",
@@ -126,4 +126,4 @@ const GeneralSettings: React.FC = () => {
   );
 };
 
-export default GeneralSettings;
+export default GeneralSettingsComponent;

@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { OTPRequest, OTPResponse } from "../../../models/auth.models";
 import ChangePasswordModal from "./ChangePasswordModal";
 import UserStatusLabel from "../../shared/UserStatusLabel";
-import { GenralSettings } from "../../../models/settings.models";
+import { GeneralSettings } from "../../../models/settings.models";
 import { removeAuthDataFromLocal } from "../../../utils/authUtils";
 
 interface AccountInfoFormData {
@@ -33,7 +33,7 @@ const AccountInfo: React.FC = () => {
   const authState = useAppSelector((state) => state.auth);
   const { sendRequest: sendSettingsRequest } = useAPi<
     null,
-    BaseResponse<GenralSettings>
+    BaseResponse<GeneralSettings>
   >();
   const [statusDescription, setStatusDescription] = useState<string>("");
 
