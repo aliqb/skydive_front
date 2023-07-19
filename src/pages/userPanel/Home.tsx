@@ -3,21 +3,21 @@ import HomeLink, {
   HomeLinkProps,
 } from "../../components/userPanel/home/HomeLink";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
-import useAPi from "../../hooks/useApi";
-import { GenralSettings } from "../../models/settings.models";
+import useApi from "../../hooks/useApi";
+import { GeneralSettings } from "../../models/settings.models";
 import { BaseResponse, UserStatuses } from "../../models/shared.models";
 import { useState, useEffect } from "react";
 import { authActions } from "../../store/auth";
 
 const Home: React.FC = () => {
-  const { sendRequest: sendSettingsRequest } = useAPi<
+  const { sendRequest: sendSettingsRequest } = useApi<
     null,
-    BaseResponse<GenralSettings>
+    BaseResponse<GeneralSettings>
   >();
   const [links, setLinks] = useState<HomeLinkProps[]>([]);
   const name = useAppSelector((state) => state.auth.name);
   const authState = useAppSelector((state) => state.auth);
-  const { sendRequest: sendCheckActiveRequest } = useAPi<
+  const { sendRequest: sendCheckActiveRequest } = useApi<
     null,
     BaseResponse<boolean>
   >();
@@ -29,67 +29,53 @@ const Home: React.FC = () => {
     [UserStatuses.ACTIVE, "bg-green-200"],
     [UserStatuses.INACTIVE, "bg-red-500"],
   ]);
-  
 
   useEffect(() => {
+    const initialLinks: HomeLinkProps[] = [
+      {
+        title: "رویدادها",
+        href: "/events",
+      },
+      {
+        title: "قوانین و شرایط",
+        href: "",
+      },
+      {
+        title: "سوابق پرش",
+        href: "/jumps",
+        needActivation: true,
+      },
+      {
+        title: "کیف پول",
+        href: "/wallet",
+        needActivation: true,
+      },
+      {
+        title: "بلیت‌های من",
+        href: "/tickets",
+      },
+      {
+        title: "سوابق تراکنش ها",
+        href: "/transactions",
+        needActivation: true,
+      },
+    ];
     sendSettingsRequest(
       {
         url: "/settings",
       },
       (response) => {
-        setLinks([
-          {
-            tilte: "رویدادها",
-            href: "/events",
-          },
-          {
-            tilte: "قوانین و شرایط",
-            href: response.content.termsAndConditionsUrl,
-            newTab: true,
-          },
-          {
-            tilte: "بلیت‌های من",
-            href: "/tickets",
-            needActivation: true
-          },
-          {
-            tilte: "سوابق پرش",
-            href: "/jumps",
-            needActivation: true
-          },
-          {
-            tilte: "سوابق تراکنش ها",
-            href: "/transactions",
-            needActivation: true
-          },
-        ]);
+        const links = [...initialLinks];
+        links.forEach((link) => {
+          if (link.title === "قوانین و شرایط") {
+            (link.href = response.content.termsAndConditionsUrl),
+              (link.newTab = true);
+          }
+        });
+        setLinks([...initialLinks]);
       },
       () => {
-        setLinks([
-          {
-            tilte: "رویدادها",
-            href: "/events",
-          },
-          {
-            tilte: "قوانین و شرایط",
-            href: "",
-          },
-          {
-            tilte: "بلیت‌های من",
-            href: "/tickets",
-            needActivation: true
-          },
-          {
-            tilte: "سوابق پرش",
-            href: "/jumps",
-            needActivation: true
-          },
-          {
-            tilte: "سوابق تراکنش ها",
-            href: "/transactions",
-            needActivation: true
-          },
-        ]);
+        setLinks(initialLinks);
       }
     );
 
@@ -103,7 +89,12 @@ const Home: React.FC = () => {
         }
       }
     );
-  }, [sendSettingsRequest, dispatch, sendCheckActiveRequest,authState.userStatus]);
+  }, [
+    sendSettingsRequest,
+    dispatch,
+    sendCheckActiveRequest,
+    authState.userStatus,
+  ]);
 
   return (
     <SDCard className="flex justify-center">
@@ -124,18 +115,17 @@ const Home: React.FC = () => {
           </div>
         </div>
         <div className="flex flex-wrap justify-center">
-          {links.map((link, index) => {
-            return (
-              <HomeLink
-                key={index}
-                {...link}
-                isActiveUser={authState.userStatus === UserStatuses.ACTIVE}
-              />
-            );
-          })}
+          {links.map((link, index) => (
+            <HomeLink
+              key={index}
+              {...link}
+              isActiveUser={authState.userStatus === UserStatuses.ACTIVE}
+            />
+          ))}
         </div>
       </main>
     </SDCard>
   );
 };
+
 export default Home;

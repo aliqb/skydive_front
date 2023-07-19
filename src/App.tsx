@@ -41,13 +41,14 @@ import EditUserPage from "./pages/adminPanel/pages/userMamangement/EditUserPage"
 import AdminFlightsPage from "./pages/adminPanel/pages/adminEvents/AdminFlightsPage";
 import SkyDiveEventTermsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventTermsPage";
 import MyTicketsPage from "./pages/userPanel/MyTicketsPage";
-import JumpRecordsPage from "./pages/userPanel/JumpRecordsPage";
-import Messages from "./pages/userPanel/Messages";
-import MyTransactionsPage from "./pages/userPanel/MyTransactionsPage";
-import AdminJumpRecoreds from "./pages/adminPanel/pages/userMamangement/userDetail/AdminJumpRecoreds";
-import UserTickets from "./pages/adminPanel/pages/userMamangement/userDetail/UserTickets";
+import JumpRecordsPage from './pages/userPanel/JumpRecordsPage';
+import AdminJumpRecoreds from './pages/adminPanel/pages/userMamangement/userDetail/AdminJumpRecoreds';
+import UserTickets from './pages/adminPanel/pages/userMamangement/userDetail/UserTickets';
 import UserTransactions from './pages/adminPanel/pages/userMamangement/userDetail/UserTransactions';
+import Messages from './pages/userPanel/Messages';
+import MyTransactionsPage from './pages/userPanel/MyTransactionsPage';
 import Wallet from './pages/userPanel/Wallet';
+import AdminUserWallet from './pages/adminPanel/pages/userMamangement/userDetail/AdminUserWallet';
 
 function App() {
   return (
@@ -86,6 +87,7 @@ function App() {
             </Route>
             <Route Component={MyTicketsPage} path="tickets"></Route>
             <Route Component={MyTransactionsPage} path="transactions"></Route>
+            <Route Component={Wallet} path="wallet"></Route>
             <Route Component={JumpRecordsPage} path="jumps"></Route>
             <Route Component={PaymentPage} path="payment"></Route>
           </Route>
@@ -117,6 +119,7 @@ function App() {
               <Route Component={UserTransactions} path="transactions"></Route>
               <Route Component={AdminUserDocument} path="documents"></Route>
               <Route Component={AdminJumpRecoreds} path="jumps"></Route>
+              <Route Component={AdminUserWallet} path="wallet"></Route>
             </Route>
             <Route Component={EditUserPage} path="users/:userId/edit"></Route>
             <Route Component={Outlet} path="events">

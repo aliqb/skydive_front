@@ -200,7 +200,7 @@ const UserDetailPage: React.FC = () => {
                     {userManagementState.userDetail.firstName}
                   </p>
                   <p className="pb-6">
-                    {" "}
+                    {' '}
                     {userManagementState.userDetail.lastName}
                   </p>
                   <p className="pb-6">
@@ -235,7 +235,7 @@ const UserDetailPage: React.FC = () => {
                     {userManagementState.userDetail.userCode}
                   </p>
                   <p className="pb-6">
-                    {" "}
+                    {' '}
                     {userManagementState.userDetail.userCode}
                   </p>
                   <p className="pb-6">•••••••</p>
@@ -273,10 +273,10 @@ const UserDetailPage: React.FC = () => {
               end={true}
               className={(nav) =>
                 `${
-                  nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
+                  nav.isActive && 'border-b-2 !border-blue-500 !text-blue-500'
                 } pb-4 block hover:border-b-2 text-gray-500 hover:text-gray-600 hover:border-gray-300  transition-all ease-linear duration-75`
               }
-              to={""}
+              to={''}
             >
               بلیت‌ها
             </NavLink>
@@ -285,7 +285,7 @@ const UserDetailPage: React.FC = () => {
             <NavLink
               className={(nav) =>
                 `${
-                  nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
+                  nav.isActive && 'border-b-2 !border-blue-500 !text-blue-500'
                 } pb-4 block hover:border-b-2 text-gray-500 hover:text-blue-400 hover:border-blue-300  transition-all ease-linear duration-75`
               }
               to="transactions"
@@ -297,7 +297,7 @@ const UserDetailPage: React.FC = () => {
             <NavLink
               className={(nav) =>
                 `${
-                  nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
+                  nav.isActive && 'border-b-2 !border-blue-500 !text-blue-500'
                 } pb-4 block hover:border-b-2 text-gray-500 hover:text-blue-400 hover:border-blue-300  transition-all ease-linear duration-75`
               }
               to="documents"
@@ -309,12 +309,24 @@ const UserDetailPage: React.FC = () => {
             <NavLink
               className={(nav) =>
                 `${
-                  nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
+                  nav.isActive && 'border-b-2 !border-blue-500 !text-blue-500'
                 } pb-4 block hover:border-b-2 text-gray-500 hover:text-blue-400 hover:border-blue-300  transition-all ease-linear duration-75`
               }
               to="jumps"
             >
               سوابق پرش
+            </NavLink>
+          </li>
+          <li className="flex-grow text-center">
+            <NavLink
+              className={(nav) =>
+                `${
+                  nav.isActive && 'border-b-2 !border-blue-500 !text-blue-500'
+                } pb-4 block hover:border-b-2 text-gray-500 hover:text-blue-400 hover:border-blue-300  transition-all ease-linear duration-75`
+              }
+              to="wallet"
+            >
+              کیف پول
             </NavLink>
           </li>
         </ul>
