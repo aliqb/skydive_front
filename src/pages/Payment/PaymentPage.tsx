@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import PaymentMethod from "../../components/payment/PaymentMethod";
 import Basket from "../../components/shared/Basket/Basket";
 import SDCard from "../../components/shared/Card";
@@ -9,6 +9,7 @@ import useAPi from "../../hooks/useApi";
 import { BaseResponse } from "../../models/shared.models";
 import { toast } from "react-toastify";
 import { basketActions } from "../../store/basket";
+import { WalletData } from "../../models/wallet.models";
 
 const PaymentPage: React.FC = () => {
   const [method, setMethod] = useState<string>("");
@@ -19,8 +20,25 @@ const PaymentPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const [payPending, setPayPedning] = useState<boolean>(false);
+  const [walletSubtitle, setWalletSubtitle] = useState<string>('');
+
   const { sendRequest: sendPayRequest } = useAPi<null, BaseResponse<null>>();
   const { sendRequest: sendCheckRequest } = useAPi<null, BaseResponse<null>>();
+  const { sendRequest: getWalletRequest } = useAPi<null, BaseResponse<WalletData>>();
+  
+    useEffect(()=>{
+      getWalletRequest(
+        {
+          url: "wallets",
+        },
+        (response) => {
+          const balanceString = response.content.balance.toLocaleString();
+          setWalletSubtitle(balanceString + ' ریال')
+        }
+      );
+    },[getWalletRequest])
+
 
   function onSelectMethod(id: string) {
     setMethod(id);
@@ -34,36 +52,64 @@ const PaymentPage: React.FC = () => {
     navigate(-1);
   }
 
-  function payBasket() {
-    sendPayRequest(
-      {
-        url: "/Reservations/SetAsPaid",
-        method: "put",
-      },
-      (response) => {
-        toast.success(response.message);
-        dispatch(basketActions.reset());
-        navigate('/tickets')
-      },
-      (error) => {
-        toast.error(error?.message);
-      }
-    );
-  }
-
-  function onPay() {
+  function onPay(methodId: string) {
+    setPayPedning(true);
     sendCheckRequest(
       {
         url: "/ShoppingCarts/CheckTickets",
       },
       () => {
-        payBasket();
+        payBasket(methodId);
       },
       (error) => {
         toast.error(error?.message);
+        setPayPedning(false);
       }
     );
   }
+  function payBasket(methodId: string) {
+    if (methodId === "wallet") {
+      payByWallet();
+      return
+    }
+    dumpPay();
+  }
+
+  function payByWallet() {
+    sendPayRequest(
+      {
+        url: "/Reservations/SetAsPaidByWallet",
+        method: "put",
+      },
+      onFinishPayment,
+      (error) => {
+        toast.error(error?.message);
+        setPayPedning(true);
+      }
+    );
+  }
+
+  function dumpPay() {
+    sendPayRequest(
+      {
+        url: "/Reservations/SetAsPaid",
+        method: "put",
+      },
+      onFinishPayment,
+      (error) => {
+        toast.error(error?.message);
+        setPayPedning(true);
+      }
+    );
+  }
+
+  function onFinishPayment(payResponse: BaseResponse<null>) {
+    toast.success(payResponse.message);
+    dispatch(basketActions.reset());
+    setPayPedning(true);
+    navigate("/tickets");
+  }
+
   return (
     <div className="flex flex-wrap mt-1  pb-3 lg:px-20 xl:px-28 pt-4">
       <SDCard className="border border-gray-200 w-full lg:w-2/3">
@@ -78,7 +124,7 @@ const PaymentPage: React.FC = () => {
         />
         <PaymentMethod
           title="استفاده از اعتبار کیف پول"
-          subtitle="0 ریال"
+          subtitle={walletSubtitle}
           icon={<FaWallet size="2.2rem" color="rgb(54 63 75)" />}
           id="wallet"
           onSelect={onSelectMethod}
@@ -134,7 +180,8 @@ const PaymentPage: React.FC = () => {
           <Basket
             inPayment={true}
             canPay={!!method && acceptRules}
-            onPayClick={onPay}
+            isPaying={payPending}
+            onPayClick={() => onPay(method)}
           />
         </div>
       </aside>

@@ -23,7 +23,7 @@ const BasketTicketItem: React.FC<BasketTicketItemProps> = ({
             aggretadTicket={ticket}
           />
         ) : (
-          <span className="text-lg">0</span>
+          <span className="text-lg">{ ticket.ticketMembers?.length || 0}</span>
         )}
       </div>
     </div>
