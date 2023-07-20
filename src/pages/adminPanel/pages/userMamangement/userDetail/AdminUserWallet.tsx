@@ -110,6 +110,8 @@ const AdminUserWallet: React.FC = () => {
                 <NumberWithSeperator
                   value={walletData?.content.balance || 0}
                 ></NumberWithSeperator>
+                <span className="mr-1 text-sm">ریال</span>
+
               </span>
             </div>
 

@@ -76,6 +76,7 @@ const Wallet: React.FC = () => {
               </div>
               <span className="text-lg text-gray-800 ml-2">
                 <NumberWithSeperator value={balance}></NumberWithSeperator>
+                <span className="mr-1 text-sm">ریال</span>
               </span>
             </div>
             <div className="flex flex-col md:flex-row items-center justify-center w-full space-y-4 md:space-y-0 md:space-x-4">
