@@ -19,6 +19,8 @@ const PaymentPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const [payPending, setPayPedning] = useState<boolean>(false);
+
   const { sendRequest: sendPayRequest } = useAPi<null, BaseResponse<null>>();
   const { sendRequest: sendCheckRequest } = useAPi<null, BaseResponse<null>>();
 
@@ -34,36 +36,64 @@ const PaymentPage: React.FC = () => {
     navigate(-1);
   }
 
-  function payBasket() {
-    sendPayRequest(
-      {
-        url: "/Reservations/SetAsPaid",
-        method: "put",
-      },
-      (response) => {
-        toast.success(response.message);
-        dispatch(basketActions.reset());
-        navigate('/tickets')
-      },
-      (error) => {
-        toast.error(error?.message);
-      }
-    );
-  }
-
-  function onPay() {
+  function onPay(methodId: string) {
+    setPayPedning(true);
     sendCheckRequest(
       {
         url: "/ShoppingCarts/CheckTickets",
       },
       () => {
-        payBasket();
+        payBasket(methodId);
       },
       (error) => {
         toast.error(error?.message);
+        setPayPedning(false);
       }
     );
   }
+  function payBasket(methodId: string) {
+    if (methodId === "wallet") {
+      payByWallet();
+      return
+    }
+    dumpPay();
+  }
+
+  function payByWallet() {
+    sendPayRequest(
+      {
+        url: "/Reservations/SetAsPaidByWallet",
+        method: "put",
+      },
+      onFinishPayment,
+      (error) => {
+        toast.error(error?.message);
+        setPayPedning(true);
+      }
+    );
+  }
+
+  function dumpPay() {
+    sendPayRequest(
+      {
+        url: "/Reservations/SetAsPaid",
+        method: "put",
+      },
+      onFinishPayment,
+      (error) => {
+        toast.error(error?.message);
+        setPayPedning(true);
+      }
+    );
+  }
+
+  function onFinishPayment(payResponse: BaseResponse<null>) {
+    toast.success(payResponse.message);
+    dispatch(basketActions.reset());
+    setPayPedning(true);
+    navigate("/tickets");
+  }
+
   return (
     <div className="flex flex-wrap mt-1  pb-3 lg:px-20 xl:px-28 pt-4">
       <SDCard className="border border-gray-200 w-full lg:w-2/3">
@@ -134,7 +164,8 @@ const PaymentPage: React.FC = () => {
           <Basket
             inPayment={true}
             canPay={!!method && acceptRules}
-            onPayClick={onPay}
+            isPaying={payPending}
+            onPayClick={() => onPay(method)}
           />
         </div>
       </aside>
