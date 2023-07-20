@@ -5,7 +5,7 @@ import SDButton from "../../components/shared/Button";
 // import { toast } from "react-toastify";
 import useAPi from "../../hooks/useApi";
 import { BaseResponse } from "../../models/shared.models";
-import { WalletData } from "../../models/wallet";
+import { WalletData } from "../../models/wallet.models";
 import SDSpinner from "../../components/shared/Spinner";
 import NumberWithSeperator from "../../components/shared/NumberWithSeperator";
 

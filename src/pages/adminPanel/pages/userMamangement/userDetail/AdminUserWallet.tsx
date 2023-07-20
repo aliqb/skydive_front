@@ -7,7 +7,7 @@ import { BaseResponse } from "../../../../../models/shared.models";
 import useApi from "../../../../../hooks/useApi";
 import { useParams } from "react-router-dom";
 import SDSpinner from "../../../../../components/shared/Spinner";
-import { ChargeWalletData, WalletData } from "../../../../../models/wallet";
+import { ChargeWalletData, WalletData } from "../../../../../models/wallet.models";
 import NumberWithSeperator from "../../../../../components/shared/NumberWithSeperator";
 
 const AdminUserWallet: React.FC = () => {
