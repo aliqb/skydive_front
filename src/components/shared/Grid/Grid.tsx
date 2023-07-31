@@ -10,11 +10,15 @@ import {
 } from "react";
 import {
   ColDef,
+  ColHeader,
+  ColSortChangeEvent,
   GridGetData,
   GridParams,
   GridRef,
   GridRow,
   GridRowActions,
+  GridSortItem,
+  SortStateType,
 } from "./grid.types";
 import SDTooltip from "../Tooltip";
 import GridRowOtherActionComponent from "./GridOtherRowActionComponent";
@@ -22,6 +26,7 @@ import GridRowMoreActionComponent from "./GridRowMoreActionsComponent";
 import ReactPaginate from "react-paginate";
 import { SelectPageEvent } from "../../../models/shared.models";
 import SDSpinner from "../Spinner";
+import GridHeaderComponent from "./GridHeaderComponent";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface GridProps<T = any> {
   data?: T[];
@@ -34,12 +39,13 @@ interface GridProps<T = any> {
   onRemoveRow?: (item: T) => void;
   pageSize?: number | null;
   onPagination?: (gridParams: GridParams) => void;
+  multiSortable?: boolean;
 }
 
 function MainGrid<T = any>(
   {
     data,
-    colDefs: colDefs,
+    colDefs,
     // fetchData,
     onDoubleClick,
     onEditRow,
@@ -53,16 +59,17 @@ function MainGrid<T = any>(
     },
     pageSize: defaultPageSize = 10,
     onPagination,
+    multiSortable = false,
   }: GridProps<T>,
   ref: ForwardedRef<GridRef>
 ) {
   const [gridRows, setGridRows] = useState<GridRow<T>[]>([]);
-  // const [total, setTotal] = useState<number>();
-  const [pageCount,setPageCount] = useState<number>();
+  const [colHeaders, setColHeaders] = useState<ColHeader[]>([]);
+  const [pageCount, setPageCount] = useState<number>();
   const [selectedPage, setSelectedPage] = useState(0);
   const [pageSize, setPageSize] = useState<number | null>(defaultPageSize);
   const [isPending, setIsPending] = useState<boolean>(false);
-
+  const [gridSorts, setGridSorts] = useState<GridSortItem[]>([]);
   const makeGridRows = useCallback((items: T[], colDefs: ColDef<T>[]) => {
     const rows: GridRow[] = items.map((item) => {
       return new GridRow<T>(item, colDefs);
@@ -71,32 +78,34 @@ function MainGrid<T = any>(
     setGridRows(rows);
   }, []);
 
-  const loadGrid = useCallback(() => {
-    if (data) {
-      makeGridRows(data, colDefs);
-    } else if (getData) {
-      setIsPending(true);
-      getData(
-        { pageIndex: 1, pageSize: pageSize === null ? 100000 : pageSize },
-        (items: T[], total: number) => {
+  const loadGrid = useCallback(
+    (gridParams?: GridParams) => {
+      if (data) {
+        makeGridRows(data, colDefs);
+      } else if (getData) {
+        setIsPending(true);
+        const isRefreshing = gridParams === undefined;
+        const params: GridParams = isRefreshing
+          ? {
+              pageIndex: 1,
+              pageSize: pageSize === null ? 100000 : pageSize,
+              sorts: [],
+            }
+          : gridParams;
+        getData(params, (items: T[], total: number) => {
           makeGridRows(items, colDefs);
-          if(pageSize){
+          if (pageSize) {
             setPageCount(Math.ceil(total / pageSize));
           }
-          setSelectedPage(0);
+          if (isRefreshing) {
+            setSelectedPage(0);
+          }
           setIsPending(false);
-        }
-      );
-    }
-  }, [data, colDefs, makeGridRows, getData, pageSize]);
-
-  useEffect(() => {
-    loadGrid();
-  }, [loadGrid]);
-
-  useEffect(() => {
-    setPageSize(defaultPageSize);
-  }, [defaultPageSize]);
+        });
+      }
+    },
+    [data, colDefs, makeGridRows, getData, pageSize]
+  );
 
   const onRowDobuleClisk = (item: T) => {
     console.log(item);
@@ -109,24 +118,84 @@ function MainGrid<T = any>(
     if (pageSize !== null) {
       setSelectedPage(event.selected);
       if (onPagination) {
-        onPagination({ pageIndex: event.selected, pageSize: pageSize });
+        onPagination({
+          pageIndex: event.selected,
+          pageSize: pageSize,
+          sorts: gridSorts,
+        });
         return;
       }
       if (getData) {
         setIsPending(true);
-        getData(
-          { pageIndex: event.selected + 1, pageSize: pageSize },
-          (items: T[], total: number) => {
-            makeGridRows(items, colDefs);
-            if(pageSize){
-              setPageCount(Math.ceil(total / pageSize));
-            }
-            setIsPending(false);
-          }
-        );
+        loadGrid({
+          pageIndex: event.selected + 1,
+          pageSize: pageSize,
+          sorts: gridSorts,
+        });
+        // getData(
+        //   { pageIndex: event.selected + 1, pageSize: pageSize },
+        //   (items: T[], total: number) => {
+        //     makeGridRows(items, colDefs);
+        //     if (pageSize) {
+        //       setPageCount(Math.ceil(total / pageSize));
+        //     }
+        //     setIsPending(false);
+        //   }
+        // );
       }
     }
   };
+
+  const onSortChange = ({ field, sort }: ColSortChangeEvent) => {
+    setGridSorts((sorts) => {
+      let newSorts: GridSortItem[] = [];
+      if (sort === "none") {
+        newSorts = sorts.filter((item) => item.field !== field);
+      } else {
+        const itemIndex = sorts.findIndex((item) => item.field === field);
+        if (itemIndex === -1) {
+          if (multiSortable) {
+            newSorts = [...sorts, { field, sort }];
+          } else {
+            newSorts = [{ field, sort }];
+          }
+        } else {
+          newSorts = sorts.map((item, index) => {
+            if (index === itemIndex) {
+              return { field: item.field, sort: sort };
+            }
+            return { ...item };
+          });
+        }
+      }
+      loadGrid({
+        pageIndex: selectedPage + 1,
+        pageSize: pageSize === null ? 100000 : pageSize,
+        sorts: newSorts,
+      });
+      return newSorts;
+    });
+  };
+
+  useEffect(() => {
+    const headers: ColHeader[] = colDefs.map((col) => {
+      const sortItem = gridSorts.find((item) => item.field === col.field);
+      const sort: SortStateType = sortItem ? sortItem.sort : "none";
+      return {
+        col: col,
+        sort: sort,
+      };
+    });
+    setColHeaders(headers);
+  }, [gridSorts, colDefs]);
+
+  useEffect(() => {
+    loadGrid();
+  }, [loadGrid]);
+
+  useEffect(() => {
+    setPageSize(defaultPageSize);
+  }, [defaultPageSize]);
 
   useImperativeHandle(ref, () => ({
     refresh() {
@@ -141,9 +210,12 @@ function MainGrid<T = any>(
           <div>
             <Table hoverable className="text-right border border-gray-300">
               <Table.Head>
-                {colDefs.map((column, index) => (
+                {colHeaders.map((header, index) => (
                   <Table.HeadCell key={index}>
-                    {column.headerName}
+                    <GridHeaderComponent
+                      colHeader={header}
+                      onSortChange={onSortChange}
+                    />
                   </Table.HeadCell>
                 ))}
                 {rowActions && <Table.HeadCell>عملیات</Table.HeadCell>}
