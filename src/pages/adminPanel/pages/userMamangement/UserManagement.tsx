@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from "react";
 import Grid from "../../../../components/shared/Grid/Grid";
 import SDButton from "../../../../components/shared/Button";
-import SDDatepicker from "../../../../components/shared/DatePicker";
 import useAPi from "../../../../hooks/useApi";
 import {
   BaseResponse,
@@ -15,12 +14,13 @@ import {
 } from "../../../../components/shared/Grid/grid.types";
 import SDSelect from "../../../../components/shared/Select";
 import SearchInput from "../../../../components/shared/SearchInput";
+import DateRangeFilter from "../../../../components/shared/DateRangeFilter";
 
 const UserManagement: React.FC = () => {
   const { sendRequest, errors } = useAPi<null, BaseResponse<UserListItem[]>>();
   const [selectedValue, setSelectedValue] = useState<string>("");
-  const [minDate, setMinDate] = useState<string>();
-  const [maxDate, setMaxDate] = useState<string>();
+  const [minDate, setMinDate] = useState<string>("");
+  const [maxDate, setMaxDate] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [colDefs] = useState<ColDef<UserListItem>[]>([
     {
@@ -119,35 +119,6 @@ const UserManagement: React.FC = () => {
     [sendRequest, selectedValue, minDate, maxDate, searchTerm]
   );
 
-  // useEffect(() => {
-  //   const fetchUsers = async () => {
-  //     await sendRequest(
-  //       {
-  //         url: "/Admin/GetUsers",
-  //         params: {
-  //           pagesize: 10000,
-  //           pageindex: 1,
-  //           userStatus: selectedValue.toLowerCase(),
-  //         },
-  //       },
-  //       (response) => {
-  //         const result = response.content;
-  //         setResult(result);
-  //       }
-  //     );
-  //   };
-
-  //   fetchUsers();
-  // }, [selectedValue, sendRequest]);
-
-  // if (isPending) {
-  //   return (
-  //     <div className="flex justify-center items-center h-3/4">
-  //       <SDSpinner size={16} />
-  //     </div>
-  //   );
-  // }
-
   if (errors) {
     return <div>Error: {errors.message}</div>;
   }
@@ -193,29 +164,13 @@ const UserManagement: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="flex items-center flex-wrap pb-2">
-            <p className="pl-4 text-sm"> تاریخ ثبت نام: </p>
-
-            <div className="flex">
-              <SDDatepicker
-                name="expireDate"
-                required={true}
-                placeholder="از :"
-                onOpenPickNewDate={false}
-                value={minDate}
-                onChange={setMinDate}
-              ></SDDatepicker>
-              <SDDatepicker
-                containerClassName="mr-1"
-                name="expireDate"
-                required={true}
-                placeholder="تا :"
-                onOpenPickNewDate={false}
-                value={maxDate}
-                onChange={setMaxDate}
-              ></SDDatepicker>
-            </div>
-          </div>
+          <DateRangeFilter
+            label="تاریخ ثبت نام"
+            fromDate={minDate}
+            toDate={maxDate}
+            onChangeFromDate={setMinDate}
+            onChangeToDate={setMaxDate}
+          />
         </div>
       </div>
       <div className="mt-3">
