@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import Grid from "../../../../components/shared/Grid/Grid";
 import SDButton from "../../../../components/shared/Button";
-import SDDatepicker from "../../../../components/shared/DatePicker";
 import useAPi from "../../../../hooks/useApi";
 import {
   NewEvent,
@@ -23,6 +22,8 @@ import { toast } from "react-toastify";
 import CostModal from "../../../../components/adminPanel/adminEvent/CostModal";
 import { useNavigate } from "react-router-dom";
 import TermsAndConditionsModal from "../../../../components/adminPanel/adminEvent/TermsAndConditionsModal";
+import SDSelect from "../../../../components/shared/Select";
+import DateRangeFilter from "../../../../components/shared/DateRangeFilter";
 
 const AdminEvents: React.FC = () => {
   const [selectedValue, setSelectedValue] = useState<string>("");
@@ -271,78 +272,44 @@ const AdminEvents: React.FC = () => {
           onCloseModal={handleCloseTermsModal}
         />
       )}
-      <div className="flex justify-between gap-3 flex-wrap">
-        <div className="flex gap-6 ">
-          <SDButton color="success" onClick={onCreate}>
+
+      <div className="flex  mt-12 flex-wrap">
+        <div className=" basis-full mb-4 xl:mb-0 xl:basis-1/12">
+        <SDButton color="success" onClick={onCreate}>
             + جدید
           </SDButton>
-          <div className="flex items-center justify-center">
-            <div>
-              <p>وضعیت :</p>
-            </div>
-            <div className="mr-5">
-              <select
-                id="underline_select"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                onChange={handleSelectChange}
-                value={selectedValue}
-              >
-                <option value="">همه</option>
-                {eventStatusData?.content.map((status, index) => (
+        </div>
+        <div className="flex flex-wrap justify-between xl:basis-11/12 gap-4">
+          <div className="flex flex-wrap">
+            <div className="flex items-center justify-center pb-2 ml-8">
+              <label htmlFor="status" className="pl-1 text-sm">وضعیت:</label>
+
+              <div className="mr-1 w-40">
+                <SDSelect
+                  id="status"
+                  onChange={handleSelectChange}
+                  value={selectedValue}
+                >
+                  <option value="">همه</option>
+                  {eventStatusData?.content.map((status, index) => (
                   <option key={index} value={status.id} className="text-right">
                     {status.title}
                   </option>
                 ))}
-              </select>
+                </SDSelect>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className="flex items-center pl-2">
-          <div>
-            <p> تاریخ :</p>
-          </div>
-          <div className="mr-5">
-            <SDDatepicker
-              inputClass=" !xs:w-40 text-center !bg-white border-slate-500"
-              name="expireDate"
-              required={true}
-              placeholder="از :"
-              value={startDate}
-              onChange={setStartDate}
-              onOpenPickNewDate={false}
-            ></SDDatepicker>
-          </div>
-          <div className="mr-1">
-            <SDDatepicker
-              inputClass=" !xs:w-40 text-center !bg-white border-slate-500"
-              name="expireDate"
-              required={true}
-              placeholder="تا :"
-              value={endDate}
-              onChange={setEndtDate}
-              onOpenPickNewDate={false}
-            ></SDDatepicker>
-          </div>
-          {/* <SDButton className="w-10 h-full mr-1" color="light">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-5 h-5 stroke-black"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z"
-              />
-            </svg>
-          </SDButton> */}
+          <DateRangeFilter
+            label="تاریخ"
+            fromDate={startDate}
+            toDate={endDate}
+            onChangeFromDate={setStartDate}
+            onChangeToDate={setEndtDate}
+          />
         </div>
       </div>
-      <div className="mt-6">
+      <div className="mt-3">
         <Grid<SkyDiveEvent>
           getData={fetchEvents}
           colDefs={colDefs}

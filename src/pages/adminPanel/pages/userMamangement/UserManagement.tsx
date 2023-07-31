@@ -134,11 +134,11 @@ const UserManagement: React.FC = () => {
         <div className="flex flex-wrap justify-between xl:basis-11/12 gap-4">
           <div className="flex flex-wrap">
             <div className="flex items-center justify-center pb-2 ml-8">
-              <p className="pl-1 text-sm">وضعیت:</p>
+              <label htmlFor="status" className="pl-1 text-sm">وضعیت:</label>
 
               <div className="mr-1">
                 <SDSelect
-                  id="underline_select"
+                  id="status"
                   onChange={handleSelectChange}
                   value={selectedValue}
                 >
@@ -154,9 +154,10 @@ const UserManagement: React.FC = () => {
               </div>
             </div>
             <div className="flex items-center justify-center pb-2">
-              <p className="pl-1 text-sm">جستجو:</p>
+              <label htmlFor="search" className="pl-1 text-sm">جستجو:</label>
               <div className="mr-1">
                 <SearchInput
+                  id="search"
                   onSubmit={onSearchTermChange}
                   searchTerm={searchTerm}
                   placeholder="نام، نام خانوادگی، کد ملی"
@@ -175,7 +176,6 @@ const UserManagement: React.FC = () => {
       </div>
       <div className="mt-3">
         <Grid<UserListItem>
-          // data={result}
           getData={fetchUsers}
           onDoubleClick={goToDetail}
           colDefs={colDefs}
