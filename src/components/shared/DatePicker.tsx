@@ -83,7 +83,7 @@ const SDDatepicker: React.FC<SDDatePickerProps> = (props) => {
             calendar={persian}
             locale={persian_fa}
             calendarPosition="bottom-right"
-            containerClassName="w-full"
+            containerClassName={`w-full ${datePickerPropsTemp.containerClassName}`}
             inputClass={`${
               errors[props.name] || (props.required && manualIsTouched && !value)
                 ? "border-red-500 focus:ring-red-500 focus:border-red-500"
@@ -106,7 +106,7 @@ const SDDatepicker: React.FC<SDDatePickerProps> = (props) => {
       calendar={persian}
       locale={persian_fa}
       calendarPosition="bottom-right"
-      containerClassName="w-full"
+      containerClassName={`w-full ${datePickerPropsTemp.containerClassName}`}
       inputClass={`${
         props.manualInvalid
           ? "!border-red-500 focus:ring-red-500 focus:border-red-500"

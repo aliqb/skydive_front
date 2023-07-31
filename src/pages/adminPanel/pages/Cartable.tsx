@@ -76,10 +76,8 @@ const Cartable: React.FC = () => {
   };
 
   const onSearchTermChange = useCallback((term: string) => {
-    console.log("ffff",term);
     setSearchTerm(term);
     setPageIndex(1);
-    // fetchItems(selectedType, term, 1);
   }, []);
 
   useEffect(() => {
