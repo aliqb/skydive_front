@@ -23,42 +23,52 @@ const UserManagement: React.FC = () => {
     {
       field: "code",
       headerName: "کد",
+      sortable: true,
     },
     {
       field: "nationalCode",
       headerName: "کد ملی",
+      sortable: true,
     },
     {
       field: "firstName",
       headerName: "نام",
+      sortable: true,
     },
     {
       field: "lastName",
       headerName: "نام خانوادگی",
+      sortable: true,
     },
     {
       field: "userType",
       headerName: "نوع",
+      sortable: true,
     },
     {
       field: "phone",
       headerName: "موبایل",
+      sortable: true,
     },
     {
       field: "birthDate",
       headerName: "تاریخ تولد",
+      sortable: true,
     },
     {
       field: "username",
       headerName: "نام کاربری",
+      sortable: true,
     },
     {
       field: "email",
       headerName: "ایمیل",
+      sortable: true,
     },
     {
       field: "statusDisplay",
       headerName: "وضعیت",
+      sortable: true,
     },
   ]);
   const navigate = useNavigate();
@@ -86,6 +96,9 @@ const UserManagement: React.FC = () => {
             userStatus: selectedValue,
             minDate: minDate,
             maxDate: maxDate,
+            orderby: gridParams.sorts
+              .map((item) => `${item.field} ${item.sort}`)
+              .join(","),
           },
         },
         (response) => {
