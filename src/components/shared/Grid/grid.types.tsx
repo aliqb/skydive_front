@@ -2,11 +2,17 @@
 export interface ColDef<T = any> {
   field: string;
   headerName: string;
+  sortable?: boolean;
   onClick?: (item: T) => void;
   template?: React.ReactNode | string;
   cellRenderer?: (item: T) => React.ReactNode | string;
 }
 
+export type SortStateType = 'asc'|'desc'|'none';
+export interface ColHeader{
+  col: ColDef;
+  sort: SortStateType
+}
 export class GridRow<T = any> {
   data: T;
   //   _rowData:{
@@ -68,10 +74,20 @@ export interface GridRowOtherAction<T>{
     onClick:(item:T)=>void,
 }
 
+export interface ColSortChangeEvent{
+  field: string;
+  sort: SortStateType
+}
+
+export interface GridSortItem{
+  field: string;
+  sort: SortStateType;
+}
 
 export interface GridParams{
   pageIndex: number;
   pageSize: number;
+  sorts: GridSortItem[]
 }
 
 export type GridGetData<T> = (gridParams: GridParams, setRows: (items: T[],total:number) => void) => void;
