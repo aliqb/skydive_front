@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import SDModal from "./Modal";
 import { axiosIntance } from "../../hooks/useApi";
 import pdfIcon from "../../assets/pdf-icon.jpg";
 import SDSpinner from "./Spinner";

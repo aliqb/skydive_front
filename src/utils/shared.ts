@@ -1,7 +1,19 @@
 export function sortDate<T>(data: T[], dateField: keyof T): T[] {
-  return data.sort((first, second) => {
-    const firstArr = (first[dateField] as string).split("/");
-    const secondArr = (second[dateField] as string).split("/");
+  return data.sort(sortDateComprator<T>(dateField));
+}
+
+export function sortDateComprator<T>(dateField: keyof T){
+  return (first:T, second:T) => {
+    const firstDate = first[dateField];
+    const secondDate = second[dateField];
+    if(firstDate == null){
+      return -1;
+    }
+    if(secondDate == null){
+      return 1
+    }
+    const firstArr = ( firstDate as string).split("/");
+    const secondArr = ( secondDate as string).split("/");
     const yearsDiff = +firstArr[0] - +secondArr[0];
     if (yearsDiff !== 0) {
       return yearsDiff;
@@ -11,7 +23,7 @@ export function sortDate<T>(data: T[], dateField: keyof T): T[] {
       return monthDiff;
     }
     return +firstArr[2] - +secondArr[2];
-  });
+  }
 }
 
 export function replacePersianArabics(value: string) {

@@ -30,6 +30,11 @@ export interface DocumentItem {
   id?:string
 }
 
+export interface DocumentItemRow extends DocumentItem{
+  title: string;
+  isPending: boolean;
+}
+
 export interface DocumentItemModel extends DocumentItem{
   withDate?: boolean
 }
@@ -42,13 +47,20 @@ export interface PersonalInfoEditRequest extends Omit<UserPersonalInfo, "id"> {
 }
 
 export interface DocumentsList {
-  medicalDocument: DocumentItem | null;
-  logBookDocument: DocumentItem | null;
-  attorneyDocument: DocumentItem | null;
-  nationalCardDocument: DocumentItem | null;
+  medicalDocuments: DocumentItem[] | null;
+  logBookDocuments: DocumentItem[] | null;
+  attorneyDocuments: DocumentItem[] | null;
+  nationalCardDocuments: DocumentItem[] | null;
   id: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export const DocumentTitleMap = {
+  medicalDocument : 'مدارک پزشکی',
+  logBookDocument: "لاگ بوک",
+  attorneyDocument: 'وکالت‌نامه محضری',
+  nationalCardDocument: 'کارت ملی'
 }
 
 export const  DocumnetStatus = {

@@ -1,6 +1,41 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { DocumentItemModel, DocumentsList } from "../models/account.models";
+import {
+  DocumentItem,
+  DocumentItemModel,
+  DocumentsList,
+  DocumnetStatus,
+} from "../models/account.models";
 import { UserPersonalInfo } from "../models/shared.models";
+import { sortDateComprator } from "../utils/shared";
+
+function getLastDocument(
+  documents: DocumentItem[] | null,
+  withDate?: boolean
+): DocumentItemModel {
+  if (!documents) {
+    return { fileId: "", withDate: withDate };
+  }
+  const createdComperator = sortDateComprator<DocumentItem>('createdAt');
+  const expirationComperator = sortDateComprator<DocumentItem>('expirationDate');
+  const sorted = documents.sort((a,b)=>{
+    const createDiff = createdComperator(a,b);
+    if(createDiff !==0){
+      return createDiff
+    }
+    if(a.status === b.status){
+      return expirationComperator(a,b)
+    }
+    const priorStatuses = [DocumnetStatus.EXPIRED,DocumnetStatus.PENDING]
+    if(priorStatuses.includes(a.status as string)){
+      return 1;
+    }
+    if(priorStatuses.includes(b.status as string)){
+      return -1;
+    }
+    return 0
+  })  
+  return { ...sorted[sorted.length - 1], withDate: withDate };
+}
 
 interface AccountState {
   personalInfo: UserPersonalInfo | null;
@@ -39,16 +74,12 @@ const accountSlice = createSlice({
     },
     setDocuments: (state, action: PayloadAction<DocumentsList>) => {
       const payload = action.payload;
-      state.medicalDocument = payload.medicalDocument
-        ? { ...payload.medicalDocument, withDate: true }
-        : { fileId: "", withDate: true };
-      state.logBookDocument = payload.logBookDocument || { fileId: "" };
-      state.attorneyDocument = payload.attorneyDocument
-        ? { ...payload.attorneyDocument, withDate: true }
-        : { fileId: "", withDate: true };
-      state.nationalCardDocument = payload.nationalCardDocument || {
-        fileId: "",
-      };
+      state.medicalDocument = getLastDocument(payload.medicalDocuments, true);
+      state.logBookDocument = getLastDocument(payload.logBookDocuments);
+      state.attorneyDocument = getLastDocument(payload.attorneyDocuments, true);
+      state.nationalCardDocument = getLastDocument(
+        payload.nationalCardDocuments
+      );
     },
     setDocumnetFile: (
       state,

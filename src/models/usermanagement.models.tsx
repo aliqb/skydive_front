@@ -38,6 +38,7 @@ export interface UserDatail {
   createdAt: string;
   updatedAt: string;
   password?: string;
+  documentsConfirmed:boolean
 }
 
 

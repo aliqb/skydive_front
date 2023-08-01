@@ -57,7 +57,7 @@ export const UserStatuses = {
 
 export const UserStatusesPersianMap = new Map([
   [UserStatuses.AWAITING_COMPLETION, "در انتظار تکمیل"],
-  [UserStatuses.PENDING, "در انتظار تایید"],
+  [UserStatuses.PENDING, "در انتظار تأیید"],
   [UserStatuses.ACTIVE, "فعال "],
   [UserStatuses.INACTIVE, "غیر فعال"],
 ]);

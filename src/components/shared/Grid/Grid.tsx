@@ -92,9 +92,9 @@ function MainGrid<T = any>(
               sorts: [],
             }
           : gridParams;
-        getData(params, (items: T[], total: number) => {
+        getData(params, (items: T[], total?: number) => {
           makeGridRows(items, colDefs);
-          if (pageSize) {
+          if (pageSize && total) {
             setPageCount(Math.ceil(total / pageSize));
           }
           if (isRefreshing) {
