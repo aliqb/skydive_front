@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 import FileViewButton from "../../../../../components/shared/FileViewButtom";
 import SDButton from "../../../../../components/shared/Button";
 import AdminUploadDocumnetModal from "../../../../../components/adminPanel/userManagement/AdminUploadDocumnetModal";
+import useConfirm from "../../../../../hooks/useConfirm";
 
 const AdminUserDocument: React.FC = () => {
   const params = useParams();
@@ -65,7 +66,11 @@ const AdminUserDocument: React.FC = () => {
   const { sendRequest } = useAPi<null, BaseResponse<DocumentsList>>();
 
   const { sendRequest: checkRequest } = useAPi<null, BaseResponse<null>>();
-
+  const { sendRequest: sendRemoveRequest } = useAPi<null, BaseResponse<null>>();
+  const [DeleteConfirmModal, deleteConfirmation] = useConfirm(
+    " این مدرک حذف خواهد شد. آیا مطمئن هستید؟ ",
+    "حذف کردن مدرک"
+  );
   const mapDocumentsToRows = useCallback(
     (documents: DocumentItem[], title: string) => {
       const rows: DocumentItemRow[] = documents.map((item) => {
@@ -148,11 +153,32 @@ const AdminUserDocument: React.FC = () => {
       gridRef.current?.refresh();
     }
   }
+
+  async function onRemoveDocument(item: DocumentItemRow) {
+    const confirm = await deleteConfirmation();
+    if(!confirm){
+      return
+    }
+    sendRemoveRequest(
+      {
+        url: `/admin/RemoveDocument/${item.id}`,
+        method: "delete",
+      },
+      (response) => {
+        toast.success(response.message);
+        gridRef.current?.refresh();
+      },
+      (error) => {
+        toast.error(error?.message);
+      }
+    );
+  }
   // useEffect(() => {
   //   getDocuments(params.userId as string);
   // }, [params.userId, getDocuments]);
   return (
     <>
+      <DeleteConfirmModal />
       {showUploadModal && (
         <AdminUploadDocumnetModal
           userId={params.userId as string}
@@ -166,11 +192,12 @@ const AdminUserDocument: React.FC = () => {
             + جدید
           </SDButton>
         </div>
-        <Grid<DocumentItem>
+        <Grid<DocumentItemRow>
           colDefs={colDefs}
           getData={getDocuments}
           pageSize={null}
           ref={gridRef}
+          onRemoveRow={onRemoveDocument}
           rowActions={{
             remove: true,
             edit: false,
