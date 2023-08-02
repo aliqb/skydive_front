@@ -45,6 +45,7 @@ export interface UserDatail {
 export interface CheckUserInfoRequest{
   id: string;
   isConfirmed: boolean;
+  message: string;
 }
 
 export interface userType {
