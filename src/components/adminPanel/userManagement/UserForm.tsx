@@ -10,7 +10,11 @@ import { useEffect, useState } from "react";
 import useAPi from "../../../hooks/useApi";
 import { BaseResponse } from "../../../models/shared.models";
 import UserFormSelect from "./UserFormSelect";
-import { Regexes, phoneInputValidator } from "../../../utils/shared";
+import {
+  Regexes,
+  nationalCodeValidator,
+  phoneInputValidator,
+} from "../../../utils/shared";
 import ResetUserPasswordModal from "./ResetUserPasswordModal";
 
 interface UserFormProps {
@@ -167,6 +171,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                   })}
               </UserFormSelect>
               <UserFormInput
+                {...nationalCodeValidator}
                 register={register}
                 name="nationalCode"
                 options={{

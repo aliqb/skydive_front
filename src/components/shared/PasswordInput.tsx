@@ -1,4 +1,5 @@
 import { InputHTMLAttributes, forwardRef, useState, Ref } from "react";
+import { replacePersianArabicsNumbers } from "../../utils/shared";
 interface PasswordInputProps extends InputHTMLAttributes<HTMLInputElement> {
   invalid?: boolean;
 }
@@ -11,6 +12,12 @@ const PasswordInput: React.FC<PasswordInputProps> = forwardRef(
 
     function toggleShowPassword() {
       setShowPassword((showPassword) => !showPassword);
+    }
+
+    const inputHandler : React.ChangeEventHandler<HTMLInputElement> = (event)=>{
+      let value = event.target.value;
+      value = replacePersianArabicsNumbers(value);
+      event.target.value = value;
     }
 
     const showPasswordIcon: JSX.Element = (
@@ -55,6 +62,7 @@ const PasswordInput: React.FC<PasswordInputProps> = forwardRef(
       <div className="relative w-full mb-0 mt-1">
         <input
           {...inputProps}
+          onInput={inputHandler}
           type={showPassword ? "text" : "password"}
           id="password"
           ref={ref}

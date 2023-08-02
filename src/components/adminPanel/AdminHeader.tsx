@@ -40,7 +40,7 @@ const AdminHeader: React.FC<ShellElement> = (props) => {
   return (
     <div className="bg-blue-900 h-[60px] flex items-center">
       <HumbergerButton {...props} className="stroke-white"></HumbergerButton>
-      <div className="mr-auto ml-12">
+      <div className="mr-auto md:ml-12">
         <SDDropdown items={dropdownItems} chevronClassName="stroke-white">
           <span className="text-white">{name}</span>
         </SDDropdown>

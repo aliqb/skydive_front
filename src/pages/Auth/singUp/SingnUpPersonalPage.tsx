@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { authActions } from "../../../store/auth";
 import { updateAuthDataInLocal } from "../../../utils/authUtils";
 import { useEffect } from "react";
-import { Regexes } from "../../../utils/shared";
+import { Regexes, nationalCodeValidator } from "../../../utils/shared";
 
 const SingUpPersonaPage: React.FC = () => {
   const navigate = useNavigate();
@@ -75,6 +75,7 @@ const SingUpPersonaPage: React.FC = () => {
         <div className="mb-4">
           <SDLabel htmlFor="nationalCode">کد ملی</SDLabel>
           <SDTextInput
+            {...nationalCodeValidator}
             {...register("nationalCode", {
               required: "فیلد الزامی است.",
               pattern: {

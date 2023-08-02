@@ -26,7 +26,7 @@ export function sortDateComprator<T>(dateField: keyof T){
   }
 }
 
-export function replacePersianArabics(value: string) {
+export function replacePersianArabicsNumbers(value: string) {
   if (value === null || value === undefined) {
     return value;
   }
@@ -65,8 +65,17 @@ export const phoneInputChangeValidationHandler: React.ChangeEventHandler<
   HTMLInputElement
 > = (event) => {
   let value = event.target.value;
-  value = replacePersianArabics(value)
+  value = replacePersianArabicsNumbers(value)
   value = value.replace(/[^\d+]/g, "");
+  event.target.value = value;
+};
+
+export const nationalCodeInputChangeValidationHandler: React.ChangeEventHandler<
+  HTMLInputElement
+> = (event) => {
+  let value = event.target.value;
+  value = replacePersianArabicsNumbers(value)
+  value = value.replace(/[^\d]/g, "");
   event.target.value = value;
 };
 
@@ -84,6 +93,13 @@ export const phoneInputValidator = {
   // onKeyDown: phoneKeyDownValidationHandler,
   // onPaste: phonePastValidationHandler,
   onInput: phoneInputChangeValidationHandler,
+};
+
+
+export const nationalCodeValidator = {
+  // onKeyDown: phoneKeyDownValidationHandler,
+  // onPaste: phonePastValidationHandler,
+  onInput: nationalCodeInputChangeValidationHandler,
 };
 
 export const persianCharRange = [

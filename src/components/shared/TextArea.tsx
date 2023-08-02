@@ -3,6 +3,7 @@ import {
   Ref,
   TextareaHTMLAttributes,
 } from "react";
+import { replacePersianArabicsNumbers } from "../../utils/shared";
 export interface SDTextAreaProps
   extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   invalid?: boolean;
@@ -14,10 +15,17 @@ const SDTextArea = forwardRef(
     delete inputProps.invalid;
     delete inputProps.className;
 
+    const inputHandler : React.ChangeEventHandler<HTMLTextAreaElement> = (event)=>{
+      let value = event.target.value;
+      value = replacePersianArabicsNumbers(value);
+      event.target.value = value;
+    }
+
     return (
       <textarea
         {...inputProps}
         id={props.id}
+        onInput={inputProps.onInput ? inputProps.onInput :  inputHandler}
         ref={ref}
         className={`${
           props.invalid
