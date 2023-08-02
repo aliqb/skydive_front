@@ -3,14 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { ChangeEvent, useState } from "react";
 import SDButton from "../../../components/shared/Button";
 import SDSpinner from "../../../components/shared/Spinner";
-import { useAppDispatch } from "../../../hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import useAPi from "../../../hooks/useApi";
 import { OTPRequest, OTPResponse } from "../../../models/auth.models";
 import { BaseResponse } from "../../../models/shared.models";
 import { authActions } from "../../../store/auth";
 import { Regexes, phoneInputValidator } from "../../../utils/shared";
-import { GeneralSettings } from "../../../models/settings.models";
-import { useEffect } from "react";
 
 const SignUpMobilePage: React.FC = () => {
   const {
@@ -31,10 +29,8 @@ const SignUpMobilePage: React.FC = () => {
     OTPResponse
   >();
 
-  const { sendRequest: sendSettingsRequest, data: settingsResponse } = useAPi<
-    null,
-    BaseResponse<GeneralSettings>
-  >();
+  const termsLink = useAppSelector(state=>state.generalSettings.generalSettings?.registrationTermsAndConditionsUrl);
+
 
   const [finalPending, setFinalPending] = useState<boolean>(false);
 
@@ -43,12 +39,6 @@ const SignUpMobilePage: React.FC = () => {
   const [acceptRules, setAcceptRules] = useState<boolean>(false);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    sendSettingsRequest({
-      url: "/settings",
-    });
-  }, [sendSettingsRequest]);
 
   function onChangeAcceptance(evenet: ChangeEvent<HTMLInputElement>) {
     setAcceptRules(!!evenet.target.value);
@@ -161,7 +151,7 @@ const SignUpMobilePage: React.FC = () => {
           className="mr-2 text-sm font-medium text-gray-900 dark:text-gray-300"
         >
           <a
-            href={settingsResponse?.content.termsAndConditionsUrl || ""}
+            href={termsLink || ""}
             target="_blank"
             className="inline-block ml-1 text-blue-600"
           >
