@@ -32,18 +32,22 @@ export interface DocumentItem {
 
 export interface DocumentItemRow extends DocumentItem{
   title: string;
-  isPending: boolean;
+  isPending: boolean
 }
 
 export interface DocumentItemModel extends DocumentItem{
   withDate?: boolean
 }
 
-export interface PersonalInfoEditRequest extends Omit<UserPersonalInfo, "id"> {
+export interface DocumentsUplodModel {
   medicalDocument?: DocumentItem;
   logBookDocument?: DocumentItem;
   attorneyDocument?: DocumentItem;
   nationalCardDocument?: DocumentItem;
+}
+
+export interface PersonalInfoEditRequest extends Omit<UserPersonalInfo, "id">,DocumentsUplodModel {
+
 }
 
 export interface DocumentsList {

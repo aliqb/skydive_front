@@ -20,6 +20,8 @@ import UserDocumentStatusLabel from "../../../../../components/shared/UserDocume
 import { sortDate } from "../../../../../utils/shared";
 import { toast } from "react-toastify";
 import FileViewButton from "../../../../../components/shared/FileViewButtom";
+import SDButton from "../../../../../components/shared/Button";
+import AdminUploadDocumnetModal from "../../../../../components/adminPanel/userManagement/AdminUploadDocumnetModal";
 
 const AdminUserDocument: React.FC = () => {
   const params = useParams();
@@ -59,10 +61,8 @@ const AdminUserDocument: React.FC = () => {
     },
   ]);
   const gridRef = useRef<GridRef>(null);
-  const { sendRequest } = useAPi<
-    null,
-    BaseResponse<DocumentsList>
-  >();
+  const [showUploadModal, setShowUploadModal] = useState<boolean>(false);
+  const { sendRequest } = useAPi<null, BaseResponse<DocumentsList>>();
 
   const { sendRequest: checkRequest } = useAPi<null, BaseResponse<null>>();
 
@@ -138,70 +138,94 @@ const AdminUserDocument: React.FC = () => {
     [checkRequest]
   );
 
+  function uploadDocumentStart() {
+    setShowUploadModal(true);
+  }
+
+  function onUploadClose(submitted: boolean) {
+    setShowUploadModal(false);
+    if (submitted) {
+      gridRef.current?.refresh();
+    }
+  }
   // useEffect(() => {
   //   getDocuments(params.userId as string);
   // }, [params.userId, getDocuments]);
   return (
-    <div className="py-16 px-12">
-      <Grid<DocumentItem>
-        colDefs={colDefs}
-        getData={getDocuments}
-        pageSize={null}
-        ref={gridRef}
-        rowActions={{
-          remove: true,
-          edit: false,
-          otherActions: [
-            {
-              icon: (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6 stroke-green-500"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              ),
-              descriptions: "تأیید",
-              onClick: (item) => {
-                checkDocument(item.id as string, true);
+    <>
+      {showUploadModal && (
+        <AdminUploadDocumnetModal
+          userId={params.userId as string}
+          showModal={showUploadModal}
+          onCloseModal={onUploadClose}
+        />
+      )}
+      <div className="py-16 px-12">
+        <div className="mb-2">
+          <SDButton color="success" onClick={uploadDocumentStart}>
+            + جدید
+          </SDButton>
+        </div>
+        <Grid<DocumentItem>
+          colDefs={colDefs}
+          getData={getDocuments}
+          pageSize={null}
+          ref={gridRef}
+          rowActions={{
+            remove: true,
+            edit: false,
+            otherActions: [
+              {
+                icon: (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6 stroke-green-500"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                ),
+                descriptions: "تأیید",
+                onClick: (item) => {
+                  checkDocument(item.id as string, true);
+                },
+                showField: "isPending",
               },
-              showField: "isPending",
-            },
-            {
-              icon: (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6 stroke-red-600"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-                  />
-                </svg>
-              ),
-              descriptions: "عدم تأیید",
-              onClick: (item) => {
-                checkDocument(item.id as string, false);
+              {
+                icon: (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6 stroke-red-600"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                    />
+                  </svg>
+                ),
+                descriptions: "عدم تأیید",
+                onClick: (item) => {
+                  checkDocument(item.id as string, false);
+                },
+                showField: "isPending",
               },
-              showField: "isPending",
-            },
-          ],
-        }}
-      />
-    </div>
+            ],
+          }}
+        />
+      </div>
+    </>
   );
 };
 

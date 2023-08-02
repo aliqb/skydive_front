@@ -20,7 +20,7 @@ import {
   fetchUserDetail,
   usermanagementActions,
 } from "../../../../../store/usermanagement";
-import CheckInfoMessageModal from "./CheckInfoMessageModal";
+import CheckInfoMessageModal from "../../../../../components/adminPanel/userManagement/CheckInfoMessageModal";
 
 const UserDetailPage: React.FC = () => {
   const params = useParams();
