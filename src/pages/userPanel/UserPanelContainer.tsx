@@ -10,12 +10,11 @@ const UserPanelContainer: React.FC = () => {
   useEffect(() => {
     let interval: number;
     if (genralInfoSet) {
-      console.log('here')
       dispatch(fetchBasket());
       dispatch(fetchMessages({}))
        interval = setInterval(()=>{
         dispatch(fetchMessages({}))
-      },60000)
+      },30000)
     }
     return ()=>clearInterval(interval)
   }, [dispatch, genralInfoSet]);

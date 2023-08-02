@@ -11,6 +11,7 @@ import { AuthData, OTPRequest, OTPResponse } from "../../models/auth.models";
 import { BaseResponse } from "../../models/shared.models";
 import { authActions } from "../../store/auth";
 import { setAuthDataInLocal } from "../../utils/authUtils";
+import { replacePersianArabicsNumbers } from "../../utils/shared";
 
 const PasswordLoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -41,7 +42,7 @@ const PasswordLoginPage: React.FC = () => {
   }
 
   function onPasswordChange(evenet: FormEvent) {
-    const input: string = (evenet.target as HTMLInputElement).value;
+    const input: string = replacePersianArabicsNumbers((evenet.target as HTMLInputElement).value);
     setPassword(input);
   }
 

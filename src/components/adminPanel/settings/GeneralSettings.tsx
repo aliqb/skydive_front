@@ -11,6 +11,7 @@ import SDButton from "../../shared/Button";
 import { toast } from "react-toastify";
 import SDSpinner from "../../shared/Spinner";
 import { GeneralSettings } from "../../../models/settings.models";
+import { useAppSelector } from "../../../hooks/reduxHooks";
 
 const GeneralSettingsComponent: React.FC = () => {
   const {
@@ -27,10 +28,7 @@ const GeneralSettingsComponent: React.FC = () => {
     name: "userStatusInfo",
   });
 
-  const { sendRequest: getSettingsRequest, isPending: isGetPending } = useAPi<
-    null,
-    BaseResponse<GeneralSettings>
-  >();
+  const generalSettingsState = useAppSelector((state) => state.generalSettings);
 
   const { sendRequest: saveSettingsRequest, isPending: isSaving } = useAPi<
     GeneralSettings,
@@ -38,19 +36,20 @@ const GeneralSettingsComponent: React.FC = () => {
   >();
 
   useEffect(() => {
-    getSettingsRequest(
-      {
-        url: "/settings",
-      },
-      (response) => {
-        const result = response.content;
-        reset({
-          termsAndConditionsUrl: result.termsAndConditionsUrl,
-          userStatusInfo: result.userStatusInfo,
-        });
-      }
-    );
-  }, [getSettingsRequest, reset]);
+    if (generalSettingsState.generalSettings) {
+      reset({
+        termsAndConditionsUrl:
+          generalSettingsState.generalSettings.termsAndConditionsUrl,
+        userStatusInfo: generalSettingsState.generalSettings.userStatusInfo,
+        registrationTermsAndConditionsUrl:
+          generalSettingsState.generalSettings
+            .registrationTermsAndConditionsUrl,
+        fileSizeLimitaion:
+          generalSettingsState.generalSettings.fileSizeLimitaion,
+        jumpDuration: generalSettingsState.generalSettings.jumpDuration,
+      });
+    }
+  }, [generalSettingsState, reset]);
 
   function onSubmit(data: GeneralSettings) {
     saveSettingsRequest(
@@ -70,11 +69,13 @@ const GeneralSettingsComponent: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        <SDLabel htmlFor="termsAndConditionsUrl">لینک شرایط و قوانین:</SDLabel>
+      <div className="mb-6">
+        <SDLabel htmlFor="termsAndConditionsUrl">
+          لینک شرایط و قوانین اصلی:
+        </SDLabel>
         <SDTextInput
           className="ltr"
-          disabled={isGetPending}
+          disabled={generalSettingsState.loading}
           id="termsAndConditionsUrl"
           {...register("termsAndConditionsUrl", {
             required: "این فیلد اجباری است.",
@@ -85,6 +86,52 @@ const GeneralSettingsComponent: React.FC = () => {
             {formErrors.termsAndConditionsUrl.message}
           </p>
         )}
+      </div>
+      <div className="mb-6">
+        <SDLabel htmlFor="registrationTermsAndConditionsUrl">
+          لینک شرایط و قوانین ثبت نام:
+        </SDLabel>
+        <SDTextInput
+          className="ltr"
+          disabled={generalSettingsState.loading}
+          id="registrationTermsAndConditionsUrl"
+          {...register("registrationTermsAndConditionsUrl", {
+            required: "این فیلد اجباری است.",
+          })}
+        />
+        {formErrors.registrationTermsAndConditionsUrl?.message && (
+          <p className="text-red-600 text-xs pr-2 mt-2">
+            {formErrors.registrationTermsAndConditionsUrl.message}
+          </p>
+        )}
+      </div>
+      <div className="mb-6 flex gap-6">
+        <div className="w-full">
+          <SDLabel htmlFor="fileSizeLimitaion">حداکثر حجم آپلود (KB):</SDLabel>
+          <SDTextInput
+            numeric={true}
+            className="ltr"
+            disabled={generalSettingsState.loading}
+            id="fileSizeLimitaion"
+            {...register("fileSizeLimitaion", {
+              required: "این فیلد اجباری است.",
+              valueAsNumber: true,
+            })}
+          />
+        </div>
+        <div className="w-full">
+          <SDLabel htmlFor="termsAndConditionsUrl">اعتبار سابقه پرش (روز):</SDLabel>
+          <SDTextInput
+            numeric={true}
+            className="ltr"
+            disabled={generalSettingsState.loading}
+            id="jumpDuration"
+            {...register("jumpDuration", {
+              required: "این فیلد اجباری است.",
+              valueAsNumber: true,
+            })}
+          />
+        </div>
       </div>
       <div className="mt-10">
         <h6 className="text-slate-700 font-semibold text-lg mb-4">
@@ -98,7 +145,7 @@ const GeneralSettingsComponent: React.FC = () => {
               </SDLabel>
               <SDTextInput
                 id={field.status}
-                disabled={isGetPending}
+                disabled={generalSettingsState.loading}
                 {...register(`userStatusInfo.${index}.description` as const, {
                   required: "این فیلد اجباری است.",
                 })}
@@ -115,7 +162,7 @@ const GeneralSettingsComponent: React.FC = () => {
       <div className="mt-8 flex justify-center">
         <SDButton
           className="w-full max-w-sm !bg-blue-900"
-          disabled={isGetPending || isSaving}
+          disabled={generalSettingsState.loading || isSaving}
           type="submit"
         >
           {isSaving && <SDSpinner />}

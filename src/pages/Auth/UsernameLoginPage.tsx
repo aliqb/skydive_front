@@ -5,6 +5,7 @@ import SDSpinner from "../../components/shared/Spinner";
 import { useAppSelector, useAppDispatch } from "../../hooks/reduxHooks";
 import useAPi from "../../hooks/useApi";
 import { authActions } from "../../store/auth";
+import { replacePersianArabicsNumbers } from "../../utils/shared";
 
 export default function UsernameLoginPage() {
   const username = useAppSelector((state) => state.auth.enteredUsername);
@@ -13,7 +14,9 @@ export default function UsernameLoginPage() {
   const navigate = useNavigate();
   const { sendRequest, errors, isPending } = useAPi();
   function onChangeUsername(event: FormEvent) {
-    const input: string = (event.target as HTMLInputElement).value;
+    const input: string = replacePersianArabicsNumbers(
+      (event.target as HTMLInputElement).value
+    );
     dispatch(authActions.setUsername(input));
   }
   function onSubmit(event: FormEvent) {
@@ -69,9 +72,14 @@ export default function UsernameLoginPage() {
             </Link>
           </div>
         </div>
-        <div className="w-full sm:w-auto mt-2 sm:mt-0" >
-          <SDButton className="w-full" type="submit" color="success" disabled={isPending}>
-          {isPending &&  <SDSpinner />}
+        <div className="w-full sm:w-auto mt-2 sm:mt-0">
+          <SDButton
+            className="w-full"
+            type="submit"
+            color="success"
+            disabled={isPending}
+          >
+            {isPending && <SDSpinner />}
             ورود
           </SDButton>
         </div>
@@ -81,11 +89,7 @@ export default function UsernameLoginPage() {
           لطفا نام کاربری خود را وارد کنید.
         </p>
       )}
-      {errors && (
-        <p className="text-red-600 text-sm pr-2">
-          {errors.message}
-        </p>
-      )}
+      {errors && <p className="text-red-600 text-sm pr-2">{errors.message}</p>}
       <div className="flex flex-wrap items-center gap-2 mt-6  ">
         <p>حساب کاربری ندارید؟ ثبت نام کنید: </p>
         <Link to="signup" className="w-full xs:w-auto">

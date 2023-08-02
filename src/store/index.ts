@@ -4,6 +4,7 @@ import accountReducer from './account';
 import basketReducer  from './basket';
 import userManagementReducer from './usermanagement';
 import messages from './messages';
+import generalSettings from './generalSettings';
 
 const store = configureStore({
     reducer: {
@@ -11,7 +12,8 @@ const store = configureStore({
         account: accountReducer,
         basket: basketReducer,
         userManagement: userManagementReducer,
-        messages: messages
+        messages: messages,
+        generalSettings: generalSettings
     }
 })
 

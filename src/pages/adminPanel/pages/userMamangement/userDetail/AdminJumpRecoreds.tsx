@@ -126,7 +126,7 @@ const AdminJumpRecoreds: React.FC = () => {
                   />
                 </svg>
               ),
-              descriptions: "تایید",
+              descriptions: "تأیید",
               onClick: approveRecord,
               showField: '!confirmed'
             },

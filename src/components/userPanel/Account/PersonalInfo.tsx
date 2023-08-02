@@ -279,6 +279,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
                 )}
               </SDLabel>
               <SDTextInput
+                {...phoneInputValidator}
                 {...register("emergencyPhone", {
                   pattern: {
                     value: Regexes.mobile,
@@ -290,7 +291,6 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
                 type="text"
                 disabled={props.disableAll}
                 maxLength={14}
-                {...phoneInputValidator}
                 id="emergencyPhone"
                 className="ltr"
                 invalid={
@@ -307,7 +307,12 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
           </div>
         </div>
         <div className="w-full flex justify-center ">
-          <SDButton className="w-full md:w-1/2" color="primary" type="submit" disabled={props.disableAll}>
+          <SDButton
+            className="w-full md:w-1/2"
+            color="primary"
+            type="submit"
+            disabled={props.disableAll}
+          >
             مرحله بعد
           </SDButton>
         </div>

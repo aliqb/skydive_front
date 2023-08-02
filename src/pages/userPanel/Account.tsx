@@ -59,7 +59,7 @@ const Account: React.FC = () => {
   const navigate = useNavigate();
 
   const [ConfirmModal, confirmation] = useConfirm(
-    "آیا از صحت اطلاعات اطمینان دارید و مدارک برای تایید ارسال شود ؟ ",
+    "آیا از صحت اطلاعات اطمینان دارید و مدارک برای تأیید ارسال شود ؟ ",
     "تکمیل اطلاعات و ارسال"
   );
 

@@ -13,6 +13,7 @@ import ReactPaginate from "react-paginate";
 import SDSelect from "../../../components/shared/Select";
 import { toast } from "react-toastify";
 import SearchInput from "../../../components/shared/SearchInput";
+import useConfirm from "../../../hooks/useConfirm";
 
 const Cartable: React.FC = () => {
   const { sendRequest, isPending, data } = useAPi<
@@ -27,6 +28,10 @@ const Cartable: React.FC = () => {
   const [pageCount, setPageCount] = useState<number>();
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [ConfirmModal, confirmation] = useConfirm(
+    " این مورد از کارتابل حذف خواهد شد. آیا مطمئن هستید؟ ",
+    "حذف کردن"
+  );
 
   const fetchItems = useCallback(
     (selectedType: string, searchTerm = "", pageIndex = 1) => {
@@ -48,7 +53,11 @@ const Cartable: React.FC = () => {
     [sendRequest]
   );
 
-  const deleteMessage = (id: string) => {
+  const deleteMessage = async (id: string) => {
+    const confirm = await confirmation();
+    if(!confirm){
+      return
+    }
     sendDeleteRequest(
       {
         url: `/admin/removeFromCartable/${id}`,
@@ -76,10 +85,8 @@ const Cartable: React.FC = () => {
   };
 
   const onSearchTermChange = useCallback((term: string) => {
-    console.log("ffff",term);
     setSearchTerm(term);
     setPageIndex(1);
-    // fetchItems(selectedType, term, 1);
   }, []);
 
   useEffect(() => {
@@ -126,61 +133,64 @@ const Cartable: React.FC = () => {
   );
 
   return (
-    <SDCard>
-      {isPending && loading}
-      {data && !isPending && body}
-      {pageCount && pageCount > 1 && (
-        <ReactPaginate
-          breakLabel="..."
-          forcePage={pageIndex-1}
-          nextLabel={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-5 h-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 19.5L8.25 12l7.5-7.5"
-              />
-            </svg>
-          }
-          onPageChange={handlePageClick}
-          pageRangeDisplayed={5}
-          pageCount={pageCount}
-          previousLabel={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-5 h-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8.25 4.5l7.5 7.5-7.5 7.5"
-              />
-            </svg>
-          }
-          renderOnZeroPageCount={null}
-          containerClassName="flex w-full gap-5  justify-center"
-          nextClassName="flex items-center"
-          previousClassName="flex items-center"
-          pageLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
-          nextLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
-          previousLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
-          breakClassName="p-1 block hover:text-cyan-400"
-          activeClassName="text-cyan-500"
-          pageClassName="text-base "
-        />
-      )}
-    </SDCard>
+    <>
+      <SDCard>
+        <ConfirmModal />
+        {isPending && loading}
+        {data && !isPending && body}
+        {pageCount && pageCount > 1 && (
+          <ReactPaginate
+            breakLabel="..."
+            forcePage={pageIndex - 1}
+            nextLabel={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 19.5L8.25 12l7.5-7.5"
+                />
+              </svg>
+            }
+            onPageChange={handlePageClick}
+            pageRangeDisplayed={5}
+            pageCount={pageCount}
+            previousLabel={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            }
+            renderOnZeroPageCount={null}
+            containerClassName="flex w-full gap-5  justify-center"
+            nextClassName="flex items-center"
+            previousClassName="flex items-center"
+            pageLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
+            nextLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
+            previousLinkClassName="p-1 block hover:text-cyan-400 transition-all ease-linear duration-75"
+            breakClassName="p-1 block hover:text-cyan-400"
+            activeClassName="text-cyan-500"
+            pageClassName="text-base "
+          />
+        )}
+      </SDCard>
+    </>
   );
 };
 

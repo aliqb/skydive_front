@@ -2,6 +2,9 @@ import { UserStatuses } from "./shared.models";
 
 export interface GeneralSettings {
   termsAndConditionsUrl: string;
+  registrationTermsAndConditionsUrl: string;
+  fileSizeLimitaion: number,
+  jumpDuration: number,
   userStatusInfo: UserStatusInfo[];
   id: string;
   createdAt?: string;

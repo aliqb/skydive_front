@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
 import useAPi from "../../hooks/useApi";
 import SDSpinner from "./Spinner";
+import { useAppSelector } from "../../hooks/reduxHooks";
 
 interface LabeledFileInputProps {
   accepFiles?: string;
@@ -20,14 +21,22 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
   onRemove,
   disabled = false,
 }) => {
-  const { sendRequest, errors, isPending } = useAPi<FormData, string>();
+  const { sendRequest, isPending } = useAPi<FormData, string>();
   const [uploadedFile, setUploadedFile] = useState<File | null>();
+  const [error,setError] = useState<string>('');
+  const maxSizeSettings = useAppSelector(state=>state.generalSettings.generalSettings?.fileSizeLimitaion);
   function onChange(event: FormEvent) {
+    setError('');
     const files = (event.target as HTMLInputElement).files;
     if (!files || !files.length) {
       return;
     }
     const file: File = files[0];
+    const maxSize = maxSizeSettings ? maxSizeSettings  : 500;
+    if(file.size > maxSize * 1024){
+      setError(`حداکثر سایز فایل ${maxSize}KB است.`)
+      return
+    }
     const formData = new FormData();
     formData.append(field, file);
     sendRequest(
@@ -39,6 +48,9 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
       (response) => {
         setUploadedFile(file);
         onUpload(response);
+      },
+      (error)=>{
+        setError(error?.message || 'خطا در بارگذاری')
       }
     );
   }
@@ -50,7 +62,7 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
 
   return (
     <div>
-      {!(isPending || errors || uploadedFile) && (
+      {!(isPending || uploadedFile) && (
         <label
           htmlFor={title}
           className={`text-blue-700 font-semibold ${
@@ -61,9 +73,9 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
         </label>
       )}
       {isPending && <SDSpinner size={8}></SDSpinner>}
-      {errors && (
-        <p className="text-red-600 font-semibold">
-          {errors.message || "خطا در بارگذاری"}
+      {error && (
+        <p className="text-red-600">
+          {error}
         </p>
       )}
       {uploadedFile && (

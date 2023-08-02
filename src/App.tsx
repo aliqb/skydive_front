@@ -5,7 +5,7 @@ import {
   BrowserRouter as Router,
   Outlet,
 } from "react-router-dom";
-
+import { useEffect } from "react";
 import AuthContainer from "./pages/Auth/AuthContainer";
 import ForgetPasswordFirstPage from "./pages/Auth/forgetPassword/ForgetPasswordFirstPage";
 import ForgetPasswordOtpPage from "./pages/Auth/forgetPassword/ForgetPasswordOtpPage";
@@ -41,16 +41,22 @@ import EditUserPage from "./pages/adminPanel/pages/userMamangement/EditUserPage"
 import AdminFlightsPage from "./pages/adminPanel/pages/adminEvents/AdminFlightsPage";
 import SkyDiveEventTermsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventTermsPage";
 import MyTicketsPage from "./pages/userPanel/MyTicketsPage";
-import JumpRecordsPage from './pages/userPanel/JumpRecordsPage';
-import AdminJumpRecoreds from './pages/adminPanel/pages/userMamangement/userDetail/AdminJumpRecoreds';
-import UserTickets from './pages/adminPanel/pages/userMamangement/userDetail/UserTickets';
-import UserTransactions from './pages/adminPanel/pages/userMamangement/userDetail/UserTransactions';
-import Messages from './pages/userPanel/Messages';
-import MyTransactionsPage from './pages/userPanel/MyTransactionsPage';
-import Wallet from './pages/userPanel/Wallet';
-import AdminUserWallet from './pages/adminPanel/pages/userMamangement/userDetail/AdminUserWallet';
+import JumpRecordsPage from "./pages/userPanel/JumpRecordsPage";
+import AdminJumpRecoreds from "./pages/adminPanel/pages/userMamangement/userDetail/AdminJumpRecoreds";
+import UserTickets from "./pages/adminPanel/pages/userMamangement/userDetail/UserTickets";
+import UserTransactions from "./pages/adminPanel/pages/userMamangement/userDetail/UserTransactions";
+import Messages from "./pages/userPanel/Messages";
+import MyTransactionsPage from "./pages/userPanel/MyTransactionsPage";
+import Wallet from "./pages/userPanel/Wallet";
+import AdminUserWallet from "./pages/adminPanel/pages/userMamangement/userDetail/AdminUserWallet";
+import { useAppDispatch } from "./hooks/reduxHooks";
+import { fetchGeneralSettings } from "./store/generalSettings";
 
 function App() {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(fetchGeneralSettings());
+  }, [dispatch]);
   return (
     <>
       <ToastContainer

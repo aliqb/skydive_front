@@ -4,16 +4,11 @@ import HomeLink, {
 } from "../../components/userPanel/home/HomeLink";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import useApi from "../../hooks/useApi";
-import { GeneralSettings } from "../../models/settings.models";
 import { BaseResponse, UserStatuses } from "../../models/shared.models";
 import { useState, useEffect } from "react";
 import { authActions } from "../../store/auth";
 
 const Home: React.FC = () => {
-  const { sendRequest: sendSettingsRequest } = useApi<
-    null,
-    BaseResponse<GeneralSettings>
-  >();
   const [links, setLinks] = useState<HomeLinkProps[]>([]);
   const name = useAppSelector((state) => state.auth.name);
   const authState = useAppSelector((state) => state.auth);
@@ -22,6 +17,9 @@ const Home: React.FC = () => {
     BaseResponse<boolean>
   >();
   const dispatch = useAppDispatch();
+  const termsLink = useAppSelector(
+    (state) => state.generalSettings.generalSettings?.termsAndConditionsUrl
+  );
 
   const statusBgColorMap = new Map([
     [UserStatuses.AWAITING_COMPLETION, "bg-yellow-300"],
@@ -31,14 +29,32 @@ const Home: React.FC = () => {
   ]);
 
   useEffect(() => {
-    const initialLinks: HomeLinkProps[] = [
+    sendCheckActiveRequest(
+      {
+        url: "/Users/CheckIfUserIsActive",
+      },
+      (response) => {
+        if (response.content) {
+          dispatch(authActions.setUserStatus(UserStatuses.ACTIVE));
+        }
+      }
+    );
+  }, [
+    dispatch,
+    sendCheckActiveRequest,
+    authState.userStatus,
+  ]);
+
+  useEffect(() => {
+    setLinks([
       {
         title: "رویدادها",
         href: "/events",
       },
       {
         title: "قوانین و شرایط",
-        href: "",
+        href: termsLink || "",
+        newTab: true,
       },
       {
         title: "سوابق پرش",
@@ -59,42 +75,8 @@ const Home: React.FC = () => {
         href: "/transactions",
         needActivation: true,
       },
-    ];
-    sendSettingsRequest(
-      {
-        url: "/settings",
-      },
-      (response) => {
-        const links = [...initialLinks];
-        links.forEach((link) => {
-          if (link.title === "قوانین و شرایط") {
-            (link.href = response.content.termsAndConditionsUrl),
-              (link.newTab = true);
-          }
-        });
-        setLinks([...initialLinks]);
-      },
-      () => {
-        setLinks(initialLinks);
-      }
-    );
-
-    sendCheckActiveRequest(
-      {
-        url: "/Users/CheckIfUserIsActive",
-      },
-      (response) => {
-        if (response.content) {
-          dispatch(authActions.setUserStatus(UserStatuses.ACTIVE));
-        }
-      }
-    );
-  }, [
-    sendSettingsRequest,
-    dispatch,
-    sendCheckActiveRequest,
-    authState.userStatus,
-  ]);
+    ]);
+  }, [termsLink]);
 
   return (
     <SDCard className="flex justify-center">

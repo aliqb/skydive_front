@@ -11,6 +11,7 @@ interface AutenticateGuardProps {
 const AuthenticatedRoute: React.FC<AutenticateGuardProps> = (props) => {
   const navigate = useNavigate();
   const headerSet = useAppSelector((state) => state.auth.httpHeaderSet);
+  const generalInfoSet = useAppSelector((state) => state.auth.genralInfoSet);
   const dispatch = useAppDispatch();
   const { sendRequest } = useAPi<null, BaseResponse<UserGeneralInfo>>();
 
@@ -35,15 +36,17 @@ const AuthenticatedRoute: React.FC<AutenticateGuardProps> = (props) => {
       }
       return;
     }
-    sendRequest(
-      {
-        url: "/Users/GetUserInformation",
-      },
-      (response) => {
-        dispatch(authActions.setUserGenralInfo(response.content));
-      }
-    );
-  }, [headerSet, sendRequest, dispatch, navigate]);
+    if (headerSet && !generalInfoSet) {
+      sendRequest(
+        {
+          url: "/Users/GetUserInformation",
+        },
+        (response) => {
+          dispatch(authActions.setUserGenralInfo(response.content));
+        }
+      );
+    }
+  }, [headerSet, sendRequest, dispatch, navigate, generalInfoSet]);
 
   return <>{headerSet && <props.component></props.component>}</>;
 };

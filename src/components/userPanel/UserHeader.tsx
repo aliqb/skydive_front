@@ -119,7 +119,7 @@ const UserHeader: React.FC = () => {
             باشگاه سقوط آزاد ایرانیان
           </h1>
         </Link>
-        <div className="mr-auto ml-12 flex text-white">
+        <div className="mr-auto md:ml-12 flex text-white">
           <button
             onMouseEnter={() => setShowBasket(true)}
             onMouseLeave={() => setShowBasket(false)}

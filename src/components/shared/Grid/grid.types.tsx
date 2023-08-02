@@ -90,7 +90,7 @@ export interface GridParams{
   sorts: GridSortItem[]
 }
 
-export type GridGetData<T> = (gridParams: GridParams, setRows: (items: T[],total:number) => void) => void;
+export type GridGetData<T> = (gridParams: GridParams, setRows: (items: T[],total?:number) => void) => void;
 
 export interface GridRef {
   refresh: ()=>void

@@ -28,6 +28,7 @@ export default function useAPi<
       if (applyData) {
         applyData(response.data);
       }
+      setErrors(undefined)
     } catch (error) {
       const axiosError: AxiosError<ErrorType> = error as AxiosError<ErrorType>;
       setErrors(axiosError.response?.data);

@@ -1,7 +1,19 @@
 export function sortDate<T>(data: T[], dateField: keyof T): T[] {
-  return data.sort((first, second) => {
-    const firstArr = (first[dateField] as string).split("/");
-    const secondArr = (second[dateField] as string).split("/");
+  return data.sort(sortDateComprator<T>(dateField));
+}
+
+export function sortDateComprator<T>(dateField: keyof T){
+  return (first:T, second:T) => {
+    const firstDate = first[dateField];
+    const secondDate = second[dateField];
+    if(firstDate == null){
+      return -1;
+    }
+    if(secondDate == null){
+      return 1
+    }
+    const firstArr = ( firstDate as string).split("/");
+    const secondArr = ( secondDate as string).split("/");
     const yearsDiff = +firstArr[0] - +secondArr[0];
     if (yearsDiff !== 0) {
       return yearsDiff;
@@ -11,10 +23,10 @@ export function sortDate<T>(data: T[], dateField: keyof T): T[] {
       return monthDiff;
     }
     return +firstArr[2] - +secondArr[2];
-  });
+  }
 }
 
-export function replacePersianArabics(value: string) {
+export function replacePersianArabicsNumbers(value: string) {
   if (value === null || value === undefined) {
     return value;
   }
@@ -53,8 +65,17 @@ export const phoneInputChangeValidationHandler: React.ChangeEventHandler<
   HTMLInputElement
 > = (event) => {
   let value = event.target.value;
-  value = replacePersianArabics(value)
+  value = replacePersianArabicsNumbers(value)
   value = value.replace(/[^\d+]/g, "");
+  event.target.value = value;
+};
+
+export const nationalCodeInputChangeValidationHandler: React.ChangeEventHandler<
+  HTMLInputElement
+> = (event) => {
+  let value = event.target.value;
+  value = replacePersianArabicsNumbers(value)
+  value = value.replace(/[^\d]/g, "");
   event.target.value = value;
 };
 
@@ -72,6 +93,13 @@ export const phoneInputValidator = {
   // onKeyDown: phoneKeyDownValidationHandler,
   // onPaste: phonePastValidationHandler,
   onInput: phoneInputChangeValidationHandler,
+};
+
+
+export const nationalCodeValidator = {
+  // onKeyDown: phoneKeyDownValidationHandler,
+  // onPaste: phonePastValidationHandler,
+  onInput: nationalCodeInputChangeValidationHandler,
 };
 
 export const persianCharRange = [

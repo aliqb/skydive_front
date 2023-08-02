@@ -38,12 +38,14 @@ export interface UserDatail {
   createdAt: string;
   updatedAt: string;
   password?: string;
+  documentsConfirmed:boolean
 }
 
 
 export interface CheckUserInfoRequest{
   id: string;
   isConfirmed: boolean;
+  message: string;
 }
 
 export interface userType {
