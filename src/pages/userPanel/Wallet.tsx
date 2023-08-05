@@ -35,7 +35,7 @@ const Wallet: React.FC = () => {
   const fetchWallet = useCallback(() => {
     getWalletRequest(
       {
-        url: "wallets",
+        url: 'wallets',
       },
       (response) => {
         setBalance(response.content.balance);
@@ -85,7 +85,7 @@ const Wallet: React.FC = () => {
               </div>
               <SDTextInput
                 numeric={true}
-                id="minutes"
+                id="amount"
                 placeholder="مبلغ مورد نظر را وارد کنید"
                 className="ltr text-center placeholder:!text-center"
                 value={paymentAmount}
