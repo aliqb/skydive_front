@@ -9,11 +9,16 @@ import { useParams } from "react-router-dom";
 import SDSpinner from "../../../../../components/shared/Spinner";
 import { ChargeWalletData, WalletData } from "../../../../../models/wallet.models";
 import NumberWithSeperator from "../../../../../components/shared/NumberWithSeperator";
+import useConfirm from '../../../../../hooks/useConfirm';
 
 const AdminUserWallet: React.FC = () => {
   const params = useParams();
 
   const [paymentAmount, setPaymentAmount] = useState<number>(0);
+  const [ConfirmModal, confirmation] = useConfirm(
+    `آیا از شارژ کیف پول به مبلغ ${paymentAmount} ریال مطمئن هستید ؟     `,
+    'شارژ کیف پول'
+  );
   const {
     sendRequest,
     isPending,
@@ -33,48 +38,43 @@ const AdminUserWallet: React.FC = () => {
     fetchWalletData();
   }, [fetchWalletData]);
 
-  const handlePayment = useCallback(() => {
-    if (paymentAmount > 0) {
-      const data: ChargeWalletData = {
-        userId: params.userId,
-        amount: paymentAmount,
-      };
+  const handlePayment = useCallback(async () => {
+    const confirm = await confirmation();
+    if (confirm) {
+      if (paymentAmount > 0) {
+        const data: ChargeWalletData = {
+          userId: params.userId,
+          amount: paymentAmount,
+        };
 
-      sendChargeRequest(
-        {
-          url: "/wallets",
-          method: "put",
-          data: data,
-        },
-        (response) => {
-          toast.success(response.message);
-          fetchWalletData();
-          setPaymentAmount(0);
-        },
-        (error) => {
-          toast.error(error?.message);
-        }
-      );
+        sendChargeRequest(
+          {
+            url: '/wallets',
+            method: 'put',
+            data: data,
+          },
+          (response) => {
+            toast.success(response.message);
+            fetchWalletData();
+            setPaymentAmount(0);
+          },
+          (error) => {
+            toast.error(error?.message);
+          }
+        );
+      }
     }
   }, [paymentAmount, params.userId, sendChargeRequest, fetchWalletData]);
 
   const handlePaymentAmountChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const value = event.target.value.replace(/,/g, "");
-    const formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    const value = event.target.value.replace(/,/g, '');
+    const formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
     setPaymentAmount(parseInt(value, 10));
     event.target.value = formattedValue;
   };
-
-  // if (isPending) {
-  //   return (
-  //     <div className="flex justify-center pt-6 w-full">
-  //       <SDSpinner size={20} color="blue" />
-  //     </div>
-  //   );
-  // }
 
   return (
     <SDCard className="flex items-center justify-center p-8 bg-red-500">
@@ -88,6 +88,7 @@ const AdminUserWallet: React.FC = () => {
           </div>
         ) : (
           <>
+            <ConfirmModal />
             <div className="flex items-center mb-8 flex-wrap justify-center">
               <div className="flex items-center ">
                 <svg
@@ -111,7 +112,6 @@ const AdminUserWallet: React.FC = () => {
                   value={walletData?.content.balance || 0}
                 ></NumberWithSeperator>
                 <span className="mr-1 text-sm">ریال</span>
-
               </span>
             </div>
 
@@ -123,10 +123,10 @@ const AdminUserWallet: React.FC = () => {
                 className="ltr text-center placeholder:!text-center"
                 value={
                   isNaN(paymentAmount)
-                    ? ""
+                    ? ''
                     : paymentAmount
                         .toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                 }
                 onChange={handlePaymentAmountChange}
               />
