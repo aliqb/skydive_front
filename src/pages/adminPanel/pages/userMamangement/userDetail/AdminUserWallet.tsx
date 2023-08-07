@@ -1,14 +1,17 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { toast } from "react-toastify";
-import SDCard from "../../../../../components/shared/Card";
-import SDTextInput from "../../../../../components/shared/TextInput";
-import SDButton from "../../../../../components/shared/Button";
-import { BaseResponse } from "../../../../../models/shared.models";
-import useApi from "../../../../../hooks/useApi";
-import { useParams } from "react-router-dom";
-import SDSpinner from "../../../../../components/shared/Spinner";
-import { ChargeWalletData, WalletData } from "../../../../../models/wallet.models";
-import NumberWithSeperator from "../../../../../components/shared/NumberWithSeperator";
+import React, { useState, useEffect, useCallback } from 'react';
+import { toast } from 'react-toastify';
+import SDCard from '../../../../../components/shared/Card';
+import SDTextInput from '../../../../../components/shared/TextInput';
+import SDButton from '../../../../../components/shared/Button';
+import { BaseResponse } from '../../../../../models/shared.models';
+import useApi from '../../../../../hooks/useApi';
+import { useParams } from 'react-router-dom';
+import SDSpinner from '../../../../../components/shared/Spinner';
+import {
+  ChargeWalletData,
+  WalletData,
+} from '../../../../../models/wallet.models';
+import NumberWithSeperator from '../../../../../components/shared/NumberWithSeperator';
 import useConfirm from '../../../../../hooks/useConfirm';
 
 const AdminUserWallet: React.FC = () => {
@@ -16,7 +19,9 @@ const AdminUserWallet: React.FC = () => {
 
   const [paymentAmount, setPaymentAmount] = useState<number>(0);
   const [ConfirmModal, confirmation] = useConfirm(
-    `آیا از شارژ کیف پول به مبلغ ${paymentAmount} ریال مطمئن هستید ؟     `,
+    `آیا از شارژ کیف پول به مبلغ ${paymentAmount
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ریال مطمئن هستید ؟     `,
     'شارژ کیف پول'
   );
   const {
@@ -69,11 +74,15 @@ const AdminUserWallet: React.FC = () => {
   const handlePaymentAmountChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const value = event.target.value.replace(/,/g, '');
-    const formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    let value = event.target.value.replace(/,/g, '');
+    console.log(value);
+    value = value.replace(/[^\d-]/g, '');
+
+    value = value.replace(/--/g, '-');
+
+    value = value.replace(/^(?=.)(-)/g, '');
 
     setPaymentAmount(parseInt(value, 10));
-    event.target.value = formattedValue;
   };
 
   return (
@@ -118,7 +127,7 @@ const AdminUserWallet: React.FC = () => {
             <div className="flex flex-col md:flex-row items-center justify-center w-full space-y-4 md:space-y-0 md:space-x-4">
               <SDTextInput
                 numeric={true}
-                id="minutes"
+                id="amount"
                 placeholder="مبلغ مورد نظر را وارد کنید"
                 className="ltr text-center placeholder:!text-center"
                 value={

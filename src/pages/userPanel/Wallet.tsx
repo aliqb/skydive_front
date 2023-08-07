@@ -88,7 +88,13 @@ const Wallet: React.FC = () => {
                 id="amount"
                 placeholder="مبلغ مورد نظر را وارد کنید"
                 className="ltr text-center placeholder:!text-center"
-                value={paymentAmount}
+                value={
+                  isNaN(paymentAmount)
+                    ? ''
+                    : paymentAmount
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                }
                 onChange={handlePaymentAmountChange}
               />
               <SDButton
