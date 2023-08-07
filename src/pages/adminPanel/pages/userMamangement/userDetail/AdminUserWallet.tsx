@@ -76,10 +76,23 @@ const AdminUserWallet: React.FC = () => {
   ) => {
     let value = event.target.value.replace(/,/g, '');
     value = value.replace(/[^\d-]/g, '');
-    value = value.replace(/--/g, '-');
     console.log(value);
-    setPaymentAmount(value);
+
+    if (value === '-') {
+      setPaymentAmount(value);
+    } else {
+      value = value.replace(/--/g, '');
+
+      const numericValue = parseFloat(value);
+      if (!isNaN(numericValue)) {
+        setPaymentAmount(numericValue.toString());
+      } else {
+        setPaymentAmount('');
+      }
+    }
   };
+  
+  
 
   return (
     <SDCard className="flex items-center justify-center p-8 bg-red-500">
