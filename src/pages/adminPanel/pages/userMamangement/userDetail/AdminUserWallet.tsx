@@ -17,7 +17,7 @@ import useConfirm from '../../../../../hooks/useConfirm';
 const AdminUserWallet: React.FC = () => {
   const params = useParams();
 
-  const [paymentAmount, setPaymentAmount] = useState<number>(0);
+  const [paymentAmount, setPaymentAmount] = useState<string>('');
   const [ConfirmModal, confirmation] = useConfirm(
     `آیا از شارژ کیف پول به مبلغ ${paymentAmount
       .toString()
@@ -46,10 +46,10 @@ const AdminUserWallet: React.FC = () => {
   const handlePayment = useCallback(async () => {
     const confirm = await confirmation();
     if (confirm) {
-      if (paymentAmount > 0) {
+      if (+paymentAmount > 0) {
         const data: ChargeWalletData = {
           userId: params.userId,
-          amount: paymentAmount,
+          amount: +paymentAmount,
         };
 
         sendChargeRequest(
@@ -61,7 +61,7 @@ const AdminUserWallet: React.FC = () => {
           (response) => {
             toast.success(response.message);
             fetchWalletData();
-            setPaymentAmount(0);
+            setPaymentAmount('');
           },
           (error) => {
             toast.error(error?.message);
@@ -75,11 +75,10 @@ const AdminUserWallet: React.FC = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     let value = event.target.value.replace(/,/g, '');
-    console.log(value);
     value = value.replace(/[^\d-]/g, '');
     value = value.replace(/--/g, '-');
-
-    setPaymentAmount(parseInt(value, 10));
+    console.log(value);
+    setPaymentAmount(value);
   };
 
   return (
@@ -129,7 +128,7 @@ const AdminUserWallet: React.FC = () => {
                 placeholder="مبلغ مورد نظر را وارد کنید"
                 className="ltr text-center placeholder:!text-center"
                 value={
-                  isNaN(paymentAmount)
+                  isNaN(+paymentAmount)
                     ? ''
                     : paymentAmount
                         .toString()
