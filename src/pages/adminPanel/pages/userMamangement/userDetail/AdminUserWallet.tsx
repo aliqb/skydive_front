@@ -24,6 +24,7 @@ const AdminUserWallet: React.FC = () => {
       .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ریال مطمئن هستید ؟     `,
     'شارژ کیف پول'
   );
+
   const {
     sendRequest,
     isPending,
@@ -46,28 +47,26 @@ const AdminUserWallet: React.FC = () => {
   const handlePayment = useCallback(async () => {
     const confirm = await confirmation();
     if (confirm) {
-      if (+paymentAmount > 0) {
-        const data: ChargeWalletData = {
-          userId: params.userId,
-          amount: +paymentAmount,
-        };
+      const data: ChargeWalletData = {
+        userId: params.userId,
+        amount: +paymentAmount,
+      };
 
-        sendChargeRequest(
-          {
-            url: '/wallets',
-            method: 'put',
-            data: data,
-          },
-          (response) => {
-            toast.success(response.message);
-            fetchWalletData();
-            setPaymentAmount('');
-          },
-          (error) => {
-            toast.error(error?.message);
-          }
-        );
-      }
+      sendChargeRequest(
+        {
+          url: '/wallets',
+          method: 'put',
+          data: data,
+        },
+        (response) => {
+          toast.success(response.message);
+          fetchWalletData();
+          setPaymentAmount('');
+        },
+        (error) => {
+          toast.error(error?.message);
+        }
+      );
     }
   }, [paymentAmount, params.userId, sendChargeRequest, fetchWalletData]);
 
@@ -91,8 +90,6 @@ const AdminUserWallet: React.FC = () => {
       }
     }
   };
-  
-  
 
   return (
     <SDCard className="flex items-center justify-center p-8 bg-red-500">
