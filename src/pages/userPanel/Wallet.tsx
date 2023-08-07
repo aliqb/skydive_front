@@ -85,6 +85,7 @@ const Wallet: React.FC = () => {
               </div>
               <SDTextInput
                 numeric={true}
+                allowMinus={true}
                 id="amount"
                 placeholder="مبلغ مورد نظر را وارد کنید"
                 className="ltr text-center placeholder:!text-center"

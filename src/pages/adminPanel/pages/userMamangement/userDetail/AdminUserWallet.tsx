@@ -77,10 +77,7 @@ const AdminUserWallet: React.FC = () => {
     let value = event.target.value.replace(/,/g, '');
     console.log(value);
     value = value.replace(/[^\d-]/g, '');
-
     value = value.replace(/--/g, '-');
-
-    value = value.replace(/^(?=.)(-)/g, '');
 
     setPaymentAmount(parseInt(value, 10));
   };
@@ -127,6 +124,7 @@ const AdminUserWallet: React.FC = () => {
             <div className="flex flex-col md:flex-row items-center justify-center w-full space-y-4 md:space-y-0 md:space-x-4">
               <SDTextInput
                 numeric={true}
+                allowMinus={true}
                 id="amount"
                 placeholder="مبلغ مورد نظر را وارد کنید"
                 className="ltr text-center placeholder:!text-center"
