@@ -1,5 +1,6 @@
 import { InputHTMLAttributes, forwardRef, Ref } from "react";
 import { replacePersianArabicsNumbers } from "../../utils/shared";
+
 export interface SDTextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   invalid?: boolean;
   numeric?: boolean;
@@ -10,7 +11,7 @@ const SDTextInput = forwardRef(
     const inputProps = { ...props };
     delete inputProps.invalid;
     delete inputProps.numeric;
-    delete inputProps.className
+    delete inputProps.className;
 
     const inputHandler: React.ChangeEventHandler<HTMLInputElement> = (
       event
@@ -18,8 +19,8 @@ const SDTextInput = forwardRef(
       let value = event.target.value;
       value = replacePersianArabicsNumbers(value);
       if (props.numeric) {
-        if (value === '' || value === '-') {
-          event.target.value = '';
+        if (value === '' || value === '-' || value === '-0') {
+          event.target.value = value; // Keep the value as is
         } else if (/^-/.test(value)) {
           value = value.replace(/[^\d-]/g, '');
           event.target.value = value;
