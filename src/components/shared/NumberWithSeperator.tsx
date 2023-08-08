@@ -1,7 +1,7 @@
 const NumberWithSeperator : React.FC<{value: number}> = ({value})=>{
     const formattedNumber = value.toLocaleString();
     return (
-        <>{formattedNumber}</>
+        <span className="ltr inline-block">{formattedNumber}</span>
     )
 }
 
