@@ -79,7 +79,7 @@ const Wallet: React.FC = () => {
                 <span className="mr-1 text-sm">ریال</span>
               </span>
             </div>
-            <div className="flex flex-col md:flex-row items-center justify-center w-full space-y-4 md:space-y-0 md:space-x-4">
+            {/* <div className="flex flex-col md:flex-row items-center justify-center w-full space-y-4 md:space-y-0 md:space-x-4">
               <div className="text-center md:text-left ml-5 md:w-1/6">
                 <h1>مبلغ شارژ</h1>
               </div>
@@ -106,7 +106,7 @@ const Wallet: React.FC = () => {
               >
                 پرداخت
               </SDButton>
-            </div>
+            </div> */}
           </>
         )}
       </SDCard>

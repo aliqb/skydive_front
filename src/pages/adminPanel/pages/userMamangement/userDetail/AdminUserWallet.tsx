@@ -17,13 +17,16 @@ import useConfirm from '../../../../../hooks/useConfirm';
 const AdminUserWallet: React.FC = () => {
   const params = useParams();
 
-  const [paymentAmount, setPaymentAmount] = useState<number>(0);
+  const [paymentAmount, setPaymentAmount] = useState<string>('');
   const [ConfirmModal, confirmation] = useConfirm(
-    `آیا از شارژ کیف پول به مبلغ ${paymentAmount
+    `آیا از شارژ کیف پول به مبلغ \u200E${paymentAmount
       .toString()
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ریال مطمئن هستید ؟     `,
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ریال مطمئن هستید؟`,
     'شارژ کیف پول'
   );
+  
+  
+
   const {
     sendRequest,
     isPending,
@@ -46,28 +49,26 @@ const AdminUserWallet: React.FC = () => {
   const handlePayment = useCallback(async () => {
     const confirm = await confirmation();
     if (confirm) {
-      if (paymentAmount > 0) {
-        const data: ChargeWalletData = {
-          userId: params.userId,
-          amount: paymentAmount,
-        };
+      const data: ChargeWalletData = {
+        userId: params.userId,
+        amount: +paymentAmount,
+      };
 
-        sendChargeRequest(
-          {
-            url: '/wallets',
-            method: 'put',
-            data: data,
-          },
-          (response) => {
-            toast.success(response.message);
-            fetchWalletData();
-            setPaymentAmount(0);
-          },
-          (error) => {
-            toast.error(error?.message);
-          }
-        );
-      }
+      sendChargeRequest(
+        {
+          url: '/wallets',
+          method: 'put',
+          data: data,
+        },
+        (response) => {
+          toast.success(response.message);
+          fetchWalletData();
+          setPaymentAmount('');
+        },
+        (error) => {
+          toast.error(error?.message);
+        }
+      );
     }
   }, [paymentAmount, params.userId, sendChargeRequest, fetchWalletData]);
 
@@ -75,11 +76,21 @@ const AdminUserWallet: React.FC = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     let value = event.target.value.replace(/,/g, '');
-    console.log(value);
     value = value.replace(/[^\d-]/g, '');
-    value = value.replace(/--/g, '-');
+    console.log(value);
 
-    setPaymentAmount(parseInt(value, 10));
+    if (value === '-') {
+      setPaymentAmount(value);
+    } else {
+      value = value.replace(/--/g, '');
+
+      const numericValue = parseFloat(value);
+      if (!isNaN(numericValue)) {
+        setPaymentAmount(numericValue.toString());
+      } else {
+        setPaymentAmount('');
+      }
+    }
   };
 
   return (
@@ -128,13 +139,9 @@ const AdminUserWallet: React.FC = () => {
                 id="amount"
                 placeholder="مبلغ مورد نظر را وارد کنید"
                 className="ltr text-center placeholder:!text-center"
-                value={
-                  isNaN(paymentAmount)
-                    ? ''
-                    : paymentAmount
-                        .toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                }
+                value={paymentAmount
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 onChange={handlePaymentAmountChange}
               />
 
