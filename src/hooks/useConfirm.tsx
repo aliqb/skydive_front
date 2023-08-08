@@ -30,7 +30,7 @@ function useConfirm(
     return (
       <SDModal
         show={showModal}
-        onClose={()=>handleReject()}
+        onClose={() => handleReject()}
         containerClass="pt-0 px-0 pb-2"
       >
         {title && (
@@ -42,7 +42,6 @@ function useConfirm(
               strokeWidth={1.5}
               stroke="currentColor"
               className="w-6 h-6 stroke-yellow-600"
-              
             >
               <path
                 strokeLinecap="round"

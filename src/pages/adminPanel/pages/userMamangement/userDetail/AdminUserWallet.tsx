@@ -19,11 +19,13 @@ const AdminUserWallet: React.FC = () => {
 
   const [paymentAmount, setPaymentAmount] = useState<string>('');
   const [ConfirmModal, confirmation] = useConfirm(
-    `آیا از شارژ کیف پول به مبلغ ${paymentAmount
+    `آیا از شارژ کیف پول به مبلغ \u200E${paymentAmount
       .toString()
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ریال مطمئن هستید ؟     `,
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ریال مطمئن هستید؟`,
     'شارژ کیف پول'
   );
+  
+  
 
   const {
     sendRequest,
