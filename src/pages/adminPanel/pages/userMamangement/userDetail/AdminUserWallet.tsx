@@ -4,6 +4,7 @@ import SDCard from '../../../../../components/shared/Card';
 import SDButton from '../../../../../components/shared/Button';
 import { BaseResponse } from '../../../../../models/shared.models';
 import useApi from '../../../../../hooks/useApi';
+import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import SDSpinner from '../../../../../components/shared/Spinner';
 import {
@@ -13,7 +14,9 @@ import {
 import NumberWithSeperator from '../../../../../components/shared/NumberWithSeperator';
 import useConfirm from '../../../../../hooks/useConfirm';
 import ThousandSeparatorInput from '../../../../../components/shared/ThousandSeparatorInput';
-
+interface FormData {
+  amount: string;
+}
 const AdminUserWallet: React.FC = () => {
   const params = useParams();
 
@@ -24,6 +27,8 @@ const AdminUserWallet: React.FC = () => {
       .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ریال مطمئن هستید؟`,
     'شارژ کیف پول'
   );
+
+  const { register, handleSubmit } = useForm<FormData>();
 
   const {
     sendRequest,
@@ -44,19 +49,19 @@ const AdminUserWallet: React.FC = () => {
     fetchWalletData();
   }, [fetchWalletData]);
 
-  const handlePayment = useCallback(async () => {
+  const onSubmit = async (data: FormData) => {
     const confirm = await confirmation();
     if (confirm) {
-      const data: ChargeWalletData = {
+      const chargeData: ChargeWalletData = {
         userId: params.userId,
-        amount: +paymentAmount,
+        amount: parseFloat(data.amount),
       };
 
       sendChargeRequest(
         {
           url: '/wallets',
           method: 'put',
-          data: data,
+          data: chargeData,
         },
         (response) => {
           toast.success(response.message);
@@ -68,7 +73,7 @@ const AdminUserWallet: React.FC = () => {
         }
       );
     }
-  }, [paymentAmount, params.userId, sendChargeRequest, fetchWalletData]);
+  };
 
   return (
     <SDCard className="flex items-center justify-center p-8 bg-red-500">
@@ -108,29 +113,27 @@ const AdminUserWallet: React.FC = () => {
                 <span className="mr-1 text-sm">ریال</span>
               </span>
             </div>
-
-            <div className="flex flex-col md:flex-row items-center justify-center w-full space-y-4 md:space-y-0 md:space-x-4">
-              <ThousandSeparatorInput
-                numeric={true}
-                allowMinus={true}
-                id="amount"
-                placeholder="مبلغ مورد نظر را وارد کنید"
-                className="ltr text-center placeholder:!text-center"
-                value={paymentAmount}
-                onChange={setPaymentAmount}
-              />
-
-              <SDButton
-                type="submit"
-                color="success"
-                onClick={handlePayment}
-                disabled={isPendingChargeWallet}
-                className="w-full md:w-auto lg:w-1/3 "
-              >
-                {isPendingChargeWallet && <SDSpinner size={5} />}
-                شارژ کیف پول
-              </SDButton>
-            </div>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4"
+            >
+              <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+                <ThousandSeparatorInput
+                  allowMinus={true}
+                  name="amount"
+                  register={register}
+                />
+                <SDButton
+                  className="w-full md:w-auto lg:w-1/3 flex items-center justify-center"
+                  type="submit"
+                  color="success"
+                  disabled={isPendingChargeWallet}
+                >
+                  {isPendingChargeWallet && <SDSpinner size={5} />}
+                  <span>شارژ کیف پول</span>
+                </SDButton>
+              </div>
+            </form>
           </>
         )}
       </SDCard>

@@ -1,41 +1,51 @@
 import React, { ChangeEvent } from 'react';
+import { RegisterOptions, UseFormRegister } from 'react-hook-form';
 import SDTextInput from './TextInput';
 
 interface ThousandSeparatorInputProps {
-  value: string | number;
-  onChange: (value: string) => void;
-  [rest: string]: any;
+  register: UseFormRegister<any>;
+  allowMinus?: boolean;
+  name: string;
+  options?: RegisterOptions;
 }
 
 const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
-  value,
-  onChange,
-  ...rest
+  register,
+  allowMinus = false,
+  name,
+  options = { required: 'فیلد اجباری است.' },
 }) => {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     let newValue = e.target.value.replace(/,/g, '');
     newValue = newValue.replace(/[^\d-]/g, '');
 
+    if (!allowMinus) {
+      newValue = newValue.replace(/-/g, '');
+    }
+
     if (newValue === '-') {
-      onChange(newValue);
+      register(name).onChange({ target: { value: newValue } });
     } else {
       newValue = newValue.replace(/--/g, '');
 
       const numericValue = parseFloat(newValue);
       if (!isNaN(numericValue)) {
-        onChange(numericValue.toString());
+        register(name).onChange({ target: { value: numericValue.toString() } });
       } else {
-        onChange('');
+        register(name).onChange({ target: { value: '' } });
       }
     }
   };
 
   return (
-    <SDTextInput
-      {...rest}
-      value={value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-      onChange={handleInputChange}
-    />
+    <div className="flex flex-col lg:flex-row items-center justify-center w-full space-y-4 md:space-y-0 md:space-x-4">
+      <SDTextInput
+        numeric={true}
+        id={name}
+        {...register(name, options)}
+        onChange={handleInputChange}
+      />
+    </div>
   );
 };
 

@@ -1,9 +1,9 @@
-import { useForm } from "react-hook-form";
-import SDLabel from "../Label";
-import SDModal from "../Modal";
-import SDTextInput from "../TextInput";
-import { useState, useEffect } from "react";
-import SDButton from "../Button";
+import { useForm } from 'react-hook-form';
+import SDLabel from '../Label';
+import SDModal from '../Modal';
+import SDTextInput from '../TextInput';
+import { useState, useEffect } from 'react';
+import SDButton from '../Button';
 
 interface AddTicketModalProps {
   show: boolean;
@@ -17,7 +17,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
   onSubmit,
 }) => {
   const [showModal, setShowModal] = useState<boolean>(show);
-  const [owner, setOwner] = useState<"self" | "other">("self");
+  const [owner, setOwner] = useState<'self' | 'other'>('self');
 
   const {
     register,
@@ -31,7 +31,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
 
   const onChangeOwner: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     const value = event.target.value;
-    setOwner(value as "self" | "other");
+    setOwner(value as 'self' | 'other');
   };
 
   function closeModal() {
@@ -40,7 +40,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
   }
 
   function onsubmit(data: { userCode: string }) {
-    onSubmit(data.userCode || "");
+    onSubmit(data.userCode || '');
     setShowModal(false);
     onClose();
   }
@@ -77,7 +77,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
               id="self"
               type="radio"
               value="self"
-              checked={owner === "self"}
+              checked={owner === 'self'}
               onChange={onChangeOwner}
               name="owner"
               className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
@@ -94,7 +94,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
               id="other"
               type="radio"
               value="other"
-              checked={owner === "other"}
+              checked={owner === 'other'}
               onChange={onChangeOwner}
               name="owner"
               className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
@@ -106,7 +106,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
               رزرو برای دیگری
             </label>
           </div>
-          {owner === "other" && (
+          {owner === 'other' && (
             <div className="mb-3">
               <div>
                 <SDLabel htmlFor="userCode">کد کاربر</SDLabel>
@@ -114,7 +114,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
                   type="text"
                   id="userCode"
                   invalid={!!errors.userCode}
-                  {...register("userCode", { required: "فیلد الزامی است" })}
+                  {...register('userCode', { required: 'فیلد الزامی است' })}
                 />
                 {errors.userCode?.message && (
                   <p className="text-red-600 text-sm pr-2 mt-2">
