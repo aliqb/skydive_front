@@ -64,21 +64,22 @@ const UserTransactions: React.FC = () => {
   ]);
 
   const fetchTickets = useCallback<GridGetData<UserTransaction>>(
-    (gridParams, setRows) => {
+    (gridParams, setRows, fail) => {
       sendRequest(
         {
           url: `/transactions/GetUserTransactions/${params.userId}`,
           params: {
             pageSize: gridParams.pageSize,
-            pageIndex: gridParams.pageIndex
+            pageIndex: gridParams.pageIndex,
           },
         },
         (response) => {
           setRows(response.content, response.total);
-        }
+        },
+        (error) => fail(error)
       );
     },
-    [sendRequest,params]
+    [sendRequest, params]
   );
   return (
     <div className="py-16 px-12">

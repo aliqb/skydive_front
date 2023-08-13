@@ -9,9 +9,7 @@ import { Link } from "react-router-dom";
 import PdfPrintButton from "../../components/shared/PdfPrintButton";
 
 const MyTicketsPage: React.FC = () => {
-  const {
-    sendRequest,
-  } = useAPi<null, BaseResponse<UserTicket[]>>();
+  const { sendRequest } = useAPi<null, BaseResponse<UserTicket[]>>();
 
   const [colDefs] = useState<ColDef<UserTicket>[]>([
     {
@@ -70,7 +68,7 @@ const MyTicketsPage: React.FC = () => {
   ]);
 
   const fetchTickets = useCallback<GridGetData<UserTicket>>(
-    (gridParams, setRows) => {
+    (gridParams, setRows, fail) => {
       sendRequest(
         {
           url: "/reservations/myTickets",
@@ -81,7 +79,8 @@ const MyTicketsPage: React.FC = () => {
         },
         (response) => {
           setRows(response.content, response.total);
-        }
+        },
+        (error) => fail(error)
       );
     },
     [sendRequest]

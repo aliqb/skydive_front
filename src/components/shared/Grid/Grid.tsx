@@ -101,6 +101,9 @@ function MainGrid<T = any>(
             setSelectedPage(0);
           }
           setIsPending(false);
+        },(error)=>{
+          console.log(error)
+          setIsPending(false)
         });
       }
     },

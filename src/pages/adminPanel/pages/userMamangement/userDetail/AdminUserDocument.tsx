@@ -86,7 +86,7 @@ const AdminUserDocument: React.FC = () => {
   );
 
   const getDocuments = useCallback<GridGetData<DocumentItemRow>>(
-    (_gridParams, setRows) => {
+    (_gridParams, setRows,fail) => {
       const userId = params.userId;
       sendRequest(
         {
@@ -118,7 +118,8 @@ const AdminUserDocument: React.FC = () => {
           if (allApproved) {
             dispatch(fetchUserDetail(userId as string));
           }
-        }
+        },
+        (error) => fail(error)
       );
     },
     [sendRequest, dispatch, mapDocumentsToRows, params]
