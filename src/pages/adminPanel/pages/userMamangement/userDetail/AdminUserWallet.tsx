@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import SDCard from '../../../../../components/shared/Card';
-import SDTextInput from '../../../../../components/shared/TextInput';
 import SDButton from '../../../../../components/shared/Button';
 import { BaseResponse } from '../../../../../models/shared.models';
 import useApi from '../../../../../hooks/useApi';
@@ -13,6 +12,7 @@ import {
 } from '../../../../../models/wallet.models';
 import NumberWithSeperator from '../../../../../components/shared/NumberWithSeperator';
 import useConfirm from '../../../../../hooks/useConfirm';
+import ThousandSeparatorInput from '../../../../../components/shared/ThousandSeparatorInput';
 
 const AdminUserWallet: React.FC = () => {
   const params = useParams();
@@ -24,8 +24,6 @@ const AdminUserWallet: React.FC = () => {
       .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ریال مطمئن هستید؟`,
     'شارژ کیف پول'
   );
-  
-  
 
   const {
     sendRequest,
@@ -72,27 +70,6 @@ const AdminUserWallet: React.FC = () => {
     }
   }, [paymentAmount, params.userId, sendChargeRequest, fetchWalletData]);
 
-  const handlePaymentAmountChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    let value = event.target.value.replace(/,/g, '');
-    value = value.replace(/[^\d-]/g, '');
-    console.log(value);
-
-    if (value === '-') {
-      setPaymentAmount(value);
-    } else {
-      value = value.replace(/--/g, '');
-
-      const numericValue = parseFloat(value);
-      if (!isNaN(numericValue)) {
-        setPaymentAmount(numericValue.toString());
-      } else {
-        setPaymentAmount('');
-      }
-    }
-  };
-
   return (
     <SDCard className="flex items-center justify-center p-8 bg-red-500">
       <SDCard className="shadow rounded-lg w-full sm:max-w-md md:max-w-lg lg:max-w-xl flex flex-col items-center">
@@ -133,16 +110,14 @@ const AdminUserWallet: React.FC = () => {
             </div>
 
             <div className="flex flex-col md:flex-row items-center justify-center w-full space-y-4 md:space-y-0 md:space-x-4">
-              <SDTextInput
+              <ThousandSeparatorInput
                 numeric={true}
                 allowMinus={true}
                 id="amount"
                 placeholder="مبلغ مورد نظر را وارد کنید"
                 className="ltr text-center placeholder:!text-center"
-                value={paymentAmount
-                  .toString()
-                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                onChange={handlePaymentAmountChange}
+                value={paymentAmount}
+                onChange={setPaymentAmount}
               />
 
               <SDButton
