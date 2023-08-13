@@ -16,14 +16,15 @@ const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
   options = { required: 'فیلد اجباری است.' },
 }) => {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    let newValue = e.target.value.replace(/,/g, '');
-    newValue = newValue.replace(/[^\d-]/g, '');
-
+    let newValue = e.target.value;
     if (!allowMinus) {
       newValue = newValue.replace(/-/g, '');
     }
 
-    if (newValue === '-') {
+    newValue = newValue.replace(/,/g, '');
+    newValue = newValue.replace(/[^\d-]/g, '');
+    console.log(newValue);
+    if (newValue === '-' || newValue === '--') {
       register(name).onChange({ target: { value: newValue } });
     } else {
       newValue = newValue.replace(/--/g, '');
