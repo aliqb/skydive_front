@@ -152,7 +152,7 @@ const AdminEvents: React.FC = () => {
   ]);
 
   const fetchEvents = useCallback<GridGetData<SkyDiveEvent>>(
-    (gridParams, setRows) => {
+    (gridParams, setRows,fail) => {
       sendRequest(
         {
           url: "/SkyDiveEvents",
@@ -171,7 +171,8 @@ const AdminEvents: React.FC = () => {
               return { ...item, voidableString };
             }) || [];
           setRows(processedData, response.total);
-        }
+        },
+        (error) => fail(error)
       );
     },
     [sendRequest, selectedValue, startDate, endDate]
@@ -275,14 +276,16 @@ const AdminEvents: React.FC = () => {
 
       <div className="flex  mt-12 flex-wrap">
         <div className=" basis-full mb-4 xl:mb-0 xl:basis-1/12">
-        <SDButton color="success" onClick={onCreate}>
+          <SDButton color="success" onClick={onCreate}>
             + جدید
           </SDButton>
         </div>
         <div className="flex flex-wrap justify-between xl:basis-11/12 gap-4">
           <div className="flex flex-wrap">
             <div className="flex items-center justify-center pb-2 ml-8">
-              <label htmlFor="status" className="pl-1 text-sm">وضعیت:</label>
+              <label htmlFor="status" className="pl-1 text-sm">
+                وضعیت:
+              </label>
 
               <div className="mr-1 w-40">
                 <SDSelect
@@ -292,10 +295,14 @@ const AdminEvents: React.FC = () => {
                 >
                   <option value="">همه</option>
                   {eventStatusData?.content.map((status, index) => (
-                  <option key={index} value={status.id} className="text-right">
-                    {status.title}
-                  </option>
-                ))}
+                    <option
+                      key={index}
+                      value={status.id}
+                      className="text-right"
+                    >
+                      {status.title}
+                    </option>
+                  ))}
                 </SDSelect>
               </div>
             </div>

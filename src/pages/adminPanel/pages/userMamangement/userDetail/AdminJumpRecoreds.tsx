@@ -65,8 +65,7 @@ const AdminJumpRecoreds: React.FC = () => {
   const params = useParams();
 
   const fetchRecords = useCallback<GridGetData<JumpRecord>>(
-    (gridParams: GridParams, setRows) => {
-      console.log("here");
+    (gridParams: GridParams, setRows, fail) => {
       sendRequest(
         {
           url: "/jumpRecords",
@@ -78,7 +77,8 @@ const AdminJumpRecoreds: React.FC = () => {
         },
         (reponse) => {
           setRows(reponse.content, reponse.total);
-        }
+        },
+        (error) => fail(error)
       );
     },
     [sendRequest, params]
@@ -128,7 +128,7 @@ const AdminJumpRecoreds: React.FC = () => {
               ),
               descriptions: "تأیید",
               onClick: approveRecord,
-              showField: '!confirmed'
+              showField: "!confirmed",
             },
           ],
         }}

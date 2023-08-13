@@ -86,7 +86,7 @@ const UserTickets: React.FC = () => {
   ]);
 
   const fetchTickets = useCallback<GridGetData<UserTicket>>(
-    (gridParams, setRows) => {
+    (gridParams, setRows,fail) => {
       sendRequest(
         {
           url: `/Reservations/UserTickets/${params.userId}`,
@@ -98,7 +98,8 @@ const UserTickets: React.FC = () => {
         },
         (response) => {
           setRows(response.content, response.total);
-        }
+        },
+        (error) => fail(error)
       );
     },
     [sendRequest, params,selectedStatuces]
