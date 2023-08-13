@@ -1,52 +1,52 @@
-import { useCallback, useState } from 'react';
-import SDCard from '../../components/shared/Card';
-import useAPi from '../../hooks/useApi';
+import { useCallback, useState } from "react";
+import SDCard from "../../components/shared/Card";
+import useAPi from "../../hooks/useApi";
 
-import { BaseResponse } from '../../models/shared.models';
-import { ColDef, GridGetData } from '../../components/shared/Grid/grid.types';
-import Grid from '../../components/shared/Grid/Grid';
-import PdfPrintButton from '../../components/shared/PdfPrintButton';
-import { UserTransaction } from '../../models/transactions.models.tsx';
+import { BaseResponse } from "../../models/shared.models";
+import { ColDef, GridGetData } from "../../components/shared/Grid/grid.types";
+import Grid from "../../components/shared/Grid/Grid";
+import PdfPrintButton from "../../components/shared/PdfPrintButton";
+import { UserTransaction } from "../../models/transactions.models.tsx";
 
 const MyTransactionsPage: React.FC = () => {
   const { sendRequest } = useAPi<null, BaseResponse<UserTransaction[]>>();
 
   const [colDefs] = useState<ColDef<UserTransaction>[]>([
     {
-      field: 'date',
-      headerName: 'تاریخ پرداخت',
+      field: "date",
+      headerName: "تاریخ پرداخت",
     },
     {
-      field: 'ticketNumber',
-      headerName: 'شماره بلیت',
+      field: "ticketNumber",
+      headerName: "شماره بلیت",
     },
     {
-      field: 'eventName',
-      headerName: 'نام رویداد',
+      field: "eventName",
+      headerName: "نام رویداد",
     },
     {
-      field: 'paymentInformation',
-      headerName: 'اطلاعات پرداخت',
+      field: "paymentInformation",
+      headerName: "اطلاعات پرداخت",
     },
     {
-      field: 'amount',
-      headerName: 'مبلغ',
+      field: "amount",
+      headerName: "مبلغ",
     },
     {
-      field: 'type',
-      headerName: 'نوع',
+      field: "type",
+      headerName: "نوع",
       cellRenderer: (item: UserTransaction) => {
-        const displayText = item.type === 'Confirmed' ? 'تائید' : 'ابطال';
+        const displayText = item.type === "Confirmed" ? "تائید" : "ابطال";
         return <span>{displayText}</span>;
       },
     },
     {
-      field: 'invoiceNumber',
-      headerName: 'شماره فاکتور',
+      field: "invoiceNumber",
+      headerName: "شماره فاکتور",
     },
     {
-      field: '',
-      headerName: 'فاکتور',
+      field: "",
+      headerName: "فاکتور",
       cellRenderer: (item: UserTransaction) => {
         return (
           <PdfPrintButton
@@ -61,10 +61,10 @@ const MyTransactionsPage: React.FC = () => {
   ]);
 
   const fetchTickets = useCallback<GridGetData<UserTransaction>>(
-    (gridParams, setRows) => {
+    (gridParams, setRows, fail) => {
       sendRequest(
         {
-          url: '/transactions',
+          url: "/transactions",
           params: {
             pageSize: gridParams.pageSize,
             pageIndex: gridParams.pageIndex,
@@ -72,7 +72,8 @@ const MyTransactionsPage: React.FC = () => {
         },
         (response) => {
           setRows(response.content, response.total);
-        }
+        },
+        (error) => fail(error)
       );
     },
     [sendRequest]

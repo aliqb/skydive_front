@@ -93,7 +93,7 @@ const UserManagement: React.FC = () => {
   }
 
   const fetchUsers = useCallback<GridGetData<UserListItem>>(
-    (gridParams, setRows) => {
+    (gridParams, setRows, fail) => {
       sendRequest(
         {
           url: "/Admin/GetUsers",
@@ -113,7 +113,8 @@ const UserManagement: React.FC = () => {
           const result = response.content;
           // setResult(result);
           setRows(result, response.total);
-        }
+        },
+        (error) => fail(error)
       );
     },
     [sendRequest, selectedValue, minDate, maxDate, searchTerm]
@@ -134,7 +135,9 @@ const UserManagement: React.FC = () => {
         <div className="flex flex-wrap justify-between xl:basis-11/12 gap-4">
           <div className="flex flex-wrap">
             <div className="flex items-center justify-center pb-2 ml-8">
-              <label htmlFor="status" className="pl-1 text-sm">وضعیت:</label>
+              <label htmlFor="status" className="pl-1 text-sm">
+                وضعیت:
+              </label>
 
               <div className="mr-1">
                 <SDSelect
@@ -154,7 +157,9 @@ const UserManagement: React.FC = () => {
               </div>
             </div>
             <div className="flex items-center justify-center pb-2">
-              <label htmlFor="search" className="pl-1 text-sm">جستجو:</label>
+              <label htmlFor="search" className="pl-1 text-sm">
+                جستجو:
+              </label>
               <div className="mr-1">
                 <SearchInput
                   id="search"

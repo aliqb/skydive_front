@@ -14,9 +14,7 @@ import SDButton from "../../components/shared/Button";
 import JumpRecordModal from "../../components/userPanel/JumpRecordModal";
 
 const JumpRecordsPage: React.FC = () => {
-  const {
-    sendRequest,
-  } = useAPi<null, BaseResponse<JumpRecord[]>>();
+  const { sendRequest } = useAPi<null, BaseResponse<JumpRecord[]>>();
 
   const [colDefs] = useState<ColDef<JumpRecord>[]>([
     {
@@ -75,8 +73,7 @@ const JumpRecordsPage: React.FC = () => {
   }
 
   const fetchRecords = useCallback<GridGetData<JumpRecord>>(
-    (gridParams: GridParams, setRows) => {
-      console.log("here");
+    (gridParams: GridParams, setRows, fail) => {
       sendRequest(
         {
           url: "/jumpRecords",
@@ -87,9 +84,11 @@ const JumpRecordsPage: React.FC = () => {
         },
         (reponse) => {
           setRows(reponse.content, reponse.total);
-        }
+        },
+        (error) => fail(error)
       );
     },
+
     [sendRequest]
   );
 
