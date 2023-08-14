@@ -22,7 +22,7 @@ const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     let newValue = e.target.value;
 
-    newValue = newValue.replace(/[^\d,-]/g, '');
+    newValue = newValue.replace(/[^\d-]/g, '');
 
     if (!allowMinus) {
       newValue = newValue.replace(/^-/g, '');
@@ -32,13 +32,18 @@ const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
 
     newValue = newValue.replace(/,/g, '');
 
-    const numericValue = parseFloat(newValue);
-
-    if (!isNaN(numericValue)) {
-      const formattedValue = formatWithThousandsSeparator(newValue);
-      register(name).onChange({ target: { value: formattedValue } });
+    if (newValue === '-' || newValue === '') {
+      register(name).onChange({ target: { value: newValue } });
     } else {
-      register(name).onChange({ target: { value: '' } });
+      const numericValue = parseFloat(newValue);
+      if (!isNaN(numericValue)) {
+        const formattedValue = formatWithThousandsSeparator(newValue);
+        register(name).onChange({ target: { value: formattedValue } });
+        e.target.value = formattedValue;
+      } else {
+        register(name).onChange({ target: { value: '' } });
+        e.target.value = '';
+      }
     }
   };
 
@@ -52,7 +57,7 @@ const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
       {...register(name, options)}
       onChange={handleInputChange}
       dir="ltr"
-      style={{ textAlign: 'center' }}
+      className="text-center"
     />
   );
 };
