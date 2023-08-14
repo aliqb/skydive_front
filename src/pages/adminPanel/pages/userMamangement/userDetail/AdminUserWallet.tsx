@@ -25,13 +25,12 @@ const AdminUserWallet: React.FC = () => {
   const [ConfirmModal, confirmation] = useConfirm(
     confirmAmount >= 0
       ? `آیا از شارژ کیف پول به مبلغ \u200E${
-          confirmAmount?.toLocaleString('fa-IR') ?? '0'
+          confirmAmount ?? '0'
         } ریال مطمئن هستید؟`
-      : `آیا از برداشت کیف پول به مبلغ \u200E${Math.abs(
-          confirmAmount ?? 0
-        )?.toLocaleString('fa-IR')} ریال مطمئن هستید؟`,
+      : `آیا از برداشت کیف پول به مبلغ \u200E${confirmAmount} ریال مطمئن هستید؟`,
     'عملیات کیف پول'
   );
+  
 
   const { register, handleSubmit } = useForm<FormData>();
 

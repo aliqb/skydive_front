@@ -33,19 +33,20 @@ const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
     newValue = newValue.replace(/,/g, '');
 
     if (newValue === '-' || newValue === '') {
-      register(name).onChange({ target: { value: newValue } });
+      e.target.value = newValue;
     } else {
       const numericValue = parseFloat(newValue);
       if (!isNaN(numericValue)) {
         const formattedValue = formatWithThousandsSeparator(newValue);
-        register(name).onChange({ target: { value: formattedValue } });
         e.target.value = formattedValue;
       } else {
-        register(name).onChange({ target: { value: '' } });
         e.target.value = '';
       }
     }
+
+    register(name).onChange({ target: { value: e.target.value } });
   };
+  
 
   return (
     <SDTextInput
