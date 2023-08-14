@@ -113,10 +113,7 @@ const AdminUserWallet: React.FC = () => {
                 <span className="mr-1 text-sm">ریال</span>
               </span>
             </div>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4"
-            >
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
                 <ThousandSeparatorInput
                   allowMinus={true}
@@ -130,7 +127,7 @@ const AdminUserWallet: React.FC = () => {
                   disabled={isPendingChargeWallet}
                 >
                   {isPendingChargeWallet && <SDSpinner size={5} />}
-                  <span>شارژ کیف پول</span>
+                  <span style={{ whiteSpace: 'nowrap' }}>شارژ کیف پول</span>
                 </SDButton>
               </div>
             </form>

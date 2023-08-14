@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { RegisterOptions, UseFormRegister } from 'react-hook-form';
+import { UseFormRegister, RegisterOptions } from 'react-hook-form';
 import SDTextInput from './TextInput';
 
 interface ThousandSeparatorInputProps {
@@ -15,38 +15,43 @@ const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
   name,
   options = { required: 'فیلد اجباری است.' },
 }) => {
+  const formatWithThousandsSeparator = (value: string) => {
+    return value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     let newValue = e.target.value;
+
+    newValue = newValue.replace(/[^\d,-]/g, '');
+
     if (!allowMinus) {
-      newValue = newValue.replace(/-/g, '');
+      newValue = newValue.replace(/^-/g, '');
     }
 
-    newValue = newValue.replace(/,/g, '');
-    newValue = newValue.replace(/[^\d-]/g, '');
-    console.log(newValue);
-    if (newValue === '-' || newValue === '--') {
-      register(name).onChange({ target: { value: newValue } });
-    } else {
-      newValue = newValue.replace(/--/g, '');
+    newValue = newValue.replace(/--/g, '-');
 
-      const numericValue = parseFloat(newValue);
-      if (!isNaN(numericValue)) {
-        register(name).onChange({ target: { value: numericValue.toString() } });
-      } else {
-        register(name).onChange({ target: { value: '' } });
-      }
+    newValue = newValue.replace(/,/g, '');
+
+    const numericValue = parseFloat(newValue);
+
+    if (!isNaN(numericValue)) {
+      // Format the numeric value with thousands separators
+      const formattedValue = numericValue.toLocaleString('fa-IR');
+      register(name).onChange({ target: { value: formattedValue } });
+    } else {
+      register(name).onChange({ target: { value: '' } });
     }
   };
 
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-center w-full space-y-4 md:space-y-0 md:space-x-4">
-      <SDTextInput
-        numeric={true}
-        id={name}
-        {...register(name, options)}
-        onChange={handleInputChange}
-      />
-    </div>
+    <SDTextInput
+      numeric={true}
+      allowMinus={true}
+      id={name}
+      placeholder="مبلغ مورد نظر را وارد کنید"
+      {...register(name, options)}
+      onChange={handleInputChange}
+    />
   );
 };
 
