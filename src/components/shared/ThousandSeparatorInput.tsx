@@ -51,6 +51,8 @@ const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
       placeholder="مبلغ مورد نظر را وارد کنید"
       {...register(name, options)}
       onChange={handleInputChange}
+      dir="ltr"
+      style={{ textAlign: 'center' }}
     />
   );
 };
