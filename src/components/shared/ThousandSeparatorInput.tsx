@@ -35,7 +35,7 @@ const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
     const numericValue = parseFloat(newValue);
 
     if (!isNaN(numericValue)) {
-      const formattedValue = numericValue.toLocaleString('fa-IR');
+      const formattedValue = formatWithThousandsSeparator(newValue);
       register(name).onChange({ target: { value: formattedValue } });
     } else {
       register(name).onChange({ target: { value: '' } });
@@ -46,6 +46,7 @@ const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
     <SDTextInput
       numeric={true}
       allowMinus={allowMinus}
+      maxLength={12}
       id={name}
       placeholder="مبلغ مورد نظر را وارد کنید"
       {...register(name, options)}

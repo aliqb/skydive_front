@@ -20,12 +20,17 @@ interface FormData {
 const AdminUserWallet: React.FC = () => {
   const params = useParams();
 
-  const [paymentAmount, setPaymentAmount] = useState<string>('');
+  const [confirmAmount, setConfirmAmount] = useState<number>(0);
+
   const [ConfirmModal, confirmation] = useConfirm(
-    `آیا از شارژ کیف پول به مبلغ \u200E${paymentAmount
-      .toString()
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ریال مطمئن هستید؟`,
-    'شارژ کیف پول'
+    confirmAmount >= 0
+      ? `آیا از شارژ کیف پول به مبلغ \u200E${
+          confirmAmount?.toLocaleString('fa-IR') ?? '0'
+        } ریال مطمئن هستید؟`
+      : `آیا از برداشت کیف پول به مبلغ \u200E${Math.abs(
+          confirmAmount ?? 0
+        )?.toLocaleString('fa-IR')} ریال مطمئن هستید؟`,
+    'عملیات کیف پول'
   );
 
   const { register, handleSubmit } = useForm<FormData>();
@@ -50,6 +55,8 @@ const AdminUserWallet: React.FC = () => {
   }, [fetchWalletData]);
 
   const onSubmit = async (data: FormData) => {
+    console.log(data);
+    setConfirmAmount(parseFloat(data.amount));
     const confirm = await confirmation();
     if (confirm) {
       const chargeData: ChargeWalletData = {
@@ -66,7 +73,6 @@ const AdminUserWallet: React.FC = () => {
         (response) => {
           toast.success(response.message);
           fetchWalletData();
-          setPaymentAmount('');
         },
         (error) => {
           toast.error(error?.message);
