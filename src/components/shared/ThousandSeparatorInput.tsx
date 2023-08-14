@@ -11,7 +11,7 @@ interface ThousandSeparatorInputProps {
 
 const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
   register,
-  allowMinus = false,
+  allowMinus,
   name,
   options = { required: 'فیلد اجباری است.' },
 }) => {
@@ -35,7 +35,6 @@ const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
     const numericValue = parseFloat(newValue);
 
     if (!isNaN(numericValue)) {
-      // Format the numeric value with thousands separators
       const formattedValue = numericValue.toLocaleString('fa-IR');
       register(name).onChange({ target: { value: formattedValue } });
     } else {
@@ -46,7 +45,7 @@ const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
   return (
     <SDTextInput
       numeric={true}
-      allowMinus={true}
+      allowMinus={allowMinus}
       id={name}
       placeholder="مبلغ مورد نظر را وارد کنید"
       {...register(name, options)}
