@@ -1,64 +1,111 @@
-import React, { ChangeEvent } from 'react';
-import { UseFormRegister, RegisterOptions } from 'react-hook-form';
-import SDTextInput from './TextInput';
+import React, { ChangeEvent, useState } from "react";
+import {
+  UseFormRegister,
+  RegisterOptions,
+  Control,
+  Controller,
+} from "react-hook-form";
+import SDTextInput, { SDTextInputProps } from "./TextInput";
 
-interface ThousandSeparatorInputProps {
-  register: UseFormRegister<any>;
-  allowMinus?: boolean;
+interface ThousandSeparatorInputProps
+  extends Omit<SDTextInputProps, "onChange"> {
   name: string;
-  options?: RegisterOptions;
+  control?: Control<any>;
+  onChange?: (value: number | "") => void;
 }
 
 const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
-  register,
+  control,
+  value,
   allowMinus,
   name,
-  options = { required: 'فیلد اجباری است.' },
+  onChange,
+  ...otherProps
 }) => {
-  const formatWithThousandsSeparator = (value: string) => {
-    return value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const [innerValue, setInnerValue] = useState<string>(
+    value?.toLocaleString() || ""
+  );
+
+  const convertValue = (value: string, allowMinus = false) => {
+    let newValue = value.replace(/[^\d-]/g, "");
+
+    if (!allowMinus) {
+      newValue = newValue.replace(/^-/g, "");
+    }
+
+    return newValue;
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    let newValue = e.target.value;
+    const newValue = convertValue(e.target.value, allowMinus);
 
-    newValue = newValue.replace(/[^\d-]/g, '');
-
-    if (!allowMinus) {
-      newValue = newValue.replace(/^-/g, '');
+    const numericValue = parseFloat(newValue);
+    if (newValue === "-" || newValue === "") {
+      onChange && onChange("");
+      setInnerValue(newValue);
+      return;
     }
-
-    newValue = newValue.replace(/--/g, '-');
-
-    newValue = newValue.replace(/,/g, '');
-
-    if (newValue === '-' || newValue === '') {
-      e.target.value = newValue;
-    } else {
-      const numericValue = parseFloat(newValue);
-      if (!isNaN(numericValue)) {
-        const formattedValue = formatWithThousandsSeparator(newValue);
-        e.target.value = formattedValue;
-      } else {
-        e.target.value = '';
-      }
+    if (isNaN(numericValue)) {
+      onChange && onChange("");
+      setInnerValue("");
     }
+    onChange && onChange(numericValue);
+    const formattedValue = numericValue.toLocaleString();
+    setInnerValue(formattedValue);
 
-    register(name).onChange({ target: { value: e.target.value } });
+    // register(name).onChange({ target: { value: e.target.value } });
   };
-  
 
-  return (
+  const shardAttrs: Partial<ThousandSeparatorInputProps> = {
+    ...otherProps,
+    numeric: true,
+    name: name,
+    allowMinus: allowMinus,
+    className: `ltr ${otherProps.className || ""}`,
+  };
+
+  return control ? (
+    <Controller
+      control={control}
+      name={name}
+      rules={{
+        validate: (value) => {
+          console.log("wwwww", value);
+          return value !== "-";
+        },
+      }}
+      render={({
+        field: { onChange, value, onBlur },
+        fieldState: { isTouched }, //optional
+        formState: { errors }, //optional, but necessary if you want to show an error message
+      }) => {
+        console.log(errors);
+        return (
+          <>
+            <SDTextInput
+              {...shardAttrs}
+              value={value?.toLocaleString() || ""}
+              onBlur={onBlur}
+              onChange={(event) => {
+                const newValue = convertValue(event.target.value, allowMinus);
+                if (newValue === "" || newValue === "-") {
+                  onChange(newValue);
+                  return;
+                }
+                const numeric = +newValue;
+                onChange(isNaN(numeric) ? "" : numeric);
+              }}
+              invalid={!!errors[name] && isTouched}
+            />
+          </>
+        );
+      }}
+    />
+  ) : (
     <SDTextInput
-      numeric={true}
-      allowMinus={allowMinus}
-      maxLength={12}
-      id={name}
-      placeholder="مبلغ مورد نظر را وارد کنید"
-      {...register(name, options)}
+      {...shardAttrs}
+      value={innerValue}
       onChange={handleInputChange}
-      dir="ltr"
-      className="text-center"
     />
   );
 };
