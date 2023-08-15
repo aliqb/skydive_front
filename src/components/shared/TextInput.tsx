@@ -21,13 +21,20 @@ const SDTextInput = forwardRef(
     ) => {
       let value = event.target.value;
       value = replacePersianArabicsNumbers(value);
+
       if (props.numeric) {
         if (!props.allowMinus) {
           value = value.replace(/[^0-9]/g, '');
         } else {
           value = value.replace(/[^0-9-]/g, '');
+          value = value.replace(/--/g, '-');
+        }
+
+        if (value.startsWith('-')) {
+          value = '-' + value.replace(/-/g, '');
         }
       }
+
       event.target.value = value;
     };
 

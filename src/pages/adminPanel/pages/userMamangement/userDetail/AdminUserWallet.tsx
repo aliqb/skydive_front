@@ -1,31 +1,38 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { toast } from 'react-toastify';
-import SDCard from '../../../../../components/shared/Card';
-import SDTextInput from '../../../../../components/shared/TextInput';
-import SDButton from '../../../../../components/shared/Button';
-import { BaseResponse } from '../../../../../models/shared.models';
-import useApi from '../../../../../hooks/useApi';
-import { useParams } from 'react-router-dom';
-import SDSpinner from '../../../../../components/shared/Spinner';
+import React, { useState, useEffect, useCallback } from "react";
+import { toast } from "react-toastify";
+import SDCard from "../../../../../components/shared/Card";
+import SDButton from "../../../../../components/shared/Button";
+import { BaseResponse } from "../../../../../models/shared.models";
+import useApi from "../../../../../hooks/useApi";
+import { useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
+import SDSpinner from "../../../../../components/shared/Spinner";
 import {
   ChargeWalletData,
   WalletData,
-} from '../../../../../models/wallet.models';
-import NumberWithSeperator from '../../../../../components/shared/NumberWithSeperator';
-import useConfirm from '../../../../../hooks/useConfirm';
-
+} from "../../../../../models/wallet.models";
+import NumberWithSeperator from "../../../../../components/shared/NumberWithSeperator";
+import useConfirm from "../../../../../hooks/useConfirm";
+import ThousandSeparatorInput from "../../../../../components/shared/ThousandSeparatorInput";
+interface FormData {
+  amount: number;
+}
 const AdminUserWallet: React.FC = () => {
   const params = useParams();
+  const [confirmAmount, setConfirmAmount] = useState<number>(0);
 
-  const [paymentAmount, setPaymentAmount] = useState<string>('');
   const [ConfirmModal, confirmation] = useConfirm(
-    `آیا از شارژ کیف پول به مبلغ \u200E${paymentAmount
-      .toString()
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ریال مطمئن هستید؟`,
-    'شارژ کیف پول'
+    confirmAmount >= 0
+      ? `آیا از شارژ کیف پول به مبلغ \u200E${
+          confirmAmount.toLocaleString() ?? "0"
+        } ریال مطمئن هستید؟`
+      : `آیا از برداشت کیف پول به مبلغ \u200E${confirmAmount} ریال مطمئن هستید؟`,
+    "عملیات کیف پول"
   );
-  
-  
+
+  const {  handleSubmit, control,formState:{errors} } = useForm<FormData>({
+    mode: "onChange",
+  });
 
   const {
     sendRequest,
@@ -46,50 +53,29 @@ const AdminUserWallet: React.FC = () => {
     fetchWalletData();
   }, [fetchWalletData]);
 
-  const handlePayment = useCallback(async () => {
+  const onSubmit = async (data: FormData) => {
+    setConfirmAmount(data.amount);
     const confirm = await confirmation();
     if (confirm) {
-      const data: ChargeWalletData = {
+      const chargeData: ChargeWalletData = {
         userId: params.userId,
-        amount: +paymentAmount,
+        amount: data.amount,
       };
 
       sendChargeRequest(
         {
-          url: '/wallets',
-          method: 'put',
-          data: data,
+          url: "/wallets",
+          method: "put",
+          data: chargeData,
         },
         (response) => {
           toast.success(response.message);
           fetchWalletData();
-          setPaymentAmount('');
         },
         (error) => {
           toast.error(error?.message);
         }
       );
-    }
-  }, [paymentAmount, params.userId, sendChargeRequest, fetchWalletData]);
-
-  const handlePaymentAmountChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    let value = event.target.value.replace(/,/g, '');
-    value = value.replace(/[^\d-]/g, '');
-    console.log(value);
-
-    if (value === '-') {
-      setPaymentAmount(value);
-    } else {
-      value = value.replace(/--/g, '');
-
-      const numericValue = parseFloat(value);
-      if (!isNaN(numericValue)) {
-        setPaymentAmount(numericValue.toString());
-      } else {
-        setPaymentAmount('');
-      }
     }
   };
 
@@ -131,31 +117,33 @@ const AdminUserWallet: React.FC = () => {
                 <span className="mr-1 text-sm">ریال</span>
               </span>
             </div>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+                <ThousandSeparatorInput
+                  allowMinus={true}
+                  name="amount"
+                  className="text-center"
+                  placeholder="مبلغ مورد نظر را وارد کنید"
+                  control={control}
+                  required={"این فیلد اجباری است."}
+                />
 
-            <div className="flex flex-col md:flex-row items-center justify-center w-full space-y-4 md:space-y-0 md:space-x-4">
-              <SDTextInput
-                numeric={true}
-                allowMinus={true}
-                id="amount"
-                placeholder="مبلغ مورد نظر را وارد کنید"
-                className="ltr text-center placeholder:!text-center"
-                value={paymentAmount
-                  .toString()
-                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                onChange={handlePaymentAmountChange}
-              />
-
-              <SDButton
-                type="submit"
-                color="success"
-                onClick={handlePayment}
-                disabled={isPendingChargeWallet}
-                className="w-full md:w-auto lg:w-1/3 "
-              >
-                {isPendingChargeWallet && <SDSpinner size={5} />}
-                شارژ کیف پول
-              </SDButton>
-            </div>
+                <SDButton
+                  className="w-full md:w-auto lg:w-1/3 flex items-center justify-center"
+                  type="submit"
+                  color="success"
+                  disabled={isPendingChargeWallet}
+                >
+                  {isPendingChargeWallet && <SDSpinner size={5} />}
+                  <span className="whitespace-nowrap">شارژ کیف پول</span>
+                </SDButton>
+              </div>
+              {errors.amount?.message && (
+                  <p className="text-red-600 text-sm pr-2 mt-2">
+                    {errors.amount.message}
+                  </p>
+                )}
+            </form>
           </>
         )}
       </SDCard>
