@@ -13,7 +13,10 @@ import { authActions } from "../../../store/auth";
 import { updateAuthDataInLocal } from "../../../utils/authUtils";
 import { useEffect } from "react";
 import { Regexes } from "../../../utils/shared";
-import { nationalCodeValidator } from "../../../utils/validations";
+import {
+  birthDateBaseNowValidation,
+  nationalCodeValidator,
+} from "../../../utils/validations";
 
 const SingUpPersonaPage: React.FC = () => {
   const navigate = useNavigate();
@@ -28,7 +31,7 @@ const SingUpPersonaPage: React.FC = () => {
     handleSubmit,
     control,
   } = useForm<UserPersonalInfo>({
-    mode: "onTouched",
+    mode: "onChange",
   });
 
   const dispatch = useAppDispatch();
@@ -142,6 +145,7 @@ const SingUpPersonaPage: React.FC = () => {
             control={control}
             required={true}
             id="birthDate"
+            baseNowValidationOptions={birthDateBaseNowValidation}
           ></SDDatepicker>
 
           {errors.birthDate && (

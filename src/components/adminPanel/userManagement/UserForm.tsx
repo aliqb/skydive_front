@@ -10,11 +10,15 @@ import { useEffect, useRef, useState } from "react";
 import useAPi from "../../../hooks/useApi";
 import { BaseResponse } from "../../../models/shared.models";
 import UserFormSelect from "./UserFormSelect";
-import {
-  Regexes
-} from "../../../utils/shared";
+import { Regexes } from "../../../utils/shared";
 import ResetUserPasswordModal from "./ResetUserPasswordModal";
-import { heighttRangeOptions, nationalCodeValidator, phoneInputValidator, weightRangeOptions } from "../../../utils/validations";
+import {
+  birthDateBaseNowValidation,
+  heighttRangeOptions,
+  nationalCodeValidator,
+  phoneInputValidator,
+  weightRangeOptions,
+} from "../../../utils/validations";
 
 interface UserFormProps {
   userDetail?: UserDatail;
@@ -28,20 +32,20 @@ const UserForm: React.FC<UserFormProps> = (props) => {
     handleSubmit,
     control,
     reset,
-    watch
+    watch,
   } = useForm<UserRequest>({
     mode: "onTouched",
   });
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [showPasswordModal, setShowPasswordModal] = useState<boolean>(false);
-  const mobileRef = useRef<string|undefined>();
+  const mobileRef = useRef<string | undefined>();
   const { sendRequest: sendUserTypesRequest, data: userTypes } = useAPi<
     null,
     BaseResponse<userType[]>
   >();
 
-  mobileRef.current = watch('phone','');
+  mobileRef.current = watch("phone", "");
 
   useEffect(() => {
     function getUserTypes() {
@@ -194,6 +198,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 errors={formErrors}
                 type="date"
                 required={true}
+                baseNowValidationOptions={birthDateBaseNowValidation}
               />
 
               <UserFormInput
@@ -382,12 +387,12 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                     value: Regexes.mobile,
                     message: "شماره موبایل صحیح نیست.",
                   },
-                  validate:(value)=>{
-                    if(value !== mobileRef.current || value === ''){
-                      return true
+                  validate: (value) => {
+                    if (value !== mobileRef.current || value === "") {
+                      return true;
                     }
-                    return "شماره موبایل اضطراری نمی‌تواند با شماره موبایل کاربر یکسان باشد."
-                  }
+                    return "شماره موبایل اضطراری نمی‌تواند با شماره موبایل کاربر یکسان باشد.";
+                  },
                 }}
               />
             </div>

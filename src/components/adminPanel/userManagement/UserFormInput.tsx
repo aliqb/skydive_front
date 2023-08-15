@@ -8,7 +8,7 @@ import { UserRequest } from "../../../models/usermanagement.models";
 import SDTextInput, { SDTextInputProps } from "../../shared/TextInput";
 import { HTMLInputTypeAttribute } from "react";
 import PasswordInput from "../../shared/PasswordInput";
-import SDDatepicker from "../../shared/DatePicker";
+import SDDatepicker, { BaseNowValidationOptions } from "../../shared/DatePicker";
 
 interface UserFormInputProps extends SDTextInputProps {
   register?: UseFormRegister<UserRequest>;
@@ -20,6 +20,7 @@ interface UserFormInputProps extends SDTextInputProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control?: Control<any>;
   required?: boolean;
+  baseNowValidationOptions?: BaseNowValidationOptions
 }
 
 const UserFormInput: React.FC<UserFormInputProps> = ({
@@ -31,6 +32,7 @@ const UserFormInput: React.FC<UserFormInputProps> = ({
   ltr = false,
   control,
   required,
+  baseNowValidationOptions: baseNowValidation,
   ...inputProps
 }) => {
   const registerOptions = { ...options };
@@ -76,6 +78,7 @@ const UserFormInput: React.FC<UserFormInputProps> = ({
           control={control}
           id={name}
           required={required}
+          baseNowValidationOptions={baseNowValidation}
         ></SDDatepicker>
       )}
       {errors[castedName]?.message && (

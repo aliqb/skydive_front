@@ -1,3 +1,4 @@
+import { BaseNowValidationOptions } from "../components/shared/DatePicker";
 import { replacePersianArabicsNumbers } from "./shared";
 
 export const phoneInputChangeValidationHandler: React.ChangeEventHandler<
@@ -68,13 +69,27 @@ export const weightRangeOptions = {
 };
 
 export const heighttRangeOptions = {
-    min: {
-      value: 50,
-      message: "قد صحیح نیست.",
-    },
-    max: {
-      value: 230,
-      message: "قد صحیح نیست.",
-    },
-  };
+  min: {
+    value: 50,
+    message: "قد صحیح نیست.",
+  },
+  max: {
+    value: 230,
+    message: "قد صحیح نیست.",
+  },
+};
 
+export const birthDateBaseNowValidation: BaseNowValidationOptions = {
+  from: {
+    step: "years",
+    value: 90,
+    message: "تاریخ تولد صحیح نیست.",
+    direction: "before",
+  },
+  to: {
+    step: "years",
+    value: 12,
+    message: "تاریخ تولد صحیح نیست.",
+    direction: "before",
+  },
+};
