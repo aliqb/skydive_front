@@ -1,38 +1,41 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { toast } from 'react-toastify';
-import SDCard from '../../../../../components/shared/Card';
-import SDButton from '../../../../../components/shared/Button';
-import { BaseResponse } from '../../../../../models/shared.models';
-import useApi from '../../../../../hooks/useApi';
-import { useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
-import SDSpinner from '../../../../../components/shared/Spinner';
+import React, { useState, useEffect, useCallback } from "react";
+import { toast } from "react-toastify";
+import SDCard from "../../../../../components/shared/Card";
+import SDButton from "../../../../../components/shared/Button";
+import { BaseResponse } from "../../../../../models/shared.models";
+import useApi from "../../../../../hooks/useApi";
+import { useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
+import SDSpinner from "../../../../../components/shared/Spinner";
 import {
   ChargeWalletData,
   WalletData,
-} from '../../../../../models/wallet.models';
-import NumberWithSeperator from '../../../../../components/shared/NumberWithSeperator';
-import useConfirm from '../../../../../hooks/useConfirm';
-import ThousandSeparatorInput from '../../../../../components/shared/ThousandSeparatorInput';
+} from "../../../../../models/wallet.models";
+import NumberWithSeperator from "../../../../../components/shared/NumberWithSeperator";
+import useConfirm from "../../../../../hooks/useConfirm";
+import ThousandSeparatorInput from "../../../../../components/shared/ThousandSeparatorInput";
 interface FormData {
-  amount: string;
+  amount: number;
 }
 const AdminUserWallet: React.FC = () => {
   const params = useParams();
-
   const [confirmAmount, setConfirmAmount] = useState<number>(0);
 
   const [ConfirmModal, confirmation] = useConfirm(
     confirmAmount >= 0
       ? `آیا از شارژ کیف پول به مبلغ \u200E${
-          confirmAmount ?? '0'
+          confirmAmount.toLocaleString() ?? "0"
         } ریال مطمئن هستید؟`
       : `آیا از برداشت کیف پول به مبلغ \u200E${confirmAmount} ریال مطمئن هستید؟`,
-    'عملیات کیف پول'
+    "عملیات کیف پول"
   );
-  
 
-  const { register, handleSubmit } = useForm<FormData>();
+  const {  handleSubmit, control,formState:{errors} } = useForm<FormData>({
+    // defaultValues:{
+    //   amount: 2222222,
+    // },
+    mode: "onChange",
+  });
 
   const {
     sendRequest,
@@ -54,19 +57,18 @@ const AdminUserWallet: React.FC = () => {
   }, [fetchWalletData]);
 
   const onSubmit = async (data: FormData) => {
-    console.log(data);
-    setConfirmAmount(parseFloat(data.amount));
+    setConfirmAmount(data.amount);
     const confirm = await confirmation();
     if (confirm) {
       const chargeData: ChargeWalletData = {
         userId: params.userId,
-        amount: parseFloat(data.amount),
+        amount: data.amount,
       };
 
       sendChargeRequest(
         {
-          url: '/wallets',
-          method: 'put',
+          url: "/wallets",
+          method: "put",
           data: chargeData,
         },
         (response) => {
@@ -123,8 +125,12 @@ const AdminUserWallet: React.FC = () => {
                 <ThousandSeparatorInput
                   allowMinus={true}
                   name="amount"
-                  register={register}
+                  className="text-center"
+                  placeholder="مبلغ مورد نظر را وارد کنید"
+                  control={control}
+                  required={"این فیلد اجباری است."}
                 />
+
                 <SDButton
                   className="w-full md:w-auto lg:w-1/3 flex items-center justify-center"
                   type="submit"
@@ -132,9 +138,14 @@ const AdminUserWallet: React.FC = () => {
                   disabled={isPendingChargeWallet}
                 >
                   {isPendingChargeWallet && <SDSpinner size={5} />}
-                  <span style={{ whiteSpace: 'nowrap' }}>شارژ کیف پول</span>
+                  <span className="whitespace-nowrap">شارژ کیف پول</span>
                 </SDButton>
               </div>
+              {errors.amount?.message && (
+                  <p className="text-red-600 text-sm pr-2 mt-2">
+                    {errors.amount.message}
+                  </p>
+                )}
             </form>
           </>
         )}

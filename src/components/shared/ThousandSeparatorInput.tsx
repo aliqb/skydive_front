@@ -1,17 +1,22 @@
 import React, { ChangeEvent, useState } from "react";
 import {
-  UseFormRegister,
   RegisterOptions,
   Control,
   Controller,
+  ValidationRule,
+  Message,
 } from "react-hook-form";
 import SDTextInput, { SDTextInputProps } from "./TextInput";
 
 interface ThousandSeparatorInputProps
-  extends Omit<SDTextInputProps, "onChange"> {
+  extends Omit<SDTextInputProps, "onChange" | "required" | "min" | "max"> {
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control?: Control<any>;
   onChange?: (value: number | "") => void;
+  required?: ValidationRule<boolean> | Message;
+  min?: number | {value:number, message:string};
+  max?:  number | {value:number, message:string}
 }
 
 const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
@@ -20,6 +25,9 @@ const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
   allowMinus,
   name,
   onChange,
+  required,
+  max,
+  min,
   ...otherProps
 }) => {
   const [innerValue, setInnerValue] = useState<string>(
@@ -56,24 +64,24 @@ const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
     // register(name).onChange({ target: { value: e.target.value } });
   };
 
-  const shardAttrs: Partial<ThousandSeparatorInputProps> = {
+  const shardAttrs: Partial<SDTextInputProps> = {
     ...otherProps,
     numeric: true,
     name: name,
     allowMinus: allowMinus,
     className: `ltr ${otherProps.className || ""}`,
   };
-
+  const rules : RegisterOptions = {
+    validate: (value) => value !== "-",
+    ...(required ? {required:required} : {}),
+    ...(max ? {max:max} : {}),
+    ...(min ? {min:min} : {})
+  }
   return control ? (
     <Controller
       control={control}
       name={name}
-      rules={{
-        validate: (value) => {
-          console.log("wwwww", value);
-          return value !== "-";
-        },
-      }}
+      rules={rules}
       render={({
         field: { onChange, value, onBlur },
         fieldState: { isTouched }, //optional
@@ -106,6 +114,9 @@ const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
       {...shardAttrs}
       value={innerValue}
       onChange={handleInputChange}
+      required={!!required}
+      {...(typeof min === 'number' ? {min} : {min:min?.value} || {} )}
+      {...(typeof max === 'number' ? {max} : {max:max?.value} || {} )}
     />
   );
 };
