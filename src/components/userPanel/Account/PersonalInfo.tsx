@@ -9,7 +9,8 @@ import { useEffect } from "react";
 import { PersonalInfoEditableFormData } from "../../../models/account.models";
 import { useAppDispatch } from "../../../hooks/reduxHooks";
 import { accoutnActions } from "../../../store/account";
-import { Regexes, phoneInputValidator } from "../../../utils/shared";
+import { Regexes } from "../../../utils/shared";
+import { phoneInputValidator } from "../../../utils/validations";
 
 interface PersonalInfoProps {
   onSubmit: () => void;
@@ -225,6 +226,14 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
               {...register("weight", {
                 valueAsNumber: true,
                 required: "فیلد اجباری است.",
+                min:{
+                  value:15,
+                  message:'وزن صحیح نیست.'
+                },
+                max:{
+                  value:200,
+                  message:'وزن صحیح نیست.'
+                }
               })}
               numeric={true}
               id="weight"

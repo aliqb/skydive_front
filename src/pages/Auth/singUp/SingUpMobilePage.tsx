@@ -8,7 +8,8 @@ import useAPi from "../../../hooks/useApi";
 import { OTPRequest, OTPResponse } from "../../../models/auth.models";
 import { BaseResponse } from "../../../models/shared.models";
 import { authActions } from "../../../store/auth";
-import { Regexes, phoneInputValidator } from "../../../utils/shared";
+import { Regexes } from "../../../utils/shared";
+import { phoneInputValidator } from "../../../utils/validations";
 
 const SignUpMobilePage: React.FC = () => {
   const {

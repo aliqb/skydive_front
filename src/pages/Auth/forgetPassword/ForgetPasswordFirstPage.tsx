@@ -7,7 +7,8 @@ import { authActions } from "../../../store/auth";
 import useAPi from "../../../hooks/useApi";
 import { OTPRequest, OTPResponse } from "../../../models/auth.models";
 import SDSpinner from "../../../components/shared/Spinner";
-import { Regexes, phoneInputValidator } from "../../../utils/shared";
+import { Regexes } from "../../../utils/shared";
+import { phoneInputValidator } from "../../../utils/validations";
 const ForgetPasswordFirstPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();

@@ -11,11 +11,10 @@ import useAPi from "../../../hooks/useApi";
 import { BaseResponse } from "../../../models/shared.models";
 import UserFormSelect from "./UserFormSelect";
 import {
-  Regexes,
-  nationalCodeValidator,
-  phoneInputValidator,
+  Regexes
 } from "../../../utils/shared";
 import ResetUserPasswordModal from "./ResetUserPasswordModal";
+import { nationalCodeValidator, phoneInputValidator } from "../../../utils/validations";
 
 interface UserFormProps {
   userDetail?: UserDatail;

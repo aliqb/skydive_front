@@ -12,7 +12,8 @@ import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { authActions } from "../../../store/auth";
 import { updateAuthDataInLocal } from "../../../utils/authUtils";
 import { useEffect } from "react";
-import { Regexes, nationalCodeValidator } from "../../../utils/shared";
+import { Regexes } from "../../../utils/shared";
+import { nationalCodeValidator } from "../../../utils/validations";
 
 const SingUpPersonaPage: React.FC = () => {
   const navigate = useNavigate();
