@@ -79,7 +79,7 @@ const UserFormInput: React.FC<UserFormInputProps> = ({
         ></SDDatepicker>
       )}
       {errors[castedName]?.message && (
-        <p className="text-red-600 text-xs pr-2">
+        <p className="text-red-600 text-xs pr-2 inline-block w-44">
           {errors[castedName]?.message}
         </p>
       )}

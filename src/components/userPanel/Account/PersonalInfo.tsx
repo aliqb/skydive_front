@@ -7,7 +7,7 @@ import useAPi from "../../../hooks/useApi";
 import { BaseResponse, UserPersonalInfo } from "../../../models/shared.models";
 import { useEffect } from "react";
 import { PersonalInfoEditableFormData } from "../../../models/account.models";
-import { useAppDispatch } from "../../../hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { accoutnActions } from "../../../store/account";
 import { Regexes } from "../../../utils/shared";
 import { heighttRangeOptions, phoneInputValidator, weightRangeOptions } from "../../../utils/validations";
@@ -31,6 +31,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
     null,
     BaseResponse<UserPersonalInfo>
   >();
+
+  const userMobile = useAppSelector(state=>state.auth.mobile);
 
   const dispatch = useAppDispatch();
 
@@ -288,8 +290,13 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
                     value: Regexes.mobile,
                     message: "شماره موبایل صحیح نیست.",
                   },
-
                   required: "فیلد اجباری است.",
+                  validate:(value)=>{
+                    if(value !== userMobile){
+                      return
+                    }
+                    return 'شماره موبایل اضطراری نباید با شماره موبایل شما یکسان باشد.'
+                  }
                 })}
                 type="text"
                 disabled={props.disableAll}

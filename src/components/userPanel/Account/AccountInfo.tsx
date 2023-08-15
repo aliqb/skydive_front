@@ -12,7 +12,6 @@ import { useEffect, useState } from "react";
 import { OTPRequest, OTPResponse } from "../../../models/auth.models";
 import ChangePasswordModal from "./ChangePasswordModal";
 import UserStatusLabel from "../../shared/UserStatusLabel";
-import { GeneralSettings } from "../../../models/settings.models";
 import { removeAuthDataFromLocal } from "../../../utils/authUtils";
 
 interface AccountInfoFormData {
@@ -31,10 +30,9 @@ const AccountInfo: React.FC = () => {
   });
 
   const authState = useAppSelector((state) => state.auth);
-  const { sendRequest: sendSettingsRequest } = useAPi<
-    null,
-    BaseResponse<GeneralSettings>
-  >();
+  const userStatusInfo = useAppSelector(
+    (state) => state.generalSettings.generalSettings?.userStatusInfo
+  );
   const [statusDescription, setStatusDescription] = useState<string>("");
 
   const [ConfirmModal, confirmation] = useConfirm(
@@ -51,20 +49,6 @@ const AccountInfo: React.FC = () => {
   >();
 
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    sendSettingsRequest(
-      {
-        url: "/settings",
-      },
-      (response) => {
-        const statusInfo = response.content.userStatusInfo.find(
-          (item) => item.status === authState.userStatus
-        );
-        setStatusDescription(statusInfo?.description || "");
-      }
-    );
-  }, [sendSettingsRequest, authState.userStatus]);
 
   async function onInactiveAccount() {
     const confirm = await confirmation();
@@ -99,6 +83,13 @@ const AccountInfo: React.FC = () => {
       (error) => toast.error(error?.message)
     );
   }
+
+  useEffect(() => {
+    const statusInfo = userStatusInfo?.find(
+      (item) => item.status === authState.userStatus
+    );
+    setStatusDescription(statusInfo?.description || "");
+  }, [userStatusInfo, authState.userStatus]);
 
   return (
     <div className="flex flex-col items-center">

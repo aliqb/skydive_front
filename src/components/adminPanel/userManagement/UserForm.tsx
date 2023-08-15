@@ -6,7 +6,7 @@ import {
 } from "../../../models/usermanagement.models";
 import SDButton from "../../shared/Button";
 import UserFormInput from "./UserFormInput";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useAPi from "../../../hooks/useApi";
 import { BaseResponse } from "../../../models/shared.models";
 import UserFormSelect from "./UserFormSelect";
@@ -28,17 +28,20 @@ const UserForm: React.FC<UserFormProps> = (props) => {
     handleSubmit,
     control,
     reset,
+    watch
   } = useForm<UserRequest>({
     mode: "onTouched",
   });
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [showPasswordModal, setShowPasswordModal] = useState<boolean>(false);
-
+  const mobileRef = useRef<string|undefined>();
   const { sendRequest: sendUserTypesRequest, data: userTypes } = useAPi<
     null,
     BaseResponse<userType[]>
   >();
+
+  mobileRef.current = watch('phone','');
 
   useEffect(() => {
     function getUserTypes() {
@@ -371,6 +374,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 register={register}
                 name="emergencyPhone"
                 errors={formErrors}
+                ltr={true}
                 maxLength={14}
                 {...phoneInputValidator}
                 options={{
@@ -378,6 +382,12 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                     value: Regexes.mobile,
                     message: "شماره موبایل صحیح نیست.",
                   },
+                  validate:(value)=>{
+                    if(value !== mobileRef.current || value === ''){
+                      return true
+                    }
+                    return "شماره موبایل اضطراری نمی‌تواند با شماره موبایل کاربر یکسان باشد."
+                  }
                 }}
               />
             </div>
