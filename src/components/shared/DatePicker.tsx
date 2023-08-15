@@ -6,6 +6,17 @@ import persian_en from "react-date-object/locales/persian_en";
 import DatePicker, { DateObject } from "react-multi-date-picker";
 import { useState } from "react";
 type DatePickerFinalProps = CalendarProps & DatePickerProps;
+
+interface BaseNowBorder{
+  step: "years" | "months" | "days";
+  value: number;
+  message?: string;
+  direction:'after' | 'before';
+}
+export interface BaseNowValidationOptions {
+  from?: BaseNowBorder;
+  to?: BaseNowBorder
+}
 interface SDDatePickerProps extends Omit<DatePickerFinalProps, "onChange"> {
   name: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -13,6 +24,7 @@ interface SDDatePickerProps extends Omit<DatePickerFinalProps, "onChange"> {
   required?: boolean;
   manualInvalid?: boolean;
   onChange?: (value: string) => void;
+  baseNowValidationOptions?: BaseNowValidationOptions// use only with control
 }
 
 const SDDatepicker: React.FC<SDDatePickerProps> = (props) => {
@@ -20,8 +32,9 @@ const SDDatepicker: React.FC<SDDatePickerProps> = (props) => {
   delete datePickerPropsTemp.control;
   delete datePickerPropsTemp.required;
   delete datePickerPropsTemp.onChange;
+  delete datePickerPropsTemp.baseNowValidationOptions;
 
-  const [manualIsTouched,setManualIsTouched] = useState<boolean>(false);
+  const [manualIsTouched, setManualIsTouched] = useState<boolean>(false);
 
   function formaDateObject(date: DateObject): string {
     if (!date) {
@@ -29,6 +42,44 @@ const SDDatepicker: React.FC<SDDatePickerProps> = (props) => {
     }
     date.locale = persian_en;
     return date.format("YYYY/MM/DD");
+  }
+
+  function validateBasedOnRanges(
+    chooseDate: string,
+    validationRage: BaseNowValidationOptions
+  ) {
+    const choosedDateObejct = new DateObject({
+      date: chooseDate,
+      format: "YYYY/MM/DD",
+      locale: persian_en,
+      calendar: persian,
+    });
+    const choosedJSDate = choosedDateObejct.toDate();
+    if (validationRage.from) {
+      const {value,message="تاریخ درست نیست",step,direction} = validationRage.from
+      const minDateObject = new DateObject().setHour(0).setMinute(0).setSecond(0).setMillisecond(0);
+      if(direction === 'before'){
+        minDateObject.subtract(value,step)
+      }else{
+        minDateObject.add(value,step)
+      }
+      if (minDateObject.toDate() > choosedJSDate) {
+        return message;
+      }
+    }
+    if (validationRage.to) {
+      const {value,message="تاریخ درست نیست",step,direction} = validationRage.to
+      const maxDateObject = new DateObject().setHour(0).setMinute(0).setSecond(0).setMillisecond(0);
+      if(direction === 'before'){
+        maxDateObject.subtract(value,step)
+      }else{
+        maxDateObject.add(value,step)
+      }
+      if (maxDateObject.toDate() < choosedJSDate) {
+        return message;
+      }
+    }
+    return true;
   }
 
   function validateDate(value: string): string | boolean {
@@ -42,6 +93,9 @@ const SDDatepicker: React.FC<SDDatePickerProps> = (props) => {
     }
     if (6 <= month && day > 30) {
       return message;
+    }
+    if (props.baseNowValidationOptions) {
+      return validateBasedOnRanges(value,props.baseNowValidationOptions)
     }
     return true;
   }
@@ -65,27 +119,27 @@ const SDDatepicker: React.FC<SDDatePickerProps> = (props) => {
           : { validate: validateDate }
       } //optional
       render={({
-        field: { onChange, value },
-        // fieldState: { isTouched }, //optional
+        field: { onChange, value,onBlur },
         formState: { errors }, //optional, but necessary if you want to show an error message
       }) => (
         <>
           <DatePicker
-            onOpen={()=>setManualIsTouched(true)}
+            {...datePickerPropsTemp}
+            onOpen={() => setManualIsTouched(true)}
             name={props.name}
             id={props.id}
             value={value || ""}
             onChange={(date: DateObject) => {
-              console.log(formaDateObject(date));
               onChange(formaDateObject(date));
             }}
-            //   format={language === "en" ? "MM/DD/YYYY" : "YYYY/MM/DD"}
+            onClose={onBlur}
             calendar={persian}
             locale={persian_fa}
             calendarPosition="bottom-right"
             containerClassName={`w-full ${datePickerPropsTemp.containerClassName}`}
             inputClass={`${
-              errors[props.name] || (props.required && manualIsTouched && !value)
+              errors[props.name] ||
+              (props.required && manualIsTouched && !value)
                 ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                 : "border-gray-300 focus:border-blue-500"
             } ${
