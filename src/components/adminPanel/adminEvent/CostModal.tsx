@@ -9,12 +9,12 @@ import SDModal from "../../shared/Modal";
 import SDLabel from "../../shared/Label";
 import SDButton from "../../shared/Button";
 import SDSpinner from "../../shared/Spinner";
-import SDTextInput from "../../shared/TextInput";
 import { BaseResponse } from "../../../models/shared.models";
 import useAPi from "../../../hooks/useApi";
 import { toast } from "react-toastify";
 import { useFieldArray, useForm } from "react-hook-form";
 import SDSelect from "../../shared/Select";
+import ThousandSeparatorInput from "../../shared/ThousandSeparatorInput";
 
 const CostModal: React.FC<CostModalProps> = ({
   showModal,
@@ -28,7 +28,7 @@ const CostModal: React.FC<CostModalProps> = ({
     control,
     reset,
   } = useForm<NewTicketFeeList>({
-    mode: "onTouched",
+    mode: "onChange",
   });
   const { fields, append, remove } = useFieldArray({
     control,
@@ -217,22 +217,10 @@ const CostModal: React.FC<CostModalProps> = ({
                         </div>
                         <div className="flex flex-col w-4/12 items-center mr-4">
                           <div>
-                            <SDTextInput
-                              {...register(`items.${index}.amount` as const, {
-                                valueAsNumber: true,
-                                required: "فیلد اجباری است.",
-                                validate: (value) => {
-                                  return (
-                                    value > 0 || "قیمت باید بزرگ‌تر از 0 باشد."
-                                  );
-                                },
-                              })}
-                              numeric={true}
-                              id={`amount-${index}`}
-                              className="ltr"
-                              invalid={
-                                !!formErrors?.items?.[index]?.amount?.message
-                              }
+                            <ThousandSeparatorInput
+                              control={control}
+                              name={`items.${index}.amount` as const}
+                              required="فیلد اجباری است."
                             />
                             {formErrors?.items?.[index]?.amount && (
                               <p className="text-red-600 text-xs pr-2 mt-2">

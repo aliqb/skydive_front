@@ -31,9 +31,6 @@ const AdminUserWallet: React.FC = () => {
   );
 
   const {  handleSubmit, control,formState:{errors} } = useForm<FormData>({
-    // defaultValues:{
-    //   amount: 2222222,
-    // },
     mode: "onChange",
   });
 

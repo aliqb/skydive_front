@@ -84,10 +84,8 @@ const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
       rules={rules}
       render={({
         field: { onChange, value, onBlur },
-        fieldState: { isTouched }, //optional
-        formState: { errors }, //optional, but necessary if you want to show an error message
+        fieldState: { isTouched,error }, 
       }) => {
-        console.log(errors);
         return (
           <>
             <SDTextInput
@@ -103,7 +101,7 @@ const ThousandSeparatorInput: React.FC<ThousandSeparatorInputProps> = ({
                 const numeric = +newValue;
                 onChange(isNaN(numeric) ? "" : numeric);
               }}
-              invalid={!!errors[name] && isTouched}
+              invalid={!!error && isTouched}
             />
           </>
         );
