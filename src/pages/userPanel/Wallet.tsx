@@ -1,8 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import SDCard from "../../components/shared/Card";
-import SDTextInput from "../../components/shared/TextInput";
-import SDButton from "../../components/shared/Button";
-// import { toast } from "react-toastify";
 import useAPi from "../../hooks/useApi";
 import { BaseResponse } from "../../models/shared.models";
 import { WalletData } from "../../models/wallet.models";
@@ -11,26 +8,26 @@ import NumberWithSeperator from "../../components/shared/NumberWithSeperator";
 
 const Wallet: React.FC = () => {
   const [balance, setBalance] = useState<number>(0);
-  const [paymentAmount, setPaymentAmount] = useState<number>(0);
+  // const [paymentAmount, setPaymentAmount] = useState<number>(0);
   const { sendRequest: getWalletRequest, isPending: getPending } = useAPi<
     null,
     BaseResponse<WalletData>
   >();
 
-  const handlePaymentAmountChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const amount = parseInt(event.target.value, 10);
-    setPaymentAmount(amount);
-  };
+  // const handlePaymentAmountChange = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   const amount = parseInt(event.target.value, 10);
+  //   setPaymentAmount(amount);
+  // };
 
-  const handlePayment = () => {
-    if (paymentAmount > 0) {
-      // const newBalance = balance + paymentAmount;
-      // setBalance(newBalance);
-      // toast.success("موجودی با موفقیت به روز شد!");
-    }
-  };
+  // const handlePayment = () => {
+  //   if (paymentAmount > 0) {
+  //     // const newBalance = balance + paymentAmount;
+  //     // setBalance(newBalance);
+  //     // toast.success("موجودی با موفقیت به روز شد!");
+  //   }
+  // };
 
   const fetchWallet = useCallback(() => {
     getWalletRequest(
