@@ -10,7 +10,7 @@ import { PersonalInfoEditableFormData } from "../../../models/account.models";
 import { useAppDispatch } from "../../../hooks/reduxHooks";
 import { accoutnActions } from "../../../store/account";
 import { Regexes } from "../../../utils/shared";
-import { phoneInputValidator } from "../../../utils/validations";
+import { heighttRangeOptions, phoneInputValidator, weightRangeOptions } from "../../../utils/validations";
 
 interface PersonalInfoProps {
   onSubmit: () => void;
@@ -202,6 +202,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
               {...register("height", {
                 valueAsNumber: true,
                 required: "فیلد اجباری است.",
+                ...heighttRangeOptions
               })}
               numeric={true}
               id="height"
@@ -226,14 +227,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
               {...register("weight", {
                 valueAsNumber: true,
                 required: "فیلد اجباری است.",
-                min:{
-                  value:15,
-                  message:'وزن صحیح نیست.'
-                },
-                max:{
-                  value:200,
-                  message:'وزن صحیح نیست.'
-                }
+                ...weightRangeOptions
               })}
               numeric={true}
               id="weight"

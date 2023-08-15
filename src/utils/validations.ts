@@ -4,7 +4,7 @@ export const phoneInputChangeValidationHandler: React.ChangeEventHandler<
   HTMLInputElement
 > = (event) => {
   let value = event.target.value;
-  value = replacePersianArabicsNumbers(value)
+  value = replacePersianArabicsNumbers(value);
   value = value.replace(/[^\d+]/g, "");
   event.target.value = value;
 };
@@ -23,7 +23,7 @@ export const nationalCodeInputChangeValidationHandler: React.ChangeEventHandler<
   HTMLInputElement
 > = (event) => {
   let value = event.target.value;
-  value = replacePersianArabicsNumbers(value)
+  value = replacePersianArabicsNumbers(value);
   value = value.replace(/[^\d]/g, "");
   event.target.value = value;
 };
@@ -45,14 +45,36 @@ export const phoneKeyDownValidationHandler: React.KeyboardEventHandler<
 };
 
 export const phoneInputValidator = {
-    // onKeyDown: phoneKeyDownValidationHandler,
-    // onPaste: phonePastValidationHandler,
-    onInput: phoneInputChangeValidationHandler,
+  // onKeyDown: phoneKeyDownValidationHandler,
+  // onPaste: phonePastValidationHandler,
+  onInput: phoneInputChangeValidationHandler,
+};
+
+export const nationalCodeValidator = {
+  // onKeyDown: phoneKeyDownValidationHandler,
+  // onPaste: phonePastValidationHandler,
+  onInput: nationalCodeInputChangeValidationHandler,
+};
+
+export const weightRangeOptions = {
+  min: {
+    value: 15,
+    message: "وزن صحیح نیست.",
+  },
+  max: {
+    value: 200,
+    message: "وزن صحیح نیست.",
+  },
+};
+
+export const heighttRangeOptions = {
+    min: {
+      value: 50,
+      message: "قد صحیح نیست.",
+    },
+    max: {
+      value: 230,
+      message: "قد صحیح نیست.",
+    },
   };
-  
-  
-  export const nationalCodeValidator = {
-    // onKeyDown: phoneKeyDownValidationHandler,
-    // onPaste: phonePastValidationHandler,
-    onInput: nationalCodeInputChangeValidationHandler,
-  };
+

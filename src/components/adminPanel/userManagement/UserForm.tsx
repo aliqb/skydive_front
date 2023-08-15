@@ -14,7 +14,7 @@ import {
   Regexes
 } from "../../../utils/shared";
 import ResetUserPasswordModal from "./ResetUserPasswordModal";
-import { nationalCodeValidator, phoneInputValidator } from "../../../utils/validations";
+import { heighttRangeOptions, nationalCodeValidator, phoneInputValidator, weightRangeOptions } from "../../../utils/validations";
 
 interface UserFormProps {
   userDetail?: UserDatail;
@@ -330,7 +330,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 name="height"
                 numeric={true}
                 errors={formErrors}
-                options={{}}
+                options={heighttRangeOptions}
                 ltr={true}
               />
               <UserFormInput
@@ -338,7 +338,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 name="weight"
                 numeric={true}
                 errors={formErrors}
-                options={{}}
+                options={weightRangeOptions}
                 ltr={true}
               />
             </div>
