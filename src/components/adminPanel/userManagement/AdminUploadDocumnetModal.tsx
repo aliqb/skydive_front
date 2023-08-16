@@ -4,12 +4,13 @@ import {
 } from "../../../models/account.models";
 import SDButton from "../../shared/Button";
 import SDModal from "../../shared/Modal";
-import {  useState } from "react";
+import { useState } from "react";
 import AdminDocumentUploadItem from "./AdminDocumentUploadItem";
 import useAPi from "../../../hooks/useApi";
 import { BaseResponse } from "../../../models/shared.models";
 import { toast } from "react-toastify";
 import SDSpinner from "../../shared/Spinner";
+import { useAppSelector } from "../../../hooks/reduxHooks";
 
 interface AdminUploadDocumnetModalProps {
   onCloseModal: (submitted: boolean) => void;
@@ -23,6 +24,14 @@ const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
 }) => {
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [anyChange, setAnyChange] = useState<boolean>(false);
+  const medicalDocumentsValidityDuration = useAppSelector(
+    (state) =>
+      state.generalSettings.generalSettings?.medicalDocumentsValidityDuration
+  );
+  const attorneyDocumentsValidityDuration = useAppSelector(
+    (state) =>
+      state.generalSettings.generalSettings?.attorneyDocumentsValidityDuration
+  );
   const [nationalCardDocumentModel, setNationalCardDocumentModel] =
     useState<DocumentItemModel>({
       fileId: "",
@@ -54,7 +63,9 @@ const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
     doc: DocumentItemModel,
     setter: React.Dispatch<React.SetStateAction<DocumentItemModel>>
   ) {
-    setAnyChange(true);
+    if(!anyChange && doc.fileId){
+      setAnyChange(true);
+    }
     setter(doc);
   }
 
@@ -67,8 +78,8 @@ const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
     event.preventDefault();
     setSubmitted(true);
     if (
-      (attorneyDocumentModel.fileId && !attorneyDocumentModel.expirationDate) ||
-      (medicalDocumentModel.fileId && !medicalDocumentModel.expirationDate)
+      (attorneyDocumentModel.validationMessage) ||
+      (medicalDocumentModel.validationMessage)
     ) {
       return;
     }
@@ -157,6 +168,7 @@ const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
             onChange={(item) => {
               handleChangeDocument(item, setAttorneyDocumentModel);
             }}
+            minExpireDay={attorneyDocumentsValidityDuration}
           />
           <AdminDocumentUploadItem
             title="مدارک پزشکی"
@@ -165,6 +177,7 @@ const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
             onChange={(item) => {
               handleChangeDocument(item, setMedicalDocumentModel);
             }}
+            minExpireDay={medicalDocumentsValidityDuration}
           />
         </div>
         <div className="w-full px-5 pb-6 flex justify-start items-center">
@@ -172,7 +185,7 @@ const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
             color="primary"
             type="submit"
             className="w-full !bg-blue-900"
-              disabled={isPending || !anyChange}
+            disabled={isPending || !anyChange}
           >
             {isPending && <SDSpinner />}
             ذخیره

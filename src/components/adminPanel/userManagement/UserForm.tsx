@@ -6,16 +6,19 @@ import {
 } from "../../../models/usermanagement.models";
 import SDButton from "../../shared/Button";
 import UserFormInput from "./UserFormInput";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useAPi from "../../../hooks/useApi";
 import { BaseResponse } from "../../../models/shared.models";
 import UserFormSelect from "./UserFormSelect";
+import { Regexes } from "../../../utils/shared";
+import ResetUserPasswordModal from "./ResetUserPasswordModal";
 import {
-  Regexes,
+  birthDateBaseNowValidation,
+  heighttRangeOptions,
   nationalCodeValidator,
   phoneInputValidator,
-} from "../../../utils/shared";
-import ResetUserPasswordModal from "./ResetUserPasswordModal";
+  weightRangeOptions,
+} from "../../../utils/validations";
 
 interface UserFormProps {
   userDetail?: UserDatail;
@@ -29,17 +32,20 @@ const UserForm: React.FC<UserFormProps> = (props) => {
     handleSubmit,
     control,
     reset,
+    watch,
   } = useForm<UserRequest>({
     mode: "onTouched",
   });
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [showPasswordModal, setShowPasswordModal] = useState<boolean>(false);
-
+  const mobileRef = useRef<string | undefined>();
   const { sendRequest: sendUserTypesRequest, data: userTypes } = useAPi<
     null,
     BaseResponse<userType[]>
   >();
+
+  mobileRef.current = watch("phone", "");
 
   useEffect(() => {
     function getUserTypes() {
@@ -192,6 +198,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 errors={formErrors}
                 type="date"
                 required={true}
+                baseNowValidationOptions={birthDateBaseNowValidation}
               />
 
               <UserFormInput
@@ -331,7 +338,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 name="height"
                 numeric={true}
                 errors={formErrors}
-                options={{}}
+                options={heighttRangeOptions}
                 ltr={true}
               />
               <UserFormInput
@@ -339,7 +346,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 name="weight"
                 numeric={true}
                 errors={formErrors}
-                options={{}}
+                options={weightRangeOptions}
                 ltr={true}
               />
             </div>
@@ -372,12 +379,19 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 register={register}
                 name="emergencyPhone"
                 errors={formErrors}
+                ltr={true}
                 maxLength={14}
                 {...phoneInputValidator}
                 options={{
                   pattern: {
                     value: Regexes.mobile,
                     message: "شماره موبایل صحیح نیست.",
+                  },
+                  validate: (value) => {
+                    if (value !== mobileRef.current || value === "") {
+                      return true;
+                    }
+                    return "شماره موبایل اضطراری نمی‌تواند با شماره موبایل کاربر یکسان باشد.";
                   },
                 }}
               />

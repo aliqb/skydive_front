@@ -45,63 +45,6 @@ export function replacePersianArabicsNumbers(value: string) {
   return value;
 }
 
-export const phoneKeyDownValidationHandler: React.KeyboardEventHandler<
-  HTMLInputElement
-> = (event) => {
-  const noneCharKeys = ["Backspace", "Enter", "Tab", "Contol", "Meta"];
-  if (noneCharKeys.includes(event.key) || event.key.startsWith("Arrow")) {
-    return;
-  }
-  if (event.ctrlKey || event.metaKey) {
-    return;
-  }
-  const phoneChars = /[\d+]/;
-  if (!phoneChars.test(event.key)) {
-    event.preventDefault();
-  }
-};
-
-export const phoneInputChangeValidationHandler: React.ChangeEventHandler<
-  HTMLInputElement
-> = (event) => {
-  let value = event.target.value;
-  value = replacePersianArabicsNumbers(value)
-  value = value.replace(/[^\d+]/g, "");
-  event.target.value = value;
-};
-
-export const nationalCodeInputChangeValidationHandler: React.ChangeEventHandler<
-  HTMLInputElement
-> = (event) => {
-  let value = event.target.value;
-  value = replacePersianArabicsNumbers(value)
-  value = value.replace(/[^\d]/g, "");
-  event.target.value = value;
-};
-
-export const phonePastValidationHandler: React.ClipboardEventHandler<
-  HTMLInputElement
-> = (event) => {
-  const value = event.clipboardData.getData("text");
-  const phoneChars = /[\d+]/;
-  if (!phoneChars.test(value)) {
-    event.preventDefault();
-  }
-};
-
-export const phoneInputValidator = {
-  // onKeyDown: phoneKeyDownValidationHandler,
-  // onPaste: phonePastValidationHandler,
-  onInput: phoneInputChangeValidationHandler,
-};
-
-
-export const nationalCodeValidator = {
-  // onKeyDown: phoneKeyDownValidationHandler,
-  // onPaste: phonePastValidationHandler,
-  onInput: nationalCodeInputChangeValidationHandler,
-};
-
 export const persianCharRange = [
   "[\u06A9\u06AF\u06C0\u06CC\u060C",
   "\u067E\u0670\u0686\u0698",

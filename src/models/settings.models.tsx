@@ -3,9 +3,11 @@ import { UserStatuses } from "./shared.models";
 export interface GeneralSettings {
   termsAndConditionsUrl: string;
   registrationTermsAndConditionsUrl: string;
-  fileSizeLimitaion: number,
-  jumpDuration: number,
+  fileSizeLimitation: number;
+  jumpDuration: number;
   userStatusInfo: UserStatusInfo[];
+  medicalDocumentsValidityDuration: number;
+  attorneyDocumentsValidityDuration: number;
   id: string;
   createdAt?: string;
   updatedAt?: string;

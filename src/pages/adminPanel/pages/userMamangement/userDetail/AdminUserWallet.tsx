@@ -31,7 +31,7 @@ const AdminUserWallet: React.FC = () => {
   );
 
   const {  handleSubmit, control,formState:{errors} } = useForm<FormData>({
-    mode: "onChange",
+    mode: "onTouched",
   });
 
   const {

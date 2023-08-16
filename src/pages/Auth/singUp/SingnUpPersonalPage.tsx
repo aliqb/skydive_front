@@ -12,7 +12,11 @@ import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { authActions } from "../../../store/auth";
 import { updateAuthDataInLocal } from "../../../utils/authUtils";
 import { useEffect } from "react";
-import { Regexes, nationalCodeValidator } from "../../../utils/shared";
+import { Regexes } from "../../../utils/shared";
+import {
+  birthDateBaseNowValidation,
+  nationalCodeValidator,
+} from "../../../utils/validations";
 
 const SingUpPersonaPage: React.FC = () => {
   const navigate = useNavigate();
@@ -141,6 +145,7 @@ const SingUpPersonaPage: React.FC = () => {
             control={control}
             required={true}
             id="birthDate"
+            baseNowValidationOptions={birthDateBaseNowValidation}
           ></SDDatepicker>
 
           {errors.birthDate && (

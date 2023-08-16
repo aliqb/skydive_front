@@ -5,7 +5,6 @@ import SDDatepicker from "../../shared/DatePicker";
 import SDLabel from "../../shared/Label";
 import LabeledFileInput from "../../shared/LabeledFileInput";
 import UserDocumentStatusLabel from "../../shared/UserDocumentStatusLabel";
-import DocumentsItemErrorsComponent from "./DocumentsItemErrorsComponent";
 import { useState } from "react";
 
 interface DocumentItemProps {
@@ -61,23 +60,24 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
               onChange={onDateChange}
               required={true}
               manualInvalid={
-                validation &&
-                (!documentData?.fileId ||
-                  (documentData.withDate && !documentData?.expirationDate))
+                validation && documentData?.validationMessage !== ""
               }
               value={documentData?.expirationDate || ""}
             ></SDDatepicker>
           </div>
         )}
-        {validation && documentData && (
-          <DocumentsItemErrorsComponent documentData={documentData} />
-          // <p className="text-red-600 text-sm pr-2 mt-2">
-          //   تاریخ انقضا برای این مدرک الزامی است.
-          // </p>
+        {validation && documentData?.validationMessage && (
+          <p className="text-red-600 text-sm pr-2 mt-2">
+            {documentData.validationMessage}
+          </p>
         )}
       </div>
-      <div className={`w-full xs:w-1/2 flex whitespace-nowrap justify-center gap-8 text-center mt-4 xs:mt-0 xs:justify-around items-center ${documentData.withDate ? 'xs:pb-2' : ''}`}>
-        <div >
+      <div
+        className={`w-full xs:w-1/2 flex whitespace-nowrap justify-center gap-8 text-center mt-4 xs:mt-0 xs:justify-around items-center ${
+          documentData.withDate ? "xs:pb-2" : ""
+        }`}
+      >
+        <div>
           <LabeledFileInput
             accepFiles="application/pdf,image/*"
             title={title}
@@ -86,7 +86,7 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
             disabled={documentData.status === DocumnetStatus.PENDING || disable}
           />
         </div>
-        <div >
+        <div>
           <UserDocumentStatusLabel
             status={documentData?.status || ""}
             display={documentData?.statusDisplay || ""}
