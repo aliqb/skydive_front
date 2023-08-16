@@ -7,15 +7,19 @@ import {
 } from "../models/account.models";
 import { UserPersonalInfo } from "../models/shared.models";
 import { sortDateComprator } from "../utils/shared";
+import { DateObject } from "react-multi-date-picker";
+import persian_en from "react-date-object/locales/persian_en";
+import persian from "react-date-object/calendars/persian";
 
 const fileMessage = "بارگذاری این مدرک الزامی است.";
 const expireMessage = "تاریخ انقضا برای این مدرک الزامی است.";
+const expireRangeMessage = "حداقل مدت اعتبار رعایت نشده است.";
 
 function getLastDocument(
   documents: DocumentItem[] | null,
   withDate?: boolean
 ): DocumentItemModel {
-  const defaultDoc : DocumentItemModel = {
+  const defaultDoc: DocumentItemModel = {
     fileId: "",
     withDate: withDate,
     validationMessage: fileMessage,
@@ -47,17 +51,49 @@ function getLastDocument(
   if (!lastDoc) {
     return defaultDoc;
   }
-  let message = "";
-  if (!lastDoc.fileId) {
-    message = fileMessage;
-  } else if (withDate && !lastDoc.expirationDate) {
-    message = expireMessage;
-  }
   return {
     ...lastDoc,
     withDate: withDate,
-    validationMessage: message,
+    validationMessage: getValidationMessage(lastDoc),
   };
+}
+
+function getValidationMessage(
+  documentItemModel: DocumentItemModel,
+  timeStamp?: number
+): string {
+  if (!documentItemModel.fileId) {
+    return fileMessage;
+  }
+  if (documentItemModel.withDate) {
+    if (!documentItemModel.expirationDate) {
+      return expireMessage;
+    }
+    if (timeStamp) {
+      const expireDateObejct = new DateObject({
+        date: documentItemModel.expirationDate,
+        format: "YYYY/MM/DD",
+        locale: persian_en,
+        calendar: persian,
+      });
+      const expirationJSDate = expireDateObejct.toDate();
+      if (expirationJSDate.getTime() < timeStamp) {
+        return expireRangeMessage;
+      }
+    }
+  }
+  return "";
+}
+
+function getRelatedTimeStamp(
+  state: AccountState,
+  field: UserDocumentsFieldType
+) {
+  const map = new Map<UserDocumentsFieldType, number>([
+    ["attorneyDocument", state.maxAttornyTimeStamp],
+    ["medicalDocument", state.maxMedicalTimeStamp],
+  ]);
+  return map.get(field)
 }
 
 interface AccountState {
@@ -124,10 +160,12 @@ const accountSlice = createSlice({
       attornyDate.setDate(
         currentDate.getDate() + attorneyDocumentsValidityDuration
       );
+      attornyDate.setHours(0,0,0,0);
       const medicalDate = new Date(currentDate);
       medicalDate.setDate(
         currentDate.getDate() + medicalDocumentsValidityDuration
       );
+      medicalDate.setHours(0,0,0,0);
       state.maxAttornyTimeStamp = attornyDate.getTime();
       state.maxMedicalTimeStamp = medicalDate.getTime();
     },
@@ -135,50 +173,36 @@ const accountSlice = createSlice({
       state,
       action: PayloadAction<{ field: UserDocumentsFieldType; fileId: string }>
     ) => {
-      const payload = action.payload;
-      const document = state[action.payload.field];
+      const {field,fileId} = action.payload;
+      const document = state[field];
       state.anyDocChange = true;
       if (!document) {
-        state[action.payload.field] = {
-          fileId: payload.fileId,
+        state[field] = {
+          fileId: fileId,
         };
       } else {
-        document.fileId = payload.fileId;
+        document.fileId = fileId;
       }
-      if (!document.fileId) {
-        document.validationMessage = fileMessage;
-        return;
-      }
-      if (document.withDate && !document.expirationDate) {
-        document.validationMessage = expireMessage;
-        return;
-      }
-      document.validationMessage = "";
+      const timeStamp = getRelatedTimeStamp(state,field)
+      document.validationMessage = getValidationMessage(document,timeStamp);
     },
     setDocumnetExpireDate: (
       state,
       action: PayloadAction<{ field: UserDocumentsFieldType; date: string }>
     ) => {
-      const payload = action.payload;
-      const document = state[action.payload.field];
+      const {field,date} = action.payload;
+      const document = state[field];
       state.anyDocChange = true;
       if (!document) {
-        state[action.payload.field] = {
+        state[field] = {
           fileId: "",
-          expirationDate: payload.date,
+          expirationDate: date,
         };
       } else {
-        document.expirationDate = payload.date;
+        document.expirationDate = date;
       }
-      if (!document.fileId) {
-        document.validationMessage = fileMessage;
-        return;
-      }
-      if (!document.expirationDate) {
-        document.validationMessage = expireMessage;
-        return;
-      }
-      document.validationMessage = "";
+      const timeStamp = getRelatedTimeStamp(state,field)
+      document.validationMessage = getValidationMessage(document,timeStamp);
     },
   },
 });
