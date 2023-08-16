@@ -24,7 +24,7 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
   const { sendRequest, isPending } = useAPi<FormData, string>();
   const [uploadedFile, setUploadedFile] = useState<File | null>();
   const [error,setError] = useState<string>('');
-  const maxSizeSettings = useAppSelector(state=>state.generalSettings.generalSettings?.fileSizeLimitaion);
+  const maxSizeSettings = useAppSelector(state=>state.generalSettings.generalSettings?.fileSizeLimitation);
   function onChange(event: FormEvent) {
     setError('');
     const files = (event.target as HTMLInputElement).files;

@@ -44,9 +44,14 @@ const GeneralSettingsComponent: React.FC = () => {
         registrationTermsAndConditionsUrl:
           generalSettingsState.generalSettings
             .registrationTermsAndConditionsUrl,
-        fileSizeLimitaion:
-          generalSettingsState.generalSettings.fileSizeLimitaion,
+        fileSizeLimitation:
+          generalSettingsState.generalSettings.fileSizeLimitation,
         jumpDuration: generalSettingsState.generalSettings.jumpDuration,
+        medicalDocumentsValidityDuration:
+          generalSettingsState.generalSettings.medicalDocumentsValidityDuration,
+        attorneyDocumentsValidityDuration:
+          generalSettingsState.generalSettings
+            .attorneyDocumentsValidityDuration,
       });
     }
   }, [generalSettingsState, reset]);
@@ -107,26 +112,60 @@ const GeneralSettingsComponent: React.FC = () => {
       </div>
       <div className="mb-6 flex gap-6">
         <div className="w-full">
-          <SDLabel htmlFor="fileSizeLimitaion">حداکثر حجم آپلود (KB):</SDLabel>
+          <SDLabel htmlFor="fileSizeLimitation">حداکثر حجم آپلود (KB):</SDLabel>
           <SDTextInput
             numeric={true}
             className="ltr"
             disabled={generalSettingsState.loading}
-            id="fileSizeLimitaion"
-            {...register("fileSizeLimitaion", {
+            id="fileSizeLimitation"
+            {...register("fileSizeLimitation", {
               required: "این فیلد اجباری است.",
               valueAsNumber: true,
             })}
           />
         </div>
         <div className="w-full">
-          <SDLabel htmlFor="termsAndConditionsUrl">اعتبار سابقه پرش (روز):</SDLabel>
+          <SDLabel htmlFor="termsAndConditionsUrl">
+            اعتبار سابقه پرش (روز):
+          </SDLabel>
           <SDTextInput
             numeric={true}
             className="ltr"
             disabled={generalSettingsState.loading}
             id="jumpDuration"
             {...register("jumpDuration", {
+              required: "این فیلد اجباری است.",
+              valueAsNumber: true,
+            })}
+          />
+        </div>
+      </div>
+      <div className="mb-6 flex gap-6">
+        <div className="w-full">
+          <SDLabel htmlFor="attorneyDocumentsValidityDuration">
+            حداقل اعتبار وکالت‌نامه (روز):
+          </SDLabel>
+          <SDTextInput
+            numeric={true}
+            className="ltr"
+            disabled={generalSettingsState.loading}
+            id="attorneyDocumentsValidityDuration"
+            {...register("attorneyDocumentsValidityDuration", {
+              required: "این فیلد اجباری است.",
+              valueAsNumber: true,
+            })}
+          />
+        </div>
+        <div className="w-full">
+          <SDLabel htmlFor="medicalDocumentsValidityDuration">
+            حداقل اعتبار مدارک پزشکی (روز):
+          </SDLabel>
+          <SDTextInput
+            numeric={true}
+            className="ltr"
+            disabled={generalSettingsState.loading}
+            id="medicalDocumentsValidityDuration"
+            {...register("medicalDocumentsValidityDuration", {
               required: "این فیلد اجباری است.",
               valueAsNumber: true,
             })}
