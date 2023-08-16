@@ -31,7 +31,7 @@ const SingUpPersonaPage: React.FC = () => {
     handleSubmit,
     control,
   } = useForm<UserPersonalInfo>({
-    mode: "onChange",
+    mode: "onTouched",
   });
 
   const dispatch = useAppDispatch();

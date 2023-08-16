@@ -36,7 +36,8 @@ export interface DocumentItemRow extends DocumentItem{
 }
 
 export interface DocumentItemModel extends DocumentItem{
-  withDate?: boolean
+  withDate?: boolean,
+  validationMessage?: string;
 }
 
 export interface DocumentsUplodModel {

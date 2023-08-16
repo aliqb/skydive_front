@@ -8,33 +8,56 @@ import {
 import { UserPersonalInfo } from "../models/shared.models";
 import { sortDateComprator } from "../utils/shared";
 
+const fileMessage = "بارگذاری این مدرک الزامی است.";
+const expireMessage = "تاریخ انقضا برای این مدرک الزامی است.";
+
 function getLastDocument(
   documents: DocumentItem[] | null,
   withDate?: boolean
 ): DocumentItemModel {
+  const defaultDoc : DocumentItemModel = {
+    fileId: "",
+    withDate: withDate,
+    validationMessage: fileMessage,
+  };
   if (!documents) {
-    return { fileId: "", withDate: withDate };
+    return defaultDoc;
   }
-  const createdComperator = sortDateComprator<DocumentItem>('createdAt');
-  const expirationComperator = sortDateComprator<DocumentItem>('expirationDate');
-  const sorted = documents.sort((a,b)=>{
-    const createDiff = createdComperator(a,b);
-    if(createDiff !==0){
-      return createDiff
+  const createdComperator = sortDateComprator<DocumentItem>("createdAt");
+  const expirationComperator =
+    sortDateComprator<DocumentItem>("expirationDate");
+  const sorted = documents.sort((a, b) => {
+    const createDiff = createdComperator(a, b);
+    if (createDiff !== 0) {
+      return createDiff;
     }
-    if(a.status === b.status){
-      return expirationComperator(a,b)
+    if (a.status === b.status) {
+      return expirationComperator(a, b);
     }
-    const priorStatuses = [DocumnetStatus.EXPIRED,DocumnetStatus.PENDING]
-    if(priorStatuses.includes(a.status as string)){
+    const priorStatuses = [DocumnetStatus.EXPIRED, DocumnetStatus.PENDING];
+    if (priorStatuses.includes(a.status as string)) {
       return 1;
     }
-    if(priorStatuses.includes(b.status as string)){
+    if (priorStatuses.includes(b.status as string)) {
       return -1;
     }
-    return 0
-  })  
-  return { ...sorted[sorted.length - 1], withDate: withDate };
+    return 0;
+  });
+  const lastDoc = sorted[sorted.length - 1];
+  if (!lastDoc) {
+    return defaultDoc;
+  }
+  let message = "";
+  if (!lastDoc.fileId) {
+    message = fileMessage;
+  } else if (withDate && !lastDoc.expirationDate) {
+    message = expireMessage;
+  }
+  return {
+    ...lastDoc,
+    withDate: withDate,
+    validationMessage: message,
+  };
 }
 
 interface AccountState {
@@ -44,6 +67,8 @@ interface AccountState {
   attorneyDocument: DocumentItemModel;
   nationalCardDocument: DocumentItemModel;
   anyDocChange: boolean;
+  maxAttornyTimeStamp: number;
+  maxMedicalTimeStamp: number;
 }
 
 const initialState: AccountState = {
@@ -53,6 +78,8 @@ const initialState: AccountState = {
   attorneyDocument: { fileId: "", withDate: true },
   nationalCardDocument: { fileId: "" },
   anyDocChange: false,
+  maxAttornyTimeStamp: 0,
+  maxMedicalTimeStamp: 0,
 };
 
 export const UserDocumentsFields = {
@@ -81,6 +108,29 @@ const accountSlice = createSlice({
         payload.nationalCardDocuments
       );
     },
+    setTimeStaps: (
+      state,
+      action: PayloadAction<{
+        medicalDocumentsValidityDuration: number;
+        attorneyDocumentsValidityDuration: number;
+      }>
+    ) => {
+      const {
+        attorneyDocumentsValidityDuration,
+        medicalDocumentsValidityDuration,
+      } = action.payload;
+      const currentDate = new Date();
+      const attornyDate = new Date(currentDate);
+      attornyDate.setDate(
+        currentDate.getDate() + attorneyDocumentsValidityDuration
+      );
+      const medicalDate = new Date(currentDate);
+      medicalDate.setDate(
+        currentDate.getDate() + medicalDocumentsValidityDuration
+      );
+      state.maxAttornyTimeStamp = attornyDate.getTime();
+      state.maxMedicalTimeStamp = medicalDate.getTime();
+    },
     setDocumnetFile: (
       state,
       action: PayloadAction<{ field: UserDocumentsFieldType; fileId: string }>
@@ -95,6 +145,15 @@ const accountSlice = createSlice({
       } else {
         document.fileId = payload.fileId;
       }
+      if (!document.fileId) {
+        document.validationMessage = fileMessage;
+        return;
+      }
+      if (document.withDate && !document.expirationDate) {
+        document.validationMessage = expireMessage;
+        return;
+      }
+      document.validationMessage = "";
     },
     setDocumnetExpireDate: (
       state,
@@ -111,6 +170,15 @@ const accountSlice = createSlice({
       } else {
         document.expirationDate = payload.date;
       }
+      if (!document.fileId) {
+        document.validationMessage = fileMessage;
+        return;
+      }
+      if (!document.expirationDate) {
+        document.validationMessage = expireMessage;
+        return;
+      }
+      document.validationMessage = "";
     },
   },
 });

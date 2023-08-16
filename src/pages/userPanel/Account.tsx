@@ -37,6 +37,9 @@ const Account: React.FC = () => {
   const userStatus = useAppSelector((state) => state.auth.userStatus);
   const props = { setActiveTab, tabsRef };
   const anyDocChange = useAppSelector((state) => state.account.anyDocChange);
+  const generalSettings = useAppSelector(
+    (state) => state.generalSettings.generalSettings
+  );
   const personalInfoForm = useForm<PersonalInfoEditableFormData>({
     mode: "onTouched",
   });
@@ -90,6 +93,19 @@ const Account: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (generalSettings) {
+      dispatch(
+        accoutnActions.setTimeStaps({
+          medicalDocumentsValidityDuration:
+            generalSettings.medicalDocumentsValidityDuration,
+          attorneyDocumentsValidityDuration:
+            generalSettings.attorneyDocumentsValidityDuration,
+        })
+      );
+    }
+  }, [generalSettings,dispatch]);
+
+  useEffect(() => {
     const documentFiels: UserDocumentsFieldType[] = [
       UserDocumentsFields.attorneyDocument,
       UserDocumentsFields.logBookDocument,
@@ -98,10 +114,7 @@ const Account: React.FC = () => {
     ];
     const anyInvalidDocument = documentFiels.some((field) => {
       const documentData: DocumentItemModel = accountState[field];
-      return (
-        !documentData.fileId ||
-        (documentData.withDate && !documentData.expirationDate)
-      );
+      return documentData.validationMessage !== ''
     });
     setAnyInvalidDocument(anyInvalidDocument);
   }, [accountState]);
@@ -198,9 +211,7 @@ const Account: React.FC = () => {
               <div className="flex flex-wrap gap-3 items-center justify-center text-center">
                 <span>اطلاعات شخصی</span>
                 {!personalInfoForm.formState.isValid && (
-                  <span className="!text-xs !text-red-600">
-                    (تکمیل نشده)
-                  </span>
+                  <span className="!text-xs !text-red-600">(تکمیل نشده)</span>
                 )}
               </div>
             }
