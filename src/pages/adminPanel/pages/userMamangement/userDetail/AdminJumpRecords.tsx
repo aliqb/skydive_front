@@ -1,20 +1,20 @@
-import { useCallback, useRef, useState } from "react";
-import useAPi from "../../../../../hooks/useApi";
-import { JumpRecord } from "../../../../../models/jumps.models";
-import { BaseResponse } from "../../../../../models/shared.models";
+import { useCallback, useRef, useState } from 'react';
+import useAPi from '../../../../../hooks/useApi';
+import { JumpRecord } from '../../../../../models/jumps.models';
+import { BaseResponse } from '../../../../../models/shared.models';
 import {
   ColDef,
   GridGetData,
   GridParams,
   GridRef,
-} from "../../../../../components/shared/Grid/grid.types";
-import Grid from "../../../../../components/shared/Grid/Grid";
-import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+} from '../../../../../components/shared/Grid/grid.types';
+import Grid from '../../../../../components/shared/Grid/Grid';
+import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import SDButton from '../../../../../components/shared/Button';
 import JumpRecordModal from '../../../../../components/userPanel/JumpRecordModal';
 
-const AdminJumpRecoreds: React.FC = () => {
+const AdminJumpRecords: React.FC = () => {
   const { sendRequest } = useAPi<null, BaseResponse<JumpRecord[]>>();
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -103,6 +103,21 @@ const AdminJumpRecoreds: React.FC = () => {
       }
     );
   }
+  function rejectRecord(item: JumpRecord) {
+    sendApproveRequest(
+      {
+        url: `/JumpRecords/ConfirmJumpRecord/${item.id}/true`,
+        method: 'put',
+      },
+      (response) => {
+        toast.success(response.message);
+        gridRef.current?.refresh();
+      },
+      (error) => {
+        toast.error(error?.message);
+      }
+    );
+  }
   function openModal() {
     setShowModal(true);
     console.log('Hello');
@@ -133,7 +148,7 @@ const AdminJumpRecoreds: React.FC = () => {
           getData={fetchRecords}
           rowActions={{
             edit: false,
-            remove: false,
+            remove: true,
             otherActions: [
               {
                 icon: (
@@ -156,6 +171,27 @@ const AdminJumpRecoreds: React.FC = () => {
                 onClick: approveRecord,
                 showField: '!confirmed',
               },
+              {
+                icon: (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6 stroke-red-500"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                ),
+                descriptions: 'عدم تایید',
+                onClick: rejectRecord,
+                showField: '!rejected',
+              },
             ],
           }}
           ref={gridRef}
@@ -165,4 +201,4 @@ const AdminJumpRecoreds: React.FC = () => {
   );
 };
 
-export default AdminJumpRecoreds;
+export default AdminJumpRecords;
