@@ -110,12 +110,25 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
             <div className="mb-3">
               <div>
                 <SDLabel htmlFor="userCode">کد کاربر</SDLabel>
-                <SDTextInput
-                  type="text"
-                  id="userCode"
-                  invalid={!!errors.userCode}
-                  {...register('userCode', { required: 'فیلد الزامی است' })}
-                />
+                <div>
+                  <SDTextInput
+                    type="text"
+                    id="userCode"
+                    invalid={!!errors.userCode}
+                    {...register('userCode', { required: 'فیلد الزامی است' })}
+                    magnifier={true}
+                  />
+                </div>
+                <SDLabel htmlFor="username">نام کاربر</SDLabel>
+                <div>
+                  <SDTextInput
+                    type="text"
+                    id="username"
+                    invalid={!!errors.userCode}
+                    disabled={true}
+                  />
+                </div>
+
                 {errors.userCode?.message && (
                   <p className="text-red-600 text-sm pr-2 mt-2">
                     {errors.userCode.message}

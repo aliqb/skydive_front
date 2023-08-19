@@ -70,20 +70,18 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
     setSelectedVATOption(value === "vat-active");
   };
   const handleSaveButton = (data: NewEvent) => {
-    console.log(data);
     data.subjecToVAT = selectedVATOption;
     data.voidable = selectedCancelOption;
-    data.image = uploadedImageId ? uploadedImageId : eventData?.image || "";
+    data.image = uploadedImageId ? uploadedImageId : eventData?.image || '';
 
     if (eventData) {
       sendRequest(
         {
           url: `/SkyDiveEvents/${eventData.id}`,
-          method: "put",
-          data: {...data,image: data.image || null},
+          method: 'put',
+          data: { ...data, image: data.image || null },
         },
         (response) => {
-          console.log("Response:", response);
           toast.success(response.message);
           resetModal(true);
         },
@@ -94,9 +92,9 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
     } else {
       sendRequest(
         {
-          url: "/SkyDiveEvents",
-          method: "post",
-          data: {...data,image: data.image || null},
+          url: '/SkyDiveEvents',
+          method: 'post',
+          data: { ...data, image: data.image || null },
         },
         (response) => {
           toast.success(response.message);

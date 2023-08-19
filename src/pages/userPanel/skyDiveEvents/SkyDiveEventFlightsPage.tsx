@@ -49,7 +49,6 @@ const SkyDiveEventFlightsPage: React.FC = () => {
   const handleScroll = useCallback((event: Event) => {
     const container = event.target as HTMLDivElement;
     const { scrollTop, clientHeight, scrollHeight } = container;
-    console.log("sc",scrollTop);
     const threshold = 50; // Adjust this value according to your needs
 
     const isNearBottom = scrollTop + clientHeight >= scrollHeight - threshold;
