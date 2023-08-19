@@ -41,7 +41,7 @@ const EditUserPage: React.FC = () => {
       (response) => {
         toast.success(response.message);
         afterSubmit();
-        navigate("/admin/users");
+        navigate(`/admin/users/${params.userId}`);
       },
       (error) => {
         toast.error(error?.message);
@@ -65,12 +65,11 @@ const EditUserPage: React.FC = () => {
           <>
             <div className="flex gap-4 mb-12 justify-center">
               <p className="text-slate-800 font-semibold">وضعیت حساب کاربری</p>
-              
-                <UserStatusLabel
-                  status={userManagementState.userDetail.userStatus}
-                  display={userManagementState.userDetail.userStatusDisplay}
-                />
-              
+
+              <UserStatusLabel
+                status={userManagementState.userDetail.userStatus}
+                display={userManagementState.userDetail.userStatusDisplay}
+              />
             </div>
             <UserForm
               onSubmit={onSubmit}
