@@ -11,9 +11,13 @@ import {
 import Grid from "../../../../../components/shared/Grid/Grid";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import SDButton from '../../../../../components/shared/Button';
+import JumpRecordModal from '../../../../../components/userPanel/JumpRecordModal';
 
 const AdminJumpRecoreds: React.FC = () => {
   const { sendRequest } = useAPi<null, BaseResponse<JumpRecord[]>>();
+  const [showModal, setShowModal] = useState<boolean>(false);
+
   const { sendRequest: sendApproveRequest } = useAPi<
     null,
     BaseResponse<null>
@@ -21,43 +25,43 @@ const AdminJumpRecoreds: React.FC = () => {
 
   const [colDefs] = useState<ColDef<JumpRecord>[]>([
     {
-      field: "date",
-      headerName: "تاریخ",
+      field: 'date',
+      headerName: 'تاریخ',
     },
     {
-      field: "location",
-      headerName: "محل پرواز",
+      field: 'location',
+      headerName: 'محل پرواز',
     },
     {
-      field: "equipments",
-      headerName: "تجهیزات",
+      field: 'equipments',
+      headerName: 'تجهیزات',
     },
     {
-      field: "planeType",
-      headerName: "نوع هواپیما",
+      field: 'planeType',
+      headerName: 'نوع هواپیما',
     },
     {
-      field: "height",
-      headerName: "ارتفاع",
+      field: 'height',
+      headerName: 'ارتفاع',
       cellRenderer: (item: JumpRecord) => `${item.height}m`,
     },
     {
-      field: "time",
-      headerName: "مدت",
+      field: 'time',
+      headerName: 'مدت',
       cellRenderer: (item: JumpRecord) => {
-        const [hour, minutes] = item.time.split(":");
-        return [hour, minutes].join(":");
+        const [hour, minutes] = item.time.split(':');
+        return [hour, minutes].join(':');
       },
     },
     {
-      field: "description",
-      headerName: "توضیحات",
+      field: 'description',
+      headerName: 'توضیحات',
     },
     {
-      field: "confirmed",
-      headerName: "وضعیت",
+      field: 'confirmed',
+      headerName: 'وضعیت',
       cellRenderer: (item: JumpRecord) =>
-        item.confirmed ? "تأیید شده" : "تأیید نشده",
+        item.confirmed ? 'تأیید شده' : 'تأیید نشده',
     },
   ]);
   const gridRef = useRef<GridRef>(null);
@@ -68,7 +72,7 @@ const AdminJumpRecoreds: React.FC = () => {
     (gridParams: GridParams, setRows, fail) => {
       sendRequest(
         {
-          url: "/jumpRecords",
+          url: '/jumpRecords',
           params: {
             pageSize: gridParams.pageSize,
             pageIndex: gridParams.pageIndex,
@@ -88,7 +92,7 @@ const AdminJumpRecoreds: React.FC = () => {
     sendApproveRequest(
       {
         url: `/JumpRecords/ConfirmJumpRecord/${item.id}/true`,
-        method: "put",
+        method: 'put',
       },
       (response) => {
         toast.success(response.message);
@@ -99,42 +103,65 @@ const AdminJumpRecoreds: React.FC = () => {
       }
     );
   }
+  function openModal() {
+    setShowModal(true);
+    console.log('Hello');
+  }
+  function onCloseModal(submitted: boolean) {
+    if (submitted) {
+      gridRef.current?.refresh();
+    }
+    setShowModal(false);
+  }
 
   return (
-    <div className="py-16 px-12">
-      <Grid<JumpRecord>
-        colDefs={colDefs}
-        getData={fetchRecords}
-        rowActions={{
-          edit: false,
-          remove: false,
-          otherActions: [
-            {
-              icon: (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6 stroke-green-500"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              ),
-              descriptions: "تأیید",
-              onClick: approveRecord,
-              showField: "!confirmed",
-            },
-          ],
-        }}
-        ref={gridRef}
+    <>
+      <JumpRecordModal
+        showModal={showModal}
+        onClose={onCloseModal}
+        adminStyling={true}
       />
-    </div>
+
+      <div className="py-16 px-12">
+        <div className="mb-2">
+          <SDButton color="success" onClick={openModal}>
+            + جدید
+          </SDButton>
+        </div>
+        <Grid<JumpRecord>
+          colDefs={colDefs}
+          getData={fetchRecords}
+          rowActions={{
+            edit: false,
+            remove: false,
+            otherActions: [
+              {
+                icon: (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6 stroke-green-500"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                ),
+                descriptions: 'تأیید',
+                onClick: approveRecord,
+                showField: '!confirmed',
+              },
+            ],
+          }}
+          ref={gridRef}
+        />
+      </div>
+    </>
   );
 };
 
