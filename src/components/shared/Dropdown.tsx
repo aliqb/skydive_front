@@ -29,7 +29,6 @@ const SDDropdown: React.FC<SDDropdownProps> = ({
 
   useEffect(() => {
     function handleClickOutside(event: Event) {
-      // console.log(buttonRef.current,event.currentTarget,buttonRef.current !== event.currentTarget)
       if (
         menuRef.current &&
         !menuRef.current.contains(event.target as Node) &&

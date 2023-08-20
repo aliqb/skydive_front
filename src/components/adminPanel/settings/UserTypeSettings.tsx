@@ -63,12 +63,10 @@ const UserTypeSettings: React.FC = () => {
       ticketTypes: [ticketTypeId],
     };
 
-    console.log(assignTicketTypes);
-
     return sendPostRequest(
       {
-        url: "/UserTypes/AssignTicketType",
-        method: "post",
+        url: '/UserTypes/AssignTicketType',
+        method: 'post',
         data: assignTicketTypes,
       },
       (response) => {
@@ -90,8 +88,6 @@ const UserTypeSettings: React.FC = () => {
     const ticketTypeIds =
       selectedTickets[userTypeId].filter((id) => id !== ticketTypeId) || [];
 
-    console.log(ticketTypeIds);
-
     const body: UnAssignTicketTypes = {
       userTypeId: userTypeId,
       ticketTypeId: ticketTypeId,
@@ -99,8 +95,8 @@ const UserTypeSettings: React.FC = () => {
 
     return sendPostRequest(
       {
-        url: "/UserTypes/UnAssignTicketType",
-        method: "put",
+        url: '/UserTypes/UnAssignTicketType',
+        method: 'put',
         data: body,
       },
       (response) => {

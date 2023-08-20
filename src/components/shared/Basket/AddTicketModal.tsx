@@ -21,11 +21,9 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
 }) => {
   const [showModal, setShowModal] = useState<boolean>(show);
   const [owner, setOwner] = useState<'self' | 'other'>('self');
-  const {
-    sendRequest,
-    isPending,
-    data: UserData,
-  } = useAPi<UserId, BaseResponse<null>>();
+  const [fullName, setFullName] = useState<string | null>(null);
+
+  const { sendRequest, isPending } = useAPi<UserId, BaseResponse<UserId>>();
 
   const {
     register,
@@ -55,17 +53,17 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
   }
 
   const handleButtonClick = (data: { userCode: number }) => {
-    console.log('Button clicked from SecondComponent');
-    console.log(UserData);
     sendRequest(
       {
         url: `/Users/GetByCode/${data.userCode}`,
       },
       (response) => {
         toast.success(response.message);
+        setFullName(response.content?.fullName || null);
       },
       (error) => {
         toast.error(error?.message);
+        setFullName(null);
       }
     );
   };
@@ -155,6 +153,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
                     id="username"
                     invalid={!!errors.userCode}
                     disabled={true}
+                    value={fullName || ''}
                   />
                 </div>
 

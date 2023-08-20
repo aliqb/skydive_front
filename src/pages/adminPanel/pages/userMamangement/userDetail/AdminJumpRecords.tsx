@@ -120,7 +120,6 @@ const AdminJumpRecords: React.FC = () => {
   }
   function openModal() {
     setShowModal(true);
-    console.log('Hello');
   }
   function onCloseModal(submitted: boolean) {
     if (submitted) {
