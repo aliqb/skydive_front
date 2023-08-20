@@ -13,10 +13,16 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import SDButton from '../../../../../components/shared/Button';
 import JumpRecordModal from '../../../../../components/userPanel/JumpRecordModal';
+import useConfirm from '../../../../../hooks/useConfirm';
 
 const AdminJumpRecords: React.FC = () => {
   const { sendRequest } = useAPi<null, BaseResponse<JumpRecord[]>>();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [DeleteConfirmModal, deleteConfirmation] = useConfirm(
+    ' این سابقه پرش حذف خواهد شد. آیا مطمئن هستید؟ ',
+    'حذف کردن سابقه پرش'
+  );
+  const { sendRequest: sendRemoveRequest } = useAPi<null, BaseResponse<null>>();
 
   const { sendRequest: sendApproveRequest } = useAPi<
     null,
@@ -106,7 +112,7 @@ const AdminJumpRecords: React.FC = () => {
   function rejectRecord(item: JumpRecord) {
     sendApproveRequest(
       {
-        url: `/JumpRecords/ConfirmJumpRecord/${item.id}/true`,
+        url: `/JumpRecords/ConfirmJumpRecord/${item.id}/false`,
         method: 'put',
       },
       (response) => {
@@ -128,8 +134,29 @@ const AdminJumpRecords: React.FC = () => {
     setShowModal(false);
   }
 
+  async function onRemoveJumpRecords(item: JumpRecord) {
+    const confirm = await deleteConfirmation();
+    if (!confirm) {
+      return;
+    }
+    sendRemoveRequest(
+      {
+        url: `/JumpRecords/${item.id}`,
+        method: 'delete',
+      },
+      (response) => {
+        toast.success(response.message);
+        gridRef.current?.refresh();
+      },
+      (error) => {
+        toast.error(error?.message);
+      }
+    );
+  }
+
   return (
     <>
+      <DeleteConfirmModal />
       <JumpRecordModal
         showModal={showModal}
         onClose={onCloseModal}
@@ -145,6 +172,7 @@ const AdminJumpRecords: React.FC = () => {
         <Grid<JumpRecord>
           colDefs={colDefs}
           getData={fetchRecords}
+          onRemoveRow={onRemoveJumpRecords}
           rowActions={{
             edit: false,
             remove: true,
