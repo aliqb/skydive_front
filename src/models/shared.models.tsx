@@ -131,3 +131,8 @@ export interface PagingParams{
   pageIndex:number,
   pageSize?: number
 }
+export interface UserId {
+  id: string;
+  code: number;
+  fullName: string;
+}

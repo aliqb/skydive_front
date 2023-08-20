@@ -4,11 +4,14 @@ import SDModal from '../Modal';
 import SDTextInput from '../TextInput';
 import { useState, useEffect } from 'react';
 import SDButton from '../Button';
+import useAPi from '../../../hooks/useApi';
+import { BaseResponse, UserId } from '../../../models/shared.models';
+import { toast } from 'react-toastify';
 
 interface AddTicketModalProps {
   show: boolean;
   onClose: () => void;
-  onSubmit: (userCode: string) => void;
+  onSubmit: (userCode: number) => void;
 }
 
 const AddTicketModal: React.FC<AddTicketModalProps> = ({
@@ -18,12 +21,18 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
 }) => {
   const [showModal, setShowModal] = useState<boolean>(show);
   const [owner, setOwner] = useState<'self' | 'other'>('self');
+  const {
+    sendRequest,
+    isPending,
+    data: UserData,
+  } = useAPi<UserId, BaseResponse<null>>();
 
   const {
     register,
+    watch,
     formState: { errors },
     handleSubmit,
-  } = useForm<{ userCode: string }>();
+  } = useForm<{ userCode: number }>();
 
   useEffect(() => {
     setShowModal(show);
@@ -39,11 +48,27 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
     onClose();
   }
 
-  function onsubmit(data: { userCode: string }) {
-    onSubmit(data.userCode || '');
+  function onsubmit(data: { userCode: number }) {
+    onSubmit(data.userCode);
     setShowModal(false);
     onClose();
   }
+
+  const handleButtonClick = (data: { userCode: number }) => {
+    console.log('Button clicked from SecondComponent');
+    console.log(UserData);
+    sendRequest(
+      {
+        url: `/Users/GetByCode/${data.userCode}`,
+      },
+      (response) => {
+        toast.success(response.message);
+      },
+      (error) => {
+        toast.error(error?.message);
+      }
+    );
+  };
 
   return (
     <SDModal
@@ -112,11 +137,15 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
                 <SDLabel htmlFor="userCode">کد کاربر</SDLabel>
                 <div>
                   <SDTextInput
-                    type="text"
+                    type="number"
                     id="userCode"
                     invalid={!!errors.userCode}
                     {...register('userCode', { required: 'فیلد الزامی است' })}
                     magnifier={true}
+                    onButtonClick={() =>
+                      handleButtonClick({ userCode: watch('userCode') })
+                    }
+                    isPending={isPending}
                   />
                 </div>
                 <SDLabel htmlFor="username">نام کاربر</SDLabel>
