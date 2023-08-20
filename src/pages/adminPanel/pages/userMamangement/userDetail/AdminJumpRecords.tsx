@@ -161,6 +161,7 @@ const AdminJumpRecords: React.FC = () => {
         showModal={showModal}
         onClose={onCloseModal}
         adminStyling={true}
+        userId={params.userId}
       />
 
       <div className="py-16 px-12">

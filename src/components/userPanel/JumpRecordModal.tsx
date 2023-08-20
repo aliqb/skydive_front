@@ -16,9 +16,11 @@ interface JumpRecordModalProps {
   showModal: boolean;
   onClose: (submitted: boolean) => void;
   adminStyling?: boolean;
+  userId?: string;
 }
 
 interface JumpRecordFormData {
+  userId?: string;
   date: string;
   location: string;
   equipments: string;
@@ -76,6 +78,7 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
           location: data.location,
           planeType: data.planeType,
           time: formatTime(data.hours, data.minutes),
+          userId: adminStyling ? data.userId : '',
         },
       },
       (response) => {
