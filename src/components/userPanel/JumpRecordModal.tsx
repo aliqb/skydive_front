@@ -35,6 +35,7 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
   showModal,
   onClose,
   adminStyling = false,
+  userId,
 }) => {
   const {
     register,
@@ -78,7 +79,7 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
           location: data.location,
           planeType: data.planeType,
           time: formatTime(data.hours, data.minutes),
-          userId: adminStyling ? data.userId : '',
+          userId: adminStyling ? userId : '',
         },
       },
       (response) => {
