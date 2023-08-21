@@ -35,7 +35,7 @@ export interface UserPersonalInfo {
 }
 
 export interface UserGeneralInfo {
-  code: string;
+  code: number;
   userName: string;
   mobile: string;
   userStatus: string;
@@ -93,7 +93,7 @@ export interface BasketTicketModel {
   flightNumber: number;
   type: string;
   amount: number;
-  userCode: string;
+  userCode: number;
   flightLoadId: string;
   ticketTypeId: string;
 }
@@ -114,7 +114,7 @@ export interface ChangingTicketRequest {
 export interface RequestTicketItem {
   flightLoadId: string;
   ticketTypeId: string;
-  userCode: string | null;
+  userCode: number | null;
 }
 export interface TicketType {
   title: string;

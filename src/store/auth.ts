@@ -13,7 +13,7 @@ interface AuthState {
   userStatus: string;
   userType: string;
   username: string;
-  code: string;
+  code: number;
   mobile: string;
   userStatusDisplay: string;
   isAdmin: boolean;
@@ -34,7 +34,7 @@ const initialState: AuthState = {
   userType: "",
   name: "",
   username: "",
-  code: "",
+  code: -1,
   mobile: "",
   userStatusDisplay: "",
   isAdmin: false,

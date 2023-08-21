@@ -1,7 +1,10 @@
 import { useState } from "react";
 import AddTicketModal from "./AddTicketModal";
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
-import { addTicketToBasket, removeTicketFromBasket } from "../../../store/basket";
+import {
+  addTicketToBasket,
+  removeTicketFromBasket,
+} from "../../../store/basket";
 import {
   RequestTicketItem,
   AggregatedTicket,
@@ -14,10 +17,13 @@ interface PlusMinusProps {
   disabled?: boolean;
 }
 
-const AddOrRemoveTicket: React.FC<PlusMinusProps> = ({ aggretadTicket, disabled=false }) => {
+const AddOrRemoveTicket: React.FC<PlusMinusProps> = ({
+  aggretadTicket,
+  disabled = false,
+}) => {
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
-  
+
   const dispatch = useAppDispatch();
   const changingTicket = useAppSelector((state) => state.basket.changingTicket);
 
@@ -29,7 +35,7 @@ const AddOrRemoveTicket: React.FC<PlusMinusProps> = ({ aggretadTicket, disabled=
     setIsRemoving(true);
   }
 
-  function onSubmitAdd(userCode: string) {
+  function onSubmitAdd(userCode: number) {
     const ticket: RequestTicketItem = {
       flightLoadId: aggretadTicket.flightLoadId,
       ticketTypeId: aggretadTicket.ticketTypeId,
@@ -39,25 +45,32 @@ const AddOrRemoveTicket: React.FC<PlusMinusProps> = ({ aggretadTicket, disabled=
     console.log(userCode);
   }
 
-  function onRemoveSubmit(tickets:BasketTicketModel[]){
-    const removingTickets:RequestTicketItem[] = tickets.map(item=>{
+  function onRemoveSubmit(tickets: BasketTicketModel[]) {
+    const removingTickets: RequestTicketItem[] = tickets.map((item) => {
       return {
         flightLoadId: item.flightLoadId,
         ticketTypeId: item.ticketTypeId,
-        userCode: item.userCode
-      }
-    })
-    dispatch(removeTicketFromBasket(removingTickets))
+        userCode: item.userCode,
+      };
+    });
+    dispatch(removeTicketFromBasket(removingTickets));
   }
 
   return (
     <>
-      <AddTicketModal
-        show={isAdding}
-        onClose={() => setIsAdding(false)}
-        onSubmit={onSubmitAdd}
-      ></AddTicketModal>
-      <RemoveTicketModal aggregatedTicket={aggretadTicket} show={isRemoving} onClose={()=>setIsRemoving(false)} onSubmit={onRemoveSubmit} ></RemoveTicketModal>
+      {isAdding && (
+        <AddTicketModal
+          show={isAdding}
+          onClose={() => setIsAdding(false)}
+          onSubmit={onSubmitAdd}
+        ></AddTicketModal>
+      )}
+      <RemoveTicketModal
+        aggregatedTicket={aggretadTicket}
+        show={isRemoving}
+        onClose={() => setIsRemoving(false)}
+        onSubmit={onRemoveSubmit}
+      ></RemoveTicketModal>
       <div className="flex gap-6 items-center">
         <button
           onClick={decrease}
