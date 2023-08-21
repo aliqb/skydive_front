@@ -218,7 +218,7 @@ const AdminJumpRecords: React.FC = () => {
                 ),
                 descriptions: 'عدم تایید',
                 onClick: rejectRecord,
-                showField: '!rejected',
+                showField: '!confirmed',
               },
             ],
           }}
