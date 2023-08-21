@@ -5,7 +5,7 @@ import {
   SkyDiveEventTicketType,
   TicketFee,
 } from "../../../models/skyDiveEvents.models";
-import SDModal from "../../shared/Modal";
+import SDModal from "../../shared/Modal/Modal";
 import SDLabel from "../../shared/Label";
 import SDButton from "../../shared/Button";
 import SDSpinner from "../../shared/Spinner";
@@ -137,26 +137,10 @@ const CostModal: React.FC<CostModalProps> = ({
             show={showModal}
             onClose={() => resetModal(false)}
             containerClass="!p-0 border-none !w-[480px]"
-          >
-            <div className="border-b  text-lg flex justify-between px-6 py-4 bg-blue-900 text-white rounded-t-md">
-              <span>ویرایش بهای فروش</span>
-              <button type="button" onClick={() => resetModal(false)}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-7 h-7 stroke-2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
+          > 
+          <SDModal.Header color="primary2">
+            ویرایش بهای فروش
+          </SDModal.Header>
             {(getTypesPending || getFeesPending) && (
               <div className="flex justify-center py-5">
                 <SDSpinner color="blue" size={20}></SDSpinner>

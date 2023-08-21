@@ -4,7 +4,7 @@ import {
   AddTermAndConditionsRequest,
   SkyDiveEvent,
 } from "../../../models/skyDiveEvents.models";
-import SDModal from "../../shared/Modal";
+import SDModal from "../../shared/Modal/Modal";
 import SDEditor from "../../shared/Editor";
 import { useEffect, useState, FormEvent } from "react";
 import SDButton from "../../shared/Button";
@@ -47,7 +47,7 @@ const TermsAndConditionsModal: React.FC<TermsAndConditionsModalProps> = ({
     formEvent.preventDefault();
     sendRequest(
       {
-        method: 'put',
+        method: "put",
         url: `/SkyDiveEvents/ConditionsAndTerms/${skyDiveEvent.id}`,
         data: {
           conditionsAndTerms: content,
@@ -69,25 +69,7 @@ const TermsAndConditionsModal: React.FC<TermsAndConditionsModalProps> = ({
       onClose={() => resetModal(false)}
       containerClass="!p-0 border-none !w-[900px]"
     >
-      <div className="border-b  text-lg flex justify-between px-6 py-4 bg-blue-900 text-white rounded-t-md ">
-        <span>قوانین و شرایط رویداد</span>
-        <button type="button" onClick={() => resetModal(false)}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-7 h-7 stroke-2"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </div>
+      <SDModal.Header color="primary2">قوانین و شرایط رویداد</SDModal.Header>
       <div className="max-h-[80vh] overflow-auto">
         <div className="flex flex-col gap-3 my-5 items-center text-slate-700 text-center w-full ">
           <div className="flex gap-6">

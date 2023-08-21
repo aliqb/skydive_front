@@ -1,6 +1,8 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import SDCard from "./Card";
+import SDCard from "../Card";
+import SDModalHeader from "./ModalHeader";
+import { ModalContext } from "./ModalContext";
 
 
 interface ModalProps{
@@ -34,7 +36,7 @@ const ModalBody : React.FC<ModalBodyProps> = (props) => {
     </SDCard>
   );
 };
-const SDModal : React.FC<ModalProps> = ({children,show:propsShow,closeOnBackDrop=true,onClose, containerClass}) => {
+const SDModalComponent : React.FC<ModalProps> = ({children,show:propsShow,closeOnBackDrop=true,onClose, containerClass}) => {
     const [show, setShow] = useState<boolean>(propsShow);
     function onBackDropClick(){
         if(closeOnBackDrop){
@@ -48,17 +50,19 @@ const SDModal : React.FC<ModalProps> = ({children,show:propsShow,closeOnBackDrop
         setShow(propsShow)
     },[propsShow])
   return (
-    <>
-      {show && createPortal(<BackDrop onClick={onBackDropClick}  ></BackDrop>, document.getElementById("backdrop")!)}
+    <ModalContext.Provider value={{onClose:onClose}} >
+      {show && createPortal(<BackDrop onClick={onBackDropClick}  ></BackDrop>, document.getElementById("backdrop") as HTMLElement)}
       {show && createPortal(
         <ModalBody containerClass={containerClass}  
         >
             {children}
         </ModalBody>,
-        document.getElementById("overlay")!
+        document.getElementById("overlay") as HTMLElement
       )}
-    </>
+    </ModalContext.Provider>
   );
 };
-
+SDModalComponent.displayName = 'SDModal';
+SDModalHeader.displayName = 'SDModal.header';
+export const  SDModal = Object.assign(SDModalComponent,{Header: SDModalHeader});
 export default SDModal;

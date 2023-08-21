@@ -1,4 +1,4 @@
-import SDModal from "../Modal";
+import SDModal from "../Modal/Modal";
 import { useState, useEffect, FormEvent } from "react";
 import SDButton from "../Button";
 import {
@@ -69,25 +69,8 @@ const RemoveTicketModal: React.FC<AddTicketModalProps> = ({
       containerClass="pt-0 px-0 pb-2"
       onClose={closeModal}
     >
-      <div className="border-b text-lg flex justify-between px-6 py-4 bg-primary-500 text-white rounded-t-md">
-        <span>حذف بلیت از سبد</span>
-        <button type="button" onClick={closeModal}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-7 h-7 stroke-2"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </div>
+      <SDModal.Header>حذف بلیت از سبد</SDModal.Header>
+
       <form onSubmit={onsubmit}>
         <div className="p-5 w-80">
           {aggregatedTicket.ticketMembers.map((item, index) => {

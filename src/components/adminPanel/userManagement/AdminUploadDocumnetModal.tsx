@@ -3,7 +3,7 @@ import {
   DocumentsUplodModel,
 } from "../../../models/account.models";
 import SDButton from "../../shared/Button";
-import SDModal from "../../shared/Modal";
+import SDModal from "../../shared/Modal/Modal";
 import { useState } from "react";
 import AdminDocumentUploadItem from "./AdminDocumentUploadItem";
 import useAPi from "../../../hooks/useApi";
@@ -63,7 +63,7 @@ const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
     doc: DocumentItemModel,
     setter: React.Dispatch<React.SetStateAction<DocumentItemModel>>
   ) {
-    if(!anyChange && doc.fileId){
+    if (!anyChange && doc.fileId) {
       setAnyChange(true);
     }
     setter(doc);
@@ -78,8 +78,8 @@ const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
     event.preventDefault();
     setSubmitted(true);
     if (
-      (attorneyDocumentModel.validationMessage) ||
-      (medicalDocumentModel.validationMessage)
+      attorneyDocumentModel.validationMessage ||
+      medicalDocumentModel.validationMessage
     ) {
       return;
     }
@@ -124,25 +124,7 @@ const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
       onClose={() => resetModal(false)}
       containerClass="!p-0 lg:!w-[480px]"
     >
-      <div className="border-b text-lg flex justify-between px-6 py-4 bg-blue-900 text-white rounded-t-md">
-        بارگذاری مدارک
-        <button type="button" onClick={() => resetModal(false)}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-7 h-7 stroke-2"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </div>
+      <SDModal.Header color="primary2">بارگذاری مدارک</SDModal.Header>
       <form onSubmit={onSubmit} className="max-h-[80vh] overflow-auto">
         <div className="px-6 py-6">
           <AdminDocumentUploadItem

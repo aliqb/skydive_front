@@ -1,11 +1,11 @@
-import { useForm } from 'react-hook-form';
-import SDLabel from '../Label';
-import SDModal from '../Modal';
-import SDTextInput from '../TextInput';
-import { useState, useEffect } from 'react';
-import SDButton from '../Button';
-import useAPi from '../../../hooks/useApi';
-import { BaseResponse, UserId } from '../../../models/shared.models';
+import { useForm } from "react-hook-form";
+import SDLabel from "../Label";
+import SDModal from "../Modal/Modal";
+import SDTextInput from "../TextInput";
+import { useState, useEffect } from "react";
+import SDButton from "../Button";
+import useAPi from "../../../hooks/useApi";
+import { BaseResponse, UserId } from "../../../models/shared.models";
 
 interface AddTicketModalProps {
   show: boolean;
@@ -19,7 +19,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
   onSubmit,
 }) => {
   const [showModal, setShowModal] = useState<boolean>(show);
-  const [owner, setOwner] = useState<'self' | 'other'>('self');
+  const [owner, setOwner] = useState<"self" | "other">("self");
   const [fullName, setFullName] = useState<string | null>(null);
   const [fullNameFetched, setFullNameFetched] = useState(false);
   const [usernameError, setUsernameError] = useState<string | null>(null);
@@ -39,7 +39,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
 
   const onChangeOwner: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     const value = event.target.value;
-    setOwner(value as 'self' | 'other');
+    setOwner(value as "self" | "other");
   };
 
   function closeModal() {
@@ -67,14 +67,14 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
         console.log(error);
         setFullName(null);
         setFullNameFetched(false);
-        setUsernameError('کاربر فعالی با کد وارد شده وجود ندارد .');
+        setUsernameError("کاربر فعالی با کد وارد شده وجود ندارد .");
       }
     );
   };
 
   const handleUserCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    if (value !== '') {
+    if (value !== "") {
       setUsernameError(null);
       setFullName(null);
       setFullNameFetched(false);
@@ -87,25 +87,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
       containerClass="pt-0 px-0 pb-2"
       onClose={closeModal}
     >
-      <div className="border-b text-lg flex justify-between px-6 py-4 bg-primary-500 text-white rounded-t-md">
-        <span>رزرو بلیت</span>
-        <button type="button" onClick={closeModal}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-7 h-7 stroke-2"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </div>
+      <SDModal.Header>رزرو بلیت</SDModal.Header>
       <form onSubmit={handleSubmit(onsubmit)}>
         <div className="p-5 w-80">
           <div className="mb-2">
@@ -113,7 +95,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
               id="self"
               type="radio"
               value="self"
-              checked={owner === 'self'}
+              checked={owner === "self"}
               onChange={onChangeOwner}
               name="owner"
               className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
@@ -130,7 +112,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
               id="other"
               type="radio"
               value="other"
-              checked={owner === 'other'}
+              checked={owner === "other"}
               onChange={onChangeOwner}
               name="owner"
               className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
@@ -142,7 +124,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
               رزرو برای دیگری
             </label>
           </div>
-          {owner === 'other' && (
+          {owner === "other" && (
             <div className="mb-3">
               <div>
                 <SDLabel htmlFor="userCode">کد کاربر</SDLabel>
@@ -151,10 +133,10 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
                     type="number"
                     id="userCode"
                     invalid={!!errors.userCode}
-                    {...register('userCode', { required: 'فیلد الزامی است' })}
+                    {...register("userCode", { required: "فیلد الزامی است" })}
                     magnifier={true}
                     onButtonClick={() =>
-                      handleButtonClick({ userCode: watch('userCode') })
+                      handleButtonClick({ userCode: watch("userCode") })
                     }
                     isPending={isPending}
                     onChange={handleUserCodeChange}
@@ -169,7 +151,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
                     id="username"
                     invalid={!!errors.userCode}
                     disabled={true}
-                    value={fullName || ''}
+                    value={fullName || ""}
                   />
                 </div>
                 {usernameError && (
@@ -190,7 +172,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
           <SDButton
             type="submit"
             color="primary"
-            disabled={owner === 'other' && !fullNameFetched}
+            disabled={owner === "other" && !fullNameFetched}
           >
             رزرو
           </SDButton>

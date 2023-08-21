@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import SDButton from "../../shared/Button";
-import SDModal from "../../shared/Modal";
+import SDModal from "../../shared/Modal/Modal";
 import SDLabel from "../../shared/Label";
 import PasswordInput from "../../shared/PasswordInput";
 import useAPi from "../../../hooks/useApi";
@@ -62,25 +62,7 @@ const ResetUserPasswordModal: React.FC<ResetUserPasswordModalProps> = ({
       onClose={() => resetModal()}
       containerClass="!p-0 border-none !w-[480px]"
     >
-      <div className="border-b  text-lg flex justify-between px-6 py-4 bg-blue-900 text-white rounded-t-md">
-        <span>ویرایش بهای فروش</span>
-        <button type="button" onClick={() => resetModal()}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-7 h-7 stroke-2"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </div>
+      <SDModal.Header color="primary2">بازنشانی رمزعبور کاربر</SDModal.Header>
 
       <form
         className="max-h-[80vh] overflow-auto px-8"
