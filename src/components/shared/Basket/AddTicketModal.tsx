@@ -22,6 +22,8 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
   const [showModal, setShowModal] = useState<boolean>(show);
   const [owner, setOwner] = useState<'self' | 'other'>('self');
   const [fullName, setFullName] = useState<string | null>(null);
+  const [fullNameFetched, setFullNameFetched] = useState(false);
+  const [usernameError, setUsernameError] = useState<string | null>(null);
 
   const { sendRequest, isPending } = useAPi<UserId, BaseResponse<UserId>>();
 
@@ -60,10 +62,14 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
       (response) => {
         toast.success(response.message);
         setFullName(response.content?.fullName || null);
+        setFullNameFetched(true);
+        setUsernameError(null);
       },
       (error) => {
-        toast.error(error?.message);
+        console.log(error);
         setFullName(null);
+        setFullNameFetched(false);
+        setUsernameError('کاربر فعالی با کد وارد شده وجود ندارد .');
       }
     );
   };
@@ -146,7 +152,9 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
                     isPending={isPending}
                   />
                 </div>
-                <SDLabel htmlFor="username">نام کاربر</SDLabel>
+                <SDLabel htmlFor="username" className="mt-5">
+                  نام کاربر
+                </SDLabel>
                 <div>
                   <SDTextInput
                     type="text"
@@ -156,7 +164,11 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
                     value={fullName || ''}
                   />
                 </div>
-
+                {usernameError && (
+                  <p className="text-red-600 text-sm pr-2 mt-1 text-center">
+                    {usernameError}
+                  </p>
+                )}
                 {errors.userCode?.message && (
                   <p className="text-red-600 text-sm pr-2 mt-2">
                     {errors.userCode.message}
@@ -167,7 +179,11 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
           )}
         </div>
         <div className="flex justify-end px-3">
-          <SDButton type="submit" color="primary">
+          <SDButton
+            type="submit"
+            color="primary"
+            disabled={owner === 'other' && !fullNameFetched}
+          >
             رزرو
           </SDButton>
         </div>

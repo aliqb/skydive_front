@@ -1,5 +1,5 @@
-import { InputHTMLAttributes, forwardRef, Ref } from "react";
-import { replacePersianArabicsNumbers } from "../../utils/shared";
+import { InputHTMLAttributes, forwardRef, Ref } from 'react';
+import { replacePersianArabicsNumbers } from '../../utils/shared';
 import SDButton from './Button';
 import SDSpinner from './Spinner';
 
@@ -69,7 +69,7 @@ const SDTextInput = forwardRef(
           props.magnifier && (
             <div className="absolute inset-y-0 left-1 flex items-center pr-3">
               <SDButton
-                className="font-extrabold !h-8 w-8 bg-white z-30"
+                className="font-extrabold !h-8 w-8 bg-white  hover:bg-gray-300"
                 onClick={props.onButtonClick}
               >
                 <svg
@@ -94,8 +94,5 @@ const SDTextInput = forwardRef(
     );
   }
 );
-
-
-
 
 export default SDTextInput;
