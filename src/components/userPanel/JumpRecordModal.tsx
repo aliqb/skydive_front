@@ -79,7 +79,7 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
           location: data.location,
           planeType: data.planeType,
           time: formatTime(data.hours, data.minutes),
-          userId: adminStyling ? userId : '',
+          userId: adminStyling ? userId : undefined,
         },
       },
       (response) => {
