@@ -182,9 +182,9 @@ const EditTicketModal: React.FC<EditTicketModal> = ({
           </div>
           <div className="w-full px-5 pt-5 flex justify-start items-center">
             <SDButton
-              color="primary"
+              color="primary2"
               type="submit"
-              className="w-full !bg-blue-900"
+              className="w-full"
                 disabled={editPending}
             >
               {editPending && <SDSpinner color="blue" />}

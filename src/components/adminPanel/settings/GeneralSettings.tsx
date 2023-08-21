@@ -200,7 +200,8 @@ const GeneralSettingsComponent: React.FC = () => {
       </div>
       <div className="mt-8 flex justify-center">
         <SDButton
-          className="w-full max-w-sm !bg-blue-900"
+          className="w-full max-w-sm"
+          color="primary2"
           disabled={generalSettingsState.loading || isSaving}
           type="submit"
         >

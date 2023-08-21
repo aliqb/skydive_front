@@ -75,8 +75,7 @@ const MessagesItem: React.FC<UserMessage> = (props) => {
               <div className="flex items-center ">
                 <SDButton
                   onClick={markAsRead}
-                  className="read-button hover:bg-gray-200 transition-colors duration-300 bg-orange-400 text-white rounded ml-4 text-sm"
-                  style={{ backgroundColor: 'rgb(245, 158, 11)' }}
+                  color="primary"
                   disabled={changingMessageId === props.id}
                 >
                   <span className="flex items-center">

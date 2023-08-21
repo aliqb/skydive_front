@@ -45,11 +45,11 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
     reset,
     watch,
   } = useForm<JumpRecordFormData>({
-    mode: 'onTouched',
+    mode: "onTouched",
   });
 
   const minutesRef = useRef<string | number | undefined>();
-  minutesRef.current = watch('minutes', undefined);
+  minutesRef.current = watch("minutes", undefined);
   const { sendRequest, isPending } = useAPi<
     AddJumpRecordRequest,
     BaseResponse<null>
@@ -61,16 +61,16 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
   }
 
   function formatTime(hours: number, minutes: number) {
-    const hourStr: string = hours > 9 ? hours.toString() : '0' + hours;
-    const minuteStr: string = minutes > 9 ? minutes.toString() : '0' + minutes;
+    const hourStr: string = hours > 9 ? hours.toString() : "0" + hours;
+    const minuteStr: string = minutes > 9 ? minutes.toString() : "0" + minutes;
     return `${hourStr}:${minuteStr}:00`;
   }
 
   function onSubmit(data: JumpRecordFormData) {
     sendRequest(
       {
-        url: '/JumpRecords',
-        method: 'post',
+        url: "/JumpRecords",
+        method: "post",
         data: {
           date: data.date,
           description: data.description,
@@ -100,7 +100,7 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
     >
       <div
         className={`border-b text-lg flex justify-between px-6 py-4 ${
-          adminStyling ? '!bg-blue-900' : '!bg-primary-500'
+          adminStyling ? "!bg-blue-900" : "!bg-primary-500"
         } text-white rounded-t-md`}
       >
         <span>سابقه پرش جدید</span>
@@ -149,8 +149,8 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
               type="text"
               id="location"
               invalid={!!formErrors.location}
-              {...register('location', {
-                required: 'فیلد اجباری است.',
+              {...register("location", {
+                required: "فیلد اجباری است.",
               })}
             />
             {formErrors.location?.message && (
@@ -169,8 +169,8 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
               type="text"
               id="equipments"
               invalid={!!formErrors.equipments}
-              {...register('equipments', {
-                required: 'فیلد اجباری است.',
+              {...register("equipments", {
+                required: "فیلد اجباری است.",
               })}
             />
             {formErrors.equipments?.message && (
@@ -187,8 +187,8 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
               type="text"
               id="planeType"
               invalid={!!formErrors.planeType}
-              {...register('planeType', {
-                required: 'فیلد اجباری است.',
+              {...register("planeType", {
+                required: "فیلد اجباری است.",
               })}
             />
             {formErrors.planeType?.message && (
@@ -208,11 +208,11 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
               numeric={true}
               id="height"
               invalid={!!formErrors.height}
-              {...register('height', {
-                required: 'فیلد اجباری است.',
+              {...register("height", {
+                required: "فیلد اجباری است.",
                 valueAsNumber: true,
                 validate: (value) => {
-                  return value > 0 || 'مقدار باید بزرگ‌تر از 0 باشد.';
+                  return value > 0 || "مقدار باید بزرگ‌تر از 0 باشد.";
                 },
               })}
             />
@@ -232,13 +232,13 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
                   placeholder="mm"
                   className="ltr text-center placeholder:!text-center"
                   invalid={!!formErrors.minutes}
-                  {...register('minutes', {
-                    required: 'دقیقه نباید خالی باشد.',
+                  {...register("minutes", {
+                    required: "دقیقه نباید خالی باشد.",
                     valueAsNumber: true,
                     validate: (value) => {
                       return (
                         (value >= 0 && value <= 59) ||
-                        'دقیقه باید بین 0 تا 59 باشد.'
+                        "دقیقه باید بین 0 تا 59 باشد."
                       );
                     },
                   })}
@@ -253,15 +253,15 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
                   placeholder="hh"
                   className="ltr text-center placeholder:!text-center"
                   invalid={!!formErrors.hours}
-                  {...register('hours', {
-                    required: 'ساعت نباید خالی باشد.',
+                  {...register("hours", {
+                    required: "ساعت نباید خالی باشد.",
                     valueAsNumber: true,
                     validate: (value) => {
                       if (value < 0 || value > 23) {
-                        return 'ساعت باید بین 0 تا 23 باشد.';
+                        return "ساعت باید بین 0 تا 23 باشد.";
                       }
                       if (+value === 0 && Number(minutesRef.current) === 0) {
-                        return 'مدت نمی‌تواند 0 باشد.';
+                        return "مدت نمی‌تواند 0 باشد.";
                       }
                     },
                   })}
@@ -270,8 +270,8 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
             </div>
             {(formErrors.minutes?.message || formErrors.hours?.message) && (
               <p className="text-red-600 text-xs pr-2 mt-2">
-                {`${formErrors.minutes?.message || ''} ${
-                  formErrors.hours?.message || ''
+                {`${formErrors.minutes?.message || ""} ${
+                  formErrors.hours?.message || ""
                 }`}
               </p>
             )}
@@ -284,7 +284,7 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
             </SDLabel>
             <SDTextArea
               id="description"
-              {...register('description')}
+              {...register("description")}
               rows={4}
             ></SDTextArea>
           </div>
@@ -292,9 +292,8 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
         <div className="w-full px-5 pt-5 flex justify-start items-center">
           <SDButton
             type="submit"
-            className={`!w-full ${
-              adminStyling ? '!bg-blue-900' : '!bg-primary-500'
-            }`}
+            color={adminStyling ? "primary2" : "primary"}
+            className="!w-full"
             disabled={isPending}
           >
             {isPending && <SDSpinner />}
