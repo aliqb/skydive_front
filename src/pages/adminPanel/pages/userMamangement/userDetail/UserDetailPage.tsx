@@ -122,7 +122,7 @@ const UserDetailPage: React.FC = () => {
             </div>
             <div className="flex gap-3">
               <Link to="edit">
-                <SDButton>
+                <SDButton color="primary2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

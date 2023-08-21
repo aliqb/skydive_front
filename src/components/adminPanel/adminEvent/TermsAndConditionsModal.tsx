@@ -102,9 +102,9 @@ const TermsAndConditionsModal: React.FC<TermsAndConditionsModalProps> = ({
           </div>
           <div className="w-full px-5 py-5 flex justify-center items-center">
             <SDButton
-              color="primary"
+              color="primary2"
               type="submit"
-              className=" !bg-blue-900 w-96"
+              className="w-96"
               disabled={isPending}
             >
               {isPending && <SDSpinner color="blue" />}

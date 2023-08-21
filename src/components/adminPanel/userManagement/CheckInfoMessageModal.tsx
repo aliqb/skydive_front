@@ -105,9 +105,9 @@ const CheckInfoMessageModal: React.FC<CheckInfoMessageModalProps> = ({
           </div>
           <div className="w-full px-5 pb-6 flex justify-start items-center">
             <SDButton
-              color="primary"
+              color="primary2"
               type="submit"
-              className="w-full !bg-blue-900"
+              className="w-full"
               disabled={isPending}
             >
               {isPending && <SDSpinner />}

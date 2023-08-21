@@ -322,9 +322,9 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
           </div>
           <div className="w-full px-5 pb-6 flex justify-start items-center">
             <SDButton
-              color="primary"
               type="submit"
-              className="w-full !bg-blue-900"
+              className="w-full "
+              color="primary2"
               disabled={isPending}
             >
               {isPending && <SDSpinner />}
