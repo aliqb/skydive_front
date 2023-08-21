@@ -99,7 +99,7 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
     >
       <div
         className={`border-b text-lg flex justify-between px-6 py-4 ${
-          adminStyling ? 'bg-blue-900' : 'bg-primary-500'
+          adminStyling ? '!bg-blue-900' : '!bg-primary-500'
         } text-white rounded-t-md`}
       >
         <span>سابقه پرش جدید</span>
@@ -292,7 +292,7 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
           <SDButton
             type="submit"
             className={`!w-full ${
-              adminStyling ? 'bg-blue-900' : 'bg-primary-500'
+              adminStyling ? '!bg-blue-900' : '!bg-primary-500'
             }`}
             disabled={isPending}
           >
