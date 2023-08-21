@@ -95,15 +95,13 @@ const CostModal: React.FC<CostModalProps> = ({
   }, [getRequest, detailResponse]);
 
   const handleSaveButton = handleSubmit((data) => {
-    console.log(data);
     sendChangeRequest(
       {
         url: `/SkyDiveEvents/AddEventTypeFee/${rowId}`,
-        method: "post",
+        method: 'post',
         data: data,
       },
       (response) => {
-        console.log("Response:", response);
         toast.success(response.message);
         onCloseModal(true);
         // if (fetchData) {
@@ -111,7 +109,6 @@ const CostModal: React.FC<CostModalProps> = ({
         // }
       },
       (error) => {
-        console.log("Error:", error);
         toast.error(error?.message);
       }
     );

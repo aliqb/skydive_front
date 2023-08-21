@@ -68,7 +68,7 @@ const EditTicketModal: React.FC<EditTicketModal> = ({
           ticketTypeId: data.ticketTypeId,
           reservable: selectedReservableOption,
         },
-        method: "put",
+        method: 'put',
       },
       (reponse) => {
         toast.success(reponse.message);
@@ -78,7 +78,6 @@ const EditTicketModal: React.FC<EditTicketModal> = ({
         toast.error(error?.message);
       }
     );
-    console.log(data);
   }
 
   useEffect(() => {

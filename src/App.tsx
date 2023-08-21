@@ -42,15 +42,15 @@ import AdminFlightsPage from "./pages/adminPanel/pages/adminEvents/AdminFlightsP
 import SkyDiveEventTermsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventTermsPage";
 import MyTicketsPage from "./pages/userPanel/MyTicketsPage";
 import JumpRecordsPage from "./pages/userPanel/JumpRecordsPage";
-import AdminJumpRecoreds from "./pages/adminPanel/pages/userMamangement/userDetail/AdminJumpRecoreds";
-import UserTickets from "./pages/adminPanel/pages/userMamangement/userDetail/UserTickets";
-import UserTransactions from "./pages/adminPanel/pages/userMamangement/userDetail/UserTransactions";
-import Messages from "./pages/userPanel/Messages";
-import MyTransactionsPage from "./pages/userPanel/MyTransactionsPage";
-import Wallet from "./pages/userPanel/Wallet";
-import AdminUserWallet from "./pages/adminPanel/pages/userMamangement/userDetail/AdminUserWallet";
-import { useAppDispatch } from "./hooks/reduxHooks";
-import { fetchGeneralSettings } from "./store/generalSettings";
+import AdminJumpRecords from './pages/adminPanel/pages/userMamangement/userDetail/AdminJumpRecords';
+import UserTickets from './pages/adminPanel/pages/userMamangement/userDetail/UserTickets';
+import UserTransactions from './pages/adminPanel/pages/userMamangement/userDetail/UserTransactions';
+import Messages from './pages/userPanel/Messages';
+import MyTransactionsPage from './pages/userPanel/MyTransactionsPage';
+import Wallet from './pages/userPanel/Wallet';
+import AdminUserWallet from './pages/adminPanel/pages/userMamangement/userDetail/AdminUserWallet';
+import { useAppDispatch } from './hooks/reduxHooks';
+import { fetchGeneralSettings } from './store/generalSettings';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -124,7 +124,7 @@ function App() {
               <Route Component={UserTickets} path=""></Route>
               <Route Component={UserTransactions} path="transactions"></Route>
               <Route Component={AdminUserDocument} path="documents"></Route>
-              <Route Component={AdminJumpRecoreds} path="jumps"></Route>
+              <Route Component={AdminJumpRecords} path="jumps"></Route>
               <Route Component={AdminUserWallet} path="wallet"></Route>
             </Route>
             <Route Component={EditUserPage} path="users/:userId/edit"></Route>

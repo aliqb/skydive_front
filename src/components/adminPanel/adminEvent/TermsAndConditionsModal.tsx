@@ -47,7 +47,7 @@ const TermsAndConditionsModal: React.FC<TermsAndConditionsModalProps> = ({
     formEvent.preventDefault();
     sendRequest(
       {
-        method: "put",
+        method: 'put',
         url: `/SkyDiveEvents/ConditionsAndTerms/${skyDiveEvent.id}`,
         data: {
           conditionsAndTerms: content,
@@ -62,7 +62,6 @@ const TermsAndConditionsModal: React.FC<TermsAndConditionsModalProps> = ({
       }
     );
   }
-  // console.log('editor',Editor)
 
   return (
     <SDModal

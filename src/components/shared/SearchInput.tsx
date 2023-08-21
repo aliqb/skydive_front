@@ -20,7 +20,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ onSubmit,searchTerm,placehold
   );
 
   useEffect(() => {
-      console.log("wwwwwww",firstRender.current);
     if (!firstRender.current) {
       firstRender.current = true;
       return;

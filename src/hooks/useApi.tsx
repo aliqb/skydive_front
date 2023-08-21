@@ -40,10 +40,7 @@ export default function useAPi<
     }
   },
   []);
-  // useEffect(()=>{
-  //     console.log('f',token)
-  //     axiosIntance.defaults.headers.common['Authorization'] = `Bearer ${token}`
-  // },[])
+
   useEffect(() => {
     if (token) {
       axiosIntance.defaults.headers.common["Authorization"] = `Bearer ${token}`;

@@ -20,4 +20,5 @@ export interface AddJumpRecordRequest {
   height: number;
   time: string;
   description: string;
+  userId?: string;
 }
