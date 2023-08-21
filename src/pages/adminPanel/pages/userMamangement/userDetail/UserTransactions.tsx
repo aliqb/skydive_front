@@ -16,41 +16,50 @@ const UserTransactions: React.FC = () => {
 
   const [colDefs] = useState<ColDef<UserTransaction>[]>([
     {
-      field: "date",
-      headerName: "تاریخ پرداخت",
+      field: 'date',
+      headerName: 'تاریخ پرداخت',
     },
     {
-      field: "ticketNumber",
-      headerName: "شماره بلیت",
+      field: 'ticketNumber',
+      headerName: 'شماره بلیت',
     },
     {
-      field: "eventName",
-      headerName: "نام رویداد",
+      field: 'eventName',
+      headerName: 'نام رویداد',
     },
     {
-      field: "paymentInformation",
-      headerName: "اطلاعات پرداخت",
+      field: 'paymentInformation',
+      headerName: 'اطلاعات پرداخت',
     },
     {
-      field: "amount",
-      headerName: "مبلغ",
+      field: 'amount',
+      headerName: 'مبلغ',
     },
     {
-      field: "type",
-      headerName: "نوع",
+      field: 'type',
+      headerName: 'نوع',
       cellRenderer: (item: UserTransaction) => {
-        const displayText = item.type === "Confirmed" ? "تائید" : "ابطال";
+        const displayText = item.type === 'Confirmed' ? 'تائید' : 'ابطال';
         return <span>{displayText}</span>;
       },
     },
     {
-      field: "invoiceNumber",
-      headerName: "شماره فاکتور",
+      field: 'invoiceNumber',
+      headerName: 'شماره فاکتور',
+      cellRenderer: (item: UserTransaction) => {
+        if (String(item.paymentInformation) === 'شارژ کیف پول') {
+          return null;
+        }
+        return item.invoiceNumber;
+      },
     },
     {
-      field: "",
-      headerName: "فاکتور",
+      field: '',
+      headerName: 'فاکتور',
       cellRenderer: (item: UserTransaction) => {
+        if (String(item.paymentInformation) === 'شارژ کیف پول') {
+          return null;
+        }
         return (
           <PdfPrintButton
             pdfUrl={`${import.meta.env.VITE_BASE_API_URL}/transactions/Print/${

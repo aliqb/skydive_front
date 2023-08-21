@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react';
 import SDButton from '../Button';
 import useAPi from '../../../hooks/useApi';
 import { BaseResponse, UserId } from '../../../models/shared.models';
-import { toast } from 'react-toastify';
 
 interface AddTicketModalProps {
   show: boolean;
@@ -60,7 +59,6 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
         url: `/Users/GetByCode/${data.userCode}`,
       },
       (response) => {
-        toast.success(response.message);
         setFullName(response.content?.fullName || null);
         setFullNameFetched(true);
         setUsernameError(null);
