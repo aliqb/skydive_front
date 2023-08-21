@@ -19,6 +19,10 @@ export default {
         primary: {
           ...colors.amber,
           DEFAULT: 'rgb(191 115 0)'
+        },
+        primary2:{
+          ...colors.blue,
+          DEFAULT: colors.blue[900]
         }
       },
       boxShadow:{

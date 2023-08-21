@@ -7,7 +7,7 @@ const customTheme : DeepPartial<FlowbiteButtonTheme> = {
   color:{
     ...Button.defaultProps?.theme?.color,
     primary: 'bg-primary-500 hover:bg-primary-600 text-white',
-    primary2: 'bg-blue-800 hover:bg-blue-900 text-white',
+    primary2: 'bg-primary2-800 hover:bg-primary2-900 text-white',
   },
   pill:{
     off: 'rounded-sm'
