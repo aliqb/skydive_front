@@ -72,6 +72,15 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
     );
   };
 
+  const handleUserCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    if (value !== '') {
+      setUsernameError(null);
+      setFullName(null);
+      setFullNameFetched(false);
+    }
+  };
+
   return (
     <SDModal
       show={showModal}
@@ -148,6 +157,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
                       handleButtonClick({ userCode: watch('userCode') })
                     }
                     isPending={isPending}
+                    onChange={handleUserCodeChange}
                   />
                 </div>
                 <SDLabel htmlFor="username" className="mt-5">
