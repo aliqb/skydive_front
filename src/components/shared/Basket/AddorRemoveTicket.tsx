@@ -60,7 +60,6 @@ const AddOrRemoveTicket: React.FC<PlusMinusProps> = ({
     <>
       {isAdding && (
         <AddTicketModal
-          show={isAdding}
           onClose={() => setIsAdding(false)}
           onSubmit={onSubmitAdd}
         ></AddTicketModal>

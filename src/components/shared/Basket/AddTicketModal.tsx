@@ -2,23 +2,20 @@ import { useForm } from "react-hook-form";
 import SDLabel from "../Label";
 import SDModal from "../Modal/Modal";
 import SDTextInput from "../TextInput";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import SDButton from "../Button";
 import useAPi from "../../../hooks/useApi";
 import { BaseResponse, UserId } from "../../../models/shared.models";
 
 interface AddTicketModalProps {
-  show: boolean;
   onClose: () => void;
   onSubmit: (userCode: number) => void;
 }
 
 const AddTicketModal: React.FC<AddTicketModalProps> = ({
-  show,
   onClose,
   onSubmit,
 }) => {
-  const [showModal, setShowModal] = useState<boolean>(show);
   const [owner, setOwner] = useState<"self" | "other">("self");
   const [fullName, setFullName] = useState<string | null>(null);
   const [fullNameFetched, setFullNameFetched] = useState(false);
@@ -33,9 +30,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
     handleSubmit,
   } = useForm<{ userCode: number }>();
 
-  useEffect(() => {
-    setShowModal(show);
-  }, [show]);
+
 
   const onChangeOwner: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     const value = event.target.value;
@@ -43,13 +38,11 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
   };
 
   function closeModal() {
-    setShowModal(false);
     onClose();
   }
 
   function onsubmit(data: { userCode: number }) {
     onSubmit(data.userCode);
-    setShowModal(false);
     onClose();
   }
 
@@ -82,7 +75,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
   };
 
   return (
-    <SDModal show={showModal} containerClass="!pb-2" onClose={closeModal}>
+    <SDModal show={true} containerClass="!pb-2" onClose={closeModal}>
       <SDModal.Header>رزرو بلیت</SDModal.Header>
       <SDModal.Body>
         <form onSubmit={handleSubmit(onsubmit)}>

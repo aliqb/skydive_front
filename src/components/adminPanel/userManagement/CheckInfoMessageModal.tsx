@@ -63,43 +63,41 @@ const CheckInfoMessageModal: React.FC<CheckInfoMessageModalProps> = ({
     );
   }
   return (
-    <div>
-      <SDModal
-        show={showModal}
-        onClose={() => resetModal(false)}
-        containerClass="lg:!w-[480px]"
-      >
-        <SDModal.Header color="primary2">{title}</SDModal.Header>
-        <SDModal.Body>
-          <form onSubmit={onSubmit}>
-            <div className="px-6 py-6">
-              <div className=" w-full">
-                <SDLabel htmlFor="message" className="mb-2">
-                  پیام
-                </SDLabel>
-                <SDTextArea
-                  id="message"
-                  value={message}
-                  onChange={onMessageChange}
-                  rows={6}
-                />
-              </div>
+    <SDModal
+      show={showModal}
+      onClose={() => resetModal(false)}
+      containerClass="lg:!w-[480px]"
+    >
+      <SDModal.Header color="primary2">{title}</SDModal.Header>
+      <SDModal.Body>
+        <form onSubmit={onSubmit}>
+          <div className="px-6 py-6">
+            <div className=" w-full">
+              <SDLabel htmlFor="message" className="mb-2">
+                پیام
+              </SDLabel>
+              <SDTextArea
+                id="message"
+                value={message}
+                onChange={onMessageChange}
+                rows={6}
+              />
             </div>
-            <div className="w-full px-5 pb-6 flex justify-start items-center">
-              <SDButton
-                color="primary2"
-                type="submit"
-                className="w-full"
-                disabled={isPending}
-              >
-                {isPending && <SDSpinner />}
-                ارسال
-              </SDButton>
-            </div>
-          </form>
-        </SDModal.Body>
-      </SDModal>
-    </div>
+          </div>
+          <div className="w-full px-5 pb-6 flex justify-start items-center">
+            <SDButton
+              color="primary2"
+              type="submit"
+              className="w-full"
+              disabled={isPending}
+            >
+              {isPending && <SDSpinner />}
+              ارسال
+            </SDButton>
+          </div>
+        </form>
+      </SDModal.Body>
+    </SDModal>
   );
 };
 

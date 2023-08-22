@@ -16,13 +16,11 @@ import SDSpinner from "../../shared/Spinner";
 
 interface TermsAndConditionsModalProps {
   skyDiveEvent: SkyDiveEvent;
-  showModal: boolean;
   onCloseModal: (submitted: boolean) => void;
 }
 
 const TermsAndConditionsModal: React.FC<TermsAndConditionsModalProps> = ({
   skyDiveEvent,
-  showModal,
   onCloseModal,
 }) => {
   const resetModal = (submitted: boolean) => {
@@ -65,7 +63,7 @@ const TermsAndConditionsModal: React.FC<TermsAndConditionsModalProps> = ({
 
   return (
     <SDModal
-      show={showModal}
+      show={true}
       onClose={() => resetModal(false)}
       containerClass="!w-[900px]"
     >

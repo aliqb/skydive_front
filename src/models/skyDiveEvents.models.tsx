@@ -88,13 +88,7 @@ export interface AdminEventModalProps {
   onCloseModal: (submitted: boolean) => void;
   eventData?: SkyDiveEvent;
 }
-export interface CostModalProps {
-  rowId: string;
-  showModal: boolean;
-  // onOpenModal: (id?: string) => void;
-  onCloseModal: (submitted: boolean) => void;
-  // fetchData?: () => void;
-}
+
 export interface SkyDiveEventTicketType {
   title: string;
   capacity: number;

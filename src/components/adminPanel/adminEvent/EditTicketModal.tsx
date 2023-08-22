@@ -16,13 +16,11 @@ import { toast } from "react-toastify";
 import SDSpinner from "../../shared/Spinner";
 
 interface EditTicketModal{
-  showModal: boolean;
   onCloseModal: (submitted: boolean) => void;
   ticket:AdminTicketModel
 }
 
 const EditTicketModal: React.FC<EditTicketModal> = ({
-  showModal,
   onCloseModal,
   ticket
 }) => {
@@ -104,7 +102,7 @@ const EditTicketModal: React.FC<EditTicketModal> = ({
 
   return (
     <SDModal
-      show={showModal}
+      show={true}
       onClose={() => resetModal(false)}
       containerClass="!w-[480px]"
     >

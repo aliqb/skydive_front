@@ -14,12 +14,10 @@ import { useAppSelector } from "../../../hooks/reduxHooks";
 
 interface AdminUploadDocumnetModalProps {
   onCloseModal: (submitted: boolean) => void;
-  showModal: boolean;
   userId: string;
 }
 const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
   onCloseModal,
-  showModal,
   userId,
 }) => {
   const [submitted, setSubmitted] = useState<boolean>(false);
@@ -120,7 +118,7 @@ const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
 
   return (
     <SDModal
-      show={showModal}
+      show={true}
       onClose={() => resetModal(false)}
       containerClass="!p-0 lg:!w-[480px]"
     >

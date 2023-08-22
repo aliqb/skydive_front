@@ -37,7 +37,6 @@ const AdminFlightTicketsGrid: React.FC<AdminFlightTicketsGridProps> = ({
     },
   ]);
 
-  const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState<AdminTicketModel | null>(null);
   const { sendRequest: deleteRequest } = useAPi<null, BaseResponse<null>>();
   const [ConfirmModal, confirmation] = useConfirm(
@@ -47,11 +46,9 @@ const AdminFlightTicketsGrid: React.FC<AdminFlightTicketsGridProps> = ({
 
   function onEdit(ticket: AdminTicketModel) {
     setCurrentRow(ticket);
-    setShowEditModal(true);
   }
 
   function onCloseModal(submitted: boolean) {
-    setShowEditModal(false);
     setCurrentRow(null);
     if (submitted) {
       onChange();
@@ -82,7 +79,6 @@ const AdminFlightTicketsGrid: React.FC<AdminFlightTicketsGridProps> = ({
       <ConfirmModal />
       {currentRow && (
         <EditTicketModal
-          showModal={showEditModal}
           onCloseModal={onCloseModal}
           ticket={currentRow}
         />
