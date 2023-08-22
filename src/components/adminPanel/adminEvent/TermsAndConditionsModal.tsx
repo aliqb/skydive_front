@@ -67,34 +67,36 @@ const TermsAndConditionsModal: React.FC<TermsAndConditionsModalProps> = ({
     <SDModal
       show={showModal}
       onClose={() => resetModal(false)}
-      containerClass="!p-0 border-none !w-[900px]"
+      containerClass="!w-[900px]"
     >
       <SDModal.Header color="primary2">قوانین و شرایط رویداد</SDModal.Header>
-      <div className="max-h-[80vh] overflow-auto">
-        <div className="flex flex-col gap-3 my-5 items-center text-slate-700 text-center w-full ">
-          <div className="flex gap-6">
-            <p className="font-semibold">رویداد</p>
-            <p>{skyDiveEvent.title}</p>
+      <SDModal.Body>
+        <div>
+          <div className="flex flex-col gap-3 my-5 items-center text-slate-700 text-center w-full ">
+            <div className="flex gap-6">
+              <p className="font-semibold">رویداد</p>
+              <p>{skyDiveEvent.title}</p>
+            </div>
           </div>
+          <form className=" overflow-auto" onSubmit={onSubmit}>
+            <div className="p-3">
+              {/* <CKEditor editor={Editor as any}></CKEditor> */}
+              <SDEditor data={content} onChange={onChangeContent} />
+            </div>
+            <div className="w-full px-5 py-5 flex justify-center items-center">
+              <SDButton
+                color="primary2"
+                type="submit"
+                className="w-96"
+                disabled={isPending}
+              >
+                {isPending && <SDSpinner color="blue" />}
+                ذخیره
+              </SDButton>
+            </div>
+          </form>
         </div>
-        <form className=" overflow-auto" onSubmit={onSubmit}>
-          <div className="p-3">
-            {/* <CKEditor editor={Editor as any}></CKEditor> */}
-            <SDEditor data={content} onChange={onChangeContent} />
-          </div>
-          <div className="w-full px-5 py-5 flex justify-center items-center">
-            <SDButton
-              color="primary2"
-              type="submit"
-              className="w-96"
-              disabled={isPending}
-            >
-              {isPending && <SDSpinner color="blue" />}
-              ذخیره
-            </SDButton>
-          </div>
-        </form>
-      </div>
+      </SDModal.Body>
     </SDModal>
   );
 };

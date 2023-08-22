@@ -15,15 +15,16 @@ import { BaseResponse } from "../../../models/shared.models";
 import { toast } from "react-toastify";
 import SDSpinner from "../../shared/Spinner";
 
-interface EditTicketModal extends AdminTicketModel {
+interface EditTicketModal{
   showModal: boolean;
   onCloseModal: (submitted: boolean) => void;
+  ticket:AdminTicketModel
 }
 
 const EditTicketModal: React.FC<EditTicketModal> = ({
   showModal,
   onCloseModal,
-  ...ticket
+  ticket
 }) => {
   const {
     register,
@@ -85,7 +86,7 @@ const EditTicketModal: React.FC<EditTicketModal> = ({
     reset({
       ticketTypeId: ticket.ticketTypeId,
     });
-  }, [ticket, reset]);
+  }, [ticket, reset,tickeTypeResponse]);
 
   useEffect(() => {
     const fetchEventTicketType = () => {
@@ -105,76 +106,78 @@ const EditTicketModal: React.FC<EditTicketModal> = ({
     <SDModal
       show={showModal}
       onClose={() => resetModal(false)}
-      containerClass="!p-0 !w-[480px]"
+      containerClass="!w-[480px]"
     >
       <SDModal.Header color="primary2">ویرایش بلیت</SDModal.Header>
-      <div className="max-h-[80vh] overflow-auto px-3 py-5">
-        <div className="flex flex-col gap-3 items-center text-slate-700 text-center w-full">
-          <div className="flex gap-6">
-            <p className="font-semibold">شماره بلیت</p>
-            <p>{ticket.ticketNumber}</p>
-          </div>
-        </div>
-        <form className="mt-6" onSubmit={handleSubmit(onSubmit)}>
-          <div className="w-full flex flex-wrap">
-            <div className="w-full md:w-1/2 px-5 py-3">
-              <SDLabel htmlFor="tpyeId" className="mb-2">
-                نوع بلیت
-              </SDLabel>
-              <SDSelect
-                id="tpyeId"
-                invalid={!!formErrors.ticketTypeId}
-                {...register("ticketTypeId", {
-                  required: "فیلد اجباری است.",
-                })}
-              >
-                <option></option>
-                {tickeTypeResponse?.content &&
-                  tickeTypeResponse.content.map((item, index) => {
-                    return (
-                      <option key={index} value={item.id}>
-                        {item.title}
-                      </option>
-                    );
-                  })}
-              </SDSelect>
-              {formErrors.ticketTypeId?.message && (
-                <p className="text-red-600 text-xs pr-2 mt-2">
-                  {formErrors.ticketTypeId.message}
-                </p>
-              )}
+      <SDModal.Body>
+        <div className="px-3 py-5">
+          <div className="flex flex-col gap-3 items-center text-slate-700 text-center w-full">
+            <div className="flex gap-6">
+              <p className="font-semibold">شماره بلیت</p>
+              <p>{ticket.ticketNumber}</p>
             </div>
-            <div className="w-full md:w-1/2 px-5 py-3">
-              <SDLabel htmlFor="reservableQty" className="mb-2">
-                قابل رزرو
-              </SDLabel>
-              <div className="mt-3">
-                <RadioButton
-                  groupName="reservable"
-                  options={reservableOptions}
-                  selectedOption={
-                    selectedReservableOption
-                      ? "reservable-active"
-                      : "reservable-inactive"
-                  }
-                  onOptionChange={handleReservableOptionChange}
-                />
+          </div>
+          <form className="mt-6" onSubmit={handleSubmit(onSubmit)}>
+            <div className="w-full flex flex-wrap">
+              <div className="w-full md:w-1/2 px-5 py-3">
+                <SDLabel htmlFor="tpyeId" className="mb-2">
+                  نوع بلیت
+                </SDLabel>
+                <SDSelect
+                  id="tpyeId"
+                  invalid={!!formErrors.ticketTypeId}
+                  {...register("ticketTypeId", {
+                    required: "فیلد اجباری است.",
+                  })}
+                >
+                  <option></option>
+                  {tickeTypeResponse?.content &&
+                    tickeTypeResponse.content.map((item, index) => {
+                      return (
+                        <option key={index} value={item.id}>
+                          {item.title}
+                        </option>
+                      );
+                    })}
+                </SDSelect>
+                {formErrors.ticketTypeId?.message && (
+                  <p className="text-red-600 text-xs pr-2 mt-2">
+                    {formErrors.ticketTypeId.message}
+                  </p>
+                )}
+              </div>
+              <div className="w-full md:w-1/2 px-5 py-3">
+                <SDLabel htmlFor="reservableQty" className="mb-2">
+                  قابل رزرو
+                </SDLabel>
+                <div className="mt-3">
+                  <RadioButton
+                    groupName="reservable"
+                    options={reservableOptions}
+                    selectedOption={
+                      selectedReservableOption
+                        ? "reservable-active"
+                        : "reservable-inactive"
+                    }
+                    onOptionChange={handleReservableOptionChange}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-          <div className="w-full px-5 pt-5 flex justify-start items-center">
-            <SDButton
-              color="primary2"
-              type="submit"
-              className="w-full"
-              disabled={editPending}
-            >
-              {editPending && <SDSpinner color="blue" />}
-              ذخیره
-            </SDButton>
-          </div>
-        </form>
-      </div>
+            <div className="w-full px-5 pt-5 flex justify-start items-center">
+              <SDButton
+                color="primary2"
+                type="submit"
+                className="w-full"
+                disabled={editPending}
+              >
+                {editPending && <SDSpinner color="blue" />}
+                ذخیره
+              </SDButton>
+            </div>
+          </form>
+        </div>
+      </SDModal.Body>
     </SDModal>
   );
 };

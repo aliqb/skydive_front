@@ -25,80 +25,88 @@ const RemoveTicketModal: React.FC<AddTicketModalProps> = ({
     []
   );
 
-  const userCode = useAppSelector(state=>state.auth.code);
+  const userCode = useAppSelector((state) => state.auth.code);
 
   useEffect(() => {
     setShowModal(show);
   }, [show]);
 
-  const onChangeCheckbox : React.ChangeEventHandler<HTMLInputElement> = (evnet)=>{
+  const onChangeCheckbox: React.ChangeEventHandler<HTMLInputElement> = (
+    evnet
+  ) => {
     const checked = evnet.target.checked;
     const value = +evnet.target.value;
-    const foundTicket = aggregatedTicket.ticketMembers.find(ticket=>ticket.userCode == value);
+    const foundTicket = aggregatedTicket.ticketMembers.find(
+      (ticket) => ticket.userCode == value
+    );
     const selectedTicketsTemp = [...selectedTickets];
-    if(foundTicket){
-        if(checked){
-            selectedTicketsTemp.push(foundTicket)
-        }else{
-            const index = selectedTicketsTemp.findIndex(ticket=>ticket.userCode == value);
-            selectedTicketsTemp.splice(index,1)
-        }
+    if (foundTicket) {
+      if (checked) {
+        selectedTicketsTemp.push(foundTicket);
+      } else {
+        const index = selectedTicketsTemp.findIndex(
+          (ticket) => ticket.userCode == value
+        );
+        selectedTicketsTemp.splice(index, 1);
+      }
     }
-    console.log(selectedTicketsTemp)
+    console.log(selectedTicketsTemp);
     setSelectedTickets(selectedTicketsTemp);
-
-  }
+  };
 
   function closeModal() {
     setShowModal(false);
-    setSelectedTickets([])
+    setSelectedTickets([]);
     onClose();
   }
 
-  function onsubmit(event:FormEvent) {
+  function onsubmit(event: FormEvent) {
     event.preventDefault();
     setSelectedTickets([]);
     onSubmit(selectedTickets);
     onClose();
   }
 
-  
   return (
-    <SDModal
-      show={showModal}
-      containerClass="pt-0 px-0 pb-2"
-      onClose={closeModal}
-    >
+    <SDModal show={showModal} containerClass="!pb-2" onClose={closeModal}>
       <SDModal.Header>حذف بلیت از سبد</SDModal.Header>
-
-      <form onSubmit={onsubmit}>
-        <div className="p-5 w-80">
-          {aggregatedTicket.ticketMembers.map((item, index) => {
-            return (
-              <div key={index} className="flex items-center mb-4">
-                <input
-                  id={item.userCode.toString()}
-                  type="checkbox"
-                  value={item.userCode}
-                  onChange={onChangeCheckbox}
-                  className="ml-3 w-5 h-5 text-primary-500 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
-                <label
-                  htmlFor={item.userCode.toString()}
-                  className="ml-2  font-medium text-slate-600 dark:text-gray-300"
-                >
-                  بلیت {(!item.userCode || (item.userCode == userCode)) ? `شما` :  `کاربر با کد ${item.userCode}`}
-                </label>
-              </div>
-            );
-          })}
-        </div>
-        <div className="flex justify-end px-3">
-          <SDButton type="submit" color="primary" disabled={selectedTickets.length === 0}>
-            حذف
-          </SDButton>
-        </div>
-      </form>
+      <SDModal.Body>
+        <form onSubmit={onsubmit}>
+          <div className="p-5 w-80">
+            {aggregatedTicket.ticketMembers.map((item, index) => {
+              return (
+                <div key={index} className="flex items-center mb-4">
+                  <input
+                    id={item.userCode.toString()}
+                    type="checkbox"
+                    value={item.userCode}
+                    onChange={onChangeCheckbox}
+                    className="ml-3 w-5 h-5 text-primary-500 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                  <label
+                    htmlFor={item.userCode.toString()}
+                    className="ml-2  font-medium text-slate-600 dark:text-gray-300"
+                  >
+                    بلیت{" "}
+                    {!item.userCode || item.userCode == userCode
+                      ? `شما`
+                      : `کاربر با کد ${item.userCode}`}
+                  </label>
+                </div>
+              );
+            })}
+          </div>
+          <div className="flex justify-end px-3">
+            <SDButton
+              type="submit"
+              color="primary"
+              disabled={selectedTickets.length === 0}
+            >
+              حذف
+            </SDButton>
+          </div>
+        </form>
+      </SDModal.Body>
     </SDModal>
   );
 };

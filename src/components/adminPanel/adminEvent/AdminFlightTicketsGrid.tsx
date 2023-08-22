@@ -84,7 +84,7 @@ const AdminFlightTicketsGrid: React.FC<AdminFlightTicketsGridProps> = ({
         <EditTicketModal
           showModal={showEditModal}
           onCloseModal={onCloseModal}
-          {...currentRow}
+          ticket={currentRow}
         />
       )}
 

@@ -128,193 +128,195 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
       <SDModal
         show={showModal}
         onClose={() => resetModal(false)}
-        containerClass="!p-0 lg:!w-[480px]"
+        containerClass="lg:!w-[480px]"
       >
         <SDModal.Header color="primary2">
           {eventData ? "ویرایش رویداد" : "ثبت رویداد جدید"}
         </SDModal.Header>
-        <form
-          onSubmit={handleSubmit(handleSaveButton)}
-          className="max-h-[80vh] overflow-auto"
-        >
-          <div className="px-6 py-8">
-            <div className="flex flex-row mb-6 w-full mt-5">
-              <div className="flex flex-col">
-                <SDLabel className="mb-2">کد</SDLabel>
-                <SDTextInput
-                  type="text"
-                  id="eventCode"
-                  defaultValue={eventData?.code || lastCode}
-                  disabled={true}
-                />
+        <SDModal.Body>
+          <form
+            onSubmit={handleSubmit(handleSaveButton)}
+            
+          >
+            <div className="px-6 py-8">
+              <div className="flex flex-row mb-6 w-full mt-5">
+                <div className="flex flex-col">
+                  <SDLabel className="mb-2">کد</SDLabel>
+                  <SDTextInput
+                    type="text"
+                    id="eventCode"
+                    defaultValue={eventData?.code || lastCode}
+                    disabled={true}
+                  />
+                </div>
+                <div className="flex flex-col mr-4 w-full">
+                  <SDLabel className="mb-2">عنوان رویداد </SDLabel>
+                  <SDTextInput
+                    type="text"
+                    id="title"
+                    invalid={!!formErrors.title}
+                    {...register("title", { required: "فیلد اجباری است." })}
+                  />
+                  {formErrors.title?.message && (
+                    <p className="text-red-600 text-sm pr-2 mt-2">
+                      {formErrors.title.message}
+                    </p>
+                  )}
+                </div>
               </div>
-              <div className="flex flex-col mr-4 w-full">
-                <SDLabel className="mb-2">عنوان رویداد </SDLabel>
+              <div className="mb-6 w-full mt-5">
+                <SDLabel>محل رویداد</SDLabel>
                 <SDTextInput
                   type="text"
-                  id="title"
-                  invalid={!!formErrors.title}
-                  {...register("title", { required: "فیلد اجباری است." })}
+                  id="location"
+                  {...register("location", { required: "فیلد اجباری است." })}
+                  invalid={!!formErrors.location}
                 />
-                {formErrors.title?.message && (
+                {formErrors.location?.message && (
                   <p className="text-red-600 text-sm pr-2 mt-2">
-                    {formErrors.title.message}
+                    {formErrors.location.message}
                   </p>
                 )}
               </div>
-            </div>
-            <div className="mb-6 w-full mt-5">
-              <SDLabel>محل رویداد</SDLabel>
-              <SDTextInput
-                type="text"
-                id="location"
-                {...register("location", { required: "فیلد اجباری است." })}
-                invalid={!!formErrors.location}
-              />
-              {formErrors.location?.message && (
-                <p className="text-red-600 text-sm pr-2 mt-2">
-                  {formErrors.location.message}
-                </p>
-              )}
-            </div>
-            <div className="flex items-center flex-wrap  justify-between">
-              <div className="w-full md:w-1/2 mb-5 md:mb-0">
-                <SDLabel>تاریخ شروع</SDLabel>
+              <div className="flex items-center flex-wrap  justify-between">
+                <div className="w-full md:w-1/2 mb-5 md:mb-0">
+                  <SDLabel>تاریخ شروع</SDLabel>
 
-                <div>
-                  <SDDatepicker
-                    name="startDate"
-                    required={true}
-                    control={control}
-                  ></SDDatepicker>
-                  {formErrors.startDate?.message && (
-                    <p className="text-red-600 text-sm pr-2 mt-2">
-                      {formErrors.startDate.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-              <div className="w-full md:pr-3 md:w-1/2">
-                <SDLabel>تاریخ پایان</SDLabel>
-
-                <div>
-                  <SDDatepicker
-                    name="endDate"
-                    required={true}
-                    control={control}
-                  ></SDDatepicker>
-                  {formErrors.endDate?.message && (
-                    <p className="text-red-600 text-sm pr-2 mt-2">
-                      {formErrors.endDate.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="w-full flex  mt-3 flex-wrap">
-              <div className="flex flex-col w-full md:w-1/2 mt-5 mb-6">
-                <div className="flex flex-col">
                   <div>
-                    <SDLabel>وضعیت</SDLabel>
-                  </div>
-                  <SDSelect
-                    id="eventStatus"
-                    invalid={!!formErrors.statusId}
-                    {...register("statusId", {
-                      required: "فیلد اجباری است.",
-                    })}
-                  >
-                    <option value="">انتخاب کنید</option>
-                    {eventStatusData &&
-                      eventStatusData.map((status, index) => (
-                        <option
-                          key={index}
-                          value={status.id}
-                          className="text-right"
-                        >
-                          {status.title}
-                        </option>
-                      ))}
-                  </SDSelect>
-                  {formErrors.statusId?.message && (
-                    <p className="text-red-600 text-sm pr-2 mt-2">
-                      {formErrors.statusId.message}
-                    </p>
-                  )}
-                </div>
-                <div className="flex flex-col mt-5 justify-center">
-                  <div>
-                    <SDLabel>تصویر</SDLabel>
-                  </div>
-                  <div className="mt-3">
-                    {!uploadedImageId && eventData?.image && (
-                      <a
-                        href={fileBase + eventData.image}
-                        target="_blank"
-                        className="block w-40 max-h-48 mb-2"
-                      >
-                        <img
-                          className="w-full h-full object-contain"
-                          src={fileBase + eventData.image}
-                          alt=""
-                        />
-                      </a>
+                    <SDDatepicker
+                      name="startDate"
+                      required={true}
+                      control={control}
+                    ></SDDatepicker>
+                    {formErrors.startDate?.message && (
+                      <p className="text-red-600 text-sm pr-2 mt-2">
+                        {formErrors.startDate.message}
+                      </p>
                     )}
-                    <div className="pr-3">
-                      <LabeledFileInput
-                        accepFiles="image/*"
-                        onUpload={onUploadImage}
-                        onRemove={onRemoveImage}
-                        title="image"
+                  </div>
+                </div>
+                <div className="w-full md:pr-3 md:w-1/2">
+                  <SDLabel>تاریخ پایان</SDLabel>
+
+                  <div>
+                    <SDDatepicker
+                      name="endDate"
+                      required={true}
+                      control={control}
+                    ></SDDatepicker>
+                    {formErrors.endDate?.message && (
+                      <p className="text-red-600 text-sm pr-2 mt-2">
+                        {formErrors.endDate.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="w-full flex  mt-3 flex-wrap">
+                <div className="flex flex-col w-full md:w-1/2 mt-5 mb-6">
+                  <div className="flex flex-col">
+                    <div>
+                      <SDLabel>وضعیت</SDLabel>
+                    </div>
+                    <SDSelect
+                      id="eventStatus"
+                      invalid={!!formErrors.statusId}
+                      {...register("statusId", {
+                        required: "فیلد اجباری است.",
+                      })}
+                    >
+                      <option value="">انتخاب کنید</option>
+                      {eventStatusData &&
+                        eventStatusData.map((status, index) => (
+                          <option
+                            key={index}
+                            value={status.id}
+                            className="text-right"
+                          >
+                            {status.title}
+                          </option>
+                        ))}
+                    </SDSelect>
+                    {formErrors.statusId?.message && (
+                      <p className="text-red-600 text-sm pr-2 mt-2">
+                        {formErrors.statusId.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-col mt-5 justify-center">
+                    <div>
+                      <SDLabel>تصویر</SDLabel>
+                    </div>
+                    <div className="mt-3">
+                      {!uploadedImageId && eventData?.image && (
+                        <a
+                          href={fileBase + eventData.image}
+                          target="_blank"
+                          className="block w-40 max-h-48 mb-2"
+                        >
+                          <img
+                            className="w-full h-full object-contain"
+                            src={fileBase + eventData.image}
+                            alt=""
+                          />
+                        </a>
+                      )}
+                      <div className="pr-3">
+                        <LabeledFileInput
+                          accepFiles="image/*"
+                          onUpload={onUploadImage}
+                          onRemove={onRemoveImage}
+                          title="image"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col w-full md:pr-3  md:w-1/2 mt-5">
+                  <div className="flex flex-col  ">
+                    <SDLabel className="mr-5">قابلیت لغو</SDLabel>
+                    <div>
+                      <RadioButton
+                        groupName="voidable"
+                        options={CancelOptions}
+                        selectedOption={
+                          selectedCancelOption
+                            ? "cancel-active"
+                            : "cancel-inactive"
+                        }
+                        onOptionChange={handleCancelOptionChange}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col mt-6 ">
+                    <SDLabel className="mr-5">ارزش افزوده</SDLabel>
+                    <div>
+                      <RadioButton
+                        groupName="subjecToVAT"
+                        options={VATOptions}
+                        selectedOption={
+                          selectedVATOption ? "vat-active" : "vat-inactive"
+                        }
+                        onOptionChange={handleVATOptionChange}
                       />
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col w-full md:pr-3  md:w-1/2 mt-5">
-                <div className="flex flex-col  ">
-                  <SDLabel className="mr-5">قابلیت لغو</SDLabel>
-                  <div>
-                    <RadioButton
-                      groupName="voidable"
-                      options={CancelOptions}
-                      selectedOption={
-                        selectedCancelOption
-                          ? "cancel-active"
-                          : "cancel-inactive"
-                      }
-                      onOptionChange={handleCancelOptionChange}
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col mt-6 ">
-                  <SDLabel className="mr-5">ارزش افزوده</SDLabel>
-                  <div>
-                    <RadioButton
-                      groupName="subjecToVAT"
-                      options={VATOptions}
-                      selectedOption={
-                        selectedVATOption ? "vat-active" : "vat-inactive"
-                      }
-                      onOptionChange={handleVATOptionChange}
-                    />
-                  </div>
-                </div>
-              </div>
             </div>
-          </div>
-          <div className="w-full px-5 pb-6 flex justify-start items-center">
-            <SDButton
-              type="submit"
-              className="w-full "
-              color="primary2"
-              disabled={isPending}
-            >
-              {isPending && <SDSpinner />}
-              ذخیره
-            </SDButton>
-          </div>
-        </form>
+            <div className="w-full px-5 pb-6 flex justify-start items-center">
+              <SDButton
+                type="submit"
+                className="w-full "
+                color="primary2"
+                disabled={isPending}
+              >
+                {isPending && <SDSpinner />}
+                ذخیره
+              </SDButton>
+            </div>
+          </form>
+        </SDModal.Body>
       </SDModal>
     </div>
   );

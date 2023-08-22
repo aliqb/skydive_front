@@ -82,102 +82,100 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
   };
 
   return (
-    <SDModal
-      show={showModal}
-      containerClass="pt-0 px-0 pb-2"
-      onClose={closeModal}
-    >
+    <SDModal show={showModal} containerClass="!pb-2" onClose={closeModal}>
       <SDModal.Header>رزرو بلیت</SDModal.Header>
-      <form onSubmit={handleSubmit(onsubmit)}>
-        <div className="p-5 w-80">
-          <div className="mb-2">
-            <input
-              id="self"
-              type="radio"
-              value="self"
-              checked={owner === "self"}
-              onChange={onChangeOwner}
-              name="owner"
-              className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-            />
-            <label
-              htmlFor="self"
-              className="mr-2  font-medium text-slate-600 dark:text-gray-300"
-            >
-              رزرو برای خود
-            </label>
-          </div>
-          <div className="mb-3">
-            <input
-              id="other"
-              type="radio"
-              value="other"
-              checked={owner === "other"}
-              onChange={onChangeOwner}
-              name="owner"
-              className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-            />
-            <label
-              htmlFor="other"
-              className="mr-2  font-medium text-slate-600 dark:text-gray-300"
-            >
-              رزرو برای دیگری
-            </label>
-          </div>
-          {owner === "other" && (
-            <div className="mb-3">
-              <div>
-                <SDLabel htmlFor="userCode">کد کاربر</SDLabel>
-                <div>
-                  <SDTextInput
-                    type="number"
-                    id="userCode"
-                    invalid={!!errors.userCode}
-                    {...register("userCode", { required: "فیلد الزامی است" })}
-                    magnifier={true}
-                    onButtonClick={() =>
-                      handleButtonClick({ userCode: watch("userCode") })
-                    }
-                    isPending={isPending}
-                    onChange={handleUserCodeChange}
-                  />
-                </div>
-                <SDLabel htmlFor="username" className="mt-5">
-                  نام کاربر
-                </SDLabel>
-                <div>
-                  <SDTextInput
-                    type="text"
-                    id="username"
-                    invalid={!!errors.userCode}
-                    disabled={true}
-                    value={fullName || ""}
-                  />
-                </div>
-                {usernameError && (
-                  <p className="text-red-600 text-sm pr-2 mt-1 text-center">
-                    {usernameError}
-                  </p>
-                )}
-                {errors.userCode?.message && (
-                  <p className="text-red-600 text-sm pr-2 mt-2">
-                    {errors.userCode.message}
-                  </p>
-                )}
-              </div>
+      <SDModal.Body>
+        <form onSubmit={handleSubmit(onsubmit)}>
+          <div className="p-5 w-80">
+            <div className="mb-2">
+              <input
+                id="self"
+                type="radio"
+                value="self"
+                checked={owner === "self"}
+                onChange={onChangeOwner}
+                name="owner"
+                className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+              <label
+                htmlFor="self"
+                className="mr-2  font-medium text-slate-600 dark:text-gray-300"
+              >
+                رزرو برای خود
+              </label>
             </div>
-          )}
-        </div>
-        <div className="flex justify-end px-3">
-          <SDButton
-            type="submit"
-            color="primary"
-            disabled={owner === "other" && !fullNameFetched}
-          >
-            رزرو
-          </SDButton>
-        </div>
-      </form>
+            <div className="mb-3">
+              <input
+                id="other"
+                type="radio"
+                value="other"
+                checked={owner === "other"}
+                onChange={onChangeOwner}
+                name="owner"
+                className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
+              <label
+                htmlFor="other"
+                className="mr-2  font-medium text-slate-600 dark:text-gray-300"
+              >
+                رزرو برای دیگری
+              </label>
+            </div>
+            {owner === "other" && (
+              <div className="mb-3">
+                <div>
+                  <SDLabel htmlFor="userCode">کد کاربر</SDLabel>
+                  <div>
+                    <SDTextInput
+                      type="number"
+                      id="userCode"
+                      invalid={!!errors.userCode}
+                      {...register("userCode", { required: "فیلد الزامی است" })}
+                      magnifier={true}
+                      onButtonClick={() =>
+                        handleButtonClick({ userCode: watch("userCode") })
+                      }
+                      isPending={isPending}
+                      onChange={handleUserCodeChange}
+                    />
+                  </div>
+                  <SDLabel htmlFor="username" className="mt-5">
+                    نام کاربر
+                  </SDLabel>
+                  <div>
+                    <SDTextInput
+                      type="text"
+                      id="username"
+                      invalid={!!errors.userCode}
+                      disabled={true}
+                      value={fullName || ""}
+                    />
+                  </div>
+                  {usernameError && (
+                    <p className="text-red-600 text-sm pr-2 mt-1 text-center">
+                      {usernameError}
+                    </p>
+                  )}
+                  {errors.userCode?.message && (
+                    <p className="text-red-600 text-sm pr-2 mt-2">
+                      {errors.userCode.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="flex justify-end px-3">
+            <SDButton
+              type="submit"
+              color="primary"
+              disabled={owner === "other" && !fullNameFetched}
+            >
+              رزرو
+            </SDButton>
+          </div>
+        </form>
+      </SDModal.Body>
     </SDModal>
   );
 };

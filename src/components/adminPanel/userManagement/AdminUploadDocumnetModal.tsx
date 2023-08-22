@@ -125,55 +125,57 @@ const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
       containerClass="!p-0 lg:!w-[480px]"
     >
       <SDModal.Header color="primary2">بارگذاری مدارک</SDModal.Header>
-      <form onSubmit={onSubmit} className="max-h-[80vh] overflow-auto">
-        <div className="px-6 py-6">
-          <AdminDocumentUploadItem
-            title="کارت ملی"
-            documentData={nationalCardDocumentModel}
-            validation={submitted}
-            onChange={(item) => {
-              handleChangeDocument(item, setNationalCardDocumentModel);
-            }}
-          />
-          <AdminDocumentUploadItem
-            title="صفحه آخر Log Book"
-            documentData={logBookDocumenttModel}
-            validation={submitted}
-            onChange={(item) => {
-              handleChangeDocument(item, setLogBookDocumentModel);
-            }}
-          />
-          <AdminDocumentUploadItem
-            title="وکالت‌نامه محضری"
-            documentData={attorneyDocumentModel}
-            validation={submitted}
-            onChange={(item) => {
-              handleChangeDocument(item, setAttorneyDocumentModel);
-            }}
-            minExpireDay={attorneyDocumentsValidityDuration}
-          />
-          <AdminDocumentUploadItem
-            title="مدارک پزشکی"
-            documentData={medicalDocumentModel}
-            validation={submitted}
-            onChange={(item) => {
-              handleChangeDocument(item, setMedicalDocumentModel);
-            }}
-            minExpireDay={medicalDocumentsValidityDuration}
-          />
-        </div>
-        <div className="w-full px-5 pb-6 flex justify-start items-center">
-          <SDButton
-            color="primary2"
-            type="submit"
-            className="w-full"
-            disabled={isPending || !anyChange}
-          >
-            {isPending && <SDSpinner />}
-            ذخیره
-          </SDButton>
-        </div>
-      </form>
+      <SDModal.Body>
+        <form onSubmit={onSubmit}>
+          <div className="px-6 py-6">
+            <AdminDocumentUploadItem
+              title="کارت ملی"
+              documentData={nationalCardDocumentModel}
+              validation={submitted}
+              onChange={(item) => {
+                handleChangeDocument(item, setNationalCardDocumentModel);
+              }}
+            />
+            <AdminDocumentUploadItem
+              title="صفحه آخر Log Book"
+              documentData={logBookDocumenttModel}
+              validation={submitted}
+              onChange={(item) => {
+                handleChangeDocument(item, setLogBookDocumentModel);
+              }}
+            />
+            <AdminDocumentUploadItem
+              title="وکالت‌نامه محضری"
+              documentData={attorneyDocumentModel}
+              validation={submitted}
+              onChange={(item) => {
+                handleChangeDocument(item, setAttorneyDocumentModel);
+              }}
+              minExpireDay={attorneyDocumentsValidityDuration}
+            />
+            <AdminDocumentUploadItem
+              title="مدارک پزشکی"
+              documentData={medicalDocumentModel}
+              validation={submitted}
+              onChange={(item) => {
+                handleChangeDocument(item, setMedicalDocumentModel);
+              }}
+              minExpireDay={medicalDocumentsValidityDuration}
+            />
+          </div>
+          <div className="w-full px-5 pb-6 flex justify-start items-center">
+            <SDButton
+              color="primary2"
+              type="submit"
+              className="w-full"
+              disabled={isPending || !anyChange}
+            >
+              {isPending && <SDSpinner />}
+              ذخیره
+            </SDButton>
+          </div>
+        </form>
+      </SDModal.Body>
     </SDModal>
   );
 };
