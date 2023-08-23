@@ -3,6 +3,7 @@ import { GridRowActions, GridRowModel } from "./grid.types";
 import SDTooltip from "../Tooltip";
 import GridRowOtherActionComponent from "./GridOtherRowActionComponent";
 import GridRowMoreActionComponent from "./GridRowMoreActionsComponent";
+import { useCallback, useState } from "react";
 
 interface GridRowProps<T> {
   row: GridRowModel<T>;
@@ -19,11 +20,33 @@ function GridRow<T>({
   onEditRow,
   onRemoveRow,
 }: GridRowProps<T>) {
+  const [lastTouched, setLastTouched] = useState<number>(0);
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent, row: GridRowModel<T>) => {
+      e.stopPropagation();
+      e.preventDefault();
+      if (!onRowDobuleClisk) {
+        return;
+      }
+      const currentTime = new Date().getTime();
+      const tapLength = currentTime - lastTouched;
+      setLastTouched(currentTime);
+
+      if (tapLength < 300 && tapLength > 0) {
+        e.preventDefault();
+        onRowDobuleClisk(row.data);
+      }
+    },
+    [lastTouched, onRowDobuleClisk]
+  );
   return (
     <Table.Row
       onDoubleClick={(event) => {
         event.stopPropagation();
         onRowDobuleClisk && onRowDobuleClisk(row.data);
+      }}
+      onTouchEnd={(e) => {
+        handleTouchEnd(e, row);
       }}
       className={`${
         onRowDobuleClisk && "!cursor-pointer"

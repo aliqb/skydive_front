@@ -240,7 +240,7 @@ function MainGrid<T = any>(
                 )}
                 {!isPending &&
                   gridRows.map((row, index) => (
-                    <GridRow
+                    <GridRow<T>
                       key={index}
                       row={row}
                       rowActions={rowActions}
