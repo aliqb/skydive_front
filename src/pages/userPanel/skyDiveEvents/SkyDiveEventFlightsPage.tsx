@@ -53,7 +53,6 @@ const SkyDiveEventFlightsPage: React.FC = () => {
 
     const isNearBottom = scrollTop + clientHeight >= scrollHeight - threshold;
     if (isNearBottom && !atTheEnd) {
-      // console.log("Reached near the end of the page!");
       setAddTheEnd(true);
     }
     if(scrollTop === 0){

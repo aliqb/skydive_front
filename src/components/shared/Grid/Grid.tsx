@@ -113,7 +113,6 @@ function MainGrid<T = any>(
   );
 
   const onRowDobuleClisk = (item: T) => {
-    console.log(item);
     if (onDoubleClick) {
       onDoubleClick(item);
     }

@@ -50,7 +50,6 @@ const RemoveTicketModal: React.FC<AddTicketModalProps> = ({
         selectedTicketsTemp.splice(index, 1);
       }
     }
-    console.log(selectedTicketsTemp);
     setSelectedTickets(selectedTicketsTemp);
   };
 

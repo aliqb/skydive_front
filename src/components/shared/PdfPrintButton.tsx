@@ -18,7 +18,6 @@ const PdfPrintButton: React.FC<PdfPrintButtonProps> = ({
         responseType: "blob",
       },
       (response) => {
-        console.log(response);
         const url = URL.createObjectURL(response);
 
         const link = document.createElement("a");
