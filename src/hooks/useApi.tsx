@@ -3,7 +3,7 @@ import { useCallback, useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./reduxHooks";
 import { BaseResponse } from "../models/shared.models";
 import { authActions } from "../store/auth";
-import { useNavigate } from 'react-router-dom';
+import { removeAuthDataFromLocal } from "../utils/authUtils";
 export const axiosIntance = axios.create({
   baseURL: import.meta.env.VITE_BASE_API_URL,
 });
@@ -12,7 +12,6 @@ export default function useAPi<
   R = BaseResponse<T>,
   ErrorType = { message: string }
 >() {
-  const navigate = useNavigate();
   const [isPending, setIsPending] = useState<boolean>(false);
   const [errors, setErrors] = useState<ErrorType | undefined>(undefined);
   const [data, setData] = useState<R | null>(null);
@@ -38,7 +37,8 @@ export default function useAPi<
         const axiosError: AxiosError<ErrorType> =
           error as AxiosError<ErrorType>;
         if (axiosError.response?.status === 401) {
-          navigate('/auth');
+          removeAuthDataFromLocal()
+          dispatch(authActions.logOut())
           return;
         }
         setErrors(axiosError.response?.data);
@@ -49,7 +49,7 @@ export default function useAPi<
         setIsPending(false);
       }
     },
-    [navigate]
+    []
   );
 
   useEffect(() => {
