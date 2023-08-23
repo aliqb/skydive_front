@@ -76,14 +76,13 @@ const AdminFlighList: React.FC<{ dayId: string; date: string }> = ({
     <>
       <ConfirmModal />
 
-      {showAddModal && (
-        <AddFlightModal
-          showModal={showAddModal}
-          dayId={dayId}
-          date={date}
-          onCloseModal={onCloseAddModal}
-        />
-      )}
+      <AddFlightModal
+        showModal={showAddModal}
+        dayId={dayId}
+        date={date}
+        onCloseModal={onCloseAddModal}
+      />
+
       <div className="min-h-[300px]">
         {(isPending || deletePending) && (
           <div className="flex justify-center mt-8">

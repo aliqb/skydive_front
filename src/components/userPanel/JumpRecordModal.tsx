@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import SDModal from "../shared/Modal";
+import SDModal from "../shared/Modal/Modal";
 import SDLabel from "../shared/Label";
 import SDDatepicker from "../shared/DatePicker";
 import SDTextInput from "../shared/TextInput";
@@ -98,209 +98,188 @@ const JumpRecordModal: React.FC<JumpRecordModalProps> = ({
       onClose={() => resetModal(false)}
       containerClass="!p-0 lg:!w-[480px]"
     >
-      <div
-        className={`border-b text-lg flex justify-between px-6 py-4 ${
-          adminStyling ? "!bg-blue-900" : "!bg-primary-500"
-        } text-white rounded-t-md`}
-      >
-        <span>سابقه پرش جدید</span>
-        <button type="button" onClick={() => resetModal(false)}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-7 h-7 stroke-2"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </div>
-      <form
-        className="max-h-[80vh] overflow-auto px-3 py-5"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <div className="w-full flex flex-wrap">
-          <div className="w-full md:w-1/2 px-5 py-3">
-            <SDLabel htmlFor="date" className="mb-2">
-              تاریخ
-            </SDLabel>
-            <SDDatepicker
-              name="date"
-              required={true}
-              control={control}
-            ></SDDatepicker>
-            {formErrors.date?.message && (
-              <p className="text-red-600 text-sm pr-2 mt-2">
-                {formErrors.date.message}
-              </p>
-            )}
-          </div>
-          <div className="w-full md:w-1/2 px-5 py-3">
-            <SDLabel htmlFor="location" className="mb-2">
-              محل پرواز
-            </SDLabel>
-            <SDTextInput
-              type="text"
-              id="location"
-              invalid={!!formErrors.location}
-              {...register("location", {
-                required: "فیلد اجباری است.",
-              })}
-            />
-            {formErrors.location?.message && (
-              <p className="text-red-600 text-xs pr-2 mt-2">
-                {formErrors.location.message}
-              </p>
-            )}
-          </div>
-        </div>
-        <div className="w-full flex flex-wrap">
-          <div className="w-full md:w-1/2 px-5 py-3">
-            <SDLabel htmlFor="equipments" className="mb-2">
-              تجهیزات
-            </SDLabel>
-            <SDTextInput
-              type="text"
-              id="equipments"
-              invalid={!!formErrors.equipments}
-              {...register("equipments", {
-                required: "فیلد اجباری است.",
-              })}
-            />
-            {formErrors.equipments?.message && (
-              <p className="text-red-600 text-xs pr-2 mt-2">
-                {formErrors.equipments.message}
-              </p>
-            )}
-          </div>
-          <div className="w-full md:w-1/2 px-5 py-3">
-            <SDLabel htmlFor="planeType" className="mb-2">
-              نوع هواپیما
-            </SDLabel>
-            <SDTextInput
-              type="text"
-              id="planeType"
-              invalid={!!formErrors.planeType}
-              {...register("planeType", {
-                required: "فیلد اجباری است.",
-              })}
-            />
-            {formErrors.planeType?.message && (
-              <p className="text-red-600 text-xs pr-2 mt-2">
-                {formErrors.planeType.message}
-              </p>
-            )}
-          </div>
-        </div>
-        <div className="w-full flex flex-wrap">
-          <div className="w-full md:w-1/2 px-5 py-3">
-            <SDLabel htmlFor="height" className="mb-2">
-              ارتفاع(متر)
-            </SDLabel>
-            <SDTextInput
-              className="ltr"
-              numeric={true}
-              id="height"
-              invalid={!!formErrors.height}
-              {...register("height", {
-                required: "فیلد اجباری است.",
-                valueAsNumber: true,
-                validate: (value) => {
-                  return value > 0 || "مقدار باید بزرگ‌تر از 0 باشد.";
-                },
-              })}
-            />
-            {formErrors.height?.message && (
-              <p className="text-red-600 text-xs pr-2 mt-2">
-                {formErrors.height.message}
-              </p>
-            )}
-          </div>
-          <div className="w-full md:w-1/2 px-5 py-3">
-            <SDLabel className="mb-2">مدت</SDLabel>
-            <div className="flex justify-between items-center">
-              <div className="px-5">
-                <SDTextInput
-                  numeric={true}
-                  id="minutes"
-                  placeholder="mm"
-                  className="ltr text-center placeholder:!text-center"
-                  invalid={!!formErrors.minutes}
-                  {...register("minutes", {
-                    required: "دقیقه نباید خالی باشد.",
-                    valueAsNumber: true,
-                    validate: (value) => {
-                      return (
-                        (value >= 0 && value <= 59) ||
-                        "دقیقه باید بین 0 تا 59 باشد."
-                      );
-                    },
-                  })}
-                />
-              </div>
-
-              <span className="text-3xl">:</span>
-              <div className="px-5">
-                <SDTextInput
-                  numeric={true}
-                  id="hours"
-                  placeholder="hh"
-                  className="ltr text-center placeholder:!text-center"
-                  invalid={!!formErrors.hours}
-                  {...register("hours", {
-                    required: "ساعت نباید خالی باشد.",
-                    valueAsNumber: true,
-                    validate: (value) => {
-                      if (value < 0 || value > 23) {
-                        return "ساعت باید بین 0 تا 23 باشد.";
-                      }
-                      if (+value === 0 && Number(minutesRef.current) === 0) {
-                        return "مدت نمی‌تواند 0 باشد.";
-                      }
-                    },
-                  })}
-                />
-              </div>
+      <SDModal.Header color={adminStyling ? "primary2" : "primary"}>
+        سابقه پرش جدید
+      </SDModal.Header>
+      <SDModal.Body>
+        <form className="px-3 py-5" onSubmit={handleSubmit(onSubmit)}>
+          <div className="w-full flex flex-wrap">
+            <div className="w-full md:w-1/2 px-5 py-3">
+              <SDLabel htmlFor="date" className="mb-2">
+                تاریخ
+              </SDLabel>
+              <SDDatepicker
+                name="date"
+                required={true}
+                control={control}
+              ></SDDatepicker>
+              {formErrors.date?.message && (
+                <p className="text-red-600 text-sm pr-2 mt-2">
+                  {formErrors.date.message}
+                </p>
+              )}
             </div>
-            {(formErrors.minutes?.message || formErrors.hours?.message) && (
-              <p className="text-red-600 text-xs pr-2 mt-2">
-                {`${formErrors.minutes?.message || ""} ${
-                  formErrors.hours?.message || ""
-                }`}
-              </p>
-            )}
+            <div className="w-full md:w-1/2 px-5 py-3">
+              <SDLabel htmlFor="location" className="mb-2">
+                محل پرواز
+              </SDLabel>
+              <SDTextInput
+                type="text"
+                id="location"
+                invalid={!!formErrors.location}
+                {...register("location", {
+                  required: "فیلد اجباری است.",
+                })}
+              />
+              {formErrors.location?.message && (
+                <p className="text-red-600 text-xs pr-2 mt-2">
+                  {formErrors.location.message}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="w-full flex flex-wrap">
-          <div className="w-full px-5 py-3">
-            <SDLabel htmlFor="height" className="mb-2">
-              توضیحات
-            </SDLabel>
-            <SDTextArea
-              id="description"
-              {...register("description")}
-              rows={4}
-            ></SDTextArea>
+          <div className="w-full flex flex-wrap">
+            <div className="w-full md:w-1/2 px-5 py-3">
+              <SDLabel htmlFor="equipments" className="mb-2">
+                تجهیزات
+              </SDLabel>
+              <SDTextInput
+                type="text"
+                id="equipments"
+                invalid={!!formErrors.equipments}
+                {...register("equipments", {
+                  required: "فیلد اجباری است.",
+                })}
+              />
+              {formErrors.equipments?.message && (
+                <p className="text-red-600 text-xs pr-2 mt-2">
+                  {formErrors.equipments.message}
+                </p>
+              )}
+            </div>
+            <div className="w-full md:w-1/2 px-5 py-3">
+              <SDLabel htmlFor="planeType" className="mb-2">
+                نوع هواپیما
+              </SDLabel>
+              <SDTextInput
+                type="text"
+                id="planeType"
+                invalid={!!formErrors.planeType}
+                {...register("planeType", {
+                  required: "فیلد اجباری است.",
+                })}
+              />
+              {formErrors.planeType?.message && (
+                <p className="text-red-600 text-xs pr-2 mt-2">
+                  {formErrors.planeType.message}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="w-full px-5 pt-5 flex justify-start items-center">
-          <SDButton
-            type="submit"
-            color={adminStyling ? "primary2" : "primary"}
-            className="!w-full"
-            disabled={isPending}
-          >
-            {isPending && <SDSpinner />}
-            افزودن
-          </SDButton>
-        </div>
-      </form>
+          <div className="w-full flex flex-wrap">
+            <div className="w-full md:w-1/2 px-5 py-3">
+              <SDLabel htmlFor="height" className="mb-2">
+                ارتفاع(متر)
+              </SDLabel>
+              <SDTextInput
+                className="ltr"
+                numeric={true}
+                id="height"
+                invalid={!!formErrors.height}
+                {...register("height", {
+                  required: "فیلد اجباری است.",
+                  valueAsNumber: true,
+                  validate: (value) => {
+                    return value > 0 || "مقدار باید بزرگ‌تر از 0 باشد.";
+                  },
+                })}
+              />
+              {formErrors.height?.message && (
+                <p className="text-red-600 text-xs pr-2 mt-2">
+                  {formErrors.height.message}
+                </p>
+              )}
+            </div>
+            <div className="w-full md:w-1/2 px-5 py-3">
+              <SDLabel className="mb-2">مدت</SDLabel>
+              <div className="flex justify-between items-center">
+                <div className="px-5">
+                  <SDTextInput
+                    numeric={true}
+                    id="minutes"
+                    placeholder="mm"
+                    className="ltr text-center placeholder:!text-center"
+                    invalid={!!formErrors.minutes}
+                    {...register("minutes", {
+                      required: "دقیقه نباید خالی باشد.",
+                      valueAsNumber: true,
+                      validate: (value) => {
+                        return (
+                          (value >= 0 && value <= 59) ||
+                          "دقیقه باید بین 0 تا 59 باشد."
+                        );
+                      },
+                    })}
+                  />
+                </div>
+
+                <span className="text-3xl">:</span>
+                <div className="px-5">
+                  <SDTextInput
+                    numeric={true}
+                    id="hours"
+                    placeholder="hh"
+                    className="ltr text-center placeholder:!text-center"
+                    invalid={!!formErrors.hours}
+                    {...register("hours", {
+                      required: "ساعت نباید خالی باشد.",
+                      valueAsNumber: true,
+                      validate: (value) => {
+                        if (value < 0 || value > 23) {
+                          return "ساعت باید بین 0 تا 23 باشد.";
+                        }
+                        if (+value === 0 && Number(minutesRef.current) === 0) {
+                          return "مدت نمی‌تواند 0 باشد.";
+                        }
+                      },
+                    })}
+                  />
+                </div>
+              </div>
+              {(formErrors.minutes?.message || formErrors.hours?.message) && (
+                <p className="text-red-600 text-xs pr-2 mt-2">
+                  {`${formErrors.minutes?.message || ""} ${
+                    formErrors.hours?.message || ""
+                  }`}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className="w-full flex flex-wrap">
+            <div className="w-full px-5 py-3">
+              <SDLabel htmlFor="height" className="mb-2">
+                توضیحات
+              </SDLabel>
+              <SDTextArea
+                id="description"
+                {...register("description")}
+                rows={4}
+              ></SDTextArea>
+            </div>
+          </div>
+          <div className="w-full px-5 pt-5 flex justify-start items-center">
+            <SDButton
+              type="submit"
+              color={adminStyling ? "primary2" : "primary"}
+              className="!w-full"
+              disabled={isPending}
+            >
+              {isPending && <SDSpinner />}
+              افزودن
+            </SDButton>
+          </div>
+        </form>
+      </SDModal.Body>
     </SDModal>
   );
 };

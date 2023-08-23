@@ -13,7 +13,7 @@ export interface ColHeader{
   col: ColDef;
   sort: SortStateType
 }
-export class GridRow<T = any> {
+export class GridRowModel<T = any> {
   data: T;
   //   _rowData:{
   //     [key:index] : React.ReactNode | string

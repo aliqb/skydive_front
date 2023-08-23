@@ -263,12 +263,10 @@ const AdminEvents: React.FC = () => {
         <CostModal
           onCloseModal={() => setCostTargetEvent(undefined)}
           rowId={costTargetEvent.id}
-          showModal={!!costTargetEvent.id}
         />
       )}
       {termsTartgetEvent && (
         <TermsAndConditionsModal
-          showModal={!!termsTartgetEvent}
           skyDiveEvent={termsTartgetEvent}
           onCloseModal={handleCloseTermsModal}
         />

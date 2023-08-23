@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import {
-  CostModalProps,
   NewTicketFeeList,
   SkyDiveEventTicketType,
   TicketFee,
 } from "../../../models/skyDiveEvents.models";
-import SDModal from "../../shared/Modal";
+import SDModal from "../../shared/Modal/Modal";
 import SDLabel from "../../shared/Label";
 import SDButton from "../../shared/Button";
 import SDSpinner from "../../shared/Spinner";
@@ -16,11 +15,12 @@ import { useFieldArray, useForm } from "react-hook-form";
 import SDSelect from "../../shared/Select";
 import ThousandSeparatorInput from "../../shared/ThousandSeparatorInput";
 
-const CostModal: React.FC<CostModalProps> = ({
-  showModal,
-  onCloseModal,
-  rowId,
-}) => {
+export interface CostModalProps {
+  rowId: string;
+  onCloseModal: (submitted: boolean) => void;
+}
+
+const CostModal: React.FC<CostModalProps> = ({ onCloseModal, rowId }) => {
   const {
     register,
     handleSubmit,
@@ -98,7 +98,7 @@ const CostModal: React.FC<CostModalProps> = ({
     sendChangeRequest(
       {
         url: `/SkyDiveEvents/AddEventTypeFee/${rowId}`,
-        method: 'post',
+        method: "post",
         data: data,
       },
       (response) => {
@@ -130,40 +130,22 @@ const CostModal: React.FC<CostModalProps> = ({
   };
 
   return (
-    <>
-      {showModal && (
-        <div>
-          <SDModal
-            show={showModal}
-            onClose={() => resetModal(false)}
-            containerClass="!p-0 border-none !w-[480px]"
-          >
-            <div className="border-b  text-lg flex justify-between px-6 py-4 bg-blue-900 text-white rounded-t-md">
-              <span>ویرایش بهای فروش</span>
-              <button type="button" onClick={() => resetModal(false)}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-7 h-7 stroke-2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
+    <div>
+      <SDModal
+        show={true}
+        onClose={() => resetModal(false)}
+        containerClass="!w-[480px]"
+      >
+        <SDModal.Header color="primary2">ویرایش بهای فروش</SDModal.Header>
+        <SDModal.Body>
+          <>
             {(getTypesPending || getFeesPending) && (
               <div className="flex justify-center py-5">
                 <SDSpinner color="blue" size={20}></SDSpinner>
               </div>
             )}
             {typesResponse?.content && !getTypesPending && !getFeesPending && (
-              <form className="max-h-[80vh] overflow-auto">
+              <form>
                 <div className="px-6 py-8">
                   <div className="flex flex-row items-center  w-full mt-5">
                     <div className="flex flex-col w-5/12 ">
@@ -292,10 +274,10 @@ const CostModal: React.FC<CostModalProps> = ({
                 </div>
               </form>
             )}
-          </SDModal>
-        </div>
-      )}
-    </>
+          </>
+        </SDModal.Body>
+      </SDModal>
+    </div>
   );
 };
 

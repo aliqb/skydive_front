@@ -3,7 +3,7 @@ import {
   DocumentsUplodModel,
 } from "../../../models/account.models";
 import SDButton from "../../shared/Button";
-import SDModal from "../../shared/Modal";
+import SDModal from "../../shared/Modal/Modal";
 import { useState } from "react";
 import AdminDocumentUploadItem from "./AdminDocumentUploadItem";
 import useAPi from "../../../hooks/useApi";
@@ -14,12 +14,10 @@ import { useAppSelector } from "../../../hooks/reduxHooks";
 
 interface AdminUploadDocumnetModalProps {
   onCloseModal: (submitted: boolean) => void;
-  showModal: boolean;
   userId: string;
 }
 const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
   onCloseModal,
-  showModal,
   userId,
 }) => {
   const [submitted, setSubmitted] = useState<boolean>(false);
@@ -63,7 +61,7 @@ const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
     doc: DocumentItemModel,
     setter: React.Dispatch<React.SetStateAction<DocumentItemModel>>
   ) {
-    if(!anyChange && doc.fileId){
+    if (!anyChange && doc.fileId) {
       setAnyChange(true);
     }
     setter(doc);
@@ -78,8 +76,8 @@ const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
     event.preventDefault();
     setSubmitted(true);
     if (
-      (attorneyDocumentModel.validationMessage) ||
-      (medicalDocumentModel.validationMessage)
+      attorneyDocumentModel.validationMessage ||
+      medicalDocumentModel.validationMessage
     ) {
       return;
     }
@@ -120,78 +118,62 @@ const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
 
   return (
     <SDModal
-      show={showModal}
+      show={true}
       onClose={() => resetModal(false)}
       containerClass="!p-0 lg:!w-[480px]"
     >
-      <div className="border-b text-lg flex justify-between px-6 py-4 bg-blue-900 text-white rounded-t-md">
-        بارگذاری مدارک
-        <button type="button" onClick={() => resetModal(false)}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-7 h-7 stroke-2"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
+      <SDModal.Header color="primary2">بارگذاری مدارک</SDModal.Header>
+      <SDModal.Body>
+        <form onSubmit={onSubmit}>
+          <div className="px-6 py-6">
+            <AdminDocumentUploadItem
+              title="کارت ملی"
+              documentData={nationalCardDocumentModel}
+              validation={submitted}
+              onChange={(item) => {
+                handleChangeDocument(item, setNationalCardDocumentModel);
+              }}
             />
-          </svg>
-        </button>
-      </div>
-      <form onSubmit={onSubmit} className="max-h-[80vh] overflow-auto">
-        <div className="px-6 py-6">
-          <AdminDocumentUploadItem
-            title="کارت ملی"
-            documentData={nationalCardDocumentModel}
-            validation={submitted}
-            onChange={(item) => {
-              handleChangeDocument(item, setNationalCardDocumentModel);
-            }}
-          />
-          <AdminDocumentUploadItem
-            title="صفحه آخر Log Book"
-            documentData={logBookDocumenttModel}
-            validation={submitted}
-            onChange={(item) => {
-              handleChangeDocument(item, setLogBookDocumentModel);
-            }}
-          />
-          <AdminDocumentUploadItem
-            title="وکالت‌نامه محضری"
-            documentData={attorneyDocumentModel}
-            validation={submitted}
-            onChange={(item) => {
-              handleChangeDocument(item, setAttorneyDocumentModel);
-            }}
-            minExpireDay={attorneyDocumentsValidityDuration}
-          />
-          <AdminDocumentUploadItem
-            title="مدارک پزشکی"
-            documentData={medicalDocumentModel}
-            validation={submitted}
-            onChange={(item) => {
-              handleChangeDocument(item, setMedicalDocumentModel);
-            }}
-            minExpireDay={medicalDocumentsValidityDuration}
-          />
-        </div>
-        <div className="w-full px-5 pb-6 flex justify-start items-center">
-          <SDButton
-            color="primary2"
-            type="submit"
-            className="w-full"
-            disabled={isPending || !anyChange}
-          >
-            {isPending && <SDSpinner />}
-            ذخیره
-          </SDButton>
-        </div>
-      </form>
+            <AdminDocumentUploadItem
+              title="صفحه آخر Log Book"
+              documentData={logBookDocumenttModel}
+              validation={submitted}
+              onChange={(item) => {
+                handleChangeDocument(item, setLogBookDocumentModel);
+              }}
+            />
+            <AdminDocumentUploadItem
+              title="وکالت‌نامه محضری"
+              documentData={attorneyDocumentModel}
+              validation={submitted}
+              onChange={(item) => {
+                handleChangeDocument(item, setAttorneyDocumentModel);
+              }}
+              minExpireDay={attorneyDocumentsValidityDuration}
+            />
+            <AdminDocumentUploadItem
+              title="مدارک پزشکی"
+              documentData={medicalDocumentModel}
+              validation={submitted}
+              onChange={(item) => {
+                handleChangeDocument(item, setMedicalDocumentModel);
+              }}
+              minExpireDay={medicalDocumentsValidityDuration}
+            />
+          </div>
+          <div className="w-full px-5 pb-6 flex justify-start items-center">
+            <SDButton
+              color="primary2"
+              type="submit"
+              className="w-full"
+              disabled={isPending || !anyChange}
+            >
+              {isPending && <SDSpinner />}
+              ذخیره
+            </SDButton>
+          </div>
+        </form>
+      </SDModal.Body>
     </SDModal>
   );
 };

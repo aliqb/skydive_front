@@ -1,15 +1,15 @@
 import SDDropdown, { DropDownItem } from "../Dropdown";
-import { GridRow, GridRowOtherAction } from "./grid.types";
+import { GridRowModel, GridRowOtherAction } from "./grid.types";
 import { useState, useEffect } from "react";
 
 function GridRowMoreActionComponent<T>(props: {
   actions: GridRowOtherAction<T>[];
-  row: GridRow<T>;
+  row: GridRowModel<T>;
 }) {
   const [item, setItems] = useState<DropDownItem[]>([]);
 
   useEffect(() => {
-    function getDisabled(action: GridRowOtherAction<T>, row: GridRow<T>) {
+    function getDisabled(action: GridRowOtherAction<T>, row: GridRowModel<T>) {
       let mustDisable = false;
 
       if (action.disableField !== undefined) {

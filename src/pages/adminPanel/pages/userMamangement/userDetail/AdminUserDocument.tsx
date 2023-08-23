@@ -183,7 +183,6 @@ const AdminUserDocument: React.FC = () => {
       {showUploadModal && (
         <AdminUploadDocumnetModal
           userId={params.userId as string}
-          showModal={showUploadModal}
           onCloseModal={onUploadClose}
         />
       )}
