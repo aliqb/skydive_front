@@ -8,10 +8,12 @@ export interface ColDef<T = any> {
   cellRenderer?: (item: T) => React.ReactNode | string;
 }
 
-export type SortStateType = 'asc'|'desc'|'none';
-export interface ColHeader{
+
+
+export type SortStateType = "asc" | "desc" | "none";
+export interface ColHeader {
   col: ColDef;
-  sort: SortStateType
+  sort: SortStateType;
 }
 export class GridRowModel<T = any> {
   data: T;
@@ -19,8 +21,11 @@ export class GridRowModel<T = any> {
   //     [key:index] : React.ReactNode | string
   //   }
   private _cells: (React.ReactNode | string)[] = [];
+  private _isSelected = false;
+  private _colDefs : ColDef[];
   constructor(data: T, colDefs: ColDef[]) {
     this.data = data;
+    this._colDefs = colDefs;
     colDefs.forEach((col) => {
       let cell: React.ReactNode | string;
       if (col.field) {
@@ -53,45 +58,61 @@ export class GridRowModel<T = any> {
     return [...this._cells];
   }
 
+  set isSelected(select: boolean) {
+    this._isSelected = select;
+  }
+
+  get isSelected() {
+    return this._isSelected;
+  }
+
+  copyRow():GridRowModel<T>{
+    return new GridRowModel(this.data,this._colDefs)
+  }
+
   //   get rowData() {
   //     return this._rowData;
   //   }
 }
 
-
-export interface GridRowActions<T>{
-    edit?: boolean,
-    remove?: boolean,
-    otherActions?: GridRowOtherAction<T>[],
-    moreActions?:GridRowOtherAction<T>[]
+export interface GridRowActions<T> {
+  edit?: boolean;
+  remove?: boolean;
+  otherActions?: GridRowOtherAction<T>[];
+  moreActions?: GridRowOtherAction<T>[];
 }
 
-export interface GridRowOtherAction<T>{
-    icon: React.ReactNode,
-    descriptions: string,
-    showField?: string,
-    disableField?:string,
-    onClick:(item:T)=>void,
+export interface GridRowOtherAction<T> {
+  icon: React.ReactNode;
+  descriptions: string;
+  showField?: string;
+  disableField?: string;
+  onClick: (item: T) => void;
 }
 
-export interface ColSortChangeEvent{
-  field: string;
-  sort: SortStateType
-}
-
-export interface GridSortItem{
+export interface ColSortChangeEvent {
   field: string;
   sort: SortStateType;
 }
 
-export interface GridParams{
-  pageIndex: number;
-  pageSize: number;
-  sorts: GridSortItem[]
+export interface GridSortItem {
+  field: string;
+  sort: SortStateType;
 }
 
-export type GridGetData<T> = (gridParams: GridParams, setRows: (items: T[],total?:number) => void,fail: (error: unknown)=>void) => void;
+export interface GridParams {
+  pageIndex: number;
+  pageSize: number;
+  sorts: GridSortItem[];
+}
 
-export interface GridRef {
-  refresh: ()=>void
+export type GridGetData<T> = (
+  gridParams: GridParams,
+  setRows: (items: T[], total?: number) => void,
+  fail: (error: unknown) => void
+) => void;
+
+export interface GridRef<T=any> {
+  refresh: () => void;
+  getSelection:()=>T[]
 }

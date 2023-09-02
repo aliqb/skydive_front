@@ -1,19 +1,21 @@
+import printJS from "print-js";
+
 export function sortDate<T>(data: T[], dateField: keyof T): T[] {
   return data.sort(sortDateComprator<T>(dateField));
 }
 
-export function sortDateComprator<T>(dateField: keyof T){
-  return (first:T, second:T) => {
+export function sortDateComprator<T>(dateField: keyof T) {
+  return (first: T, second: T) => {
     const firstDate = first[dateField];
     const secondDate = second[dateField];
-    if(firstDate == null){
+    if (firstDate == null) {
       return -1;
     }
-    if(secondDate == null){
-      return 1
+    if (secondDate == null) {
+      return 1;
     }
-    const firstArr = ( firstDate as string).split("/");
-    const secondArr = ( secondDate as string).split("/");
+    const firstArr = (firstDate as string).split("/");
+    const secondArr = (secondDate as string).split("/");
     const yearsDiff = +firstArr[0] - +secondArr[0];
     if (yearsDiff !== 0) {
       return yearsDiff;
@@ -23,7 +25,7 @@ export function sortDateComprator<T>(dateField: keyof T){
       return monthDiff;
     }
     return +firstArr[2] - +secondArr[2];
-  }
+  };
 }
 
 export function replacePersianArabicsNumbers(value: string) {
@@ -59,3 +61,14 @@ export const Regexes = {
   password: /^(?=.*\d)(?=.*[A-Za-z])[\dA-Za-z!@#$%^&*\-()+=]{6,}$/,
   username: /^[\da-zA-z]*$/,
 };
+
+export function printResponse(fileName: string,response: Blob) {
+  const url = URL.createObjectURL(response);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${fileName}.pdf`;
+
+  printJS({ printable: url, documentTitle: "test.pdf" });
+  URL.revokeObjectURL(url);
+}
