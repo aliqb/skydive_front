@@ -3,7 +3,7 @@ import { GridRowActions, GridRowModel } from "./grid.types";
 import SDTooltip from "../Tooltip";
 import GridRowOtherActionComponent from "./GridOtherRowActionComponent";
 import GridRowMoreActionComponent from "./GridRowMoreActionsComponent";
-import { useCallback, useState } from "react";
+import { ChangeEventHandler, useCallback, useState } from "react";
 
 interface GridRowProps<T> {
   row: GridRowModel<T>;
@@ -12,7 +12,8 @@ interface GridRowProps<T> {
   onEditRow?: (item: T) => void;
   onRemoveRow?: (item: T) => void;
   selectable?: boolean;
-  theme?: 'primary' | 'primary2'
+  onSelectedChange?: (row: GridRowModel<T>, selected: boolean) => void;
+  theme?: "primary" | "primary2";
 }
 
 function GridRow<T>({
@@ -22,7 +23,8 @@ function GridRow<T>({
   onEditRow,
   onRemoveRow,
   selectable = false,
-  theme = 'primary'
+  onSelectedChange,
+  theme = "primary",
 }: GridRowProps<T>) {
   const [lastTouched, setLastTouched] = useState<number>(0);
   const handleTouchEnd = useCallback(
@@ -43,6 +45,8 @@ function GridRow<T>({
     },
     [lastTouched, onRowDobuleClisk]
   );
+  console.log('row render')
+
   return (
     <Table.Row
       onDoubleClick={(event) => {
@@ -61,6 +65,10 @@ function GridRow<T>({
           <input
             type="checkbox"
             className={`ml-3 w-5 h-5 text-${theme}-500 bg-gray-100 border-gray-300 rounded focus:ring-${theme}-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600`}
+            checked={row.isSelected}
+            onChange={(event) => {
+              onSelectedChange && onSelectedChange(row, event.target.checked);
+            }}
           />
         </Table.Cell>
       )}

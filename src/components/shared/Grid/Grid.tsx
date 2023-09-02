@@ -39,8 +39,9 @@ interface GridProps<T = any> {
   onPagination?: (gridParams: GridParams) => void;
   multiSortable?: boolean;
   selectable?: boolean;
-  idField?:string;
-  theme?: 'primary' | 'primary2'
+  onSelectionChange?: (selection: T[]) => void;
+  idField?: string | keyof T;
+  theme?: "primary" | "primary2";
 }
 
 function MainGrid<T = any>(
@@ -62,8 +63,9 @@ function MainGrid<T = any>(
     onPagination,
     multiSortable = false,
     selectable = false,
-    idField = 'id',
-    theme = 'primary'
+    onSelectionChange,
+    idField = "id",
+    theme = "primary",
   }: GridProps<T>,
   ref: ForwardedRef<GridRef>
 ) {
@@ -74,18 +76,23 @@ function MainGrid<T = any>(
   const [pageSize, setPageSize] = useState<number | null>(defaultPageSize);
   const [isPending, setIsPending] = useState<boolean>(false);
   const [gridSorts, setGridSorts] = useState<GridSortItem[]>([]);
-  const makeGridRows = useCallback((items: T[], colDefs: ColDef<T>[]) => {
+  const [selectedItems, setSelectedItems] = useState<T[]>();
+  const makeGridRows = useCallback((items: T[], colDefs: ColDef<T>[],selectedItem:T[]) => {
     const rows: GridRowModel[] = items.map((item) => {
-      return new GridRowModel<T>(item, colDefs);
+      const row =  new GridRowModel<T>(item, colDefs);
+      const castedIdField = idField as keyof T;
+      const wasSelected = selectedItem.some(selected=>selected[castedIdField] === item[castedIdField])
+      row.isSelected = wasSelected;
+      return row
     });
 
     setGridRows(rows);
-  }, []);
+  }, [idField]);
 
   const loadGrid = useCallback(
-    (gridParams?: GridParams) => {
+    (gridParams?: GridParams,selectedItems?:T[]) => {
       if (data) {
-        makeGridRows(data, colDefs);
+        makeGridRows(data, colDefs,selectedItems || []);
       } else if (getData) {
         setIsPending(true);
         const isRefreshing = gridParams === undefined;
@@ -99,7 +106,7 @@ function MainGrid<T = any>(
         getData(
           params,
           (items: T[], total?: number) => {
-            makeGridRows(items, colDefs);
+            makeGridRows(items, colDefs,selectedItems || []);
             if (pageSize && total) {
               setPageCount(Math.ceil(total / pageSize));
             }
@@ -141,7 +148,7 @@ function MainGrid<T = any>(
           pageIndex: event.selected + 1,
           pageSize: pageSize,
           sorts: gridSorts,
-        });
+        },selectedItems);
       }
     }
   };
@@ -172,10 +179,54 @@ function MainGrid<T = any>(
         pageIndex: selectedPage + 1,
         pageSize: pageSize === null ? 100000 : pageSize,
         sorts: newSorts,
-      });
+      },selectedItems);
       return newSorts;
     });
   };
+
+  const onRowSelectedChange = (row: GridRowModel, checked: boolean) => {
+    row.isSelected = checked;
+    setSelectedItems((prev) => {
+      const newItems = prev ? [...prev] : [];
+      const index = newItems.findIndex(
+        (item) => item[idField as keyof T] === row.data[idField]
+      );
+      if (checked && index === -1) {
+        newItems.push(row.data);
+      }
+      if (!checked && index !== -1) {
+        newItems.splice(index, 1);
+      }
+      onSelectionChange && onSelectionChange(newItems);
+      return newItems;
+    });
+  };
+
+  // useEffect(() => {
+  //   if (gridRows.length && selectedItems?.length) {
+  //     gridRows.forEach(row=>{
+
+  //     })
+  //     // setGridRows((prev) => {
+  //     //   const newRows = prev.map((row) => {
+  //     //     const newRow = row.copyRow();
+  //     //     const wasSelected = selectedItems.some(
+  //     //       (selected) =>
+  //     //         selected[idField as keyof T] === row.data[idField as keyof T]
+  //     //     );
+  //     //     newRow.isSelected = wasSelected;
+  //     //     return newRow;
+  //     //   });
+  //     //   return newRows;
+  //     // });
+  //   }
+  // }, [gridRows, selectedItems, idField]);
+
+  // useEffect(()=>{
+  //   if(selectedItems){
+  //     onSelectionChange && onSelectionChange(selectedItems)
+  //   }
+  // },[selectedItems,onSelectionChange])
 
   useEffect(() => {
     const headers: ColHeader[] = colDefs.map((col) => {
@@ -247,6 +298,7 @@ function MainGrid<T = any>(
                       row={row}
                       theme={theme}
                       selectable={selectable}
+                      onSelectedChange={onRowSelectedChange}
                       rowActions={rowActions}
                       onEditRow={onEditRow}
                       onRemoveRow={onRemoveRow}
