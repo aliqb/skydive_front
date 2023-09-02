@@ -7,10 +7,12 @@ import { ColDef, GridGetData } from "../../components/shared/Grid/grid.types";
 import Grid from "../../components/shared/Grid/Grid";
 import { Link } from "react-router-dom";
 import PdfPrintButton from "../../components/shared/PdfPrintButton";
+import SDButton from "../../components/shared/Button";
+import { AiFillPrinter } from "react-icons/ai";
 
 const MyTicketsPage: React.FC = () => {
   const { sendRequest } = useAPi<null, BaseResponse<UserTicket[]>>();
-
+  const [selectedTickets, setSelectedTickets] = useState<UserTicket[]>();
   const [colDefs] = useState<ColDef<UserTicket>[]>([
     {
       field: "ticketNumber",
@@ -59,7 +61,7 @@ const MyTicketsPage: React.FC = () => {
             fileName={`بلیت ${item.ticketNumber}`}
           />
         );
-      }
+      },
     },
   ]);
 
@@ -82,14 +84,31 @@ const MyTicketsPage: React.FC = () => {
     [sendRequest]
   );
 
+  const onPrintMultipe: React.MouseEventHandler<HTMLButtonElement> = () => {
+    console.log(selectedTickets);
+  };
+
   return (
     <SDCard>
       <h1 className="text-center font-bold text-xl py-5">بلیت‌های من</h1>
       <div className="py-5 md:px-8">
+        <SDButton
+          onClick={onPrintMultipe}
+          color="primary"
+          className="mb-2"
+          disabled={!selectedTickets?.length}
+        >
+          <span className="ml-2">
+            <AiFillPrinter size="1.5rem"></AiFillPrinter>
+          </span>
+          چاپ
+        </SDButton>
         <Grid<UserTicket>
           colDefs={colDefs}
           getData={fetchTickets}
           selectable={true}
+          pageSize={2}
+          onSelectionChange={(items) => setSelectedTickets(items)}
           rowActions={{
             edit: false,
             remove: false,

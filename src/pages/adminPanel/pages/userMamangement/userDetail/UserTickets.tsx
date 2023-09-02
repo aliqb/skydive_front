@@ -13,9 +13,12 @@ import {
 } from "../../../../../models/tickets.models";
 import { BaseResponse } from "../../../../../models/shared.models";
 import Grid from "../../../../../components/shared/Grid/Grid";
+import SDButton from "../../../../../components/shared/Button";
+import { AiFillPrinter } from "react-icons/ai";
 
 const UserTickets: React.FC = () => {
   const { sendRequest } = useAPi<null, BaseResponse<UserTicket[]>>();
+  const [selectedTickets, setSelectedTickets] = useState<UserTicket[]>();
   const params = useParams();
   const [selectedStatuces, setSelectedStatuces] = useState<
     (typeof TicketStatuses)[keyof typeof TicketStatuses][]
@@ -77,19 +80,19 @@ const UserTickets: React.FC = () => {
             fileName={`بلیت ${item.ticketNumber}`}
           />
         );
-      }
+      },
     },
   ]);
 
   const fetchTickets = useCallback<GridGetData<UserTicket>>(
-    (gridParams, setRows,fail) => {
+    (gridParams, setRows, fail) => {
       sendRequest(
         {
           url: `/Reservations/UserTickets/${params.userId}`,
           params: {
             pageSize: gridParams.pageSize,
             pageIndex: gridParams.pageIndex,
-            statuses: selectedStatuces.join('|')
+            statuses: selectedStatuces.join("|"),
           },
         },
         (response) => {
@@ -98,7 +101,7 @@ const UserTickets: React.FC = () => {
         (error) => fail(error)
       );
     },
-    [sendRequest, params,selectedStatuces]
+    [sendRequest, params, selectedStatuces]
   );
 
   const onChangeSelectedStatuces: React.ChangeEventHandler<HTMLInputElement> = (
@@ -118,8 +121,25 @@ const UserTickets: React.FC = () => {
     }
   };
 
+  const onPrintMultipe: React.MouseEventHandler<HTMLButtonElement> = () => {
+    console.log(selectedTickets);
+  };
+
   return (
     <div className="py-16 px-12">
+      <div>
+        <SDButton
+          color="primary2"
+          className="mb-3"
+          disabled={!selectedTickets?.length}
+          onClick={onPrintMultipe}
+        >
+          <span className="ml-2">
+            <AiFillPrinter size="1.5rem"></AiFillPrinter>
+          </span>
+          چاپ
+        </SDButton>
+      </div>
       <div className="flex gap-8 mb-1">
         {Array.from(TicketStatusesPersianMap.entries()).map(([key, value]) => {
           return (
@@ -144,6 +164,9 @@ const UserTickets: React.FC = () => {
       <Grid<UserTicket>
         colDefs={colDefs}
         getData={fetchTickets}
+        selectable={true}
+        theme="primary2"
+        onSelectionChange={(items) => setSelectedTickets(items)}
         rowActions={{
           edit: false,
           remove: false,
