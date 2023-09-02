@@ -7,12 +7,11 @@ import { ColDef, GridGetData } from "../../components/shared/Grid/grid.types";
 import Grid from "../../components/shared/Grid/Grid";
 import { Link } from "react-router-dom";
 import PdfPrintButton from "../../components/shared/PdfPrintButton";
-import SDButton from "../../components/shared/Button";
-import { AiFillPrinter } from "react-icons/ai";
+import MultiplePdfPrintButton from "../../components/shared/multiplePdfPrintButton";
 
 const MyTicketsPage: React.FC = () => {
   const { sendRequest } = useAPi<null, BaseResponse<UserTicket[]>>();
-  const [selectedTickets, setSelectedTickets] = useState<UserTicket[]>();
+  const [selectedTicketsIds, setSelectedTicketsIds] = useState<string[]>();
   const [colDefs] = useState<ColDef<UserTicket>[]>([
     {
       field: "ticketNumber",
@@ -53,11 +52,14 @@ const MyTicketsPage: React.FC = () => {
       field: "",
       headerName: "تصویر بلیت",
       cellRenderer: (item: UserTicket) => {
+        const body = [item.id];
         return (
           <PdfPrintButton
+            body={body}
+            method="put"
             pdfUrl={`${
               import.meta.env.VITE_BASE_API_URL
-            }/Reservations/PrintTicket/${item.id}`}
+            }/Reservations/PrintTicket`}
             fileName={`بلیت ${item.ticketNumber}`}
           />
         );
@@ -84,30 +86,27 @@ const MyTicketsPage: React.FC = () => {
     [sendRequest]
   );
 
-  const onPrintMultipe: React.MouseEventHandler<HTMLButtonElement> = () => {
-    console.log(selectedTickets);
-  };
 
   return (
     <SDCard>
       <h1 className="text-center font-bold text-xl py-5">بلیت‌های من</h1>
       <div className="py-5 md:px-8">
-        <SDButton
-          onClick={onPrintMultipe}
-          color="primary"
+        <MultiplePdfPrintButton
+          body={selectedTicketsIds}
+          pdfUrl={`${
+            import.meta.env.VITE_BASE_API_URL
+          }/Reservations/PrintTicket`}
+          fileName={`لیست بلیت‌ها`}
+          disable={!selectedTicketsIds?.length}
           className="mb-2"
-          disabled={!selectedTickets?.length}
-        >
-          <span className="ml-2">
-            <AiFillPrinter size="1.5rem"></AiFillPrinter>
-          </span>
-          چاپ
-        </SDButton>
+        ></MultiplePdfPrintButton>
         <Grid<UserTicket>
           colDefs={colDefs}
           getData={fetchTickets}
           selectable={true}
-          onSelectionChange={(items) => setSelectedTickets(items)}
+          onSelectionChange={(items) =>
+            setSelectedTicketsIds(items.map((item) => item.id))
+          }
           rowActions={{
             edit: false,
             remove: false,
