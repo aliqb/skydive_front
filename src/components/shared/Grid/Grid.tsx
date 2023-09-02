@@ -38,6 +38,9 @@ interface GridProps<T = any> {
   pageSize?: number | null;
   onPagination?: (gridParams: GridParams) => void;
   multiSortable?: boolean;
+  selectable?: boolean;
+  idField?:string;
+  theme?: 'primary' | 'primary2'
 }
 
 function MainGrid<T = any>(
@@ -58,6 +61,9 @@ function MainGrid<T = any>(
     pageSize: defaultPageSize = 10,
     onPagination,
     multiSortable = false,
+    selectable = false,
+    idField = 'id',
+    theme = 'primary'
   }: GridProps<T>,
   ref: ForwardedRef<GridRef>
 ) {
@@ -136,16 +142,6 @@ function MainGrid<T = any>(
           pageSize: pageSize,
           sorts: gridSorts,
         });
-        // getData(
-        //   { pageIndex: event.selected + 1, pageSize: pageSize },
-        //   (items: T[], total: number) => {
-        //     makeGridRows(items, colDefs);
-        //     if (pageSize) {
-        //       setPageCount(Math.ceil(total / pageSize));
-        //     }
-        //     setIsPending(false);
-        //   }
-        // );
       }
     }
   };
@@ -214,6 +210,14 @@ function MainGrid<T = any>(
           <div>
             <Table hoverable className="text-right border border-gray-300">
               <Table.Head>
+                {selectable && (
+                  <Table.HeadCell className="w-5 px-3 pl-0">
+                    {/* <input
+                      type="checkbox"
+                      className="w-5 h-5 text-primary2-500 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    /> */}
+                  </Table.HeadCell>
+                )}
                 {colHeaders.map((header, index) => (
                   <Table.HeadCell key={index}>
                     <GridHeaderComponent
@@ -223,7 +227,6 @@ function MainGrid<T = any>(
                   </Table.HeadCell>
                 ))}
                 {rowActions && <Table.HeadCell>عملیات</Table.HeadCell>}
-                {/* <Table.HeadCell>عملیات</Table.HeadCell> */}
               </Table.Head>
               <Table.Body className="divide-y">
                 {isPending && (
@@ -242,6 +245,8 @@ function MainGrid<T = any>(
                     <GridRow<T>
                       key={index}
                       row={row}
+                      theme={theme}
+                      selectable={selectable}
                       rowActions={rowActions}
                       onEditRow={onEditRow}
                       onRemoveRow={onRemoveRow}

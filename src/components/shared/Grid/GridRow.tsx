@@ -11,6 +11,8 @@ interface GridRowProps<T> {
   rowActions: GridRowActions<T> | null;
   onEditRow?: (item: T) => void;
   onRemoveRow?: (item: T) => void;
+  selectable?: boolean;
+  theme?: 'primary' | 'primary2'
 }
 
 function GridRow<T>({
@@ -19,6 +21,8 @@ function GridRow<T>({
   rowActions,
   onEditRow,
   onRemoveRow,
+  selectable = false,
+  theme = 'primary'
 }: GridRowProps<T>) {
   const [lastTouched, setLastTouched] = useState<number>(0);
   const handleTouchEnd = useCallback(
@@ -52,6 +56,14 @@ function GridRow<T>({
         onRowDobuleClisk && "!cursor-pointer"
       } bg-white dark:border-gray-700 dark:bg-gray-800`}
     >
+      {selectable && (
+        <Table.Cell className="px-3 w-5 pl-0">
+          <input
+            type="checkbox"
+            className={`ml-3 w-5 h-5 text-${theme}-500 bg-gray-100 border-gray-300 rounded focus:ring-${theme}-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600`}
+          />
+        </Table.Cell>
+      )}
       {row.cells.map((cell, index) => (
         <Table.Cell
           className="whitespace-nowrap font-medium text-gray-900 dark:text-white"

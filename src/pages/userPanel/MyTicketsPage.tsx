@@ -89,6 +89,7 @@ const MyTicketsPage: React.FC = () => {
         <Grid<UserTicket>
           colDefs={colDefs}
           getData={fetchTickets}
+          selectable={true}
           rowActions={{
             edit: false,
             remove: false,
