@@ -1,23 +1,33 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from 'react';
 import {
   ColDef,
   GridGetData,
-} from "../../../../../components/shared/Grid/grid.types";
-import PdfPrintButton from "../../../../../components/shared/PdfPrintButton";
-import useAPi from "../../../../../hooks/useApi";
-import { BaseResponse } from "../../../../../models/shared.models";
-import { UserTransaction } from "../../../../../models/transactions.models";
-import Grid from "../../../../../components/shared/Grid/Grid";
-import { useParams } from "react-router-dom";
+  GridRef,
+} from '../../../../../components/shared/Grid/grid.types';
+import PdfPrintButton from '../../../../../components/shared/PdfPrintButton';
+import useAPi from '../../../../../hooks/useApi';
+import { BaseResponse } from '../../../../../models/shared.models';
+import { UserTransaction } from '../../../../../models/transactions.models';
+import Grid from '../../../../../components/shared/Grid/Grid';
+import { useParams } from 'react-router-dom';
+import useConfirm from '../../../../../hooks/useConfirm';
+import { toast } from 'react-toastify';
 
 const UserTransactions: React.FC = () => {
   const params = useParams();
   const { sendRequest } = useAPi<null, BaseResponse<UserTransaction[]>>();
+  const gridRef = useRef<GridRef>(null);
+  const [DeleteConfirmModal, deleteConfirmation] = useConfirm(
+    ' این تراکنش حذف خواهد شد. آیا مطمئن هستید؟ ',
+    'حذف کردن تراکنش'
+  );
+  const { sendRequest: sendRemoveRequest } = useAPi<null, BaseResponse<null>>();
 
   const [colDefs] = useState<ColDef<UserTransaction>[]>([
     {
       field: 'date',
       headerName: 'تاریخ پرداخت',
+      sortable: true,
     },
     {
       field: 'ticketNumber',
@@ -71,6 +81,25 @@ const UserTransactions: React.FC = () => {
       },
     },
   ]);
+  async function onRemoveUserTransactions(item: UserTransaction) {
+    const confirm = await deleteConfirmation();
+    if (!confirm) {
+      return;
+    }
+    sendRemoveRequest(
+      {
+        url: `/JumpRecords/${item.id}`,
+        method: 'delete',
+      },
+      (response) => {
+        toast.success(response.message);
+        gridRef.current?.refresh();
+      },
+      (error) => {
+        toast.error(error?.message);
+      }
+    );
+  }
 
   const fetchTickets = useCallback<GridGetData<UserTransaction>>(
     (gridParams, setRows, fail) => {
@@ -91,13 +120,18 @@ const UserTransactions: React.FC = () => {
     [sendRequest, params]
   );
   return (
-    <div className="py-16 px-12">
-      <Grid<UserTransaction>
-        colDefs={colDefs}
-        getData={fetchTickets}
-        rowActions={null}
-      />
-    </div>
+    <>
+      <DeleteConfirmModal />
+
+      <div className="py-16 px-12">
+        <Grid<UserTransaction>
+          colDefs={colDefs}
+          onRemoveRow={onRemoveUserTransactions}
+          getData={fetchTickets}
+          rowActions={{ remove: true }}
+        />
+      </div>
+    </>
   );
 };
 

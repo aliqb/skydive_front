@@ -15,6 +15,7 @@ const MyTransactionsPage: React.FC = () => {
     {
       field: 'date',
       headerName: 'تاریخ پرداخت',
+      sortable: true,
     },
     {
       field: 'ticketNumber',
