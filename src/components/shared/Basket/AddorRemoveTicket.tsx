@@ -42,7 +42,6 @@ const AddOrRemoveTicket: React.FC<PlusMinusProps> = ({
       userCode: userCode || null,
     };
     dispatch(addTicketToBasket(ticket));
-    console.log(userCode);
   }
 
   function onRemoveSubmit(tickets: BasketTicketModel[]) {

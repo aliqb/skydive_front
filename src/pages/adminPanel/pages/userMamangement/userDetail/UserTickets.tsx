@@ -77,11 +77,7 @@ const UserTickets: React.FC = () => {
             fileName={`بلیت ${item.ticketNumber}`}
           />
         );
-      },
-      //   template: "چاپ",
-      //   onClick: (item: MyTicket) => {
-      //     console.log(item);
-      //   },
+      }
     },
   ]);
 

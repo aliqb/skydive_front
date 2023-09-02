@@ -14,12 +14,6 @@ const OTPBox: React.FC<OTPInputProp> = (props) => {
   const [code, setCode] = useState<string>("");
   const [canRefresh, setCanRefresh] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   console.log('otp code')
-  //   if (code.length === props.condLength) {
-  //     props.onFinish(code);
-  //   }
-  // }, [code, props]);
 
   function renderInput(props: any) {
     return (
