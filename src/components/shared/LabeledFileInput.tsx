@@ -38,6 +38,9 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
     }
     const formData = new FormData();
     formData.append(field, file);
+    if(!maxSize){
+      formData.append('ignoreFileSizeLimitation','true')
+    }
     sendRequest(
       {
         url: url,
