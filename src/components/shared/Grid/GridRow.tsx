@@ -3,7 +3,8 @@ import { GridRowActions, GridRowModel } from "./grid.types";
 import SDTooltip from "../Tooltip";
 import GridRowOtherActionComponent from "./GridOtherRowActionComponent";
 import GridRowMoreActionComponent from "./GridRowMoreActionsComponent";
-import { ChangeEventHandler, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
+
 
 interface GridRowProps<T> {
   row: GridRowModel<T>;
@@ -45,7 +46,6 @@ function GridRow<T>({
     },
     [lastTouched, onRowDobuleClisk]
   );
-  console.log('row render')
 
   return (
     <Table.Row

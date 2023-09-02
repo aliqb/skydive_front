@@ -7,6 +7,7 @@ import {
   forwardRef,
   ForwardedRef,
   useImperativeHandle,
+  useRef
 } from "react";
 import {
   ColDef,
@@ -30,7 +31,6 @@ interface GridProps<T = any> {
   data?: T[];
   getData?: GridGetData<T>;
   colDefs: ColDef<T>[];
-  // fetchData?: () => void;
   onDoubleClick?: (data: T) => void;
   rowActions?: GridRowActions<T> | null;
   onEditRow?: (item: T) => void;
@@ -76,7 +76,7 @@ function MainGrid<T = any>(
   const [pageSize, setPageSize] = useState<number | null>(defaultPageSize);
   const [isPending, setIsPending] = useState<boolean>(false);
   const [gridSorts, setGridSorts] = useState<GridSortItem[]>([]);
-  const [selectedItems, setSelectedItems] = useState<T[]>();
+  const selectedItemsRef = useRef<T[]>();
   const makeGridRows = useCallback((items: T[], colDefs: ColDef<T>[],selectedItem:T[]) => {
     const rows: GridRowModel[] = items.map((item) => {
       const row =  new GridRowModel<T>(item, colDefs);
@@ -148,7 +148,7 @@ function MainGrid<T = any>(
           pageIndex: event.selected + 1,
           pageSize: pageSize,
           sorts: gridSorts,
-        },selectedItems);
+        },selectedItemsRef.current);
       }
     }
   };
@@ -179,15 +179,15 @@ function MainGrid<T = any>(
         pageIndex: selectedPage + 1,
         pageSize: pageSize === null ? 100000 : pageSize,
         sorts: newSorts,
-      },selectedItems);
+      },selectedItemsRef.current);
       return newSorts;
     });
   };
 
   const onRowSelectedChange = (row: GridRowModel, checked: boolean) => {
     row.isSelected = checked;
-    setSelectedItems((prev) => {
-      const newItems = prev ? [...prev] : [];
+    // setSelectedItems((prev) => {
+      const newItems = selectedItemsRef.current ? [...selectedItemsRef.current] : [];
       const index = newItems.findIndex(
         (item) => item[idField as keyof T] === row.data[idField]
       );
@@ -198,35 +198,10 @@ function MainGrid<T = any>(
         newItems.splice(index, 1);
       }
       onSelectionChange && onSelectionChange(newItems);
-      return newItems;
-    });
+      selectedItemsRef.current = newItems;
+    // });
   };
 
-  // useEffect(() => {
-  //   if (gridRows.length && selectedItems?.length) {
-  //     gridRows.forEach(row=>{
-
-  //     })
-  //     // setGridRows((prev) => {
-  //     //   const newRows = prev.map((row) => {
-  //     //     const newRow = row.copyRow();
-  //     //     const wasSelected = selectedItems.some(
-  //     //       (selected) =>
-  //     //         selected[idField as keyof T] === row.data[idField as keyof T]
-  //     //     );
-  //     //     newRow.isSelected = wasSelected;
-  //     //     return newRow;
-  //     //   });
-  //     //   return newRows;
-  //     // });
-  //   }
-  // }, [gridRows, selectedItems, idField]);
-
-  // useEffect(()=>{
-  //   if(selectedItems){
-  //     onSelectionChange && onSelectionChange(selectedItems)
-  //   }
-  // },[selectedItems,onSelectionChange])
 
   useEffect(() => {
     const headers: ColHeader[] = colDefs.map((col) => {
@@ -241,7 +216,7 @@ function MainGrid<T = any>(
   }, [gridSorts, colDefs]);
 
   useEffect(() => {
-    loadGrid();
+    loadGrid(undefined,selectedItemsRef.current);
   }, [loadGrid]);
 
   useEffect(() => {
