@@ -67,7 +67,7 @@ function MainGrid<T = any>(
     idField = "id",
     theme = "primary",
   }: GridProps<T>,
-  ref: ForwardedRef<GridRef>
+  ref: ForwardedRef<GridRef<T>>
 ) {
   const [gridRows, setGridRows] = useState<GridRowModel<T>[]>([]);
   const [colHeaders, setColHeaders] = useState<ColHeader[]>([]);
@@ -227,6 +227,9 @@ function MainGrid<T = any>(
     refresh() {
       loadGrid();
     },
+    getSelection(){
+      return selectedItemsRef.current || []
+    }
   }));
 
   {
@@ -342,6 +345,6 @@ function MainGrid<T = any>(
   }
 }
 const Grid = forwardRef(MainGrid) as <T = any>(
-  props: GridProps<T> & { ref?: React.ForwardedRef<GridRef> }
+  props: GridProps<T> & { ref?: React.ForwardedRef<GridRef<T>> }
 ) => ReturnType<typeof MainGrid>;
 export default Grid;

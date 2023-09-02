@@ -107,7 +107,6 @@ const MyTicketsPage: React.FC = () => {
           colDefs={colDefs}
           getData={fetchTickets}
           selectable={true}
-          pageSize={2}
           onSelectionChange={(items) => setSelectedTickets(items)}
           rowActions={{
             edit: false,

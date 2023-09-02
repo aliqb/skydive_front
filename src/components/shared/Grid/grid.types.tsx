@@ -112,6 +112,7 @@ export type GridGetData<T> = (
   fail: (error: unknown) => void
 ) => void;
 
-export interface GridRef {
+export interface GridRef<T=any> {
   refresh: () => void;
+  getSelection:()=>T[]
 }
