@@ -21,6 +21,7 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
   disable,
 }) => {
   const documentData = useAppSelector((state) => state.account[field]);
+  const maxFileSize = useAppSelector((state)=>state.generalSettings.generalSettings?.fileSizeLimitation)
   const dispatch = useAppDispatch();
   const [isUploading, setIsUploading] = useState<boolean>(false);
   function onFileUpload(id: string) {
@@ -84,6 +85,7 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
             onUpload={onFileUpload}
             onRemove={onFileRemove}
             disabled={documentData.status === DocumnetStatus.PENDING || disable}
+            maxSize={maxFileSize}
           />
         </div>
         <div>
