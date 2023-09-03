@@ -8,21 +8,25 @@ const UserPanelContainer: React.FC = () => {
   const dispatch = useAppDispatch();
   const genralInfoSet = useAppSelector((state) => state.auth.genralInfoSet);
   useEffect(() => {
+    document.documentElement.style.fontSize = "16px";
     let interval: number;
     if (genralInfoSet) {
       dispatch(fetchBasket());
-      dispatch(fetchMessages({}))
-       interval = setInterval(()=>{
-        dispatch(fetchMessages({}))
-      },30000)
+      dispatch(fetchMessages({}));
+      interval = setInterval(() => {
+        dispatch(fetchMessages({}));
+      }, 30000);
     }
-    return ()=>clearInterval(interval)
+    return () => clearInterval(interval);
   }, [dispatch, genralInfoSet]);
   return (
     <div className="w-screen h-screen flex flex-col ">
       <UserHeader></UserHeader>
       <div className=" w-full flex flex-1 relative overflow-hidden">
-        <div id="userMainContainer" className="flex-auto  overflow-auto ltr scroll-smooth">
+        <div
+          id="userMainContainer"
+          className="flex-auto  overflow-auto ltr scroll-smooth"
+        >
           <div className="rtl">
             <Outlet></Outlet>
           </div>
