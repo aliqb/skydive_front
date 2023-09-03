@@ -234,10 +234,10 @@ function MainGrid<T = any>(
 
   {
     return (
-      <div>
+      <div className="border border-gray-300">
         <div className="overflow-x-auto w-full">
           <div>
-            <Table hoverable className="text-right border border-gray-300">
+            <Table hoverable className="text-right">
               <Table.Head>
                 {selectable && (
                   <Table.HeadCell className="w-5 px-3 pl-0">
