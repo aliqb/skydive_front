@@ -13,8 +13,6 @@ import {
 } from "../../../../../models/tickets.models";
 import { BaseResponse } from "../../../../../models/shared.models";
 import Grid from "../../../../../components/shared/Grid/Grid";
-import SDButton from "../../../../../components/shared/Button";
-import { AiFillPrinter } from "react-icons/ai";
 import MultiplePdfPrintButton from "../../../../../components/shared/multiplePdfPrintButton";
 
 const UserTickets: React.FC = () => {
