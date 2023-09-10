@@ -19,12 +19,14 @@ const UserHeader: React.FC = () => {
   const unReadMessagesCount = useAppSelector(
     (state) => state.messages.unReadCount
   );
-
+  const basketState = useAppSelector(
+    (state) => state.basket.basket?.ticketsCount
+  );
 
   useEffect(() => {
     if (
-      location.pathname.includes("flights") ||
-      location.pathname.includes("payment")
+      location.pathname.includes('flights') ||
+      location.pathname.includes('payment')
     ) {
       setCartIsInBody(true);
     } else {
@@ -35,8 +37,8 @@ const UserHeader: React.FC = () => {
   useEffect(() => {
     setDropdownItems([
       {
-        title: "حساب کاربری",
-        href: "/account",
+        title: 'حساب کاربری',
+        href: '/account',
         icon: (
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -63,7 +65,7 @@ const UserHeader: React.FC = () => {
             )}
           </div>
         ),
-        href: "/messages",
+        href: '/messages',
         icon: (
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -82,8 +84,8 @@ const UserHeader: React.FC = () => {
         ),
       },
       {
-        title: "خروج",
-        mode: "Button",
+        title: 'خروج',
+        mode: 'Button',
         onClick: () => {
           removeAuthDataFromLocal();
           dispatch(authActions.logOut());
@@ -125,6 +127,14 @@ const UserHeader: React.FC = () => {
             onMouseLeave={() => setShowBasket(false)}
             className="ml-1"
           >
+            <div className="relative pl-1">
+              {basketState! > 0 && (
+                <NotifBadge
+                  value={basketState}
+                  className="-left-2 -top-2 absolute"
+                />
+              )}
+            </div>
             <FaShoppingCart size="1.5rem" />
             {!cartIsInBody && showBasket && (
               <div className="hidden  md:block absolute max-h-screen overflow-auto rounded-t-lg top-[50px] left-36 z-20 w-96">

@@ -100,7 +100,7 @@ const Cartable: React.FC = () => {
   );
 
   const body = (
-    <div className="flex flex-wrap-reverse small-elements">
+    <div className="flex flex-wrap-reverse">
       <div className="w-full lg:w-9/12">
         {data &&
           data.content.map((item, index) => {
