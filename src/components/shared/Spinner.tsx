@@ -1,4 +1,4 @@
-const SDSpinner: React.FC<{ size?: number; color?: "primary" | "blue" }> = ({
+const SDSpinner: React.FC<{ size?: number | string; color?: "primary" | "blue" }> = ({
   size,
   color = "primary",
 }) => {

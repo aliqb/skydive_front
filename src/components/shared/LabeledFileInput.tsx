@@ -1,7 +1,6 @@
 import { FormEvent, useState } from "react";
 import useAPi from "../../hooks/useApi";
 import SDSpinner from "./Spinner";
-import { useAppSelector } from "../../hooks/reduxHooks";
 
 interface LabeledFileInputProps {
   accepFiles?: string;
@@ -11,6 +10,7 @@ interface LabeledFileInputProps {
   onUpload: (id: string) => void;
   onRemove?: () => void;
   disabled?: boolean;
+  maxSize?: number;
 }
 const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
   accepFiles = "",
@@ -20,11 +20,11 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
   onUpload,
   onRemove,
   disabled = false,
+  maxSize
 }) => {
   const { sendRequest, isPending } = useAPi<FormData, string>();
   const [uploadedFile, setUploadedFile] = useState<File | null>();
   const [error,setError] = useState<string>('');
-  const maxSizeSettings = useAppSelector(state=>state.generalSettings.generalSettings?.fileSizeLimitation);
   function onChange(event: FormEvent) {
     setError('');
     const files = (event.target as HTMLInputElement).files;
@@ -32,13 +32,15 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
       return;
     }
     const file: File = files[0];
-    const maxSize = maxSizeSettings ? maxSizeSettings  : 500;
-    if(file.size > maxSize * 1024){
+    if(maxSize !== undefined && file.size > maxSize * 1024){
       setError(`حداکثر سایز فایل ${maxSize}KB است.`)
       return
     }
     const formData = new FormData();
     formData.append(field, file);
+    if(!maxSize){
+      formData.append('ignoreFileSizeLimitation','true')
+    }
     sendRequest(
       {
         url: url,

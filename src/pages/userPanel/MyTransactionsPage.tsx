@@ -37,7 +37,7 @@ const MyTransactionsPage: React.FC = () => {
       field: 'type',
       headerName: 'نوع',
       cellRenderer: (item: UserTransaction) => {
-        const displayText = item.type === 'Confirmed' ? 'تائید' : 'ابطال';
+        const displayText = item.type === 'Confirmed' ? 'تأیید' : 'ابطال';
         return <span>{displayText}</span>;
       },
     },

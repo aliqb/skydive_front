@@ -6,6 +6,7 @@ import LabeledFileInput from "../../shared/LabeledFileInput";
 import { DateObject } from "react-multi-date-picker";
 import persian_en from "react-date-object/locales/persian_en";
 import persian from "react-date-object/calendars/persian";
+import { useAppSelector } from "../../../hooks/reduxHooks";
 
 interface AdminDocumentUploadItemProps {
   title: string;
@@ -24,6 +25,7 @@ const AdminDocumentUploadItem: React.FC<AdminDocumentUploadItemProps> = ({
   const localDocumentData = { ...documentData };
   const [expirationDate, setDocumnetExpireDate] = useState<string>("");
   const [timeStamp, setTimeStamp] = useState<number>();
+  const maxFileSize = useAppSelector((state)=>state.generalSettings.generalSettings?.fileSizeLimitation)
   function onFileUpload(id: string) {
     localDocumentData.fileId = id;
     if (documentData.withDate && !expirationDate) {
@@ -81,6 +83,7 @@ const AdminDocumentUploadItem: React.FC<AdminDocumentUploadItemProps> = ({
           title={title}
           onUpload={onFileUpload}
           onRemove={onFileRemove}
+          maxSize={maxFileSize}
         />
         {documentData.withDate && (
           <div className="relative mr-3 md:mr-12">

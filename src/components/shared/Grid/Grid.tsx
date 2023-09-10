@@ -7,6 +7,7 @@ import {
   forwardRef,
   ForwardedRef,
   useImperativeHandle,
+  useRef
 } from "react";
 import {
   ColDef,
@@ -30,7 +31,6 @@ interface GridProps<T = any> {
   data?: T[];
   getData?: GridGetData<T>;
   colDefs: ColDef<T>[];
-  // fetchData?: () => void;
   onDoubleClick?: (data: T) => void;
   rowActions?: GridRowActions<T> | null;
   onEditRow?: (item: T) => void;
@@ -38,6 +38,10 @@ interface GridProps<T = any> {
   pageSize?: number | null;
   onPagination?: (gridParams: GridParams) => void;
   multiSortable?: boolean;
+  selectable?: boolean;
+  onSelectionChange?: (selection: T[]) => void;
+  idField?: string | keyof T;
+  theme?: "primary" | "primary2";
 }
 
 function MainGrid<T = any>(
@@ -58,8 +62,12 @@ function MainGrid<T = any>(
     pageSize: defaultPageSize = 10,
     onPagination,
     multiSortable = false,
+    selectable = false,
+    onSelectionChange,
+    idField = "id",
+    theme = "primary",
   }: GridProps<T>,
-  ref: ForwardedRef<GridRef>
+  ref: ForwardedRef<GridRef<T>>
 ) {
   const [gridRows, setGridRows] = useState<GridRowModel<T>[]>([]);
   const [colHeaders, setColHeaders] = useState<ColHeader[]>([]);
@@ -68,18 +76,23 @@ function MainGrid<T = any>(
   const [pageSize, setPageSize] = useState<number | null>(defaultPageSize);
   const [isPending, setIsPending] = useState<boolean>(false);
   const [gridSorts, setGridSorts] = useState<GridSortItem[]>([]);
-  const makeGridRows = useCallback((items: T[], colDefs: ColDef<T>[]) => {
+  const selectedItemsRef = useRef<T[]>();
+  const makeGridRows = useCallback((items: T[], colDefs: ColDef<T>[],selectedItem:T[]) => {
     const rows: GridRowModel[] = items.map((item) => {
-      return new GridRowModel<T>(item, colDefs);
+      const row =  new GridRowModel<T>(item, colDefs);
+      const castedIdField = idField as keyof T;
+      const wasSelected = selectedItem.some(selected=>selected[castedIdField] === item[castedIdField])
+      row.isSelected = wasSelected;
+      return row
     });
 
     setGridRows(rows);
-  }, []);
+  }, [idField]);
 
   const loadGrid = useCallback(
-    (gridParams?: GridParams) => {
+    (gridParams?: GridParams,selectedItems?:T[]) => {
       if (data) {
-        makeGridRows(data, colDefs);
+        makeGridRows(data, colDefs,selectedItems || []);
       } else if (getData) {
         setIsPending(true);
         const isRefreshing = gridParams === undefined;
@@ -93,7 +106,7 @@ function MainGrid<T = any>(
         getData(
           params,
           (items: T[], total?: number) => {
-            makeGridRows(items, colDefs);
+            makeGridRows(items, colDefs,selectedItems || []);
             if (pageSize && total) {
               setPageCount(Math.ceil(total / pageSize));
             }
@@ -135,17 +148,7 @@ function MainGrid<T = any>(
           pageIndex: event.selected + 1,
           pageSize: pageSize,
           sorts: gridSorts,
-        });
-        // getData(
-        //   { pageIndex: event.selected + 1, pageSize: pageSize },
-        //   (items: T[], total: number) => {
-        //     makeGridRows(items, colDefs);
-        //     if (pageSize) {
-        //       setPageCount(Math.ceil(total / pageSize));
-        //     }
-        //     setIsPending(false);
-        //   }
-        // );
+        },selectedItemsRef.current);
       }
     }
   };
@@ -176,10 +179,29 @@ function MainGrid<T = any>(
         pageIndex: selectedPage + 1,
         pageSize: pageSize === null ? 100000 : pageSize,
         sorts: newSorts,
-      });
+      },selectedItemsRef.current);
       return newSorts;
     });
   };
+
+  const onRowSelectedChange = (row: GridRowModel, checked: boolean) => {
+    row.isSelected = checked;
+    // setSelectedItems((prev) => {
+      const newItems = selectedItemsRef.current ? [...selectedItemsRef.current] : [];
+      const index = newItems.findIndex(
+        (item) => item[idField as keyof T] === row.data[idField]
+      );
+      if (checked && index === -1) {
+        newItems.push(row.data);
+      }
+      if (!checked && index !== -1) {
+        newItems.splice(index, 1);
+      }
+      onSelectionChange && onSelectionChange(newItems);
+      selectedItemsRef.current = newItems;
+    // });
+  };
+
 
   useEffect(() => {
     const headers: ColHeader[] = colDefs.map((col) => {
@@ -194,7 +216,7 @@ function MainGrid<T = any>(
   }, [gridSorts, colDefs]);
 
   useEffect(() => {
-    loadGrid();
+    loadGrid(undefined,selectedItemsRef.current);
   }, [loadGrid]);
 
   useEffect(() => {
@@ -205,15 +227,26 @@ function MainGrid<T = any>(
     refresh() {
       loadGrid();
     },
+    getSelection(){
+      return selectedItemsRef.current || []
+    }
   }));
 
   {
     return (
-      <div>
+      <div className="border border-gray-300">
         <div className="overflow-x-auto w-full">
           <div>
-            <Table hoverable className="text-right border border-gray-300">
+            <Table hoverable className="text-right">
               <Table.Head>
+                {selectable && (
+                  <Table.HeadCell className="w-5 px-3 pl-0">
+                    {/* <input
+                      type="checkbox"
+                      className="w-5 h-5 text-primary2-500 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    /> */}
+                  </Table.HeadCell>
+                )}
                 {colHeaders.map((header, index) => (
                   <Table.HeadCell key={index}>
                     <GridHeaderComponent
@@ -223,7 +256,6 @@ function MainGrid<T = any>(
                   </Table.HeadCell>
                 ))}
                 {rowActions && <Table.HeadCell>عملیات</Table.HeadCell>}
-                {/* <Table.HeadCell>عملیات</Table.HeadCell> */}
               </Table.Head>
               <Table.Body className="divide-y">
                 {isPending && (
@@ -242,6 +274,9 @@ function MainGrid<T = any>(
                     <GridRow<T>
                       key={index}
                       row={row}
+                      theme={theme}
+                      selectable={selectable}
+                      onSelectedChange={onRowSelectedChange}
                       rowActions={rowActions}
                       onEditRow={onEditRow}
                       onRemoveRow={onRemoveRow}
@@ -310,6 +345,6 @@ function MainGrid<T = any>(
   }
 }
 const Grid = forwardRef(MainGrid) as <T = any>(
-  props: GridProps<T> & { ref?: React.ForwardedRef<GridRef> }
+  props: GridProps<T> & { ref?: React.ForwardedRef<GridRef<T>> }
 ) => ReturnType<typeof MainGrid>;
 export default Grid;
