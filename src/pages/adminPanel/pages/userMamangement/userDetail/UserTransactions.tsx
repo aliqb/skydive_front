@@ -88,7 +88,7 @@ const UserTransactions: React.FC = () => {
     }
     sendRemoveRequest(
       {
-        url: `/JumpRecords/${item.id}`,
+        url: `/transactions/${item.id}`,
         method: 'delete',
       },
       (response) => {
@@ -129,6 +129,7 @@ const UserTransactions: React.FC = () => {
           onRemoveRow={onRemoveUserTransactions}
           getData={fetchTickets}
           rowActions={{ remove: true }}
+          ref={gridRef}
         />
       </div>
     </>
