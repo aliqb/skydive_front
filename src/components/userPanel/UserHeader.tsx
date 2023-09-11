@@ -19,7 +19,7 @@ const UserHeader: React.FC = () => {
   const unReadMessagesCount = useAppSelector(
     (state) => state.messages.unReadCount
   );
-  const basketState = useAppSelector(
+  const ticketsCount = useAppSelector(
     (state) => state.basket.basket?.ticketsCount
   );
 
@@ -128,9 +128,9 @@ const UserHeader: React.FC = () => {
             className="ml-1"
           >
             <div className="relative pl-1">
-              {basketState! > 0 && (
+              {ticketsCount && ticketsCount > 0 && (
                 <NotifBadge
-                  value={basketState}
+                  value={ticketsCount}
                   className="-left-2 -top-2 absolute"
                 />
               )}
