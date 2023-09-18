@@ -11,7 +11,8 @@ import SDButton from "../../shared/Button";
 import { toast } from "react-toastify";
 import SDSpinner from "../../shared/Spinner";
 import { GeneralSettings } from "../../../models/settings.models";
-import { useAppSelector } from "../../../hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
+import { fetchGeneralSettings } from "../../../store/generalSettings";
 
 const GeneralSettingsComponent: React.FC = () => {
   const {
@@ -29,7 +30,7 @@ const GeneralSettingsComponent: React.FC = () => {
   });
 
   const generalSettingsState = useAppSelector((state) => state.generalSettings);
-
+  const dispatch = useAppDispatch();
   const { sendRequest: saveSettingsRequest, isPending: isSaving } = useAPi<
     GeneralSettings,
     BaseResponse<null>
@@ -65,6 +66,7 @@ const GeneralSettingsComponent: React.FC = () => {
       },
       (response) => {
         toast.success(response.message);
+        dispatch(fetchGeneralSettings())
       },
       (error) => {
         toast.error(error?.message);
