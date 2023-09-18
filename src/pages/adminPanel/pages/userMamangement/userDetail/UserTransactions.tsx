@@ -109,6 +109,9 @@ const UserTransactions: React.FC = () => {
           params: {
             pageSize: gridParams.pageSize,
             pageIndex: gridParams.pageIndex,
+            orderby: gridParams.sorts
+            .map((item) => `${item.field} ${item.sort}`)
+            .join(","),
           },
         },
         (response) => {
@@ -130,6 +133,7 @@ const UserTransactions: React.FC = () => {
           getData={fetchTickets}
           rowActions={{ remove: true }}
           ref={gridRef}
+          sorts={[{field: 'date', sort: 'desc'}]}
         />
       </div>
     </>
