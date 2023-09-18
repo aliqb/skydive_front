@@ -17,19 +17,20 @@ export interface ColHeader {
 }
 export class GridRowModel<T = any> {
   data: T;
-  //   _rowData:{
-  //     [key:index] : React.ReactNode | string
-  //   }
   private _cells: (React.ReactNode | string)[] = [];
   private _isSelected = false;
   private _colDefs : ColDef[];
+
   constructor(data: T, colDefs: ColDef[]) {
     this.data = data;
     this._colDefs = colDefs;
     colDefs.forEach((col) => {
       let cell: React.ReactNode | string;
       if (col.field) {
-        cell = (this.data as any)[col.field];
+        cell =
+          col.field === 'amount'
+            ? this.formatAmount(data)
+            : (this.data as any)[col.field];
       }
       if (col.template) {
         cell = col.template;
@@ -38,8 +39,7 @@ export class GridRowModel<T = any> {
         cell = (
           <button
             type="button"
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            onClick={() => col.onClick!(this.data)}
+            onClick={() => col.onClick && col.onClick(this.data)}
             className="font-medium text-cyan-600 dark:text-cyan-500"
           >
             {cell}
@@ -53,6 +53,13 @@ export class GridRowModel<T = any> {
     });
   }
 
+  private formatAmount(data: T): string | number {
+    const amount = (data as any)['amount'];
+    if (typeof amount === 'number') {
+      return amount.toLocaleString(); // Format as a thousand separator
+    }
+    return amount;
+  }
 
   get cells() {
     return [...this._cells];
@@ -80,6 +87,15 @@ export interface GridRowActions<T> {
   remove?: boolean;
   otherActions?: GridRowOtherAction<T>[];
   moreActions?: GridRowOtherAction<T>[];
+}
+
+
+
+export interface GridRowActions<T>{
+    edit?: boolean,
+    remove?: boolean,
+    otherActions?: GridRowOtherAction<T>[],
+    moreActions?:GridRowOtherAction<T>[]
 }
 
 export interface GridRowOtherAction<T> {

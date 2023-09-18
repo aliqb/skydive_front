@@ -1,6 +1,6 @@
-const NotifBadge: React.FC<{ value: number; className?: string }> = ({
+const NotifBadge: React.FC<{ value?: number; className?: string }> = ({
   value,
-  className = "",
+  className = '',
 }) => {
   return (
     <div

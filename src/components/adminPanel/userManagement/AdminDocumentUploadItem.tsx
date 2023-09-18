@@ -79,7 +79,7 @@ const AdminDocumentUploadItem: React.FC<AdminDocumentUploadItemProps> = ({
       <p className="text-slate-700 text-lg font-semibold">{title}</p>
       <div className="pr-4 mt-3 flex items-center">
         <LabeledFileInput
-          accepFiles="application/pdf,image/*"
+          acceptFiles="application/pdf,image/*"
           title={title}
           onUpload={onFileUpload}
           onRemove={onFileRemove}
@@ -95,18 +95,22 @@ const AdminDocumentUploadItem: React.FC<AdminDocumentUploadItemProps> = ({
               name="expireDate"
               onChange={onDateChange}
               required={true}
-              manualInvalid={(validation || !!documentData.expirationDate) && !!documentData.validationMessage}
+              manualInvalid={
+                (validation || !!documentData.expirationDate) &&
+                !!documentData.validationMessage
+              }
               value={expirationDate}
               onOpenPickNewDate={false}
             ></SDDatepicker>
           </div>
         )}
       </div>
-      {(validation || !!documentData.expirationDate) && documentData.validationMessage && (
-        <p className="text-red-600 text-sm pr-2 mt-2 text-center">
-          {documentData.validationMessage}
-        </p>
-      )}
+      {(validation || !!documentData.expirationDate) &&
+        documentData.validationMessage && (
+          <p className="text-red-600 text-sm pr-2 mt-2 text-center">
+            {documentData.validationMessage}
+          </p>
+        )}
     </div>
   );
 };

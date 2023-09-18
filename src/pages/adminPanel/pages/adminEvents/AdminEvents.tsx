@@ -254,7 +254,7 @@ const AdminEvents: React.FC = () => {
       <PublishConfirmModal />
       <AdminEventModal
         eventStatusData={eventStatusData?.content}
-        lastCode={lastCode?.content || ""}
+        lastCode={lastCode?.content || ''}
         showModal={showModal}
         onCloseModal={handleCloseEntryModal}
         eventData={editingEvent}
@@ -327,8 +327,8 @@ const AdminEvents: React.FC = () => {
             otherActions: [
               {
                 icon: <BiToggleLeft size="1.5rem" color="#e02424" />,
-                descriptions: "فعال کردن",
-                showField: "!isActive",
+                descriptions: 'فعال کردن',
+                showField: '!isActive',
                 // disableField: '!isActive',
                 onClick: onPublishEvent,
               },
@@ -336,7 +336,7 @@ const AdminEvents: React.FC = () => {
             moreActions: [
               {
                 icon: <BsAirplaneEngines size="1.5rem" />,
-                descriptions: "پروازها",
+                descriptions: 'پروازها',
                 onClick: (item) => {
                   navigate(`${item.id}/flights`);
                 },

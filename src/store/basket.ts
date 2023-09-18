@@ -90,12 +90,14 @@ export const removeTicketFromBasket = createAsyncThunk(
           };
         }) || [];
       items = items.filter((item) => {
-        const findInRemovings = tickets.find(
-          (ticket) =>
+        const findInRemovings = tickets.find((ticket) => {
+          const ticketUserCode: number | null = ticket.userCode === userCode ? null : ticket.userCode
+          return (
             ticket.flightLoadId === item.flightLoadId &&
             ticket.ticketTypeId === item.ticketTypeId &&
-            ticket.userCode == item.userCode
-        );
+            ticketUserCode == item.userCode
+          );
+        });
         return !findInRemovings;
       });
       const response = await axiosIntance.put<

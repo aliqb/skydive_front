@@ -15,6 +15,7 @@ const MyTransactionsPage: React.FC = () => {
     {
       field: 'date',
       headerName: 'تاریخ پرداخت',
+      sortable: true,
     },
     {
       field: 'ticketNumber',
@@ -77,6 +78,9 @@ const MyTransactionsPage: React.FC = () => {
           params: {
             pageSize: gridParams.pageSize,
             pageIndex: gridParams.pageIndex,
+            orderby: gridParams.sorts
+            .map((item) => `${item.field} ${item.sort}`)
+            .join(","),
           },
         },
         (response) => {

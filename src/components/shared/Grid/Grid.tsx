@@ -42,6 +42,7 @@ interface GridProps<T = any> {
   onSelectionChange?: (selection: T[]) => void;
   idField?: string | keyof T;
   theme?: "primary" | "primary2";
+  sorts?: GridSortItem[]
 }
 
 function MainGrid<T = any>(
@@ -66,6 +67,7 @@ function MainGrid<T = any>(
     onSelectionChange,
     idField = "id",
     theme = "primary",
+    sorts = []
   }: GridProps<T>,
   ref: ForwardedRef<GridRef<T>>
 ) {
@@ -75,7 +77,7 @@ function MainGrid<T = any>(
   const [selectedPage, setSelectedPage] = useState(0);
   const [pageSize, setPageSize] = useState<number | null>(defaultPageSize);
   const [isPending, setIsPending] = useState<boolean>(false);
-  const [gridSorts, setGridSorts] = useState<GridSortItem[]>([]);
+  const [gridSorts, setGridSorts] = useState<GridSortItem[]>(sorts);
   const selectedItemsRef = useRef<T[]>();
   const makeGridRows = useCallback((items: T[], colDefs: ColDef<T>[],selectedItem:T[]) => {
     const rows: GridRowModel[] = items.map((item) => {
@@ -100,7 +102,7 @@ function MainGrid<T = any>(
           ? {
               pageIndex: 1,
               pageSize: pageSize === null ? 100000 : pageSize,
-              sorts: [],
+              sorts: sorts,
             }
           : gridParams;
         getData(

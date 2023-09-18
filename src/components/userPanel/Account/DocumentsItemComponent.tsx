@@ -61,9 +61,9 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
               onChange={onDateChange}
               required={true}
               manualInvalid={
-                validation && documentData?.validationMessage !== ""
+                validation && documentData?.validationMessage !== ''
               }
-              value={documentData?.expirationDate || ""}
+              value={documentData?.expirationDate || ''}
             ></SDDatepicker>
           </div>
         )}
@@ -75,12 +75,12 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
       </div>
       <div
         className={`w-full xs:w-1/2 flex whitespace-nowrap justify-center gap-8 text-center mt-4 xs:mt-0 xs:justify-around items-center ${
-          documentData.withDate ? "xs:pb-2" : ""
+          documentData.withDate ? 'xs:pb-2' : ''
         }`}
       >
         <div>
           <LabeledFileInput
-            accepFiles="application/pdf,image/*"
+            acceptFiles="application/pdf,image/*"
             title={title}
             onUpload={onFileUpload}
             onRemove={onFileRemove}
@@ -90,8 +90,8 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
         </div>
         <div>
           <UserDocumentStatusLabel
-            status={documentData?.status || ""}
-            display={documentData?.statusDisplay || ""}
+            status={documentData?.status || ''}
+            display={documentData?.statusDisplay || ''}
             isUploading={isUploading}
           ></UserDocumentStatusLabel>
         </div>
