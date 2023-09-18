@@ -251,7 +251,7 @@ const UserDetailPage: React.FC = () => {
                 </div>
                 <div className="flex md:pl-12 w-full md:w-1/2  lg:w-5/12">
                   <div className="font-semibold flex flex-col  md:pl-6 ml-6 border-l w-1/2 md:w-auto  md:min-w-max">
-                    <p className="pb-6">کد کابر</p>
+                    <p className="pb-6">کد کاربر</p>
                     <p className="pb-6">نام کاربری</p>
                     <p className="pb-6">رمز عبور</p>
                     <p className="pb-6">ایمیل</p>
