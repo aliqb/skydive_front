@@ -57,6 +57,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
         setUsernameError(null);
       },
       (error) => {
+        console.log(error);
         setFullName(null);
         setFullNameFetched(false);
         setUsernameError("کاربر فعالی با کد وارد شده وجود ندارد .");
