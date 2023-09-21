@@ -43,10 +43,10 @@ class SDEditor extends Component<EditorProps> {
         config={editorConfiguration as any}
         data={data}
         onReady={(editor) => {
-            // You can store the "editor" and use when it is needed.
-            console.log("Editor is ready to use!", editor);
-          }}
-        onChange={(event, editor) => {
+          // You can store the "editor" and use when it is needed.
+          console.log('Editor is ready to use!', editor);
+        }}
+        onChange={(editor) => {
           const data = (editor as any).getData();
           onChange && onChange(data);
         }}
