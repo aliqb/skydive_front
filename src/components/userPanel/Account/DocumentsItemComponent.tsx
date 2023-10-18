@@ -26,6 +26,10 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
   );
   const dispatch = useAppDispatch();
   const [isUploading, setIsUploading] = useState<boolean>(false);
+
+  // Check if the title is "کارت ملی" to determine if the LabeledFileInput should be disabled.
+  const isTitleNationalCard = title === 'کارت ملی';
+
   function onFileUpload(id: string) {
     setIsUploading(true);
     dispatch(accoutnActions.setDocumentFile({ field: field, fileId: id }));
@@ -86,7 +90,11 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
             title={title}
             onUpload={onFileUpload}
             onRemove={onFileRemove}
-            disabled={documentData.status === DocumentStatus.PENDING || disable}
+            disabled={
+              isTitleNationalCard ||
+              documentData.status === DocumentStatus.PENDING ||
+              disable
+            }
             maxSize={maxFileSize}
           />
         </div>
