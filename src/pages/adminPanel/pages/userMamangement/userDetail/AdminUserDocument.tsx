@@ -22,7 +22,7 @@ import { toast } from 'react-toastify';
 import FileViewButton from '../../../../../components/shared/FileViewButtom';
 import SDButton from '../../../../../components/shared/Button';
 import useConfirm from '../../../../../hooks/useConfirm';
-import AdminUploadDocumentModal from '../../../../../components/adminPanel/userManagement/AdminUploadDocumnetModal';
+import AdminUploadDocumentModal from '../../../../../components/adminPanel/userManagement/AdminUploadDocumentModal';
 
 const AdminUserDocument: React.FC = () => {
   const params = useParams();
