@@ -23,40 +23,42 @@ const AdminDocumentUploadItem: React.FC<AdminDocumentUploadItemProps> = ({
   minExpireDay,
 }) => {
   const localDocumentData = { ...documentData };
-  const [expirationDate, setDocumnetExpireDate] = useState<string>("");
+  const [expirationDate, setDocumentExpireDate] = useState<string>('');
   const [timeStamp, setTimeStamp] = useState<number>();
-  const maxFileSize = useAppSelector((state)=>state.generalSettings.generalSettings?.fileSizeLimitation)
+  const maxFileSize = useAppSelector(
+    (state) => state.generalSettings.generalSettings?.fileSizeLimitation
+  );
   function onFileUpload(id: string) {
     localDocumentData.fileId = id;
     if (documentData.withDate && !expirationDate) {
       localDocumentData.validationMessage =
-        "تاریخ انقضا برای این مدرک الزامی است.";
+        'تاریخ انقضا برای این مدرک الزامی است.';
     }
     onChange(localDocumentData);
   }
 
   function onFileRemove() {
-    localDocumentData.fileId = "";
-    localDocumentData.validationMessage = "";
+    localDocumentData.fileId = '';
+    localDocumentData.validationMessage = '';
     onChange(localDocumentData);
   }
 
   function onDateChange(value: string) {
     localDocumentData.expirationDate = value;
-    localDocumentData.validationMessage = "";
-    setDocumnetExpireDate(value);
+    localDocumentData.validationMessage = '';
+    setDocumentExpireDate(value);
 
     if (timeStamp && value) {
       const expireDateObejct = new DateObject({
         date: value,
-        format: "YYYY/MM/DD",
+        format: 'YYYY/MM/DD',
         locale: persian_en,
         calendar: persian,
       });
       const expirationJSDate = expireDateObejct.toDate();
       if (expirationJSDate.getTime() < timeStamp) {
         localDocumentData.validationMessage =
-          "حداقل مدت اعتبار رعایت نشده است.";
+          'حداقل مدت اعتبار رعایت نشده است.';
       }
     }
     // if(!hasFile){

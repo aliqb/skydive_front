@@ -1,11 +1,11 @@
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
-import { DocumnetStatus } from "../../../models/account.models";
-import { UserDocumentsFieldType, accoutnActions } from "../../../store/account";
-import SDDatepicker from "../../shared/DatePicker";
-import SDLabel from "../../shared/Label";
-import LabeledFileInput from "../../shared/LabeledFileInput";
-import UserDocumentStatusLabel from "../../shared/UserDocumentStatusLabel";
-import { useState } from "react";
+import { DocumentStatus } from '../../../models/account.models';
+import { UserDocumentsFieldType, accoutnActions } from '../../../store/account';
+import SDDatepicker from '../../shared/DatePicker';
+import SDLabel from '../../shared/Label';
+import LabeledFileInput from '../../shared/LabeledFileInput';
+import UserDocumentStatusLabel from '../../shared/UserDocumentStatusLabel';
+import { useState } from 'react';
 
 interface DocumentItemProps {
   field: UserDocumentsFieldType;
@@ -21,22 +21,24 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
   disable,
 }) => {
   const documentData = useAppSelector((state) => state.account[field]);
-  const maxFileSize = useAppSelector((state)=>state.generalSettings.generalSettings?.fileSizeLimitation)
+  const maxFileSize = useAppSelector(
+    (state) => state.generalSettings.generalSettings?.fileSizeLimitation
+  );
   const dispatch = useAppDispatch();
   const [isUploading, setIsUploading] = useState<boolean>(false);
   function onFileUpload(id: string) {
     setIsUploading(true);
-    dispatch(accoutnActions.setDocumnetFile({ field: field, fileId: id }));
+    dispatch(accoutnActions.setDocumentFile({ field: field, fileId: id }));
   }
 
   function onFileRemove() {
     setIsUploading(false);
-    dispatch(accoutnActions.setDocumnetFile({ field: field, fileId: "" }));
+    dispatch(accoutnActions.setDocumentFile({ field: field, fileId: '' }));
   }
 
   function onDateChange(value: string) {
     dispatch(
-      accoutnActions.setDocumnetExpireDate({ field: field, date: value })
+      accoutnActions.setDocumentExpireDate({ field: field, date: value })
     );
   }
 
@@ -84,7 +86,7 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
             title={title}
             onUpload={onFileUpload}
             onRemove={onFileRemove}
-            disabled={documentData.status === DocumnetStatus.PENDING || disable}
+            disabled={documentData.status === DocumentStatus.PENDING || disable}
             maxSize={maxFileSize}
           />
         </div>

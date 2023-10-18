@@ -68,12 +68,12 @@ export const DocumentTitleMap = {
   nationalCardDocument: 'کارت ملی'
 }
 
-export const  DocumnetStatus = {
-  NOT_LOADED : "NotLoaded",
-  PENDING : "Pending",
-  EXPIRED : "Expired",
-  CONFIRMED : "Confirmed",
-}
+export const DocumentStatus = {
+  NOT_LOADED: 'NotLoaded',
+  PENDING: 'Pending',
+  EXPIRED: 'Expired',
+  CONFIRMED: 'Confirmed',
+};
 
 
 export interface PersonalInfoEditableFormData {

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import SDCard from "../../components/shared/Card";
 import { SDTabs } from "../../components/shared/Tabs";
 import AccountInfo from "../../components/userPanel/Account/AccountInfo";
-import Documents from "../../components/userPanel/Account/Documnets";
+import Documents from '../../components/userPanel/Account/Documents';
 import PersonalInfo from "../../components/userPanel/Account/PersonalInfo";
 import { TabsRef } from "flowbite-react";
 import useAPi from "../../hooks/useApi";
