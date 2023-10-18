@@ -83,15 +83,15 @@ const SingUpUserInfoPage: React.FC = () => {
         <div className="mb-6">
           <SDLabel htmlFor="nationalId">نام کاربری</SDLabel>
           <SDTextInput
-            {...register("username", {
-              required: "فیلد الزامی است.",
+            {...register('username', {
+              required: 'فیلد الزامی است.',
               pattern: {
                 value: Regexes.username,
-                message: "نام کاربری فقط باید شامل اعداد و حروف انگلیسی باشد.",
+                message: 'نام کاربری فقط باید شامل اعداد و حروف انگلیسی باشد.',
               },
               minLength: {
                 value: 5,
-                message: "نام کاربری حداقل باید 5 کاراکتر باشد.",
+                message: 'نام کاربری حداقل باید 5 کاراکتر باشد.',
               },
             })}
             type="text"
@@ -109,12 +109,12 @@ const SingUpUserInfoPage: React.FC = () => {
             رمز عبور مورد نظر خود را وارد کنید.
           </SDLabel>
           <PasswordInput
-            {...register("password", {
-              required: "لطفا رمزعبور خود را وارد کنید.",
+            {...register('password', {
+              required: 'لطفا رمزعبور خود را وارد کنید.',
               pattern: {
                 value: Regexes.password,
                 message:
-                  "رمز عبور حداقل 6 کاراکتر و شامل اعداد و حروف انگلیسی باشد.",
+                  'رمز عبور حداقل 6 کاراکتر و شامل اعداد و حروف انگلیسی باشد.',
               },
             })}
             id="password"
@@ -128,14 +128,14 @@ const SingUpUserInfoPage: React.FC = () => {
         </div>
         <div className="mb-6">
           <SDLabel htmlFor="repeatPassword">
-            رمز عبور مورد نظر خود را وارد کنید.
+            رمز عبور مورد نظر خود را مجدد وارد کنید.
           </SDLabel>
           <PasswordInput
-            {...register("repeatPassword", {
-              required: "لطفا رمزعبور خود را مجدد وارد کنید.",
+            {...register('repeatPassword', {
+              required: 'لطفا رمزعبور خود را مجدد وارد کنید.',
               validate: (value) =>
                 value === passwordRef.current ||
-                "تکرار رمز عبور با رمز عبور مطابقت ندارد.",
+                'تکرار رمز عبور با رمز عبور مطابقت ندارد.',
             })}
             id="repeatPassword"
             invalid={!!errors.repeatPassword}
