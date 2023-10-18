@@ -57,7 +57,10 @@ const UserTransactions: React.FC = () => {
       field: 'invoiceNumber',
       headerName: 'شماره فاکتور',
       cellRenderer: (item: UserTransaction) => {
-        if (String(item.paymentInformation) === 'شارژ کیف پول') {
+        if (
+          String(item.paymentInformation) === 'شارژ کیف پول' ||
+          String(item.paymentInformation) === 'برداشت از کیف پول'
+        ) {
           return null;
         }
         return item.invoiceNumber;
@@ -67,9 +70,13 @@ const UserTransactions: React.FC = () => {
       field: '',
       headerName: 'فاکتور',
       cellRenderer: (item: UserTransaction) => {
-        if (String(item.paymentInformation) === 'شارژ کیف پول') {
+        if (
+          String(item.paymentInformation) === 'شارژ کیف پول' ||
+          String(item.paymentInformation) === 'برداشت از کیف پول'
+        ) {
           return null;
         }
+
         return (
           <PdfPrintButton
             pdfUrl={`${import.meta.env.VITE_BASE_API_URL}/transactions/Print/${
@@ -110,8 +117,8 @@ const UserTransactions: React.FC = () => {
             pageSize: gridParams.pageSize,
             pageIndex: gridParams.pageIndex,
             orderby: gridParams.sorts
-            .map((item) => `${item.field} ${item.sort}`)
-            .join(","),
+              .map((item) => `${item.field} ${item.sort}`)
+              .join(','),
           },
         },
         (response) => {
@@ -133,7 +140,7 @@ const UserTransactions: React.FC = () => {
           getData={fetchTickets}
           rowActions={{ remove: true }}
           ref={gridRef}
-          sorts={[{field: 'date', sort: 'desc'}]}
+          sorts={[{ field: 'date', sort: 'desc' }]}
         />
       </div>
     </>

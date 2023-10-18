@@ -3,7 +3,7 @@ import SDButton from "../Button";
 
 const BookButton: React.FC = () => {
   return (
-    <Link to="/payment" className="block w-full max-w-md">
+    <Link to="/payment" className="block w-full">
       <SDButton color="success" className="w-full" type="button">
         رزرو نهایی
       </SDButton>

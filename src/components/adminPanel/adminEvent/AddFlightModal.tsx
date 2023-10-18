@@ -160,8 +160,8 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                 <p
                   className={`${
                     Number(totalCapacity) > 0
-                      ? "text-green-500"
-                      : "text-red-600"
+                      ? 'text-green-500'
+                      : 'text-red-600'
                   }  ltr`}
                 >
                   {totalCapacity}
@@ -185,11 +185,11 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                     numeric={true}
                     id="flightQty"
                     invalid={!!formErrors.flightQty}
-                    {...register("flightQty", {
-                      required: "فیلد اجباری است.",
+                    {...register('flightQty', {
+                      required: 'فیلد اجباری است.',
                       valueAsNumber: true,
                       validate: (value) => {
-                        return value > 0 || "مقدار باید بزرگ‌تر از 0 باشد.";
+                        return value > 0 || 'مقدار باید بزرگ‌تر از 0 باشد.';
                       },
                     })}
                   />
@@ -204,14 +204,15 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                     غیر قابل رزرو
                   </SDLabel>
                   <SDTextInput
+                    readOnly
                     numeric={true}
                     id="voidableQty"
                     invalid={!!formErrors.voidableQty}
-                    {...register("voidableQty", {
-                      required: "فیلد اجباری است.",
+                    {...register('voidableQty', {
+                      required: 'فیلد اجباری است.',
                       valueAsNumber: true,
                       validate: (value) => {
-                        return value >= 0 || "مقدار نمی‌تواند منفی باشد.";
+                        return value >= 0 || 'مقدار نمی‌تواند منفی باشد.';
                       },
                     })}
                   />
@@ -238,7 +239,7 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                         <SDSelect
                           id={`ticketType-${index}`}
                           {...register(`ticketTypes.${index}.typeId` as const, {
-                            required: "فیلد اجباری است.",
+                            required: 'فیلد اجباری است.',
                           })}
                           invalid={
                             !!formErrors?.ticketTypes?.[index]?.typeId?.message
@@ -264,11 +265,11 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                           numeric={true}
                           id={`qty-${index}`}
                           {...register(`ticketTypes.${index}.qty` as const, {
-                            required: "فیلد اجباری است.",
+                            required: 'فیلد اجباری است.',
                             valueAsNumber: true,
                             validate: (value) => {
                               return (
-                                value > 0 || "مقدار باید بزرگ‌تر از 0 باشد."
+                                value > 0 || 'مقدار باید بزرگ‌تر از 0 باشد.'
                               );
                             },
                           })}
