@@ -11,6 +11,11 @@ const customTheme : DeepPartial<FlowbiteButtonTheme> = {
   },
   pill:{
     off: 'rounded-sm'
+  },
+  outline:{
+    pill:{
+      off: 'rounded-sm [line-height:unset]'
+    }
   }
 }
 
