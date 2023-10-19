@@ -205,6 +205,7 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                   </SDLabel>
                   <SDTextInput
                     readOnly
+                    disabled={true}
                     numeric={true}
                     id="voidableQty"
                     invalid={!!formErrors.voidableQty}
