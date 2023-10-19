@@ -8,6 +8,7 @@ export interface GeneralSettings {
   userStatusInfo: UserStatusInfo[];
   medicalDocumentsValidityDuration: number;
   attorneyDocumentsValidityDuration: number;
+  vat: number;
   id: string;
   createdAt?: string;
   updatedAt?: string;
