@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import SDTooltip from "../Tooltip";
-import { GridRow, GridRowOtherAction } from "./grid.types";
+import { GridRowModel, GridRowOtherAction } from "./grid.types";
 
 function GridRowOtherActionComponent<T>(props: {
   action: GridRowOtherAction<T>;
-  row: GridRow<T>;
+  row: GridRowModel<T>;
 }) {
   let mustShow = true;
   let musDisable = false;

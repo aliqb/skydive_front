@@ -45,9 +45,9 @@ const Wallet: React.FC = () => {
   }, [fetchWallet]);
 
   return (
-    <SDCard className="flex items-center justify-center min-h-screen p-8 bg-red-500">
+    <SDCard className="flex items-center justify-center min-h-screen p-8">
       <SDCard className="shadow rounded-lg w-full md:max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl mb-16 sm:w-full sm:max-w-screen-md flex flex-col items-center">
-        <h1 className="text-3xl font-bold mb-4 text-center">کیف پول کاربر</h1>
+        <h1 className="text-4xl font-bold mb-4 text-center">کیف پول کاربر</h1>
 
         {getPending ? (
           <SDSpinner size={10}></SDSpinner>
@@ -61,7 +61,7 @@ const Wallet: React.FC = () => {
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="w-6 h-6"
+                  className="w-10 h-10"
                 >
                   <path
                     strokeLinecap="round"

@@ -4,58 +4,58 @@ import {
   DocumentItem,
   DocumentItemRow,
   DocumentsList,
-  DocumnetStatus,
-} from "../../../../../models/account.models";
-import { BaseResponse } from "../../../../../models/shared.models";
-import { useParams } from "react-router-dom";
-import { useAppDispatch } from "../../../../../hooks/reduxHooks";
-import { fetchUserDetail } from "../../../../../store/usermanagement";
-import Grid from "../../../../../components/shared/Grid/Grid";
+  DocumentStatus,
+} from '../../../../../models/account.models';
+import { BaseResponse } from '../../../../../models/shared.models';
+import { useParams } from 'react-router-dom';
+import { useAppDispatch } from '../../../../../hooks/reduxHooks';
+import { fetchUserDetail } from '../../../../../store/usermanagement';
+import Grid from '../../../../../components/shared/Grid/Grid';
 import {
   ColDef,
   GridGetData,
   GridRef,
-} from "../../../../../components/shared/Grid/grid.types";
-import UserDocumentStatusLabel from "../../../../../components/shared/UserDocumentStatusLabel";
-import { sortDate } from "../../../../../utils/shared";
-import { toast } from "react-toastify";
-import FileViewButton from "../../../../../components/shared/FileViewButtom";
-import SDButton from "../../../../../components/shared/Button";
-import AdminUploadDocumnetModal from "../../../../../components/adminPanel/userManagement/AdminUploadDocumnetModal";
-import useConfirm from "../../../../../hooks/useConfirm";
+} from '../../../../../components/shared/Grid/grid.types';
+import UserDocumentStatusLabel from '../../../../../components/shared/UserDocumentStatusLabel';
+import { sortDate } from '../../../../../utils/shared';
+import { toast } from 'react-toastify';
+import FileViewButton from '../../../../../components/shared/FileViewButtom';
+import SDButton from '../../../../../components/shared/Button';
+import useConfirm from '../../../../../hooks/useConfirm';
+import AdminUploadDocumentModal from '../../../../../components/adminPanel/userManagement/AdminUploadDocumentModal';
 
 const AdminUserDocument: React.FC = () => {
   const params = useParams();
   const dispatch = useAppDispatch();
   const [colDefs] = useState<ColDef[]>([
     {
-      headerName: "عنوان",
-      field: "title",
+      headerName: 'عنوان',
+      field: 'title',
     },
     {
-      headerName: "تاریخ بارگذاری",
-      field: "createdAt",
+      headerName: 'تاریخ بارگذاری',
+      field: 'createdAt',
     },
     {
-      headerName: "تاریخ انقضا",
-      field: "expirationDate",
+      headerName: 'تاریخ انقضا',
+      field: 'expirationDate',
     },
     {
-      headerName: "وضعیت",
-      field: "statusDisplay",
+      headerName: 'وضعیت',
+      field: 'statusDisplay',
       cellRenderer: (item) => {
         return (
           <UserDocumentStatusLabel
-            status={item.status || ""}
-            display={item.statusDisplay || ""}
+            status={item.status || ''}
+            display={item.statusDisplay || ''}
             isUploading={false}
           ></UserDocumentStatusLabel>
         );
       },
     },
     {
-      headerName: "",
-      field: "",
+      headerName: '',
+      field: '',
       cellRenderer: (item: DocumentItemRow) => {
         return <FileViewButton fileId={item.fileId} alt={item.title} />;
       },
@@ -68,8 +68,8 @@ const AdminUserDocument: React.FC = () => {
   const { sendRequest: checkRequest } = useAPi<null, BaseResponse<null>>();
   const { sendRequest: sendRemoveRequest } = useAPi<null, BaseResponse<null>>();
   const [DeleteConfirmModal, deleteConfirmation] = useConfirm(
-    " این مدرک حذف خواهد شد. آیا مطمئن هستید؟ ",
-    "حذف کردن مدرک"
+    ' این مدرک حذف خواهد شد. آیا مطمئن هستید؟ ',
+    'حذف کردن مدرک'
   );
   const mapDocumentsToRows = useCallback(
     (documents: DocumentItem[], title: string) => {
@@ -77,7 +77,7 @@ const AdminUserDocument: React.FC = () => {
         return {
           ...item,
           title,
-          isPending: item.status === DocumnetStatus.PENDING,
+          isPending: item.status === DocumentStatus.PENDING,
         };
       });
       return rows;
@@ -86,11 +86,11 @@ const AdminUserDocument: React.FC = () => {
   );
 
   const getDocuments = useCallback<GridGetData<DocumentItemRow>>(
-    (_gridParams, setRows,fail) => {
+    (_gridParams, setRows, fail) => {
       const userId = params.userId;
       sendRequest(
         {
-          url: "/Users/GetUserDocument",
+          url: '/Users/GetUserDocument',
           params: {
             userId: userId,
           },
@@ -106,14 +106,14 @@ const AdminUserDocument: React.FC = () => {
           const medicalDocument: DocumentItem[] =
             documents.medicalDocuments || [];
           const rows = [
-            ...mapDocumentsToRows(nationalCardDocuments, "کارت ملی"),
-            ...mapDocumentsToRows(logBookDocument, "لاگ بوک"),
-            ...mapDocumentsToRows(attorneyDocument, "وکالت‌نامه محضری"),
-            ...mapDocumentsToRows(medicalDocument, "مدارک پزشکی"),
+            ...mapDocumentsToRows(nationalCardDocuments, 'کارت ملی'),
+            ...mapDocumentsToRows(logBookDocument, 'لاگ بوک'),
+            ...mapDocumentsToRows(attorneyDocument, 'وکالت‌نامه محضری'),
+            ...mapDocumentsToRows(medicalDocument, 'مدارک پزشکی'),
           ];
-          setRows(sortDate<DocumentItemRow>(rows, "createdAt"));
+          setRows(sortDate<DocumentItemRow>(rows, 'createdAt'));
           const allApproved = rows.every(
-            (row) => DocumnetStatus.CONFIRMED === row.status
+            (row) => DocumentStatus.CONFIRMED === row.status
           );
           if (allApproved) {
             dispatch(fetchUserDetail(userId as string));
@@ -130,14 +130,14 @@ const AdminUserDocument: React.FC = () => {
       checkRequest(
         {
           url: `/Admin/CheckUserDocument/${id}/${approve}`,
-          method: "put",
+          method: 'put',
         },
         (response) => {
           toast.success(response.message);
           gridRef.current?.refresh();
         },
         (error) => {
-          toast.error(error?.message || "");
+          toast.error(error?.message || '');
         }
       );
     },
@@ -157,13 +157,13 @@ const AdminUserDocument: React.FC = () => {
 
   async function onRemoveDocument(item: DocumentItemRow) {
     const confirm = await deleteConfirmation();
-    if(!confirm){
-      return
+    if (!confirm) {
+      return;
     }
     sendRemoveRequest(
       {
         url: `/admin/RemoveDocument/${item.id}`,
-        method: "delete",
+        method: 'delete',
       },
       (response) => {
         toast.success(response.message);
@@ -181,9 +181,8 @@ const AdminUserDocument: React.FC = () => {
     <>
       <DeleteConfirmModal />
       {showUploadModal && (
-        <AdminUploadDocumnetModal
+        <AdminUploadDocumentModal
           userId={params.userId as string}
-          showModal={showUploadModal}
           onCloseModal={onUploadClose}
         />
       )}
@@ -220,11 +219,11 @@ const AdminUserDocument: React.FC = () => {
                     />
                   </svg>
                 ),
-                descriptions: "تأیید",
+                descriptions: 'تأیید',
                 onClick: (item) => {
                   checkDocument(item.id as string, true);
                 },
-                showField: "isPending",
+                showField: 'isPending',
               },
               {
                 icon: (
@@ -243,11 +242,11 @@ const AdminUserDocument: React.FC = () => {
                     />
                   </svg>
                 ),
-                descriptions: "عدم تأیید",
+                descriptions: 'عدم تأیید',
                 onClick: (item) => {
                   checkDocument(item.id as string, false);
                 },
-                showField: "isPending",
+                showField: 'isPending',
               },
             ],
           }}

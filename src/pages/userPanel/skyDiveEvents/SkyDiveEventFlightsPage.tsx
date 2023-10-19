@@ -49,11 +49,10 @@ const SkyDiveEventFlightsPage: React.FC = () => {
   const handleScroll = useCallback((event: Event) => {
     const container = event.target as HTMLDivElement;
     const { scrollTop, clientHeight, scrollHeight } = container;
-    const threshold = 50; // Adjust this value according to your needs
+    const threshold = 20; // Adjust this value according to your needs
 
     const isNearBottom = scrollTop + clientHeight >= scrollHeight - threshold;
     if (isNearBottom && !atTheEnd) {
-      // console.log("Reached near the end of the page!");
       setAddTheEnd(true);
     }
     if(scrollTop === 0){
@@ -95,7 +94,7 @@ const SkyDiveEventFlightsPage: React.FC = () => {
   }
 
   return (
-    <div className="flex relative mt-1 px-5">
+    <div className="flex relative mt-1 px-5 pb-[30px]">
       <SDCard className="px-0 pt-0 w-full lg:w-[65vw] border border-gray-200 relative">
         <header className="flex flex-col items-center sticky top-0 bg-white pt-5 rounded-t-lg">
           <h2 className="text-center font-bold text-lg">{eventTitle}</h2>

@@ -1,5 +1,5 @@
 import SDButton from "../../shared/Button";
-import SDModal from "../../shared/Modal";
+import SDModal from "../../shared/Modal/Modal";
 import { useState } from "react";
 import SDSpinner from "../../shared/Spinner";
 import SDLabel from "../../shared/Label";
@@ -34,22 +34,22 @@ const CheckInfoMessageModal: React.FC<CheckInfoMessageModalProps> = ({
   };
 
   function resetModal(submitted: boolean) {
-    setMessage('');
+    setMessage("");
     onCloseModal(submitted);
   }
   function onSubmit(event: React.FormEvent) {
     event.preventDefault();
-    checkInfo(userId, confirm, message)
+    checkInfo(userId, confirm, message);
   }
 
-  function checkInfo(id: string, confirm: boolean,message: string) {
+  function checkInfo(id: string, confirm: boolean, message: string) {
     sendCheckRequest(
       {
         url: "/Admin/CheckUserPersonalInformation",
         data: {
           id: id,
           isConfirmed: confirm,
-          message: message
+          message: message,
         },
         method: "put",
       },
@@ -63,44 +63,25 @@ const CheckInfoMessageModal: React.FC<CheckInfoMessageModalProps> = ({
     );
   }
   return (
-    <div>
-      <SDModal
-        show={showModal}
-        onClose={() => resetModal(false)}
-        containerClass="!p-0 lg:!w-[480px]"
-      >
-        <div className="border-b text-lg flex justify-between px-6 py-4 bg-blue-900 text-white rounded-t-md">
-          {title}
-          <button type="button" onClick={() => resetModal(false)}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-7 h-7 stroke-2"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-        <form onSubmit={onSubmit} className="max-h-[80vh] overflow-auto">
+    <SDModal
+      show={showModal}
+      onClose={() => resetModal(false)}
+      containerClass="lg:!w-[480px]"
+    >
+      <SDModal.Header color="primary2">{title}</SDModal.Header>
+      <SDModal.Body>
+        <form onSubmit={onSubmit}>
           <div className="px-6 py-6">
             <div className=" w-full">
-                <SDLabel htmlFor="message" className="mb-2">
-                  پیام
-                </SDLabel>
-                <SDTextArea
-                  id="message"
-                  value={message}
-                  onChange={onMessageChange}
-                  rows={6}
-                />
-
+              <SDLabel htmlFor="message" className="mb-2">
+                پیام
+              </SDLabel>
+              <SDTextArea
+                id="message"
+                value={message}
+                onChange={onMessageChange}
+                rows={6}
+              />
             </div>
           </div>
           <div className="w-full px-5 pb-6 flex justify-start items-center">
@@ -115,10 +96,9 @@ const CheckInfoMessageModal: React.FC<CheckInfoMessageModalProps> = ({
             </SDButton>
           </div>
         </form>
-      </SDModal>
-    </div>
+      </SDModal.Body>
+    </SDModal>
   );
 };
-
 
 export default CheckInfoMessageModal;

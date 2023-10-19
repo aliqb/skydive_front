@@ -14,24 +14,24 @@ export interface CartableMessage {
 }
 
 export const CartableRequestTypes = {
-  USER_INFORMATION_CONFIRM: "UserInformationConfirmation",
-  TICKET_RESERVATION: "TicketReservation",
-  TIKET_CANCELATION: "TicketCancellation",
-  REFUND: "Refund",
-  WALET_CHARGE: "WalletCharging",
-  DOCUMNET_EXPIREATION: "DocumentsExpiration",
-  DOCUMENT_UPDATE: "UpdatingDocuments",
+  USER_INFORMATION_CONFIRM: 'UserInformationConfirmation',
+  TICKET_RESERVATION: 'TicketReservation',
+  TIKET_CANCELATION: 'TicketCancellation',
+  REFUND: 'Refund',
+  WALET_CHARGE: 'WalletCharging',
+  Document_EXPIREATION: 'DocumentsExpiration',
+  DOCUMENT_UPDATE: 'UpdatingDocuments',
 };
 
 export const CartableRequestTypesPersianMap = new Map([
   [
     CartableRequestTypes.USER_INFORMATION_CONFIRM,
-    "درخواست تأیید اطلاعات کاربری",
+    'درخواست تأیید اطلاعات کاربری',
   ],
-  [CartableRequestTypes.TICKET_RESERVATION, "درخواست رزرو بلیت"],
-  [CartableRequestTypes.TIKET_CANCELATION, "درخواست لغو بلیت"],
-  [CartableRequestTypes.REFUND, "درخواست استرداد وجه"],
-  [CartableRequestTypes.WALET_CHARGE, "شارژ کیف پول"],
-  [CartableRequestTypes.DOCUMNET_EXPIREATION, "منقضی شدن مدارک"],
-  [CartableRequestTypes.DOCUMENT_UPDATE, "بروز رسانی مدارک"],
+  [CartableRequestTypes.TICKET_RESERVATION, 'درخواست رزرو بلیت'],
+  [CartableRequestTypes.TIKET_CANCELATION, 'درخواست لغو بلیت'],
+  [CartableRequestTypes.REFUND, 'درخواست استرداد وجه'],
+  [CartableRequestTypes.WALET_CHARGE, 'شارژ کیف پول'],
+  [CartableRequestTypes.Document_EXPIREATION, 'منقضی شدن مدارک'],
+  [CartableRequestTypes.DOCUMENT_UPDATE, 'بروز رسانی مدارک'],
 ]);

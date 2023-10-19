@@ -1,42 +1,45 @@
 import useAPi from "../../hooks/useApi";
-import printJS from "print-js";
+import { printResponse } from "../../utils/shared";
+import SDSpinner from "./Spinner";
 
 interface PdfPrintButtonProps {
   pdfUrl: string;
   fileName: string;
+  method?: string;
+  body?: string[];
 }
 
 const PdfPrintButton: React.FC<PdfPrintButtonProps> = ({
   pdfUrl,
   fileName,
+  method = "get",
+  body,
 }) => {
-  const { sendRequest } = useAPi<null, Blob>();
+  const { sendRequest, isPending } = useAPi<string[], Blob>();
   const handlePrint = () => {
     sendRequest(
       {
         url: pdfUrl,
         responseType: "blob",
+        method: method,
+        data: body,
       },
       (response) => {
-        console.log(response);
-        const url = URL.createObjectURL(response);
-
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `${fileName}.pdf`;
-        // link.click();
-
-        printJS({ printable: url, documentTitle: 'test.pdf' });
-        URL.revokeObjectURL(url);
+        printResponse(fileName, response);
       }
     );
   };
 
   return (
     <>
-      <button onClick={handlePrint} className="text-cyan-600">
-        چاپ
-      </button>
+    {
+      isPending && <SDSpinner color="blue"></SDSpinner>
+    }
+      {!isPending && (
+        <button onClick={handlePrint} className="text-cyan-600">
+          چاپ
+        </button>
+      )}
     </>
   );
 };

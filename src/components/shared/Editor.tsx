@@ -36,7 +36,6 @@ interface EditorProps{
 class SDEditor extends Component<EditorProps> {
   render() {
     const {data,onChange}  = this.props;
-    // console.log('editor',window,window.ClassicEditor)
     return (
       // <h1>t</h1>
       <CKEditor
@@ -44,12 +43,11 @@ class SDEditor extends Component<EditorProps> {
         config={editorConfiguration as any}
         data={data}
         onReady={(editor) => {
-            // You can store the "editor" and use when it is needed.
-            console.log("Editor is ready to use!", editor);
-          }}
-        onChange={(event, editor) => {
+          // You can store the "editor" and use when it is needed.
+          console.log('Editor is ready to use!', editor);
+        }}
+        onChange={(editor) => {
           const data = (editor as any).getData();
-          console.log({ event, editor, data });
           onChange && onChange(data);
         }}
       />

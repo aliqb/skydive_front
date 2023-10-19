@@ -18,6 +18,7 @@ interface BasketState {
     flightLoadId: string;
     ticketTypeId: string;
   } | null;
+  isEmptying: boolean;
 }
 
 const initialState: BasketState = {
@@ -25,6 +26,7 @@ const initialState: BasketState = {
   loading: false,
   error: "",
   changingTicket: null,
+  isEmptying: false,
 };
 
 export const fetchBasket = createAsyncThunk("basket/fetchBasket", async () => {
@@ -47,12 +49,13 @@ export const addTicketToBasket = createAsyncThunk(
   async (ticket: RequestTicketItem, { dispatch, getState }) => {
     try {
       const basket = (getState() as RootState).basket.basket;
+      const userCode = (getState() as RootState).auth.code;
       const items: RequestTicketItem[] =
         basket?.items.map((item) => {
           return {
             flightLoadId: item.flightLoadId,
             ticketTypeId: item.ticketTypeId,
-            userCode: item.userCode,
+            userCode: item.userCode === userCode ? null : item.userCode,
           };
         }) || [];
       items.push(ticket);
@@ -79,21 +82,25 @@ export const removeTicketFromBasket = createAsyncThunk(
   async (tickets: RequestTicketItem[], { dispatch, getState }) => {
     try {
       const basket = (getState() as RootState).basket.basket;
+      const userCode = (getState() as RootState).auth.code;
       let items: RequestTicketItem[] =
         basket?.items.map((item) => {
           return {
             flightLoadId: item.flightLoadId,
             ticketTypeId: item.ticketTypeId,
-            userCode: item.userCode,
+            userCode: item.userCode === userCode ? null : item.userCode,
           };
         }) || [];
       items = items.filter((item) => {
-        const findInRemovings = tickets.find(
-          (ticket) =>
+        const findInRemovings = tickets.find((ticket) => {
+          const ticketUserCode: number | null =
+            ticket.userCode === userCode ? null : ticket.userCode;
+          return (
             ticket.flightLoadId === item.flightLoadId &&
             ticket.ticketTypeId === item.ticketTypeId &&
-            ticket.userCode == item.userCode
-        );
+            ticketUserCode == item.userCode
+          );
+        });
         return !findInRemovings;
       });
       const response = await axiosIntance.put<
@@ -114,16 +121,38 @@ export const removeTicketFromBasket = createAsyncThunk(
   }
 );
 
+export const emptyBasket = createAsyncThunk(
+  "basket/empty",
+  async (_, { dispatch }) => {
+    try {
+      const response = await axiosIntance.put<
+        ChangingTicketRequest,
+        AxiosResponse<BaseResponse<BasketModel>>
+      >("/Reservations", { items: [] });
+      toast.success(response.data.message);
+      dispatch(fetchBasket());
+      return response.data.content;
+    } catch (error) {
+      const axiosError: AxiosError<{ message: string }> = error as AxiosError<{
+        message: string;
+      }>;
+      const message = axiosError.response?.data.message || "";
+      toast.error(message);
+      throw new Error(message);
+    }
+  }
+);
+
 const basketSlice = createSlice({
   name: "basket",
   initialState: initialState,
   reducers: {
-    reset:(state)=>{
+    reset: (state) => {
       state.basket = null;
       state.changingTicket = null;
-      state.error = '';
+      state.error = "";
       state.loading = false;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -141,7 +170,7 @@ const basketSlice = createSlice({
         state.error = action.error.message || "";
         state.basket = null;
       })
-    //   add
+      //   add
       .addCase(addTicketToBasket.pending, (state, action) => {
         state.changingTicket = {
           flightLoadId: action.meta.arg.flightLoadId,
@@ -154,8 +183,8 @@ const basketSlice = createSlice({
       .addCase(addTicketToBasket.rejected, (state) => {
         state.changingTicket = null;
       })
-    //   remove
-    .addCase(removeTicketFromBasket.pending, (state, action) => {
+      //   remove
+      .addCase(removeTicketFromBasket.pending, (state, action) => {
         state.changingTicket = {
           flightLoadId: action.meta.arg[0].flightLoadId,
           ticketTypeId: action.meta.arg[0].ticketTypeId,
@@ -166,9 +195,19 @@ const basketSlice = createSlice({
       })
       .addCase(removeTicketFromBasket.rejected, (state) => {
         state.changingTicket = null;
+      })
+      //   empty
+      .addCase(emptyBasket.pending, (state) => {
+        state.isEmptying = true;
+      })
+      .addCase(emptyBasket.fulfilled, (state) => {
+        state.isEmptying = false;
+      })
+      .addCase(emptyBasket.rejected, (state) => {
+        state.isEmptying = false;
       });
   },
 });
 
 export default basketSlice.reducer;
-export const basketActions = basketSlice.actions
+export const basketActions = basketSlice.actions;

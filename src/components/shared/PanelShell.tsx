@@ -24,8 +24,8 @@ const PanelShell: React.FC<PanelShellProps> = (props) => {
       <div className="w-full flex flex-1 relative overflow-hidden">
         <aside
           className={`${
-            isMenuOpen ? "w-[300px]" : "w-0"
-          } ${props.sidBarContainerClassName || ''} h-full    absolute flex-shrink-0 top-0 right-0 sm:static overflow-auto transition-all ease-linear duration-200 shadow-sideBar z-10`}
+            isMenuOpen ? "w-[240px]" : "w-0"
+          } ${props.sidBarContainerClassName || ''} h-full absolute flex-shrink-0 top-0 right-0 sm:static overflow-auto transition-all ease-linear duration-200 shadow-sideBar z-10`}
         >
           <props.sidebar isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
         </aside>

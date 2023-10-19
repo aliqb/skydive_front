@@ -5,6 +5,7 @@ import SDCard from "../Card";
 import NumberWithSeperator from "../NumberWithSeperator";
 import SDSpinner from "../Spinner";
 import BasketTicketItem from "./BasketTicketItem";
+import EmptyButton from "./EmptyButton";
 import BookButton from "./‌BookButton";
 interface BasketProps {
   inPayment?: boolean;
@@ -97,7 +98,10 @@ const Basket: React.FC<BasketProps> = ({
               </div>
             </div>
           ) : (
-            <BookButton />
+            <div>
+              <BookButton />
+              <EmptyButton />
+            </div>
           )}
         </div>
       ) : (

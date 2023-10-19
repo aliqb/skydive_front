@@ -1,30 +1,30 @@
 import { FormEvent, useState } from "react";
 import useAPi from "../../hooks/useApi";
 import SDSpinner from "./Spinner";
-import { useAppSelector } from "../../hooks/reduxHooks";
 
 interface LabeledFileInputProps {
-  accepFiles?: string;
+  acceptFiles?: string;
   title: string;
   field?: string;
   url?: string;
   onUpload: (id: string) => void;
   onRemove?: () => void;
   disabled?: boolean;
+  maxSize?: number;
 }
 const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
-  accepFiles = "",
+  acceptFiles = '',
   title,
-  field = "file",
-  url = "/file",
+  field = 'file',
+  url = '/file',
   onUpload,
   onRemove,
   disabled = false,
+  maxSize,
 }) => {
   const { sendRequest, isPending } = useAPi<FormData, string>();
   const [uploadedFile, setUploadedFile] = useState<File | null>();
-  const [error,setError] = useState<string>('');
-  const maxSizeSettings = useAppSelector(state=>state.generalSettings.generalSettings?.fileSizeLimitation);
+  const [error, setError] = useState<string>('');
   function onChange(event: FormEvent) {
     setError('');
     const files = (event.target as HTMLInputElement).files;
@@ -32,25 +32,27 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
       return;
     }
     const file: File = files[0];
-    const maxSize = maxSizeSettings ? maxSizeSettings  : 500;
-    if(file.size > maxSize * 1024){
-      setError(`حداکثر سایز فایل ${maxSize}KB است.`)
-      return
+    if (maxSize !== undefined && file.size > maxSize * 1024) {
+      setError(`حداکثر سایز فایل ${maxSize}KB است.`);
+      return;
     }
     const formData = new FormData();
     formData.append(field, file);
+    if (!maxSize) {
+      formData.append('ignoreFileSizeLimitation', 'true');
+    }
     sendRequest(
       {
         url: url,
         data: formData,
-        method: "post",
+        method: 'post',
       },
       (response) => {
         setUploadedFile(file);
         onUpload(response);
       },
-      (error)=>{
-        setError(error?.message || 'خطا در بارگذاری')
+      (error) => {
+        setError(error?.message || 'خطا در بارگذاری');
       }
     );
   }
@@ -66,18 +68,14 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
         <label
           htmlFor={title}
           className={`text-blue-700 font-semibold ${
-            disabled ? "cursor-not-allowed opacity-70" : "cursor-pointer"
+            disabled ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'
           }`}
         >
           بارگذاری فایل
         </label>
       )}
       {isPending && <SDSpinner size={8}></SDSpinner>}
-      {error && (
-        <p className="text-red-600">
-          {error}
-        </p>
-      )}
+      {error && <p className="text-red-600">{error}</p>}
       {uploadedFile && (
         <span className="flex">
           <button
@@ -99,7 +97,7 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
         type="file"
         id={title}
         className="hidden"
-        accept={accepFiles}
+        accept={acceptFiles}
         onChange={onChange}
         disabled={disabled}
       />

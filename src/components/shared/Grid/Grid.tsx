@@ -7,6 +7,7 @@ import {
   forwardRef,
   ForwardedRef,
   useImperativeHandle,
+  useRef
 } from "react";
 import {
   ColDef,
@@ -15,24 +16,21 @@ import {
   GridGetData,
   GridParams,
   GridRef,
-  GridRow,
+  GridRowModel,
   GridRowActions,
   GridSortItem,
   SortStateType,
 } from "./grid.types";
-import SDTooltip from "../Tooltip";
-import GridRowOtherActionComponent from "./GridOtherRowActionComponent";
-import GridRowMoreActionComponent from "./GridRowMoreActionsComponent";
 import ReactPaginate from "react-paginate";
 import { SelectPageEvent } from "../../../models/shared.models";
 import SDSpinner from "../Spinner";
 import GridHeaderComponent from "./GridHeaderComponent";
+import GridRow from "./GridRow";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface GridProps<T = any> {
   data?: T[];
   getData?: GridGetData<T>;
   colDefs: ColDef<T>[];
-  // fetchData?: () => void;
   onDoubleClick?: (data: T) => void;
   rowActions?: GridRowActions<T> | null;
   onEditRow?: (item: T) => void;
@@ -40,6 +38,11 @@ interface GridProps<T = any> {
   pageSize?: number | null;
   onPagination?: (gridParams: GridParams) => void;
   multiSortable?: boolean;
+  selectable?: boolean;
+  onSelectionChange?: (selection: T[]) => void;
+  idField?: string | keyof T;
+  theme?: "primary" | "primary2";
+  sorts?: GridSortItem[]
 }
 
 function MainGrid<T = any>(
@@ -60,28 +63,38 @@ function MainGrid<T = any>(
     pageSize: defaultPageSize = 10,
     onPagination,
     multiSortable = false,
+    selectable = false,
+    onSelectionChange,
+    idField = "id",
+    theme = "primary",
+    sorts = []
   }: GridProps<T>,
-  ref: ForwardedRef<GridRef>
+  ref: ForwardedRef<GridRef<T>>
 ) {
-  const [gridRows, setGridRows] = useState<GridRow<T>[]>([]);
+  const [gridRows, setGridRows] = useState<GridRowModel<T>[]>([]);
   const [colHeaders, setColHeaders] = useState<ColHeader[]>([]);
   const [pageCount, setPageCount] = useState<number>();
   const [selectedPage, setSelectedPage] = useState(0);
   const [pageSize, setPageSize] = useState<number | null>(defaultPageSize);
   const [isPending, setIsPending] = useState<boolean>(false);
-  const [gridSorts, setGridSorts] = useState<GridSortItem[]>([]);
-  const makeGridRows = useCallback((items: T[], colDefs: ColDef<T>[]) => {
-    const rows: GridRow[] = items.map((item) => {
-      return new GridRow<T>(item, colDefs);
+  const [gridSorts, setGridSorts] = useState<GridSortItem[]>(sorts);
+  const selectedItemsRef = useRef<T[]>();
+  const makeGridRows = useCallback((items: T[], colDefs: ColDef<T>[],selectedItem:T[]) => {
+    const rows: GridRowModel[] = items.map((item) => {
+      const row =  new GridRowModel<T>(item, colDefs);
+      const castedIdField = idField as keyof T;
+      const wasSelected = selectedItem.some(selected=>selected[castedIdField] === item[castedIdField])
+      row.isSelected = wasSelected;
+      return row
     });
 
     setGridRows(rows);
-  }, []);
+  }, [idField]);
 
   const loadGrid = useCallback(
-    (gridParams?: GridParams) => {
+    (gridParams?: GridParams,selectedItems?:T[]) => {
       if (data) {
-        makeGridRows(data, colDefs);
+        makeGridRows(data, colDefs,selectedItems || []);
       } else if (getData) {
         setIsPending(true);
         const isRefreshing = gridParams === undefined;
@@ -89,29 +102,32 @@ function MainGrid<T = any>(
           ? {
               pageIndex: 1,
               pageSize: pageSize === null ? 100000 : pageSize,
-              sorts: [],
+              sorts: sorts,
             }
           : gridParams;
-        getData(params, (items: T[], total?: number) => {
-          makeGridRows(items, colDefs);
-          if (pageSize && total) {
-            setPageCount(Math.ceil(total / pageSize));
+        getData(
+          params,
+          (items: T[], total?: number) => {
+            makeGridRows(items, colDefs,selectedItems || []);
+            if (pageSize && total) {
+              setPageCount(Math.ceil(total / pageSize));
+            }
+            if (isRefreshing) {
+              setSelectedPage(0);
+            }
+            setIsPending(false);
+          },
+          (error) => {
+            console.log(error);
+            setIsPending(false);
           }
-          if (isRefreshing) {
-            setSelectedPage(0);
-          }
-          setIsPending(false);
-        },(error)=>{
-          console.log(error)
-          setIsPending(false)
-        });
+        );
       }
     },
     [data, colDefs, makeGridRows, getData, pageSize]
   );
 
   const onRowDobuleClisk = (item: T) => {
-    console.log(item);
     if (onDoubleClick) {
       onDoubleClick(item);
     }
@@ -134,17 +150,7 @@ function MainGrid<T = any>(
           pageIndex: event.selected + 1,
           pageSize: pageSize,
           sorts: gridSorts,
-        });
-        // getData(
-        //   { pageIndex: event.selected + 1, pageSize: pageSize },
-        //   (items: T[], total: number) => {
-        //     makeGridRows(items, colDefs);
-        //     if (pageSize) {
-        //       setPageCount(Math.ceil(total / pageSize));
-        //     }
-        //     setIsPending(false);
-        //   }
-        // );
+        },selectedItemsRef.current);
       }
     }
   };
@@ -175,10 +181,29 @@ function MainGrid<T = any>(
         pageIndex: selectedPage + 1,
         pageSize: pageSize === null ? 100000 : pageSize,
         sorts: newSorts,
-      });
+      },selectedItemsRef.current);
       return newSorts;
     });
   };
+
+  const onRowSelectedChange = (row: GridRowModel, checked: boolean) => {
+    row.isSelected = checked;
+    // setSelectedItems((prev) => {
+      const newItems = selectedItemsRef.current ? [...selectedItemsRef.current] : [];
+      const index = newItems.findIndex(
+        (item) => item[idField as keyof T] === row.data[idField]
+      );
+      if (checked && index === -1) {
+        newItems.push(row.data);
+      }
+      if (!checked && index !== -1) {
+        newItems.splice(index, 1);
+      }
+      onSelectionChange && onSelectionChange(newItems);
+      selectedItemsRef.current = newItems;
+    // });
+  };
+
 
   useEffect(() => {
     const headers: ColHeader[] = colDefs.map((col) => {
@@ -193,7 +218,7 @@ function MainGrid<T = any>(
   }, [gridSorts, colDefs]);
 
   useEffect(() => {
-    loadGrid();
+    loadGrid(undefined,selectedItemsRef.current);
   }, [loadGrid]);
 
   useEffect(() => {
@@ -204,15 +229,26 @@ function MainGrid<T = any>(
     refresh() {
       loadGrid();
     },
+    getSelection(){
+      return selectedItemsRef.current || []
+    }
   }));
 
   {
     return (
-      <div>
+      <div className="border border-gray-300">
         <div className="overflow-x-auto w-full">
           <div>
-            <Table hoverable className="text-right border border-gray-300">
+            <Table hoverable className="text-right">
               <Table.Head>
+                {selectable && (
+                  <Table.HeadCell className="w-5 px-3 pl-0">
+                    {/* <input
+                      type="checkbox"
+                      className="w-5 h-5 text-primary2-500 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    /> */}
+                  </Table.HeadCell>
+                )}
                 {colHeaders.map((header, index) => (
                   <Table.HeadCell key={index}>
                     <GridHeaderComponent
@@ -222,7 +258,6 @@ function MainGrid<T = any>(
                   </Table.HeadCell>
                 ))}
                 {rowActions && <Table.HeadCell>عملیات</Table.HeadCell>}
-                {/* <Table.HeadCell>عملیات</Table.HeadCell> */}
               </Table.Head>
               <Table.Body className="divide-y">
                 {isPending && (
@@ -238,107 +273,19 @@ function MainGrid<T = any>(
                 )}
                 {!isPending &&
                   gridRows.map((row, index) => (
-                    <Table.Row
-                      onDoubleClick={(event) => {
-                        event.stopPropagation();
-                        onRowDobuleClisk(row.data);
-                      }}
-                      className={`${
-                        onDoubleClick && "!cursor-pointer"
-                      } bg-white dark:border-gray-700 dark:bg-gray-800`}
+                    <GridRow<T>
                       key={index}
-                    >
-                      {row.cells.map((cell, index) => (
-                        <Table.Cell
-                          className="whitespace-nowrap font-medium text-gray-900 dark:text-white"
-                          key={index}
-                        >
-                          {cell}
-                        </Table.Cell>
-                      ))}
-                      {rowActions && (
-                        <Table.Cell>
-                          <div className="flex gap-4 items-center">
-                            {rowActions.edit && (
-                              <SDTooltip
-                                content="ویرایش"
-                                trigger="hover"
-                                placement="bottom"
-                              >
-                                <button
-                                  onClick={(event) => {
-                                    event.stopPropagation();
-                                    onEditRow && onEditRow(row.data);
-                                  }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className="w-6 h-6 text-cyan-600"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                                    />
-                                  </svg>
-                                </button>
-                              </SDTooltip>
-                            )}
-                            {rowActions.remove && (
-                              <SDTooltip
-                                content="حذف"
-                                trigger="hover"
-                                placement="bottom"
-                                className="flex"
-                              >
-                                <button
-                                  onClick={(event) => {
-                                    event.stopPropagation();
-                                    onRemoveRow && onRemoveRow(row.data);
-                                  }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className="w-6 h-6 text-red-600"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                                    />
-                                  </svg>
-                                </button>
-                              </SDTooltip>
-                            )}
-                            {rowActions.otherActions &&
-                              rowActions.otherActions.map((action, index) => {
-                                return (
-                                  <GridRowOtherActionComponent
-                                    key={index}
-                                    action={action}
-                                    row={row}
-                                  />
-                                );
-                              })}
-                            {rowActions.moreActions &&
-                              rowActions.moreActions.length > 0 && (
-                                <GridRowMoreActionComponent
-                                  actions={rowActions.moreActions}
-                                  row={row}
-                                />
-                              )}
-                          </div>
-                        </Table.Cell>
-                      )}
-                    </Table.Row>
+                      row={row}
+                      theme={theme}
+                      selectable={selectable}
+                      onSelectedChange={onRowSelectedChange}
+                      rowActions={rowActions}
+                      onEditRow={onEditRow}
+                      onRemoveRow={onRemoveRow}
+                      onRowDobuleClisk={
+                        onDoubleClick ? onRowDobuleClisk : undefined
+                      }
+                    />
                   ))}
               </Table.Body>
             </Table>
@@ -400,6 +347,6 @@ function MainGrid<T = any>(
   }
 }
 const Grid = forwardRef(MainGrid) as <T = any>(
-  props: GridProps<T> & { ref?: React.ForwardedRef<GridRef> }
+  props: GridProps<T> & { ref?: React.ForwardedRef<GridRef<T>> }
 ) => ReturnType<typeof MainGrid>;
 export default Grid;

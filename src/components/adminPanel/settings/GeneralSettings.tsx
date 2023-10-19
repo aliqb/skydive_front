@@ -2,6 +2,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import useAPi from "../../../hooks/useApi";
 import {
   BaseResponse,
+  UserStatuses,
   UserStatusesPersianMap,
 } from "../../../models/shared.models";
 import { useEffect } from "react";
@@ -11,7 +12,8 @@ import SDButton from "../../shared/Button";
 import { toast } from "react-toastify";
 import SDSpinner from "../../shared/Spinner";
 import { GeneralSettings } from "../../../models/settings.models";
-import { useAppSelector } from "../../../hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
+import { fetchGeneralSettings } from "../../../store/generalSettings";
 
 const GeneralSettingsComponent: React.FC = () => {
   const {
@@ -29,7 +31,7 @@ const GeneralSettingsComponent: React.FC = () => {
   });
 
   const generalSettingsState = useAppSelector((state) => state.generalSettings);
-
+  const dispatch = useAppDispatch();
   const { sendRequest: saveSettingsRequest, isPending: isSaving } = useAPi<
     GeneralSettings,
     BaseResponse<null>
@@ -40,7 +42,24 @@ const GeneralSettingsComponent: React.FC = () => {
       reset({
         termsAndConditionsUrl:
           generalSettingsState.generalSettings.termsAndConditionsUrl,
-        userStatusInfo: generalSettingsState.generalSettings.userStatusInfo,
+        userStatusInfo: generalSettingsState.generalSettings.userStatusInfo.length ? generalSettingsState.generalSettings.userStatusInfo : [
+          {
+            status: UserStatuses.AWAITING_COMPLETION,
+            description:''
+          },
+          {
+            status: UserStatuses.PENDING,
+            description: ''
+          },
+          {
+            status: UserStatuses.ACTIVE,
+            description: ''
+          },
+          {
+            status: UserStatuses.INACTIVE,
+            description: ''
+          }
+        ],
         registrationTermsAndConditionsUrl:
           generalSettingsState.generalSettings
             .registrationTermsAndConditionsUrl,
@@ -52,6 +71,7 @@ const GeneralSettingsComponent: React.FC = () => {
         attorneyDocumentsValidityDuration:
           generalSettingsState.generalSettings
             .attorneyDocumentsValidityDuration,
+        vat: generalSettingsState.generalSettings.vat,
       });
     }
   }, [generalSettingsState, reset]);
@@ -65,6 +85,7 @@ const GeneralSettingsComponent: React.FC = () => {
       },
       (response) => {
         toast.success(response.message);
+        dispatch(fetchGeneralSettings());
       },
       (error) => {
         toast.error(error?.message);
@@ -81,6 +102,7 @@ const GeneralSettingsComponent: React.FC = () => {
         <SDTextInput
           className="ltr"
           disabled={generalSettingsState.loading}
+          invalid={!!formErrors.termsAndConditionsUrl}
           id="termsAndConditionsUrl"
           {...register("termsAndConditionsUrl", {
             required: "این فیلد اجباری است.",
@@ -99,6 +121,7 @@ const GeneralSettingsComponent: React.FC = () => {
         <SDTextInput
           className="ltr"
           disabled={generalSettingsState.loading}
+          invalid={!!formErrors.registrationTermsAndConditionsUrl}
           id="registrationTermsAndConditionsUrl"
           {...register("registrationTermsAndConditionsUrl", {
             required: "این فیلد اجباری است.",
@@ -117,20 +140,25 @@ const GeneralSettingsComponent: React.FC = () => {
             numeric={true}
             className="ltr"
             disabled={generalSettingsState.loading}
+            invalid={!!formErrors.fileSizeLimitation}
             id="fileSizeLimitation"
             {...register("fileSizeLimitation", {
               required: "این فیلد اجباری است.",
               valueAsNumber: true,
             })}
           />
+          {formErrors.fileSizeLimitation?.message && (
+            <p className="text-red-600 text-xs pr-2 mt-2">
+              {formErrors.fileSizeLimitation.message}
+            </p>
+          )}
         </div>
         <div className="w-full">
-          <SDLabel htmlFor="termsAndConditionsUrl">
-            اعتبار سابقه پرش (روز):
-          </SDLabel>
+          <SDLabel htmlFor="jumpDuration">اعتبار سابقه پرش (روز):</SDLabel>
           <SDTextInput
             numeric={true}
             className="ltr"
+            invalid={!!formErrors.jumpDuration}
             disabled={generalSettingsState.loading}
             id="jumpDuration"
             {...register("jumpDuration", {
@@ -138,6 +166,11 @@ const GeneralSettingsComponent: React.FC = () => {
               valueAsNumber: true,
             })}
           />
+          {formErrors.jumpDuration?.message && (
+            <p className="text-red-600 text-xs pr-2 mt-2">
+              {formErrors.jumpDuration.message}
+            </p>
+          )}
         </div>
       </div>
       <div className="mb-6 flex gap-6">
@@ -149,12 +182,18 @@ const GeneralSettingsComponent: React.FC = () => {
             numeric={true}
             className="ltr"
             disabled={generalSettingsState.loading}
+            invalid={!!formErrors.attorneyDocumentsValidityDuration}
             id="attorneyDocumentsValidityDuration"
             {...register("attorneyDocumentsValidityDuration", {
               required: "این فیلد اجباری است.",
               valueAsNumber: true,
             })}
           />
+          {formErrors.attorneyDocumentsValidityDuration?.message && (
+            <p className="text-red-600 text-xs pr-2 mt-2">
+              {formErrors.attorneyDocumentsValidityDuration.message}
+            </p>
+          )}
         </div>
         <div className="w-full">
           <SDLabel htmlFor="medicalDocumentsValidityDuration">
@@ -163,6 +202,7 @@ const GeneralSettingsComponent: React.FC = () => {
           <SDTextInput
             numeric={true}
             className="ltr"
+            invalid={!!formErrors.medicalDocumentsValidityDuration}
             disabled={generalSettingsState.loading}
             id="medicalDocumentsValidityDuration"
             {...register("medicalDocumentsValidityDuration", {
@@ -170,8 +210,39 @@ const GeneralSettingsComponent: React.FC = () => {
               valueAsNumber: true,
             })}
           />
+          {formErrors.medicalDocumentsValidityDuration?.message && (
+            <p className="text-red-600 text-xs pr-2 mt-2">
+              {formErrors.medicalDocumentsValidityDuration.message}
+            </p>
+          )}
         </div>
       </div>
+      <div className="mb-6 flex ml-6">
+        <div className="w-1/2">
+          <SDLabel htmlFor="vat">مالیات بر ارزش افزوده (درصد):</SDLabel>
+          <SDTextInput
+            numeric={true}
+            className="ltr"
+            invalid={!!formErrors.vat}
+            disabled={generalSettingsState.loading}
+            id="vat"
+            {...register("vat", {
+              required: "این فیلد اجباری است.",
+              valueAsNumber: true,
+              max: {
+                value:100,
+                message: 'مقدار درصدی مجاز نیست.'
+              },
+            })}
+          />
+          {formErrors.vat?.message && (
+            <p className="text-red-600 text-xs pr-2 mt-2">
+              {formErrors.vat.message}
+            </p>
+          )}
+        </div>
+      </div>
+
       <div className="mt-10">
         <h6 className="text-slate-700 font-semibold text-lg mb-4">
           توضیحات وضعیت‌ها

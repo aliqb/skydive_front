@@ -1,11 +1,11 @@
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
-import { DocumnetStatus } from "../../../models/account.models";
-import { UserDocumentsFieldType, accoutnActions } from "../../../store/account";
-import SDDatepicker from "../../shared/DatePicker";
-import SDLabel from "../../shared/Label";
-import LabeledFileInput from "../../shared/LabeledFileInput";
-import UserDocumentStatusLabel from "../../shared/UserDocumentStatusLabel";
-import { useState } from "react";
+import { DocumentStatus, DocumentTitleMap } from '../../../models/account.models';
+import { UserDocumentsFieldType, accoutnActions } from '../../../store/account';
+import SDDatepicker from '../../shared/DatePicker';
+import SDLabel from '../../shared/Label';
+import LabeledFileInput from '../../shared/LabeledFileInput';
+import UserDocumentStatusLabel from '../../shared/UserDocumentStatusLabel';
+import { useState } from 'react';
 
 interface DocumentItemProps {
   field: UserDocumentsFieldType;
@@ -21,21 +21,28 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
   disable,
 }) => {
   const documentData = useAppSelector((state) => state.account[field]);
+  const maxFileSize = useAppSelector(
+    (state) => state.generalSettings.generalSettings?.fileSizeLimitation
+  );
   const dispatch = useAppDispatch();
   const [isUploading, setIsUploading] = useState<boolean>(false);
+
+  // Check if the title is "کارت ملی" to determine if the LabeledFileInput should be disabled.
+  const isTitleNationalCard = title === DocumentTitleMap.nationalCardDocument;
+
   function onFileUpload(id: string) {
     setIsUploading(true);
-    dispatch(accoutnActions.setDocumnetFile({ field: field, fileId: id }));
+    dispatch(accoutnActions.setDocumentFile({ field: field, fileId: id }));
   }
 
   function onFileRemove() {
     setIsUploading(false);
-    dispatch(accoutnActions.setDocumnetFile({ field: field, fileId: "" }));
+    dispatch(accoutnActions.setDocumentFile({ field: field, fileId: '' }));
   }
 
   function onDateChange(value: string) {
     dispatch(
-      accoutnActions.setDocumnetExpireDate({ field: field, date: value })
+      accoutnActions.setDocumentExpireDate({ field: field, date: value })
     );
   }
 
@@ -60,9 +67,9 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
               onChange={onDateChange}
               required={true}
               manualInvalid={
-                validation && documentData?.validationMessage !== ""
+                validation && documentData?.validationMessage !== ''
               }
-              value={documentData?.expirationDate || ""}
+              value={documentData?.expirationDate || ''}
             ></SDDatepicker>
           </div>
         )}
@@ -74,22 +81,27 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
       </div>
       <div
         className={`w-full xs:w-1/2 flex whitespace-nowrap justify-center gap-8 text-center mt-4 xs:mt-0 xs:justify-around items-center ${
-          documentData.withDate ? "xs:pb-2" : ""
+          documentData.withDate ? 'xs:pb-2' : ''
         }`}
       >
         <div>
           <LabeledFileInput
-            accepFiles="application/pdf,image/*"
+            acceptFiles="application/pdf,image/*"
             title={title}
             onUpload={onFileUpload}
             onRemove={onFileRemove}
-            disabled={documentData.status === DocumnetStatus.PENDING || disable}
+            disabled={
+              (isTitleNationalCard && documentData.status === DocumentStatus.CONFIRMED) ||
+              documentData.status === DocumentStatus.PENDING ||
+              disable
+            }
+            maxSize={maxFileSize}
           />
         </div>
         <div>
           <UserDocumentStatusLabel
-            status={documentData?.status || ""}
-            display={documentData?.statusDisplay || ""}
+            status={documentData?.status || ''}
+            display={documentData?.statusDisplay || ''}
             isUploading={isUploading}
           ></UserDocumentStatusLabel>
         </div>

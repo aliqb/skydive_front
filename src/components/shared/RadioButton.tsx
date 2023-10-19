@@ -23,14 +23,17 @@ const RadioButton: React.FC<RadioButtonProps> = ({
   return (
     <div className="flex">
       {options.map((option) => (
-        <div key={option.value} className="flex  items-center mr-5">
+        <div key={option.value} className="flex items-center mr-5">
           <Radio
-            name={groupName + option.value}
+            id={groupName + option.value}
+            name={groupName}
             value={option.value}
             checked={selectedOption === option.value}
             onChange={() => onOptionChange(option.value)}
           />
-          <SDLabel className="mr-3">{option.label}</SDLabel>
+          <SDLabel htmlFor={groupName + option.value} className="mr-3">
+            {option.label}
+          </SDLabel>
         </div>
       ))}
     </div>

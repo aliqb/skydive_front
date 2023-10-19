@@ -6,6 +6,7 @@ import LabeledFileInput from "../../shared/LabeledFileInput";
 import { DateObject } from "react-multi-date-picker";
 import persian_en from "react-date-object/locales/persian_en";
 import persian from "react-date-object/calendars/persian";
+import { useAppSelector } from "../../../hooks/reduxHooks";
 
 interface AdminDocumentUploadItemProps {
   title: string;
@@ -22,39 +23,42 @@ const AdminDocumentUploadItem: React.FC<AdminDocumentUploadItemProps> = ({
   minExpireDay,
 }) => {
   const localDocumentData = { ...documentData };
-  const [expirationDate, setDocumnetExpireDate] = useState<string>("");
+  const [expirationDate, setDocumentExpireDate] = useState<string>('');
   const [timeStamp, setTimeStamp] = useState<number>();
+  const maxFileSize = useAppSelector(
+    (state) => state.generalSettings.generalSettings?.fileSizeLimitation
+  );
   function onFileUpload(id: string) {
     localDocumentData.fileId = id;
     if (documentData.withDate && !expirationDate) {
       localDocumentData.validationMessage =
-        "تاریخ انقضا برای این مدرک الزامی است.";
+        'تاریخ انقضا برای این مدرک الزامی است.';
     }
     onChange(localDocumentData);
   }
 
   function onFileRemove() {
-    localDocumentData.fileId = "";
-    localDocumentData.validationMessage = "";
+    localDocumentData.fileId = '';
+    localDocumentData.validationMessage = '';
     onChange(localDocumentData);
   }
 
   function onDateChange(value: string) {
     localDocumentData.expirationDate = value;
-    localDocumentData.validationMessage = "";
-    setDocumnetExpireDate(value);
+    localDocumentData.validationMessage = '';
+    setDocumentExpireDate(value);
 
     if (timeStamp && value) {
       const expireDateObejct = new DateObject({
         date: value,
-        format: "YYYY/MM/DD",
+        format: 'YYYY/MM/DD',
         locale: persian_en,
         calendar: persian,
       });
       const expirationJSDate = expireDateObejct.toDate();
       if (expirationJSDate.getTime() < timeStamp) {
         localDocumentData.validationMessage =
-          "حداقل مدت اعتبار رعایت نشده است.";
+          'حداقل مدت اعتبار رعایت نشده است.';
       }
     }
     // if(!hasFile){
@@ -77,10 +81,11 @@ const AdminDocumentUploadItem: React.FC<AdminDocumentUploadItemProps> = ({
       <p className="text-slate-700 text-lg font-semibold">{title}</p>
       <div className="pr-4 mt-3 flex items-center">
         <LabeledFileInput
-          accepFiles="application/pdf,image/*"
+          acceptFiles="application/pdf,image/*"
           title={title}
           onUpload={onFileUpload}
           onRemove={onFileRemove}
+          maxSize={maxFileSize}
         />
         {documentData.withDate && (
           <div className="relative mr-3 md:mr-12">
@@ -92,18 +97,22 @@ const AdminDocumentUploadItem: React.FC<AdminDocumentUploadItemProps> = ({
               name="expireDate"
               onChange={onDateChange}
               required={true}
-              manualInvalid={(validation || !!documentData.expirationDate) && !!documentData.validationMessage}
+              manualInvalid={
+                (validation || !!documentData.expirationDate) &&
+                !!documentData.validationMessage
+              }
               value={expirationDate}
               onOpenPickNewDate={false}
             ></SDDatepicker>
           </div>
         )}
       </div>
-      {(validation || !!documentData.expirationDate) && documentData.validationMessage && (
-        <p className="text-red-600 text-sm pr-2 mt-2 text-center">
-          {documentData.validationMessage}
-        </p>
-      )}
+      {(validation || !!documentData.expirationDate) &&
+        documentData.validationMessage && (
+          <p className="text-red-600 text-sm pr-2 mt-2 text-center">
+            {documentData.validationMessage}
+          </p>
+        )}
     </div>
   );
 };

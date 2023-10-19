@@ -7,10 +7,11 @@ import { ColDef, GridGetData } from "../../components/shared/Grid/grid.types";
 import Grid from "../../components/shared/Grid/Grid";
 import { Link } from "react-router-dom";
 import PdfPrintButton from "../../components/shared/PdfPrintButton";
+import MultiplePdfPrintButton from "../../components/shared/multiplePdfPrintButton";
 
 const MyTicketsPage: React.FC = () => {
   const { sendRequest } = useAPi<null, BaseResponse<UserTicket[]>>();
-
+  const [selectedTicketsIds, setSelectedTicketsIds] = useState<string[]>();
   const [colDefs] = useState<ColDef<UserTicket>[]>([
     {
       field: "ticketNumber",
@@ -51,19 +52,18 @@ const MyTicketsPage: React.FC = () => {
       field: "",
       headerName: "تصویر بلیت",
       cellRenderer: (item: UserTicket) => {
+        const body = [item.id];
         return (
           <PdfPrintButton
+            body={body}
+            method="put"
             pdfUrl={`${
               import.meta.env.VITE_BASE_API_URL
-            }/Reservations/PrintTicket/${item.id}`}
+            }/Reservations/PrintTicket`}
             fileName={`بلیت ${item.ticketNumber}`}
           />
         );
       },
-      //   template: "چاپ",
-      //   onClick: (item: MyTicket) => {
-      //     console.log(item);
-      //   },
     },
   ]);
 
@@ -86,13 +86,27 @@ const MyTicketsPage: React.FC = () => {
     [sendRequest]
   );
 
+
   return (
     <SDCard>
       <h1 className="text-center font-bold text-xl py-5">بلیت‌های من</h1>
       <div className="py-5 md:px-8">
+        <MultiplePdfPrintButton
+          body={selectedTicketsIds}
+          pdfUrl={`${
+            import.meta.env.VITE_BASE_API_URL
+          }/Reservations/PrintTicket`}
+          fileName={`لیست بلیت‌ها`}
+          disable={!selectedTicketsIds?.length}
+          className="mb-2"
+        ></MultiplePdfPrintButton>
         <Grid<UserTicket>
           colDefs={colDefs}
           getData={fetchTickets}
+          selectable={true}
+          onSelectionChange={(items) =>
+            setSelectedTicketsIds(items.map((item) => item.id))
+          }
           rowActions={{
             edit: false,
             remove: false,

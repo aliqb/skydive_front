@@ -15,6 +15,7 @@ const MyTransactionsPage: React.FC = () => {
     {
       field: 'date',
       headerName: 'تاریخ پرداخت',
+      sortable: true,
     },
     {
       field: 'ticketNumber',
@@ -36,7 +37,7 @@ const MyTransactionsPage: React.FC = () => {
       field: 'type',
       headerName: 'نوع',
       cellRenderer: (item: UserTransaction) => {
-        const displayText = item.type === 'Confirmed' ? 'تائید' : 'ابطال';
+        const displayText = item.type === 'Confirmed' ? 'تأیید' : 'ابطال';
         return <span>{displayText}</span>;
       },
     },
@@ -44,7 +45,10 @@ const MyTransactionsPage: React.FC = () => {
       field: 'invoiceNumber',
       headerName: 'شماره فاکتور',
       cellRenderer: (item: UserTransaction) => {
-        if (String(item.paymentInformation) === 'شارژ کیف پول') {
+        if (
+          String(item.paymentInformation) === 'شارژ کیف پول' ||
+          String(item.paymentInformation) === 'برداشت از کیف پول'
+        ) {
           return null;
         }
         return item.invoiceNumber;
@@ -54,7 +58,10 @@ const MyTransactionsPage: React.FC = () => {
       field: '',
       headerName: 'فاکتور',
       cellRenderer: (item: UserTransaction) => {
-        if (String(item.paymentInformation) === 'شارژ کیف پول') {
+        if (
+          String(item.paymentInformation) === 'شارژ کیف پول' ||
+          String(item.paymentInformation) === 'برداشت از کیف پول'
+        ) {
           return null;
         }
         return (
@@ -77,6 +84,9 @@ const MyTransactionsPage: React.FC = () => {
           params: {
             pageSize: gridParams.pageSize,
             pageIndex: gridParams.pageIndex,
+            orderby: gridParams.sorts
+            .map((item) => `${item.field} ${item.sort}`)
+            .join(","),
           },
         },
         (response) => {

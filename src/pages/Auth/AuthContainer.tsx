@@ -9,7 +9,6 @@ export default function AuthContainer() {
   const [wasAuthenticated, setWasAuthenticated] = useState<boolean>(false);
   useEffect(() => {
     const authData = getAuthDataFromLocal();
-    console.log('gggggggggggggggg',authState);
     setWasAuthenticated(
       !!authData &&
         authData.personalInformationCompleted &&
