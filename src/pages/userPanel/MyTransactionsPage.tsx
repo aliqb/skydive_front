@@ -45,7 +45,10 @@ const MyTransactionsPage: React.FC = () => {
       field: 'invoiceNumber',
       headerName: 'شماره فاکتور',
       cellRenderer: (item: UserTransaction) => {
-        if (String(item.paymentInformation) === 'شارژ کیف پول') {
+        if (
+          String(item.paymentInformation) === 'شارژ کیف پول' ||
+          String(item.paymentInformation) === 'برداشت از کیف پول'
+        ) {
           return null;
         }
         return item.invoiceNumber;
@@ -55,7 +58,10 @@ const MyTransactionsPage: React.FC = () => {
       field: '',
       headerName: 'فاکتور',
       cellRenderer: (item: UserTransaction) => {
-        if (String(item.paymentInformation) === 'شارژ کیف پول') {
+        if (
+          String(item.paymentInformation) === 'شارژ کیف پول' ||
+          String(item.paymentInformation) === 'برداشت از کیف پول'
+        ) {
           return null;
         }
         return (

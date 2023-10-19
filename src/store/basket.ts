@@ -18,6 +18,7 @@ interface BasketState {
     flightLoadId: string;
     ticketTypeId: string;
   } | null;
+  isEmptying: boolean;
 }
 
 const initialState: BasketState = {
@@ -25,6 +26,7 @@ const initialState: BasketState = {
   loading: false,
   error: "",
   changingTicket: null,
+  isEmptying: false,
 };
 
 export const fetchBasket = createAsyncThunk("basket/fetchBasket", async () => {
@@ -91,7 +93,8 @@ export const removeTicketFromBasket = createAsyncThunk(
         }) || [];
       items = items.filter((item) => {
         const findInRemovings = tickets.find((ticket) => {
-          const ticketUserCode: number | null = ticket.userCode === userCode ? null : ticket.userCode
+          const ticketUserCode: number | null =
+            ticket.userCode === userCode ? null : ticket.userCode;
           return (
             ticket.flightLoadId === item.flightLoadId &&
             ticket.ticketTypeId === item.ticketTypeId &&
@@ -104,6 +107,28 @@ export const removeTicketFromBasket = createAsyncThunk(
         ChangingTicketRequest,
         AxiosResponse<BaseResponse<BasketModel>>
       >("/Reservations", { items });
+      toast.success(response.data.message);
+      dispatch(fetchBasket());
+      return response.data.content;
+    } catch (error) {
+      const axiosError: AxiosError<{ message: string }> = error as AxiosError<{
+        message: string;
+      }>;
+      const message = axiosError.response?.data.message || "";
+      toast.error(message);
+      throw new Error(message);
+    }
+  }
+);
+
+export const emptyBasket = createAsyncThunk(
+  "basket/empty",
+  async (_, { dispatch }) => {
+    try {
+      const response = await axiosIntance.put<
+        ChangingTicketRequest,
+        AxiosResponse<BaseResponse<BasketModel>>
+      >("/Reservations", { items: [] });
       toast.success(response.data.message);
       dispatch(fetchBasket());
       return response.data.content;
@@ -170,6 +195,16 @@ const basketSlice = createSlice({
       })
       .addCase(removeTicketFromBasket.rejected, (state) => {
         state.changingTicket = null;
+      })
+      //   empty
+      .addCase(emptyBasket.pending, (state) => {
+        state.isEmptying = true;
+      })
+      .addCase(emptyBasket.fulfilled, (state) => {
+        state.isEmptying = false;
+      })
+      .addCase(emptyBasket.rejected, (state) => {
+        state.isEmptying = false;
       });
   },
 });

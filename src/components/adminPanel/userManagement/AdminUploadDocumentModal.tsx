@@ -12,11 +12,11 @@ import { toast } from "react-toastify";
 import SDSpinner from "../../shared/Spinner";
 import { useAppSelector } from "../../../hooks/reduxHooks";
 
-interface AdminUploadDocumnetModalProps {
+interface AdminUploadDocumentModalProps {
   onCloseModal: (submitted: boolean) => void;
   userId: string;
 }
-const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
+const AdminUploadDocumentModal: React.FC<AdminUploadDocumentModalProps> = ({
   onCloseModal,
   userId,
 }) => {
@@ -32,23 +32,23 @@ const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
   );
   const [nationalCardDocumentModel, setNationalCardDocumentModel] =
     useState<DocumentItemModel>({
-      fileId: "",
+      fileId: '',
     });
 
   const [logBookDocumenttModel, setLogBookDocumentModel] =
     useState<DocumentItemModel>({
-      fileId: "",
+      fileId: '',
     });
 
   const [attorneyDocumentModel, setAttorneyDocumentModel] =
     useState<DocumentItemModel>({
-      fileId: "",
+      fileId: '',
       withDate: true,
     });
 
   const [medicalDocumentModel, setMedicalDocumentModel] =
     useState<DocumentItemModel>({
-      fileId: "",
+      fileId: '',
       withDate: true,
     });
 
@@ -104,7 +104,7 @@ const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
               }
             : undefined,
         },
-        method: "put",
+        method: 'put',
       },
       (response) => {
         toast.success(response.message);
@@ -178,4 +178,4 @@ const AdminUploadDocumnetModal: React.FC<AdminUploadDocumnetModalProps> = ({
   );
 };
 
-export default AdminUploadDocumnetModal;
+export default AdminUploadDocumentModal;

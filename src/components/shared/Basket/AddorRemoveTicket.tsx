@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {  useState } from "react";
 import AddTicketModal from "./AddTicketModal";
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import {
@@ -23,9 +23,12 @@ const AddOrRemoveTicket: React.FC<PlusMinusProps> = ({
 }) => {
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
-
   const dispatch = useAppDispatch();
   const changingTicket = useAppSelector((state) => state.basket.changingTicket);
+  const isEmmptying = useAppSelector(state=>state.basket.isEmptying)
+  const pending = Boolean(changingTicket &&
+    changingTicket.flightLoadId === aggretadTicket.flightLoadId &&
+    changingTicket.ticketTypeId === aggretadTicket.ticketTypeId) || isEmmptying;
 
   function increase() {
     setIsAdding(true);
@@ -55,6 +58,7 @@ const AddOrRemoveTicket: React.FC<PlusMinusProps> = ({
     dispatch(removeTicketFromBasket(removingTickets));
   }
 
+
   return (
     <>
       {isAdding && (
@@ -72,7 +76,7 @@ const AddOrRemoveTicket: React.FC<PlusMinusProps> = ({
       <div className="flex gap-6 items-center">
         <button
           onClick={decrease}
-          disabled={aggretadTicket?.ticketMembers?.length === 0}
+          disabled={aggretadTicket?.ticketMembers?.length === 0 || pending}
           className="rounded-full shadow-lg border border-slate-100 w-10 h-10 text-lg text-pink-500 flex justify-center items-center disabled:shadow-none disabled:bg-slate-100 disabled:cursor-not-allowed"
         >
           <svg
@@ -92,9 +96,7 @@ const AddOrRemoveTicket: React.FC<PlusMinusProps> = ({
         </button>
         <div className="text-lg">
           {/* <SDSpinner size={10}></SDSpinner> */}
-          {changingTicket &&
-          changingTicket.flightLoadId === aggretadTicket.flightLoadId &&
-          changingTicket.ticketTypeId === aggretadTicket.ticketTypeId ? (
+          {pending ? (
             <SDSpinner size={10}></SDSpinner>
           ) : (
             aggretadTicket?.ticketMembers?.length || 0
@@ -102,7 +104,7 @@ const AddOrRemoveTicket: React.FC<PlusMinusProps> = ({
         </div>
         <button
           onClick={increase}
-          disabled={disabled}
+          disabled={disabled || pending}
           className="rounded-full shadow-lg border border-slate-100 w-10 h-10 text-lg text-white bg-pink-500 flex justify-center items-center disabled:bg-pink-300 disabled:cursor-not-allowed"
         >
           <svg

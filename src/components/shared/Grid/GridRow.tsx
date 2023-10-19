@@ -31,7 +31,7 @@ function GridRow<T>({
   const handleTouchEnd = useCallback(
     (e: React.TouchEvent, row: GridRowModel<T>) => {
       e.stopPropagation();
-      e.preventDefault();
+      // e.preventDefault();
       if (!onRowDobuleClisk) {
         return;
       }
@@ -87,6 +87,7 @@ function GridRow<T>({
               <SDTooltip content="ویرایش" trigger="hover" placement="bottom">
                 <button
                   onClick={(event) => {
+                    console.log('wtf')
                     event.stopPropagation();
                     onEditRow && onEditRow(row.data);
                   }}
