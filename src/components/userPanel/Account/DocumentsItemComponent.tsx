@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
-import { DocumentStatus } from '../../../models/account.models';
+import { DocumentStatus, DocumentTitleMap } from '../../../models/account.models';
 import { UserDocumentsFieldType, accoutnActions } from '../../../store/account';
 import SDDatepicker from '../../shared/DatePicker';
 import SDLabel from '../../shared/Label';
@@ -28,7 +28,7 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
   // Check if the title is "کارت ملی" to determine if the LabeledFileInput should be disabled.
-  const isTitleNationalCard = title === 'کارت ملی';
+  const isTitleNationalCard = title === DocumentTitleMap.nationalCardDocument;
 
   function onFileUpload(id: string) {
     setIsUploading(true);
@@ -91,7 +91,7 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
             onUpload={onFileUpload}
             onRemove={onFileRemove}
             disabled={
-              isTitleNationalCard ||
+              (isTitleNationalCard && documentData.status === DocumentStatus.CONFIRMED) ||
               documentData.status === DocumentStatus.PENDING ||
               disable
             }
