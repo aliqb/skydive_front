@@ -17,44 +17,50 @@ export default function useAPi<
   const [data, setData] = useState<R | null>(null);
   const token = useAppSelector((state) => state.auth.token);
   const dispatch = useAppDispatch();
-  const sendRequest = useCallback(
-    async function (
-      config: AxiosRequestConfig<T>,
-      applyData?: (data: R) => void,
-      onError?: (error: ErrorType | undefined) => void
-    ) {
-      setIsPending(true);
-      try {
-        const response = await axiosIntance.request<T, AxiosResponse<R>>(
-          config
-        );
-        setData(response.data);
-        if (applyData) {
-          applyData(response.data);
-        }
-        setErrors(undefined);
-      } catch (error) {
-        const axiosError: AxiosError<ErrorType> =
-          error as AxiosError<ErrorType>;
-        if (axiosError.response?.status === 401) {
-          removeAuthDataFromLocal()
-          dispatch(authActions.logOut())
-          return;
-        }
-        setErrors(axiosError.response?.data);
-        if (onError) {
-          onError(axiosError.response?.data);
-        }
-      } finally {
-        setIsPending(false);
+  const sendRequest = useCallback(async function (
+    config: AxiosRequestConfig<T>,
+    applyData?: (data: R) => void,
+    onError?: (error: ErrorType | undefined) => void
+  ) {
+    setIsPending(true);
+    try {
+      const response = await axiosIntance.request<T, AxiosResponse<R>>(config);
+      setData(response.data);
+      if (applyData) {
+        applyData(response.data);
       }
-    },
-    []
-  );
+      setErrors(undefined);
+    } catch (error) {
+      const axiosError: AxiosError<ErrorType> = error as AxiosError<ErrorType>;
+      setErrors(axiosError.response?.data);
+      if (onError) {
+        onError(axiosError.response?.data);
+      }
+    } finally {
+      setIsPending(false);
+    }
+  },
+  []);
 
   useEffect(() => {
     if (token) {
-      axiosIntance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      axiosIntance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      axiosIntance.interceptors.response.use(
+        (response) => {
+          return response;
+        },
+        (error: AxiosError) => {
+          if (
+            error.response &&
+            (error.response.status === 401 || error.response.status === 403)
+          ) {
+            removeAuthDataFromLocal();
+            dispatch(authActions.logOut());
+            return;
+          }
+          return Promise.reject(error);
+        }
+      );
       dispatch(authActions.setHttpHeader());
     }
   }, [token, dispatch]);
