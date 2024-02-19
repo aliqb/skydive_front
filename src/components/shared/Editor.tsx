@@ -46,7 +46,7 @@ class SDEditor extends Component<EditorProps> {
           // You can store the "editor" and use when it is needed.
           console.log('Editor is ready to use!', editor);
         }}
-        onChange={(editor) => {
+        onChange={(_, editor) => {
           const data = (editor as any).getData();
           onChange && onChange(data);
         }}
