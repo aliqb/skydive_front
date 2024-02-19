@@ -1,7 +1,7 @@
-import { InputHTMLAttributes, forwardRef, Ref } from 'react';
-import { replacePersianArabicsNumbers } from '../../utils/shared';
-import SDButton from './Button';
-import SDSpinner from './Spinner';
+import { InputHTMLAttributes, forwardRef, Ref } from "react";
+import { replacePersianArabicsNumbers } from "../../utils/shared";
+import SDButton from "./Button";
+import SDSpinner from "./Spinner";
 
 export interface SDTextInputProps
   extends InputHTMLAttributes<HTMLInputElement> {
@@ -31,17 +31,19 @@ const SDTextInput = forwardRef(
 
       if (props.numeric) {
         if (!props.allowMinus) {
-          value = value.replace(/[^0-9]/g, '');
+          value = value.replace(/[^0-9]/g, "");
         } else {
-          value = value.replace(/[^0-9-]/g, '');
-          value = value.replace(/--/g, '-');
+          value = value.replace(/[^0-9-]/g, "");
+          value = value.replace(/--/g, "-");
         }
 
-        if (value.startsWith('-')) {
-          value = '-' + value.replace(/-/g, '');
+        if (value.startsWith("-")) {
+          value = "-" + value.replace(/-/g, "");
         }
       }
-
+      if (props.numeric && isNaN(parseFloat(value))) {
+        value = "";
+      }
       event.target.value = value;
     };
 
@@ -54,10 +56,10 @@ const SDTextInput = forwardRef(
           ref={ref}
           className={`${
             props.invalid
-              ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
-              : 'border-gray-300 focus:border-blue-500'
+              ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+              : "border-gray-300 focus:border-blue-500"
           } ${
-            props.className || ''
+            props.className || ""
           } placeholder:text-right w-full h-10 bg-gray-50 border  text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block  p-2.5 disabled:text-gray-400 disabled:cursor-not-allowed  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
         />
 
