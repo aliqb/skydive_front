@@ -7,6 +7,8 @@ import useAPi from "../../../hooks/useApi";
 import { BaseResponse } from "../../../models/shared.models";
 import AdminFlightTicketsGrid from "./AdminFlightTicketsGrid";
 import SDSpinner from "../../shared/Spinner";
+import useConfirm from "../../../hooks/useConfirm";
+import { toast } from "react-toastify";
 
 interface AdminFlightItemProps extends AdminFlightModel {
   withHeader?: boolean;
@@ -18,10 +20,17 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
 }) => {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [tickets, setTickets] = useState<AdminTicketModel[]>();
-  const { sendRequest: getTicketRequest, isPending: ticketsPedning } = useAPi<
+
+  const { sendRequest: getTicketRequest, isPending: ticketsPending } = useAPi<
     null,
     BaseResponse<AdminTicketModel[]>
   >();
+  const { sendRequest: deleteRequest } = useAPi<null, BaseResponse<null>>();
+
+  const [ConfirmModal, confirmation] = useConfirm(
+    " این پرواز حذف خواهد شد. آیا مطمئن هستید؟ ",
+    "حذف کردن پرواز"
+  );
 
   function fetchTickets(flightId: string) {
     getTicketRequest(
@@ -37,7 +46,24 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
       }
     );
   }
-
+  async function onRemoveTicket(ticketId: string) {
+    const confirm = await confirmation();
+    if (confirm) {
+      deleteRequest(
+        {
+          method: "delete",
+          url: `/SkyDiveEvents/RemoveFlight/${ticketId}`,
+        },
+        (response) => {
+          toast.success(response.message);
+          window.location.reload();
+        },
+        (error) => {
+          toast.error(error?.message);
+        }
+      );
+    }
+  }
   function activate() {
     setIsActive(true);
     if (!tickets) {
@@ -92,60 +118,97 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
       </svg>
     </button>
   );
+
+  const handleDelete = (id: string) => {
+    onRemoveTicket(id);
+  };
+
   return (
-    <div className="mb-2 ">
-      <div className="text-slate-700">
-        {withHeader && (
-          <div className="flex font-semibold">
-            <div className="w-10 min-w-[1.5rem]"></div>
-            <p className="px-5 py-3 w-60 ">شماره پرواز</p>
-            <p className="px-5 py-3 w-60 ">ظرفیت</p>
-            <p className="px-5 py-3 w-40 ">غیر قابل رزرو</p>
+    <>
+      <ConfirmModal />
+
+      <div className="mb-2 ">
+        <div className="text-slate-700">
+          {withHeader && (
+            <div className="flex font-semibold">
+              <div className="w-10 min-w-[1.5rem]"></div>
+              <p className="px-5 py-3 w-60 ">شماره پرواز</p>
+              <p className="px-5 py-3 w-60 ">ظرفیت</p>
+              <p className="px-5 py-3 w-40 ">غیر قابل رزرو</p>
+              <p className="px-5 py-3 w-40 ">عملیات</p>
+            </div>
+          )}
+          <div className={`flex cursor-pointer group `}>
+            {isActive ? deActivateButton : activateButton}
+            <p
+              className={`${
+                isActive && "!bg-gray-200"
+              } px-5 py-3 w-60  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
+            >
+              {flight.flightNumber}
+            </p>
+            <p
+              className={`${
+                isActive && "!bg-gray-200"
+              } px-5 py-3 w-60  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
+            >
+              {flight.capacity}
+            </p>
+            <p
+              className={`${
+                isActive && "!bg-gray-200"
+              } px-5 py-3 w-40  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
+            >
+              {flight.voidableQty}
+            </p>
+            <p
+              className={`${
+                isActive && "!bg-gray-200"
+              } px-5 py-3 w-40  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
+            >
+              <button onClick={() => handleDelete(flight.id)}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6 text-red-600"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                  />
+                </svg>
+              </button>
+            </p>
+          </div>
+        </div>
+        {isActive && (
+          <div>
+            {ticketsPending && (
+              <div className="flex  mt-8 mr-28">
+                <SDSpinner color="blue" size={28} />
+              </div>
+            )}
+            {tickets && !ticketsPending && (
+              <div className="p-5">
+                <AdminFlightTicketsGrid
+                  tickets={tickets}
+                  onChange={() => fetchTickets(flight.id)}
+                />
+              </div>
+            )}
           </div>
         )}
-        <div className={`flex cursor-pointer group `}>
-          {isActive ? deActivateButton : activateButton}
-          <p
-            className={`${
-              isActive && "!bg-gray-200"
-            } px-5 py-3 w-60  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
-          >
-            {flight.flightNumber}
-          </p>
-          <p
-            className={`${
-              isActive && "!bg-gray-200"
-            } px-5 py-3 w-60  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
-          >
-            {flight.capacity}
-          </p>
-          <p
-            className={`${
-              isActive && "!bg-gray-200"
-            } px-5 py-3 w-40  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
-          >
-            {flight.voidableQty}
-          </p>
-        </div>
+        {ticketsPending && (
+          <div className="flex  mt-8 mr-28">
+            <SDSpinner color="blue" size={28} />
+          </div>
+        )}
       </div>
-      {isActive && (
-        <div>
-          {ticketsPedning && (
-            <div className="flex  mt-8 mr-28">
-              <SDSpinner color="blue" size={28} />
-            </div>
-          )}
-          {tickets && !ticketsPedning && (
-            <div className="p-5">
-              <AdminFlightTicketsGrid
-                tickets={tickets}
-                onChange={() => fetchTickets(flight.id)}
-              />
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+    </>
   );
 };
 

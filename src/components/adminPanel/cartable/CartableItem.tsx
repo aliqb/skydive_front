@@ -48,7 +48,7 @@ const CartableItem: React.FC<CartableItemProps> = (props) => {
           </button>
           <p className="text-green-400 text-sm">
             در
-            <span >{props.createdAt}</span>
+            <span>{props.createdAt}</span>
             <span className="mx-2">{timeString}</span>
           </p>
           <div className="mr-10">
