@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   AdminFlightModel,
   AdminTicketModel,
+  flightNameData,
   flightStatusData,
 } from "../../../models/skyDiveEvents.models";
 import useAPi from "../../../hooks/useApi";
@@ -11,6 +12,7 @@ import SDSpinner from "../../shared/Spinner";
 import useConfirm from "../../../hooks/useConfirm";
 import { toast } from "react-toastify";
 import SDSelect from "../../shared/Select";
+import SDTextInput from "../../shared/TextInput";
 
 interface AdminFlightItemProps extends AdminFlightModel {
   withHeader?: boolean;
@@ -31,6 +33,11 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
 
   const { sendRequest: statusChangeRequest } = useAPi<
     flightStatusData,
+    BaseResponse<string>
+  >();
+
+  const { sendRequest: nameChangeRequest } = useAPi<
+    flightNameData,
     BaseResponse<string>
   >();
 
@@ -101,6 +108,25 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
     setIsActive(false);
   }
 
+  async function handleBlur(flightId: string, itemValue: string) {
+    console.log(itemValue);
+    nameChangeRequest(
+      {
+        url: `/SkyDiveEvents/SetFlightName/${flightId}`,
+        method: "put",
+        data: {
+          name: itemValue,
+        },
+      },
+      (response) => {
+        toast.success(response.message);
+      },
+      (error) => {
+        toast.error(error?.message);
+      }
+    );
+  }
+
   const activateButton = (
     <button
       onClick={activate}
@@ -159,6 +185,7 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
             <div className="flex font-semibold">
               <div className="w-10 min-w-[1.5rem]"></div>
               <p className="px-5 py-3 w-60">شماره پرواز</p>
+              <p className="px-5 py-3 w-60">نام پرواز</p>
               <p className="px-5 py-3 w-60">ظرفیت</p>
               <p className="px-5 py-3 w-40">غیر قابل رزرو</p>
               <p className="px-5 py-3 w-40">تعیین وضعیت</p>
@@ -170,9 +197,29 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
             <p
               className={`${
                 isActive && "!bg-gray-200"
-              } px-5 py-3 w-60  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
+              } px-5 py-3 w-40  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
             >
               {flight.flightNumber}
+            </p>
+            <p
+              className={`${
+                isActive && "!bg-gray-200"
+              } px-8 py-3 w-80  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
+            >
+              <SDTextInput
+                onBlur={(event) => handleBlur(flight.id, event.target.value)}
+                id="name"
+                defaultValue={flight.name || ""}
+                // value={flight.name}
+                // invalid={!!formErrors.name}
+                // {...register("flightName", {
+                //   required: "فیلد اجباری است.",
+                //   valueAsNumber: true,
+                //   validate: (value) => {
+                //     return value >= 0 || "مقدار نمی‌تواند منفی باشد.";
+                //   },
+                // })}
+              />
             </p>
             <p
               className={`${
@@ -204,9 +251,12 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
                     OnStatusChange(flight.id, event.target.value)
                   }
                 >
-                  <option value="">انتخاب کنید</option>
                   {Object.entries(FlightStatuses).map(([title, value]) => (
-                    <option key={value} value={value}>
+                    <option
+                      key={value}
+                      value={value}
+                      selected={flight.status === value}
+                    >
                       {title}
                     </option>
                   ))}

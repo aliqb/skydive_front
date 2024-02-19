@@ -127,6 +127,8 @@ export interface AdminFlightModel {
   capacity: number;
   voidableQty: number;
   id: string;
+  status: number;
+  name: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -154,4 +156,8 @@ export interface AddTermAndConditionsRequest {
 
 export interface flightStatusData {
   status: string;
+}
+
+export interface flightNameData {
+  name: string;
 }
