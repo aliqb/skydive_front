@@ -24,7 +24,7 @@ export interface UserPersonalInfo {
   nationalCode: string;
   birthDate: string;
   email?: string;
-  cityAndState:string | null;
+  cityAndState: string | null;
   address?: string;
   weight: number | null;
   height: number | null;
@@ -123,16 +123,23 @@ export interface TicketType {
   updatedAt: string;
 }
 
-export interface SelectPageEvent { 
+export interface SelectPageEvent {
   selected: number;
 }
 
-export interface PagingParams{
-  pageIndex:number,
-  pageSize?: number
+export interface PagingParams {
+  pageIndex: number;
+  pageSize?: number;
 }
 export interface UserId {
   id: string;
   code: number;
   fullName: string;
 }
+
+export const FlightStatuses = {
+  "انجام نشده": 0,
+  "معلق شده": 1,
+  "کنسل شده": 2,
+  "انجام شده": 3,
+};

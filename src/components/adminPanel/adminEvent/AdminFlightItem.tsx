@@ -2,13 +2,15 @@ import { useState } from "react";
 import {
   AdminFlightModel,
   AdminTicketModel,
+  flightStatusData,
 } from "../../../models/skyDiveEvents.models";
 import useAPi from "../../../hooks/useApi";
-import { BaseResponse } from "../../../models/shared.models";
+import { BaseResponse, FlightStatuses } from "../../../models/shared.models";
 import AdminFlightTicketsGrid from "./AdminFlightTicketsGrid";
 import SDSpinner from "../../shared/Spinner";
 import useConfirm from "../../../hooks/useConfirm";
 import { toast } from "react-toastify";
+import SDSelect from "../../shared/Select";
 
 interface AdminFlightItemProps extends AdminFlightModel {
   withHeader?: boolean;
@@ -26,6 +28,11 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
     BaseResponse<AdminTicketModel[]>
   >();
   const { sendRequest: deleteRequest } = useAPi<null, BaseResponse<null>>();
+
+  const { sendRequest: statusChangeRequest } = useAPi<
+    flightStatusData,
+    BaseResponse<string>
+  >();
 
   const [ConfirmModal, confirmation] = useConfirm(
     " این پرواز حذف خواهد شد. آیا مطمئن هستید؟ ",
@@ -46,6 +53,25 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
       }
     );
   }
+
+  async function OnStatusChange(flightId: string, itemValue: string) {
+    statusChangeRequest(
+      {
+        url: `/SkyDiveEvents/SetFlightStatus/${flightId}`,
+        method: "put",
+        data: {
+          status: itemValue,
+        },
+      },
+      (response) => {
+        toast.success(response.message);
+      },
+      (error) => {
+        toast.error(error?.message);
+      }
+    );
+  }
+
   async function onRemoveTicket(ticketId: string) {
     const confirm = await confirmation();
     if (confirm) {
@@ -132,10 +158,11 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
           {withHeader && (
             <div className="flex font-semibold">
               <div className="w-10 min-w-[1.5rem]"></div>
-              <p className="px-5 py-3 w-60 ">شماره پرواز</p>
-              <p className="px-5 py-3 w-60 ">ظرفیت</p>
-              <p className="px-5 py-3 w-40 ">غیر قابل رزرو</p>
-              <p className="px-5 py-3 w-40 ">عملیات</p>
+              <p className="px-5 py-3 w-60">شماره پرواز</p>
+              <p className="px-5 py-3 w-60">ظرفیت</p>
+              <p className="px-5 py-3 w-40">غیر قابل رزرو</p>
+              <p className="px-5 py-3 w-40">تعیین وضعیت</p>
+              <p className="px-5 py-3 w-40">عملیات</p>
             </div>
           )}
           <div className={`flex cursor-pointer group `}>
@@ -161,6 +188,32 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
             >
               {flight.voidableQty}
             </p>
+            <p
+              className={`${
+                isActive && "!bg-gray-200"
+              } px-3 py-3 w-40  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
+            >
+              <div className="flex flex-col">
+                <SDSelect
+                  id="eventStatus"
+                  // invalid={!!formErrors.statusId}
+                  // {...register("statusId", {
+                  //   required: "فیلد اجباری است.",
+                  // })}
+                  onChange={(event) =>
+                    OnStatusChange(flight.id, event.target.value)
+                  }
+                >
+                  <option value="">انتخاب کنید</option>
+                  {Object.entries(FlightStatuses).map(([title, value]) => (
+                    <option key={value} value={value}>
+                      {title}
+                    </option>
+                  ))}
+                </SDSelect>
+              </div>
+            </p>
+
             <p
               className={`${
                 isActive && "!bg-gray-200"

@@ -8,7 +8,7 @@ import FlightList from "../../../components/skyDiveEvents/FlightList";
 import Basket from "../../../components/shared/Basket/Basket";
 import BookButton from "../../../components/shared/Basket/‌BookButton";
 import { sortDate } from "../../../utils/shared";
-import { useUserContainerDom } from "../../../hooks/userContianerDom";
+import { useUserContainerDom } from "../../../hooks/userContainerDom";
 
 const SkyDiveEventFlightsPage: React.FC = () => {
   const params = useParams();
@@ -46,31 +46,34 @@ const SkyDiveEventFlightsPage: React.FC = () => {
     }
   }, [params, requestDays, location]);
 
-  const handleScroll = useCallback((event: Event) => {
-    const container = event.target as HTMLDivElement;
-    const { scrollTop, clientHeight, scrollHeight } = container;
-    const threshold = 20; // Adjust this value according to your needs
+  const handleScroll = useCallback(
+    (event: Event) => {
+      const container = event.target as HTMLDivElement;
+      const { scrollTop, clientHeight, scrollHeight } = container;
+      const threshold = 20; // Adjust this value according to your needs
 
-    const isNearBottom = scrollTop + clientHeight >= scrollHeight - threshold;
-    if (isNearBottom && !atTheEnd) {
-      setAddTheEnd(true);
-    }
-    if(scrollTop === 0){
-      setAddTheEnd(false)
-    }
-  }, [atTheEnd]);
+      const isNearBottom = scrollTop + clientHeight >= scrollHeight - threshold;
+      if (isNearBottom && !atTheEnd) {
+        setAddTheEnd(true);
+      }
+      if (scrollTop === 0) {
+        setAddTheEnd(false);
+      }
+    },
+    [atTheEnd]
+  );
 
   useEffect(() => {
-    if(container){
+    if (container) {
       container.addEventListener("scroll", handleScroll);
     }
-  }, [handleScroll,container]);
+  }, [handleScroll, container]);
 
   useEffect(() => {
     if (container && currentDayId) {
       container.scrollTop = 0;
     }
-  }, [currentDayId,container]);
+  }, [currentDayId, container]);
 
   useEffect(() => {
     function setNextDay() {

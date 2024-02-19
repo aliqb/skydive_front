@@ -41,8 +41,8 @@ const SDTextInput = forwardRef(
           value = "-" + value.replace(/-/g, "");
         }
       }
-      if (props.numeric && isNaN(parseFloat(value))) {
-        value = "";
+      if (props.numeric && (isNaN(parseFloat(value)) || value === "")) {
+        value = "0";
       }
       event.target.value = value;
     };
