@@ -4,26 +4,24 @@ import { useAppSelector } from "./reduxHooks";
 
 function useBasketTickets() {
   const basketTicket = useAppSelector((state) => state.basket.basket?.items);
-  const [aggreateds, setAggreateds] = useState<AggregatedTicket[]>([]);
-
-
+  const [aggregated, setAggregated] = useState<AggregatedTicket[]>([]);
 
   const getAggregate = useCallback(
     (tikcetTypeId: string, flightLoadId: string) => {
-      const findedAggregate = aggreateds.find(
+      const findedAggregate = aggregated.find(
         (agg) =>
           agg.flightLoadId === flightLoadId && agg.ticketTypeId === tikcetTypeId
       );
       return findedAggregate;
     },
-    [aggreateds]
+    [aggregated]
   );
 
   useEffect(() => {
     function getAggregatedTickets(): AggregatedTicket[] {
-      const tempAggreateds: AggregatedTicket[] = [];
+      const tempaggregated: AggregatedTicket[] = [];
       basketTicket?.forEach((item) => {
-        const findedAggregate = tempAggreateds.find(
+        const findedAggregate = tempaggregated.find(
           (agg) =>
             agg.flightLoadId === item.flightLoadId &&
             agg.ticketTypeId === item.ticketTypeId
@@ -36,20 +34,21 @@ function useBasketTickets() {
             flightLoadId: item.flightLoadId,
             flightNumber: item.flightNumber,
             ticketTypeId: item.ticketTypeId,
+            flightDate: item.flightDate,
             type: item.type,
             amount: item.amount,
             ticketMembers: [item],
           };
-          tempAggreateds.push(aggregated);
+          tempaggregated.push(aggregated);
         }
       });
-      return tempAggreateds;
+      return tempaggregated;
     }
 
-    setAggreateds(getAggregatedTickets());
+    setAggregated(getAggregatedTickets());
   }, [basketTicket]);
 
-  return { aggregatedTickets: aggreateds, getAggregate };
+  return { aggregatedTickets: aggregated, getAggregate };
 }
 
 export default useBasketTickets;

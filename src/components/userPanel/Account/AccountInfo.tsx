@@ -40,7 +40,7 @@ const AccountInfo: React.FC = () => {
     "غیرفعال کردن حساب کاربری"
   );
 
-  const { sendRequest: sendInavtivate } = useAPi<null, BaseResponse<string>>();
+  const { sendRequest: sendInactivate } = useAPi<null, BaseResponse<string>>();
   const [startChangePassword, setStartChangePassword] =
     useState<boolean>(false);
   const { sendRequest: sendOtpRequest, isPending: otpPending } = useAPi<
@@ -53,7 +53,7 @@ const AccountInfo: React.FC = () => {
   async function onInactiveAccount() {
     const confirm = await confirmation();
     if (confirm) {
-      sendInavtivate(
+      sendInactivate(
         {
           url: "/Users/Inactivate",
           method: "put",

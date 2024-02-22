@@ -50,7 +50,6 @@ export interface FlightOfDayInfo {
   qty: number;
 }
 
-
 export interface SkyDiveFlight {
   flightNumber: number;
   flightId: string;
@@ -128,6 +127,8 @@ export interface AdminFlightModel {
   capacity: number;
   voidableQty: number;
   id: string;
+  status: number;
+  name: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -149,6 +150,14 @@ export interface AdminTicketModel {
   ticketTypeId: string;
 }
 
-export interface AddTermAndConditionsRequest{
+export interface AddTermAndConditionsRequest {
   conditionsAndTerms: string;
+}
+
+export interface flightStatusData {
+  status: string;
+}
+
+export interface flightNameData {
+  name: string;
 }
