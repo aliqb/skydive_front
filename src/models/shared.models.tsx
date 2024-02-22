@@ -94,6 +94,7 @@ export interface BasketTicketModel {
   type: string;
   amount: number;
   userCode: number;
+  flightDate: string;
   flightLoadId: string;
   ticketTypeId: string;
 }
@@ -102,6 +103,7 @@ export interface AggregatedTicket {
   flightLoadId: string;
   ticketTypeId: string;
   amount: number;
+  flightDate: string;
   type: string;
   flightNumber: number;
   ticketMembers: BasketTicketModel[];

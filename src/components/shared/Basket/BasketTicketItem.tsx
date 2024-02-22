@@ -5,12 +5,19 @@ interface BasketTicketItemProps extends AggregatedTicket {
   canEdit?: boolean;
 }
 const BasketTicketItem: React.FC<BasketTicketItemProps> = ({
-  canEdit = true,...ticket
+  canEdit = true,
+  ...ticket
 }) => {
   return (
     <div className="flex justify-between border-b border-gray-200 py-4 items-center text-center">
       <div>
-        <p className="mb-5">شماره پرواز: {ticket.flightNumber}</p>
+        <div className="flex flex-col items-start mb-5">
+          <p className="text-sm text-start">
+            شماره پرواز: {ticket.flightNumber}
+          </p>
+          <p className="text-sm text-start">تاریخ پرواز: {ticket.flightDate}</p>
+        </div>
+
         <p>
           <NumberWithSeperator value={ticket.amount} />
           <span className="mr-1">ریال</span>
@@ -19,11 +26,9 @@ const BasketTicketItem: React.FC<BasketTicketItemProps> = ({
       <div>
         <p className="mb-5">بلیت {ticket.type}</p>
         {canEdit ? (
-          <AddOrRemoveTicket
-            aggretadTicket={ticket}
-          />
+          <AddOrRemoveTicket aggretadTicket={ticket} />
         ) : (
-          <span className="text-lg">{ ticket.ticketMembers?.length || 0}</span>
+          <span className="text-lg">{ticket.ticketMembers?.length || 0}</span>
         )}
       </div>
     </div>
