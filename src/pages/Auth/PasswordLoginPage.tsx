@@ -42,7 +42,9 @@ const PasswordLoginPage: React.FC = () => {
   }
 
   function onPasswordChange(evenet: FormEvent) {
-    const input: string = replacePersianArabicsNumbers((evenet.target as HTMLInputElement).value);
+    const input: string = replacePersianArabicsNumbers(
+      (evenet.target as HTMLInputElement).value
+    );
     setPassword(input);
   }
 

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import BackButton from "../../../components/shared/BackButton";
-import {  useAppSelector } from "../../../hooks/reduxHooks";
+import { useAppSelector } from "../../../hooks/reduxHooks";
 import { useEffect } from "react";
 import ResetPasswordOtpComponent from "../../../components/auth/ResertPasswordOtpComponet";
 
@@ -14,7 +14,7 @@ const ForgetPasswordOtpPage: React.FC = () => {
     }
   }, [phone, navigate]);
 
-  function onOtpConfirm(){
+  function onOtpConfirm() {
     navigate("/auth/forget-password/change");
   }
 

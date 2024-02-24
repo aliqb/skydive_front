@@ -13,10 +13,10 @@ interface LabeledFileInputProps {
   maxSize?: number;
 }
 const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
-  acceptFiles = '',
+  acceptFiles = "",
   title,
-  field = 'file',
-  url = '/file',
+  field = "file",
+  url = "/file",
   onUpload,
   onRemove,
   disabled = false,
@@ -24,9 +24,9 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
 }) => {
   const { sendRequest, isPending } = useAPi<FormData, string>();
   const [uploadedFile, setUploadedFile] = useState<File | null>();
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
   function onChange(event: FormEvent) {
-    setError('');
+    setError("");
     const files = (event.target as HTMLInputElement).files;
     if (!files || !files.length) {
       return;
@@ -39,20 +39,20 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
     const formData = new FormData();
     formData.append(field, file);
     if (!maxSize) {
-      formData.append('ignoreFileSizeLimitation', 'true');
+      formData.append("ignoreFileSizeLimitation", "true");
     }
     sendRequest(
       {
         url: url,
         data: formData,
-        method: 'post',
+        method: "post",
       },
       (response) => {
         setUploadedFile(file);
         onUpload(response);
       },
       (error) => {
-        setError(error?.message || 'خطا در بارگذاری');
+        setError(error?.message || "خطا در بارگذاری");
       }
     );
   }
@@ -68,7 +68,7 @@ const LabeledFileInput: React.FC<LabeledFileInputProps> = ({
         <label
           htmlFor={title}
           className={`text-blue-700 font-semibold ${
-            disabled ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'
+            disabled ? "cursor-not-allowed opacity-70" : "cursor-pointer"
           }`}
         >
           بارگذاری فایل

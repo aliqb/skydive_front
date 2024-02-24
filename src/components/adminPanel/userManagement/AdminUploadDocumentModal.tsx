@@ -32,23 +32,23 @@ const AdminUploadDocumentModal: React.FC<AdminUploadDocumentModalProps> = ({
   );
   const [nationalCardDocumentModel, setNationalCardDocumentModel] =
     useState<DocumentItemModel>({
-      fileId: '',
+      fileId: "",
     });
 
   const [logBookDocumenttModel, setLogBookDocumentModel] =
     useState<DocumentItemModel>({
-      fileId: '',
+      fileId: "",
     });
 
   const [attorneyDocumentModel, setAttorneyDocumentModel] =
     useState<DocumentItemModel>({
-      fileId: '',
+      fileId: "",
       withDate: true,
     });
 
   const [medicalDocumentModel, setMedicalDocumentModel] =
     useState<DocumentItemModel>({
-      fileId: '',
+      fileId: "",
       withDate: true,
     });
 
@@ -104,7 +104,7 @@ const AdminUploadDocumentModal: React.FC<AdminUploadDocumentModalProps> = ({
               }
             : undefined,
         },
-        method: 'put',
+        method: "put",
       },
       (response) => {
         toast.success(response.message);

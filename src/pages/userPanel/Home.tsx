@@ -39,11 +39,7 @@ const Home: React.FC = () => {
         }
       }
     );
-  }, [
-    dispatch,
-    sendCheckActiveRequest,
-    authState.userStatus,
-  ]);
+  }, [dispatch, sendCheckActiveRequest, authState.userStatus]);
 
   useEffect(() => {
     setLinks([

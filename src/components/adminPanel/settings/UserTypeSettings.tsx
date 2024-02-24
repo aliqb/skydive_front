@@ -34,13 +34,13 @@ const UserTypeSettings: React.FC = () => {
   >([]);
 
   useEffect(() => {
-    getTicketTypesRequest({ url: '/SkyDiveEventTicketType' }, (response) => {
+    getTicketTypesRequest({ url: "/SkyDiveEventTicketType" }, (response) => {
       setAllowedTicketTypes(response.content);
     });
   }, [getTicketTypesRequest]);
 
   useEffect(() => {
-    sendRequest({ url: '/UserTypes' }, (response) => {
+    sendRequest({ url: "/UserTypes" }, (response) => {
       if (response?.content.length > 0) {
         setUserTypes(response.content);
         setSelectedTickets(
@@ -65,8 +65,8 @@ const UserTypeSettings: React.FC = () => {
 
     return sendPostRequest(
       {
-        url: '/UserTypes/AssignTicketType',
-        method: 'post',
+        url: "/UserTypes/AssignTicketType",
+        method: "post",
         data: assignTicketTypes,
       },
       (response) => {
@@ -95,8 +95,8 @@ const UserTypeSettings: React.FC = () => {
 
     return sendPostRequest(
       {
-        url: '/UserTypes/UnAssignTicketType',
-        method: 'put',
+        url: "/UserTypes/UnAssignTicketType",
+        method: "put",
         data: body,
       },
       (response) => {

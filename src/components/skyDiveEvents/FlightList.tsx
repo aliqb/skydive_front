@@ -21,7 +21,7 @@ const FlightList: React.FC<{ dayId: string }> = ({ dayId }) => {
         },
       });
     }
-  }, [dayId,sendRequest]);
+  }, [dayId, sendRequest]);
 
   if (isPending) {
     return (
@@ -36,12 +36,9 @@ const FlightList: React.FC<{ dayId: string }> = ({ dayId }) => {
       <p className="text-green-500 font-semibold mb-6 text-lg">
         بلیت‌های موجود {data?.content.dateDisplay} : {data?.content.qty}
       </p>
-      {
-        data?.content.flights.map((flight,index)=>(
-            <FlightItem key={index} {...flight} />
-
-        ))
-      }
+      {data?.content.flights.map((flight, index) => (
+        <FlightItem key={index} {...flight} />
+      ))}
     </>
   );
 };

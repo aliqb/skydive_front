@@ -86,7 +86,6 @@ const MyTicketsPage: React.FC = () => {
     [sendRequest]
   );
 
-
   return (
     <SDCard>
       <h1 className="text-center font-bold text-xl py-5">بلیت‌های من</h1>

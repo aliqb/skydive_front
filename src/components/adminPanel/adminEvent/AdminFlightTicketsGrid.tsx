@@ -78,10 +78,7 @@ const AdminFlightTicketsGrid: React.FC<AdminFlightTicketsGridProps> = ({
     <>
       <ConfirmModal />
       {currentRow && (
-        <EditTicketModal
-          onCloseModal={onCloseModal}
-          ticket={currentRow}
-        />
+        <EditTicketModal onCloseModal={onCloseModal} ticket={currentRow} />
       )}
 
       <Grid

@@ -1,11 +1,14 @@
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
-import { DocumentStatus, DocumentTitleMap } from '../../../models/account.models';
-import { UserDocumentsFieldType, accoutnActions } from '../../../store/account';
-import SDDatepicker from '../../shared/DatePicker';
-import SDLabel from '../../shared/Label';
-import LabeledFileInput from '../../shared/LabeledFileInput';
-import UserDocumentStatusLabel from '../../shared/UserDocumentStatusLabel';
-import { useState } from 'react';
+import {
+  DocumentStatus,
+  DocumentTitleMap,
+} from "../../../models/account.models";
+import { UserDocumentsFieldType, accoutnActions } from "../../../store/account";
+import SDDatepicker from "../../shared/DatePicker";
+import SDLabel from "../../shared/Label";
+import LabeledFileInput from "../../shared/LabeledFileInput";
+import UserDocumentStatusLabel from "../../shared/UserDocumentStatusLabel";
+import { useState } from "react";
 
 interface DocumentItemProps {
   field: UserDocumentsFieldType;
@@ -37,7 +40,7 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
 
   function onFileRemove() {
     setIsUploading(false);
-    dispatch(accoutnActions.setDocumentFile({ field: field, fileId: '' }));
+    dispatch(accoutnActions.setDocumentFile({ field: field, fileId: "" }));
   }
 
   function onDateChange(value: string) {
@@ -67,9 +70,9 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
               onChange={onDateChange}
               required={true}
               manualInvalid={
-                validation && documentData?.validationMessage !== ''
+                validation && documentData?.validationMessage !== ""
               }
-              value={documentData?.expirationDate || ''}
+              value={documentData?.expirationDate || ""}
             ></SDDatepicker>
           </div>
         )}
@@ -81,7 +84,7 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
       </div>
       <div
         className={`w-full xs:w-1/2 flex whitespace-nowrap justify-center gap-8 text-center mt-4 xs:mt-0 xs:justify-around items-center ${
-          documentData.withDate ? 'xs:pb-2' : ''
+          documentData.withDate ? "xs:pb-2" : ""
         }`}
       >
         <div>
@@ -91,7 +94,8 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
             onUpload={onFileUpload}
             onRemove={onFileRemove}
             disabled={
-              (isTitleNationalCard && documentData.status === DocumentStatus.CONFIRMED) ||
+              (isTitleNationalCard &&
+                documentData.status === DocumentStatus.CONFIRMED) ||
               documentData.status === DocumentStatus.PENDING ||
               disable
             }
@@ -100,8 +104,8 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
         </div>
         <div>
           <UserDocumentStatusLabel
-            status={documentData?.status || ''}
-            display={documentData?.statusDisplay || ''}
+            status={documentData?.status || ""}
+            display={documentData?.statusDisplay || ""}
             isUploading={isUploading}
           ></UserDocumentStatusLabel>
         </div>

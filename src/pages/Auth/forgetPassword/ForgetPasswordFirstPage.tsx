@@ -83,9 +83,7 @@ const ForgetPasswordFirstPage: React.FC = () => {
           </p>
         )}
         {apiErrors && (
-          <p className="text-red-600 text-sm pr-2 mt-2">
-            {apiErrors.message}
-          </p>
+          <p className="text-red-600 text-sm pr-2 mt-2">{apiErrors.message}</p>
         )}
         <SDButton
           type="submit"

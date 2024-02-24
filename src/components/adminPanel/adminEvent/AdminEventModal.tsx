@@ -131,7 +131,7 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
         containerClass="lg:!w-[480px]"
       >
         <SDModal.Header color="primary2">
-          {eventData ? 'ویرایش رویداد' : 'ثبت رویداد جدید'}
+          {eventData ? "ویرایش رویداد" : "ثبت رویداد جدید"}
         </SDModal.Header>
         <SDModal.Body>
           <form onSubmit={handleSubmit(handleSaveButton)}>
@@ -152,7 +152,7 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
                     type="text"
                     id="title"
                     invalid={!!formErrors.title}
-                    {...register('title', { required: 'فیلد اجباری است.' })}
+                    {...register("title", { required: "فیلد اجباری است." })}
                   />
                   {formErrors.title?.message && (
                     <p className="text-red-600 text-sm pr-2 mt-2">
@@ -166,7 +166,7 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
                 <SDTextInput
                   type="text"
                   id="location"
-                  {...register('location', { required: 'فیلد اجباری است.' })}
+                  {...register("location", { required: "فیلد اجباری است." })}
                   invalid={!!formErrors.location}
                 />
                 {formErrors.location?.message && (
@@ -218,8 +218,8 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
                     <SDSelect
                       id="eventStatus"
                       invalid={!!formErrors.statusId}
-                      {...register('statusId', {
-                        required: 'فیلد اجباری است.',
+                      {...register("statusId", {
+                        required: "فیلد اجباری است.",
                       })}
                     >
                       <option value="">انتخاب کنید</option>
@@ -278,8 +278,8 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
                         options={CancelOptions}
                         selectedOption={
                           selectedCancelOption
-                            ? 'cancel-active'
-                            : 'cancel-inactive'
+                            ? "cancel-active"
+                            : "cancel-inactive"
                         }
                         onOptionChange={handleCancelOptionChange}
                       />
@@ -292,7 +292,7 @@ const AdminEventModal: React.FC<AdminEventModalProps> = ({
                         groupName="subjecToVAT"
                         options={VATOptions}
                         selectedOption={
-                          selectedVATOption ? 'vat-active' : 'vat-inactive'
+                          selectedVATOption ? "vat-active" : "vat-inactive"
                         }
                         onOptionChange={handleVATOptionChange}
                       />

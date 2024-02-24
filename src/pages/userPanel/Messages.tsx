@@ -14,12 +14,14 @@ const Messages: React.FC = () => {
   const dispatch = useAppDispatch();
   const [pageCount, setPageCount] = useState<number>();
 
-  useEffect(()=>{
-    setPageCount(Math.ceil(messagesState.total / pageSize))
-  },[messagesState])
+  useEffect(() => {
+    setPageCount(Math.ceil(messagesState.total / pageSize));
+  }, [messagesState]);
 
   const handlePageClick = (event: SelectPageEvent) => {
-    dispatch(fetchMessages({pageIndex:event.selected+1, pageSize:pageSize}))
+    dispatch(
+      fetchMessages({ pageIndex: event.selected + 1, pageSize: pageSize })
+    );
   };
 
   const loading = (

@@ -7,7 +7,7 @@ import { authActions } from "../../store/auth";
 import { removeAuthDataFromLocal } from "../../utils/authUtils";
 
 const AdminHeader: React.FC<ShellElement> = (props) => {
-  const name = useAppSelector(state=>state.auth.name);
+  const name = useAppSelector((state) => state.auth.name);
   const dispatch = useDispatch();
   const dropdownItems: DropDownItem[] = [
     {
@@ -33,8 +33,8 @@ const AdminHeader: React.FC<ShellElement> = (props) => {
     },
   ];
 
-  function logOut(){
-    removeAuthDataFromLocal()
+  function logOut() {
+    removeAuthDataFromLocal();
     dispatch(authActions.logOut());
   }
   return (

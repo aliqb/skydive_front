@@ -38,11 +38,10 @@ const userManagementSlice = createSlice({
   name: "userManagement",
   initialState: initialState,
   reducers: {
-    resetUserDetail: (state)=>{
-        state.userDetail = null,
-        state.error = '';
-        state.loading = false;
-    }
+    resetUserDetail: (state) => {
+      (state.userDetail = null), (state.error = "");
+      state.loading = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -90,4 +89,4 @@ const userManagementSlice = createSlice({
 });
 
 export default userManagementSlice.reducer;
-export const usermanagementActions = userManagementSlice.actions
+export const usermanagementActions = userManagementSlice.actions;
