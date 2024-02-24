@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import SDCard from "../../components/shared/Card";
 import { SDTabs } from "../../components/shared/Tabs";
 import AccountInfo from "../../components/userPanel/Account/AccountInfo";
-import Documents from '../../components/userPanel/Account/Documents';
+import Documents from "../../components/userPanel/Account/Documents";
 import PersonalInfo from "../../components/userPanel/Account/PersonalInfo";
 import { TabsRef } from "flowbite-react";
 import useAPi from "../../hooks/useApi";
@@ -103,7 +103,7 @@ const Account: React.FC = () => {
         })
       );
     }
-  }, [generalSettings,dispatch]);
+  }, [generalSettings, dispatch]);
 
   useEffect(() => {
     const documentFiels: UserDocumentsFieldType[] = [
@@ -114,7 +114,7 @@ const Account: React.FC = () => {
     ];
     const anyInvalidDocument = documentFiels.some((field) => {
       const documentData: DocumentItemModel = accountState[field];
-      return documentData.validationMessage !== ''
+      return documentData.validationMessage !== "";
     });
     setAnyInvalidDocument(anyInvalidDocument);
   }, [accountState]);

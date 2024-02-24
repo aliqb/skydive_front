@@ -32,9 +32,7 @@ const PdfPrintButton: React.FC<PdfPrintButtonProps> = ({
 
   return (
     <>
-    {
-      isPending && <SDSpinner color="blue"></SDSpinner>
-    }
+      {isPending && <SDSpinner color="blue"></SDSpinner>}
       {!isPending && (
         <button onClick={handlePrint} className="text-cyan-600">
           چاپ

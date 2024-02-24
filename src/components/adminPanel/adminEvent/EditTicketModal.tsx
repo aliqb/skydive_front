@@ -15,14 +15,14 @@ import { BaseResponse } from "../../../models/shared.models";
 import { toast } from "react-toastify";
 import SDSpinner from "../../shared/Spinner";
 
-interface EditTicketModal{
+interface EditTicketModal {
   onCloseModal: (submitted: boolean) => void;
-  ticket:AdminTicketModel
+  ticket: AdminTicketModel;
 }
 
 const EditTicketModal: React.FC<EditTicketModal> = ({
   onCloseModal,
-  ticket
+  ticket,
 }) => {
   const {
     register,
@@ -84,7 +84,7 @@ const EditTicketModal: React.FC<EditTicketModal> = ({
     reset({
       ticketTypeId: ticket.ticketTypeId,
     });
-  }, [ticket, reset,tickeTypeResponse]);
+  }, [ticket, reset, tickeTypeResponse]);
 
   useEffect(() => {
     const fetchEventTicketType = () => {

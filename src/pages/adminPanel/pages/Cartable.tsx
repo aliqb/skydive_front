@@ -55,8 +55,8 @@ const Cartable: React.FC = () => {
 
   const deleteMessage = async (id: string) => {
     const confirm = await confirmation();
-    if(!confirm){
-      return
+    if (!confirm) {
+      return;
     }
     sendDeleteRequest(
       {

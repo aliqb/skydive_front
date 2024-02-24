@@ -21,24 +21,26 @@ const PaymentPage: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const [payPending, setPayPedning] = useState<boolean>(false);
-  const [walletSubtitle, setWalletSubtitle] = useState<string>('');
+  const [walletSubtitle, setWalletSubtitle] = useState<string>("");
 
   const { sendRequest: sendPayRequest } = useAPi<null, BaseResponse<null>>();
   const { sendRequest: sendCheckRequest } = useAPi<null, BaseResponse<null>>();
-  const { sendRequest: getWalletRequest } = useAPi<null, BaseResponse<WalletData>>();
-  
-    useEffect(()=>{
-      getWalletRequest(
-        {
-          url: "wallets",
-        },
-        (response) => {
-          const balanceString = response.content.balance.toLocaleString();
-          setWalletSubtitle(balanceString + ' ریال')
-        }
-      );
-    },[getWalletRequest])
+  const { sendRequest: getWalletRequest } = useAPi<
+    null,
+    BaseResponse<WalletData>
+  >();
 
+  useEffect(() => {
+    getWalletRequest(
+      {
+        url: "wallets",
+      },
+      (response) => {
+        const balanceString = response.content.balance.toLocaleString();
+        setWalletSubtitle(balanceString + " ریال");
+      }
+    );
+  }, [getWalletRequest]);
 
   function onSelectMethod(id: string) {
     setMethod(id);
@@ -70,7 +72,7 @@ const PaymentPage: React.FC = () => {
   function payBasket(methodId: string) {
     if (methodId === "wallet") {
       payByWallet();
-      return
+      return;
     }
     dumpPay();
   }

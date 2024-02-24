@@ -42,7 +42,7 @@ const SkyDiveEventList: React.FC<SkyDiveEventListProps> = (props) => {
   }, [props.id, fetchEvents]);
 
   const handlePageClick = (event: SelectPageEvent) => {
-    fetchEvents(props.id, event.selected+1);
+    fetchEvents(props.id, event.selected + 1);
   };
 
   return (

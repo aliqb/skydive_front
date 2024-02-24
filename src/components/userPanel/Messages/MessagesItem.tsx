@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import { UserMessage } from '../../../models/messages.models';
-import SDCard from '../../shared/Card';
-import SDSpinner from '../../shared/Spinner';
-import SDButton from '../../shared/Button';
-import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks';
-import { readMessage } from '../../../store/messages';
+import React, { useState } from "react";
+import { UserMessage } from "../../../models/messages.models";
+import SDCard from "../../shared/Card";
+import SDSpinner from "../../shared/Spinner";
+import SDButton from "../../shared/Button";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
+import { readMessage } from "../../../store/messages";
 
 const MessagesItem: React.FC<UserMessage> = (props) => {
-
   const [isFullTextShown, setIsFullTextShown] = useState(false);
-  const changingMessageId = useAppSelector(state=>state.messages.changingMessageid)
+  const changingMessageId = useAppSelector(
+    (state) => state.messages.changingMessageid
+  );
 
   const maxLength = 80;
 
@@ -24,19 +25,19 @@ const MessagesItem: React.FC<UserMessage> = (props) => {
   const shouldShowMoreButton =
     !isFullTextShown && props.text.length > maxLength;
 
-  const textClass = props.visited ? 'text-black-400' : 'text-blue-400';
+  const textClass = props.visited ? "text-black-400" : "text-blue-400";
 
   const dispatch = useAppDispatch();
 
   const markAsRead = () => {
-    dispatch(readMessage(props.id))
+    dispatch(readMessage(props.id));
   };
 
   return (
-    <SDCard className='mb-2 !border'>
+    <SDCard className="mb-2 !border">
       <div
         className={`flex gap-11 items-center   pb-6 ${
-          props.visited ? 'read' : 'unread'
+          props.visited ? "read" : "unread"
         }`}
       >
         <div className="hidden sm:block">
@@ -64,7 +65,9 @@ const MessagesItem: React.FC<UserMessage> = (props) => {
               <p className="text-black-400 font-bold">{props.title}</p>
             </div>
             <div className="flex mb-5 items-center">
-              <p className={textClass}>{displayedText.length > maxLength ?  + '...' : displayedText}</p>
+              <p className={textClass}>
+                {displayedText.length > maxLength ? +"..." : displayedText}
+              </p>
               {shouldShowMoreButton && (
                 <button onClick={handleMoreClick} className="text-blue-500">
                   بیشتر

@@ -55,7 +55,7 @@ const SkyDiveEventTermsPage: React.FC = () => {
             />
           </div>
           <div
-          className="pt-8 sm:px-8 md:px-12 lg:px-24"
+            className="pt-8 sm:px-8 md:px-12 lg:px-24"
             dangerouslySetInnerHTML={{
               __html: eventRepsonse.content.termsAndConditions,
             }}

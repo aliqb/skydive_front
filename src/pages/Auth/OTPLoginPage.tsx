@@ -10,7 +10,6 @@ import { BaseResponse } from "../../models/shared.models";
 import { authActions } from "../../store/auth";
 import { setAuthDataInLocal } from "../../utils/authUtils";
 
-
 const OTPLoginPage: React.FC = () => {
   const enteredPhone = useAppSelector((state) => state.auth.enteredPhone);
   const enteredUsername = useAppSelector((state) => state.auth.enteredUsername);
@@ -43,11 +42,11 @@ const OTPLoginPage: React.FC = () => {
           navigate("/admin");
           return;
         }
-        if(!response.content.personalInformationCompleted){
+        if (!response.content.personalInformationCompleted) {
           navigate("/auth/signup/personal");
           return;
         }
-        if(!response.content.securityInformationCompleted){
+        if (!response.content.securityInformationCompleted) {
           navigate("/auth/signup/user-info");
           return;
         }

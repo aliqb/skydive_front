@@ -32,7 +32,7 @@ const Wallet: React.FC = () => {
   const fetchWallet = useCallback(() => {
     getWalletRequest(
       {
-        url: 'wallets',
+        url: "wallets",
       },
       (response) => {
         setBalance(response.content.balance);

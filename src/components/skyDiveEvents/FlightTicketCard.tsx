@@ -17,15 +17,14 @@ const FlightTicketCard: React.FC<FlightTicketCardProps> = (props) => {
   useEffect(() => {
     const aggreated = getAggregate(props.ticketTypeId, props.flightLoadId);
     setAggreatedTicket(
-      aggreated ||
-        {
-          amount: 0,
-          flightLoadId: props.flightLoadId,
-          flightNumber: 0,
-          ticketMembers: [],
-          ticketTypeId: props.ticketTypeId,
-          type: "",
-        }
+      aggreated || {
+        amount: 0,
+        flightLoadId: props.flightLoadId,
+        flightNumber: 0,
+        ticketMembers: [],
+        ticketTypeId: props.ticketTypeId,
+        type: "",
+      }
     );
   }, [aggregatedTickets, props, getAggregate]);
   return (
@@ -39,8 +38,11 @@ const FlightTicketCard: React.FC<FlightTicketCardProps> = (props) => {
         مبلغ <NumberWithSeperator value={props.amount} /> ریال
       </p>
       <p className="mb-6 text-green-500">بلیت‌های موجود : {props.qty}</p>
-      {(aggregatedTicket && aggregatedTickets) && (
-        <AddOrRemoveTicket aggretadTicket={aggregatedTicket} disabled={!props.allowedToReserve} />
+      {aggregatedTicket && aggregatedTickets && (
+        <AddOrRemoveTicket
+          aggretadTicket={aggregatedTicket}
+          disabled={!props.allowedToReserve}
+        />
       )}
     </div>
   );

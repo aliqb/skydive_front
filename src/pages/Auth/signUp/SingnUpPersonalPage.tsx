@@ -18,7 +18,7 @@ import {
   nationalCodeValidator,
 } from "../../../utils/validations";
 
-const SingUpPersonaPage: React.FC = () => {
+const SignUpPersonaPage: React.FC = () => {
   const navigate = useNavigate();
   const {
     sendRequest,
@@ -170,4 +170,4 @@ const SingUpPersonaPage: React.FC = () => {
   );
 };
 
-export default SingUpPersonaPage;
+export default SignUpPersonaPage;

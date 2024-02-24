@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import AddTicketModal from "./AddTicketModal";
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import {
@@ -25,10 +25,13 @@ const AddOrRemoveTicket: React.FC<PlusMinusProps> = ({
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const changingTicket = useAppSelector((state) => state.basket.changingTicket);
-  const isEmmptying = useAppSelector(state=>state.basket.isEmptying)
-  const pending = Boolean(changingTicket &&
-    changingTicket.flightLoadId === aggretadTicket.flightLoadId &&
-    changingTicket.ticketTypeId === aggretadTicket.ticketTypeId) || isEmmptying;
+  const isEmmptying = useAppSelector((state) => state.basket.isEmptying);
+  const pending =
+    Boolean(
+      changingTicket &&
+        changingTicket.flightLoadId === aggretadTicket.flightLoadId &&
+        changingTicket.ticketTypeId === aggretadTicket.ticketTypeId
+    ) || isEmmptying;
 
   function increase() {
     setIsAdding(true);
@@ -57,7 +60,6 @@ const AddOrRemoveTicket: React.FC<PlusMinusProps> = ({
     });
     dispatch(removeTicketFromBasket(removingTickets));
   }
-
 
   return (
     <>

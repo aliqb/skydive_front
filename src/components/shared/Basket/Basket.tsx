@@ -11,13 +11,13 @@ interface BasketProps {
   inPayment?: boolean;
   canPay?: boolean;
   onPayClick?: () => void;
-  isPaying?: boolean
+  isPaying?: boolean;
 }
 const Basket: React.FC<BasketProps> = ({
   inPayment = false,
   canPay = true,
   onPayClick,
-  isPaying = false
+  isPaying = false,
 }) => {
   const basketState = useAppSelector((state) => state.basket);
   const { aggregatedTickets } = useBasketTickets();
@@ -81,10 +81,7 @@ const Basket: React.FC<BasketProps> = ({
                 type="button"
                 onClick={onPayClick}
               >
-                {
-                  isPaying && <SDSpinner  />
-                }
-          
+                {isPaying && <SDSpinner />}
                 پرداخت
               </SDButton>
               <div className="text-centers font-semibold lg:hidden">

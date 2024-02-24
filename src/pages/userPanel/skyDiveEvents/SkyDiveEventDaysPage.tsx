@@ -9,7 +9,7 @@ import {
   SkyDiveEventDay,
 } from "../../../models/skyDiveEvents.models";
 import SDSpinner from "../../../components/shared/Spinner";
-import {useState} from 'react';
+import { useState } from "react";
 import { sortDate } from "../../../utils/shared";
 
 const SkyDiveEventDaysPage: React.FC = () => {
@@ -19,10 +19,10 @@ const SkyDiveEventDaysPage: React.FC = () => {
     data: event,
     isPending: detailPending,
   } = useAPi<null, BaseResponse<SkyDiveEvent>>();
-  const {
-    sendRequest: requestDays,
-    isPending: daysPending,
-  } = useAPi<null, BaseResponse<SkyDiveEventDay[]>>();
+  const { sendRequest: requestDays, isPending: daysPending } = useAPi<
+    null,
+    BaseResponse<SkyDiveEventDay[]>
+  >();
 
   const [days, setDays] = useState<SkyDiveEventDay[]>();
 
@@ -34,11 +34,14 @@ const SkyDiveEventDaysPage: React.FC = () => {
     }
 
     function getDays(eventId: string) {
-      requestDays({
-        url: `/SkyDiveEvents/EventDays/${eventId}`,
-      },(response)=>{
-        setDays(sortDate<SkyDiveEventDay>(response.content,'date'))
-      });
+      requestDays(
+        {
+          url: `/SkyDiveEvents/EventDays/${eventId}`,
+        },
+        (response) => {
+          setDays(sortDate<SkyDiveEventDay>(response.content, "date"));
+        }
+      );
     }
 
     const id = params.eventId;
@@ -58,18 +61,23 @@ const SkyDiveEventDaysPage: React.FC = () => {
           <p>{event?.content.duration}</p>
           <p>{event?.content.capacity} ظرفیت خالی</p>
         </div>
-        <Link target="_blank" to={`/events/${event?.content.id}/terms`} className="text-blue-700 font-semibold">قوانین و شرایط</Link>
+        <Link
+          target="_blank"
+          to={`/events/${event?.content.id}/terms`}
+          className="text-blue-700 font-semibold"
+        >
+          قوانین و شرایط
+        </Link>
       </header>
       <main className="w-full flex flex-wrap">
         {days &&
-          days
-            .map((item, index) => {
-              return (
-                <div key={index} className=" my-3 px-3 w-full md:w-1/2">
-                  <SkyDiveEventDayItem  {...item} />
-                </div>
-              );
-            })}
+          days.map((item, index) => {
+            return (
+              <div key={index} className=" my-3 px-3 w-full md:w-1/2">
+                <SkyDiveEventDayItem {...item} />
+              </div>
+            );
+          })}
       </main>
     </>
   );

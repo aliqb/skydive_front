@@ -10,7 +10,11 @@ import { PersonalInfoEditableFormData } from "../../../models/account.models";
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { accoutnActions } from "../../../store/account";
 import { Regexes } from "../../../utils/shared";
-import { heighttRangeOptions, phoneInputValidator, weightRangeOptions } from "../../../utils/validations";
+import {
+  heighttRangeOptions,
+  phoneInputValidator,
+  weightRangeOptions,
+} from "../../../utils/validations";
 
 interface PersonalInfoProps {
   onSubmit: () => void;
@@ -32,7 +36,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
     BaseResponse<UserPersonalInfo>
   >();
 
-  const userMobile = useAppSelector(state=>state.auth.mobile);
+  const userMobile = useAppSelector((state) => state.auth.mobile);
 
   const dispatch = useAppDispatch();
 
@@ -204,7 +208,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
               {...register("height", {
                 valueAsNumber: true,
                 required: "فیلد اجباری است.",
-                ...heighttRangeOptions
+                ...heighttRangeOptions,
               })}
               numeric={true}
               id="height"
@@ -229,7 +233,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
               {...register("weight", {
                 valueAsNumber: true,
                 required: "فیلد اجباری است.",
-                ...weightRangeOptions
+                ...weightRangeOptions,
               })}
               numeric={true}
               id="weight"
@@ -291,12 +295,12 @@ const PersonalInfo: React.FC<PersonalInfoProps> = (props) => {
                     message: "شماره موبایل صحیح نیست.",
                   },
                   required: "فیلد اجباری است.",
-                  validate:(value)=>{
-                    if(value !== userMobile){
-                      return
+                  validate: (value) => {
+                    if (value !== userMobile) {
+                      return;
                     }
-                    return 'شماره موبایل اضطراری نباید با شماره موبایل شما یکسان باشد.'
-                  }
+                    return "شماره موبایل اضطراری نباید با شماره موبایل شما یکسان باشد.";
+                  },
                 })}
                 type="text"
                 disabled={props.disableAll}

@@ -25,17 +25,20 @@ const AdminFlightsPage: React.FC = () => {
 
   useEffect(() => {
     function getEvnetDetail(eventId: string) {
-        requestDetail(
-          {
-            url: `/SkyDiveEvents/${eventId}`,
-          },
-          (response) => {
-            setSkyDiveEvent(response.content);
-            const sortedDays = sortDate<SkyDiveInlineEventDay>(response.content.days,'date')
-            setDays(sortedDays);
-            setCurrentDay(sortedDays[0]);
-          }
-        );
+      requestDetail(
+        {
+          url: `/SkyDiveEvents/${eventId}`,
+        },
+        (response) => {
+          setSkyDiveEvent(response.content);
+          const sortedDays = sortDate<SkyDiveInlineEventDay>(
+            response.content.days,
+            "date"
+          );
+          setDays(sortedDays);
+          setCurrentDay(sortedDays[0]);
+        }
+      );
     }
     getEvnetDetail(params.eventId as string);
   }, [params, requestDetail]);
@@ -59,7 +62,10 @@ const AdminFlightsPage: React.FC = () => {
               <div className="flex justify-between px-8 my-7 flex-wrap gap-6">
                 <SkydiveEventField title="کد" value={skyDiveEvent.code} />
                 <SkydiveEventField title="نام" value={skyDiveEvent.title} />
-                <SkydiveEventField title="شروع" value={skyDiveEvent.startDate} />
+                <SkydiveEventField
+                  title="شروع"
+                  value={skyDiveEvent.startDate}
+                />
                 <SkydiveEventField title="پایان" value={skyDiveEvent.endDate} />
                 <SkydiveEventField
                   title="محل رویداد"
@@ -72,31 +78,31 @@ const AdminFlightsPage: React.FC = () => {
         <nav className="mt-8 flex border-b-2  border-gray-200 w-full">
           <ul className="flex w-full overflow-auto horizental-scrol">
             {days &&
-              days
-                .map((item, index) => {
-                  return (
-                    <li
-                      key={index}
-                      className="flex-grow text-center min-w-[100px]"
+              days.map((item, index) => {
+                return (
+                  <li
+                    key={index}
+                    className="flex-grow text-center min-w-[100px]"
+                  >
+                    <a
+                      className={`${
+                        currentDay?.id === item.id &&
+                        "border-b-2 !border-blue-500 !text-blue-500"
+                      } cursor-pointer pb-4 block hover:border-b-2 text-gray-500 hover:text-gray-600 hover:border-gray-300  transition-all ease-linear duration-75`}
+                      onClick={() => changeCurrentDay(item)}
                     >
-                      <a
-                        className={`${
-                          currentDay?.id === item.id &&
-                          "border-b-2 !border-blue-500 !text-blue-500"
-                        } cursor-pointer pb-4 block hover:border-b-2 text-gray-500 hover:text-gray-600 hover:border-gray-300  transition-all ease-linear duration-75`}
-                        onClick={() => changeCurrentDay(item)}
-                      >
-                        {item.date}
-                      </a>
-                    </li>
-                  );
-                })}
+                      {item.date}
+                    </a>
+                  </li>
+                );
+              })}
           </ul>
         </nav>
       </header>
       <main className="p-6">
-        {currentDay && <AdminFlighList dayId={currentDay.id} date={currentDay.date} />}
-        
+        {currentDay && (
+          <AdminFlighList dayId={currentDay.id} date={currentDay.date} />
+        )}
       </main>
     </SDCard>
   );

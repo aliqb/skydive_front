@@ -30,8 +30,6 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
     handleSubmit,
   } = useForm<{ userCode: number }>();
 
-
-
   const onChangeOwner: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     const value = event.target.value;
     setOwner(value as "self" | "other");

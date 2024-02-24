@@ -64,10 +64,7 @@ const ResetUserPasswordModal: React.FC<ResetUserPasswordModalProps> = ({
     >
       <SDModal.Header color="primary2">بازنشانی رمزعبور کاربر</SDModal.Header>
       <SDModal.Body>
-        <form
-          className="px-8"
-          onSubmit={handleSubmit(onSubmit)}
-        >
+        <form className="px-8" onSubmit={handleSubmit(onSubmit)}>
           <div className="px-6 py-8">
             <SDLabel>رمز عبور:</SDLabel>
             <PasswordInput

@@ -42,24 +42,27 @@ const GeneralSettingsComponent: React.FC = () => {
       reset({
         termsAndConditionsUrl:
           generalSettingsState.generalSettings.termsAndConditionsUrl,
-        userStatusInfo: generalSettingsState.generalSettings.userStatusInfo.length ? generalSettingsState.generalSettings.userStatusInfo : [
-          {
-            status: UserStatuses.AWAITING_COMPLETION,
-            description:''
-          },
-          {
-            status: UserStatuses.PENDING,
-            description: ''
-          },
-          {
-            status: UserStatuses.ACTIVE,
-            description: ''
-          },
-          {
-            status: UserStatuses.INACTIVE,
-            description: ''
-          }
-        ],
+        userStatusInfo: generalSettingsState.generalSettings.userStatusInfo
+          .length
+          ? generalSettingsState.generalSettings.userStatusInfo
+          : [
+              {
+                status: UserStatuses.AWAITING_COMPLETION,
+                description: "",
+              },
+              {
+                status: UserStatuses.PENDING,
+                description: "",
+              },
+              {
+                status: UserStatuses.ACTIVE,
+                description: "",
+              },
+              {
+                status: UserStatuses.INACTIVE,
+                description: "",
+              },
+            ],
         registrationTermsAndConditionsUrl:
           generalSettingsState.generalSettings
             .registrationTermsAndConditionsUrl,
@@ -230,8 +233,8 @@ const GeneralSettingsComponent: React.FC = () => {
               required: "این فیلد اجباری است.",
               valueAsNumber: true,
               max: {
-                value:100,
-                message: 'مقدار درصدی مجاز نیست.'
+                value: 100,
+                message: "مقدار درصدی مجاز نیست.",
               },
             })}
           />

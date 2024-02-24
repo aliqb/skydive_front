@@ -30,8 +30,10 @@ const SignUpMobilePage: React.FC = () => {
     OTPResponse
   >();
 
-  const termsLink = useAppSelector(state=>state.generalSettings.generalSettings?.registrationTermsAndConditionsUrl);
-
+  const termsLink = useAppSelector(
+    (state) =>
+      state.generalSettings.generalSettings?.registrationTermsAndConditionsUrl
+  );
 
   const [finalPending, setFinalPending] = useState<boolean>(false);
 
