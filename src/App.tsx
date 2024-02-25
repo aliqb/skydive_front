@@ -26,7 +26,7 @@ import SkyDiveEventsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventPage"
 import AdminEvents from "./pages/adminPanel/pages/adminEvents/AdminEvents";
 import Settings from "./pages/adminPanel/pages/Settings";
 import SendMessage from "./pages/adminPanel/pages/SendMessage";
-import Reports from "./pages/adminPanel/pages/Reports";
+import Reports from "./pages/adminPanel/pages/reports/Reports";
 import SkyDiveEventDaysPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventDaysPage";
 import SkyDiveEventFlightsPage from "./pages/userPanel/skyDiveEvents/SkyDiveEventFlightsPage";
 import PaymentPage from "./pages/Payment/PaymentPage";

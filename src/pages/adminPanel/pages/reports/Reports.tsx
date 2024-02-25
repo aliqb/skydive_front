@@ -1,4 +1,4 @@
-import SDCard from "../../../components/shared/Card";
+import SDCard from "../../../../components/shared/Card";
 
 const Reports = () => {
   return (
