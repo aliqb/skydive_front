@@ -114,7 +114,6 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
   }
 
   async function handleBlur(flightId: string, itemValue: string) {
-    console.log(itemValue);
     nameChangeRequest(
       {
         url: `/SkyDiveEvents/SetFlightName/${flightId}`,

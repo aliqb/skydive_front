@@ -5,7 +5,6 @@ import GridRowOtherActionComponent from "./GridOtherRowActionComponent";
 import GridRowMoreActionComponent from "./GridRowMoreActionsComponent";
 import { useCallback, useState } from "react";
 
-
 interface GridRowProps<T> {
   row: GridRowModel<T>;
   onRowDobuleClisk?: (item: T) => void;
@@ -44,7 +43,7 @@ function GridRow<T>({
         onRowDobuleClisk(row.data);
       }
     },
-    [lastTouched, onRowDobuleClisk]
+    [lastTouched, onRowDobuleClisk],
   );
 
   return (
@@ -61,10 +60,10 @@ function GridRow<T>({
       } bg-white dark:border-gray-700 dark:bg-gray-800`}
     >
       {selectable && (
-        <Table.Cell className="px-3 w-5 pl-0">
+        <Table.Cell className="w-5 px-3 pl-0">
           <input
             type="checkbox"
-            className={`ml-3 w-5 h-5 text-${theme}-500 bg-gray-100 border-gray-300 rounded focus:ring-${theme}-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600`}
+            className={`ml-3 h-5 w-5 text-${theme}-500 rounded border-gray-300 bg-gray-100 focus:ring-${theme}-500 focus:ring-2 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600`}
             checked={row.isSelected}
             onChange={(event) => {
               onSelectedChange && onSelectedChange(row, event.target.checked);
@@ -82,12 +81,11 @@ function GridRow<T>({
       ))}
       {rowActions && (
         <Table.Cell>
-          <div className="flex gap-4 items-center">
+          <div className="flex items-center gap-4">
             {rowActions.edit && (
               <SDTooltip content="ویرایش" trigger="hover" placement="bottom">
                 <button
                   onClick={(event) => {
-                    console.log('wtf')
                     event.stopPropagation();
                     onEditRow && onEditRow(row.data);
                   }}
@@ -98,7 +96,7 @@ function GridRow<T>({
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="w-6 h-6 text-cyan-600"
+                    className="h-6 w-6 text-cyan-600"
                   >
                     <path
                       strokeLinecap="round"
@@ -128,7 +126,7 @@ function GridRow<T>({
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="w-6 h-6 text-red-600"
+                    className="h-6 w-6 text-red-600"
                   >
                     <path
                       strokeLinecap="round"
