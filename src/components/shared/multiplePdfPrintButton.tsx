@@ -32,7 +32,7 @@ const MultiplePdfPrintButton: React.FC<MultiplePdfPrintButtonProps> = ({
       },
       (response) => {
         printResponse(fileName, response);
-      }
+      },
     );
   };
 
@@ -53,7 +53,7 @@ const MultiplePdfPrintButton: React.FC<MultiplePdfPrintButtonProps> = ({
           <AiFillPrinter size="1.5rem"></AiFillPrinter>
         </span>
       )}
-      چاپ
+      چاپ گروهی
     </SDButton>
   );
 };
