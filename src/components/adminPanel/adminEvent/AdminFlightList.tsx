@@ -16,7 +16,7 @@ const AdminFlighList: React.FC<{ dayId: string; date: string }> = ({
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const [ConfirmModal, confirmation] = useConfirm(
     "پرواز‌های این روز حذف می‌شوند، آیا مطمئن هستید؟",
-    "حذف پروازهای روز"
+    "حذف پروازهای روز",
   );
 
   const { sendRequest: deleteRequest, isPending: deletePending } = useAPi<
@@ -36,7 +36,7 @@ const AdminFlighList: React.FC<{ dayId: string; date: string }> = ({
         url: `/SkyDiveEvents/EventDayFlights/${dayId}`,
       });
     },
-    [sendRequest]
+    [sendRequest],
   );
 
   function startAddFlight() {
@@ -64,7 +64,7 @@ const AdminFlighList: React.FC<{ dayId: string; date: string }> = ({
         },
         (error) => {
           toast.error(error?.message);
-        }
+        },
       );
     }
   }
@@ -85,7 +85,7 @@ const AdminFlighList: React.FC<{ dayId: string; date: string }> = ({
 
       <div className="min-h-[300px]">
         {(isPending || deletePending) && (
-          <div className="flex justify-center mt-8">
+          <div className="mt-8 flex justify-center">
             <SDSpinner color="blue" size={28} />
           </div>
         )}
@@ -115,13 +115,15 @@ const AdminFlighList: React.FC<{ dayId: string; date: string }> = ({
                   return (
                     <AdminFlightItem
                       key={index}
+                      dayId={dayId}
                       withHeader={index === 0}
+                      fetchFlights={fetchFlights}
                       {...item}
                     />
                   );
                 })
               ) : (
-                <div className="mt-12 mr-5 text-slate-700">
+                <div className="mr-5 mt-12 text-slate-700">
                   هیچ پروازی ثبت نشده است.
                 </div>
               )}
