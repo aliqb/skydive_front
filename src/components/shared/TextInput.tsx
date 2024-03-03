@@ -24,7 +24,7 @@ const SDTextInput = forwardRef(
     delete inputProps.isPending;
 
     const inputHandler: React.ChangeEventHandler<HTMLInputElement> = (
-      event
+      event,
     ) => {
       let value = event.target.value;
       value = replacePersianArabicsNumbers(value);
@@ -41,9 +41,7 @@ const SDTextInput = forwardRef(
           value = "-" + value.replace(/-/g, "");
         }
       }
-      if (props.numeric && (isNaN(parseFloat(value)) || value === "")) {
-        value = "0";
-      }
+
       event.target.value = value;
     };
 
@@ -56,11 +54,11 @@ const SDTextInput = forwardRef(
           ref={ref}
           className={`${
             props.invalid
-              ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
               : "border-gray-300 focus:border-blue-500"
           } ${
             props.className || ""
-          } placeholder:text-right w-full h-10 bg-gray-50 border  text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block  p-2.5 disabled:text-gray-400 disabled:cursor-not-allowed  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+          } block h-10 w-full rounded-sm border  bg-gray-50 p-2.5 text-sm text-gray-900 placeholder:text-right focus:border-blue-500  focus:ring-blue-500 disabled:cursor-not-allowed disabled:text-gray-400  dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500`}
         />
 
         {props.isPending ? (
@@ -71,7 +69,7 @@ const SDTextInput = forwardRef(
           props.magnifier && (
             <div className="absolute inset-y-0 left-1 flex items-center pr-3">
               <SDButton
-                className="font-extrabold !h-8 w-8 bg-white  hover:bg-gray-300"
+                className="!h-8 w-8 bg-white font-extrabold  hover:bg-gray-300"
                 onClick={props.onButtonClick}
               >
                 <svg
@@ -80,7 +78,7 @@ const SDTextInput = forwardRef(
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="w-8 h-8 stroke-green-500"
+                  className="h-8 w-8 stroke-green-500"
                 >
                   <path
                     strokeLinecap="round"
@@ -94,7 +92,7 @@ const SDTextInput = forwardRef(
         )}
       </div>
     );
-  }
+  },
 );
 
 export default SDTextInput;

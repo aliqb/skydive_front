@@ -16,10 +16,14 @@ import SDTextInput from "../../shared/TextInput";
 
 interface AdminFlightItemProps extends AdminFlightModel {
   withHeader?: boolean;
+  dayId: string;
+  fetchFlights: (dayId: string) => void;
 }
 
 const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
   withHeader = false,
+  fetchFlights,
+  dayId,
   ...flight
 }) => {
   const [isActive, setIsActive] = useState<boolean>(false);
@@ -43,7 +47,7 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
 
   const [ConfirmModal, confirmation] = useConfirm(
     " این پرواز حذف خواهد شد. آیا مطمئن هستید؟ ",
-    "حذف کردن پرواز"
+    "حذف کردن پرواز",
   );
 
   function fetchTickets(flightId: string) {
@@ -57,7 +61,7 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
       },
       (response) => {
         setTickets(response.content);
-      }
+      },
     );
   }
 
@@ -75,7 +79,7 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
       },
       (error) => {
         toast.error(error?.message);
-      }
+      },
     );
   }
 
@@ -89,14 +93,15 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
         },
         (response) => {
           toast.success(response.message);
-          window.location.reload();
+          fetchFlights(dayId);
         },
         (error) => {
           toast.error(error?.message);
-        }
+        },
       );
     }
   }
+
   function activate() {
     setIsActive(true);
     if (!tickets) {
@@ -109,7 +114,6 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
   }
 
   async function handleBlur(flightId: string, itemValue: string) {
-    console.log(itemValue);
     nameChangeRequest(
       {
         url: `/SkyDiveEvents/SetFlightName/${flightId}`,
@@ -123,14 +127,14 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
       },
       (error) => {
         toast.error(error?.message);
-      }
+      },
     );
   }
 
   const activateButton = (
     <button
       onClick={activate}
-      className=" w-10 flex items-center justify-end  group-hover:bg-gray-100 transition-all ease-linear duration-75"
+      className=" flex w-10 items-center justify-end  transition-all duration-75 ease-linear group-hover:bg-gray-100"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +142,7 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-6 h-6"
+        className="h-6 w-6"
       >
         <path
           strokeLinecap="round"
@@ -152,7 +156,7 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
   const deActivateButton = (
     <button
       onClick={deactivate}
-      className="!bg-gray-200 w-10 flex items-center justify-end  group-hover:bg-gray-100 transition-all ease-linear duration-75"
+      className="flex w-10 items-center justify-end !bg-gray-200  transition-all duration-75 ease-linear group-hover:bg-gray-100"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -160,7 +164,7 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-6 h-6"
+        className="h-6 w-6"
       >
         <path
           strokeLinecap="round"
@@ -184,27 +188,27 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
           {withHeader && (
             <div className="flex font-semibold">
               <div className="w-10 min-w-[1.5rem]"></div>
-              <p className="px-5 py-3 w-60">شماره پرواز</p>
-              <p className="px-5 py-3 w-60">نام پرواز</p>
-              <p className="px-5 py-3 w-60">ظرفیت</p>
-              <p className="px-5 py-3 w-40">غیر قابل رزرو</p>
-              <p className="px-5 py-3 w-40">تعیین وضعیت</p>
-              <p className="px-5 py-3 w-40">عملیات</p>
+              <p className="w-60 px-5 py-3">شماره پرواز</p>
+              <p className="w-60 px-5 py-3">نام پرواز</p>
+              <p className="w-60 px-5 py-3">ظرفیت</p>
+              <p className="w-40 px-5 py-3">غیر قابل رزرو</p>
+              <p className="w-40 px-5 py-3">تعیین وضعیت</p>
+              <p className="w-40 px-5 py-3">عملیات</p>
             </div>
           )}
-          <div className={`flex cursor-pointer group `}>
+          <div className={`group flex cursor-pointer `}>
             {isActive ? deActivateButton : activateButton}
             <p
               className={`${
                 isActive && "!bg-gray-200"
-              } px-5 py-3 w-40  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
+              } w-40 px-5 py-3  transition-all duration-75 ease-linear group-hover:bg-gray-100`}
             >
               {flight.flightNumber}
             </p>
             <p
               className={`${
                 isActive && "!bg-gray-200"
-              } px-8 py-3 w-80  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
+              } w-80 px-8 py-3  transition-all duration-75 ease-linear group-hover:bg-gray-100`}
             >
               <SDTextInput
                 onBlur={(event) => handleBlur(flight.id, event.target.value)}
@@ -224,21 +228,21 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
             <p
               className={`${
                 isActive && "!bg-gray-200"
-              } px-5 py-3 w-60  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
+              } w-60 px-5 py-3  transition-all duration-75 ease-linear group-hover:bg-gray-100`}
             >
               {flight.capacity}
             </p>
             <p
               className={`${
                 isActive && "!bg-gray-200"
-              } px-5 py-3 w-40  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
+              } w-40 px-5 py-3  transition-all duration-75 ease-linear group-hover:bg-gray-100`}
             >
               {flight.voidableQty}
             </p>
             <p
               className={`${
                 isActive && "!bg-gray-200"
-              } px-3 py-3 w-40  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
+              } w-40 px-3 py-3  transition-all duration-75 ease-linear group-hover:bg-gray-100`}
             >
               <div className="flex flex-col">
                 <SDSelect
@@ -267,7 +271,7 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
             <p
               className={`${
                 isActive && "!bg-gray-200"
-              } px-5 py-3 w-40  group-hover:bg-gray-100 transition-all ease-linear duration-75`}
+              } w-40 px-5 py-3  transition-all duration-75 ease-linear group-hover:bg-gray-100`}
             >
               <button onClick={() => handleDelete(flight.id)}>
                 <svg
@@ -276,7 +280,7 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="w-6 h-6 text-red-600"
+                  className="h-6 w-6 text-red-600"
                 >
                   <path
                     strokeLinecap="round"
@@ -291,7 +295,7 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
         {isActive && (
           <div>
             {ticketsPending && (
-              <div className="flex  mt-8 mr-28">
+              <div className="mr-28  mt-8 flex">
                 <SDSpinner color="blue" size={28} />
               </div>
             )}
@@ -306,7 +310,7 @@ const AdminFlightItem: React.FC<AdminFlightItemProps> = ({
           </div>
         )}
         {ticketsPending && (
-          <div className="flex  mt-8 mr-28">
+          <div className="mr-28  mt-8 flex">
             <SDSpinner color="blue" size={28} />
           </div>
         )}

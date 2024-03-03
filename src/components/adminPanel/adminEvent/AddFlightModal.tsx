@@ -82,7 +82,7 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
       },
       (error) => {
         toast.error(error?.message);
-      }
+      },
     );
   }
 
@@ -114,7 +114,7 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
   useEffect(() => {
     function getCapacityById(
       types: SkyDiveEventTicketType[],
-      id: string
+      id: string,
     ): number {
       const ticketType = types.find((item) => item.id === id);
       if (!ticketType) {
@@ -147,7 +147,7 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
       <SDModal.Header color="primary2">ایجاد پرواز</SDModal.Header>
       <SDModal.Body>
         <div className="px-3 py-5">
-          <div className="flex flex-col gap-3 items-center text-slate-700 text-center w-full">
+          <div className="flex w-full flex-col items-center gap-3 text-center text-slate-700">
             <div className="flex gap-6">
               <p className="font-semibold">تاریخ</p>
               <p>{date}</p>
@@ -170,14 +170,14 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
             </div>
           </div>
           {typesPending && (
-            <div className="flex justify-center my-12">
+            <div className="my-12 flex justify-center">
               <SDSpinner size={20} color="blue"></SDSpinner>
             </div>
           )}
           {tickeTypeResponse?.content && !typesPending && (
             <form className="mt-6" onSubmit={handleSubmit(onSubmit)}>
-              <div className="w-full flex flex-wrap">
-                <div className="w-full md:w-1/2 px-5 py-3">
+              <div className="flex w-full flex-wrap">
+                <div className="w-full px-5 py-3 md:w-1/2">
                   <SDLabel htmlFor="flightQty" className="mb-2">
                     تعداد پرواز
                   </SDLabel>
@@ -187,19 +187,18 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                     invalid={!!formErrors.flightQty}
                     {...register("flightQty", {
                       required: "فیلد اجباری است.",
-                      valueAsNumber: true,
                       validate: (value) => {
                         return value > 0 || "مقدار باید بزرگ‌تر از 0 باشد.";
                       },
                     })}
                   />
                   {formErrors.flightQty?.message && (
-                    <p className="text-red-600 text-xs pr-2 mt-2">
+                    <p className="mt-2 pr-2 text-xs text-red-600">
                       {formErrors.flightQty.message}
                     </p>
                   )}
                 </div>
-                <div className="w-full md:w-1/2 px-5 py-3">
+                <div className="w-full px-5 py-3 md:w-1/2">
                   <SDLabel htmlFor="voidableQty" className="mb-2">
                     غیر قابل رزرو
                   </SDLabel>
@@ -218,14 +217,14 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                     })}
                   />
                   {formErrors.voidableQty?.message && (
-                    <p className="text-red-600 text-xs pr-2 mt-2">
+                    <p className="mt-2 pr-2 text-xs text-red-600">
                       {formErrors.voidableQty.message}
                     </p>
                   )}
                 </div>
               </div>
               <section className=" mt-8">
-                <div className="w-full flex">
+                <div className="flex w-full">
                   <div className="w-5/12 px-5 pl-1">
                     <SDLabel className="mb-2">نوع</SDLabel>
                   </div>
@@ -235,7 +234,7 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                 </div>
                 {fields.map((field, index) => {
                   return (
-                    <div key={field.id} className="w-full flex  mb-3">
+                    <div key={field.id} className="mb-3 flex  w-full">
                       <div className="w-5/12 px-5 pl-1">
                         <SDSelect
                           id={`ticketType-${index}`}
@@ -256,7 +255,7 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                           })}
                         </SDSelect>
                         {formErrors?.ticketTypes?.[index]?.typeId && (
-                          <p className="text-red-600 text-xs pr-2 mt-2">
+                          <p className="mt-2 pr-2 text-xs text-red-600">
                             {formErrors?.ticketTypes?.[index]?.typeId?.message}
                           </p>
                         )}
@@ -278,16 +277,16 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                           }
                         />
                         {formErrors?.ticketTypes?.[index]?.qty && (
-                          <p className="text-red-600 text-xs pr-2 mt-2">
+                          <p className="mt-2 pr-2 text-xs text-red-600">
                             {formErrors?.ticketTypes?.[index]?.typeId?.message}
                           </p>
                         )}
                       </div>
-                      <div className="w-4/12 xs:w-3/12 flex  pl-5 pr-2 justify-between">
+                      <div className="flex w-4/12 justify-between  pl-5 pr-2 xs:w-3/12">
                         {fields.length !== 1 && (
                           <SDButton
                             color="primary"
-                            className="font-extrabold !h-10 w-10"
+                            className="!h-10 w-10 font-extrabold"
                             onClick={() => removeTicket(index)}
                           >
                             <svg
@@ -296,7 +295,7 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                               viewBox="0 0 24 24"
                               strokeWidth={1.5}
                               stroke="currentColor"
-                              className="w-6 h-6"
+                              className="h-6 w-6"
                             >
                               <path
                                 strokeLinecap="round"
@@ -320,7 +319,7 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                               viewBox="0 0 24 24"
                               strokeWidth={1.5}
                               stroke="currentColor"
-                              className="w-6 h-6"
+                              className="h-6 w-6"
                             >
                               <path
                                 strokeLinecap="round"
@@ -335,7 +334,7 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({
                   );
                 })}
               </section>
-              <div className="w-full px-5 pt-5 flex justify-start items-center">
+              <div className="flex w-full items-center justify-start px-5 pt-5">
                 <SDButton
                   color="primary2"
                   type="submit"

@@ -8,20 +8,20 @@ const SkyDiveEventCard: React.FC<SkyDiveEvent> = (props) => {
       to={`/events/${props.id}/days`}
       className={!props.reservable ? "pointer-events-none" : ""}
     >
-      <SDCard className="!p-0 border-gray-200 border ">
-        <div className="w-full aspect-[2] relative">
+      <SDCard className="border border-gray-200 !p-0">
+        <div className="relative aspect-[2] w-full">
           <img
             src={`${import.meta.env.VITE_BASE_API_URL}/file/${props.image}`}
             alt={props.title}
-            className="w-full h-full object-cover rounded-t-lg"
+            className="h-full w-full rounded-t-lg object-cover"
           />
-          <span className="absolute bottom-2 left-2 bg-primary-100 shadow px-3 py-0.5 rounded-xl text-sm">
+          <span className="absolute bottom-2 left-2 rounded-xl bg-primary-100 px-3 py-0.5 text-sm shadow">
             {props.statusTitle}
           </span>
         </div>
-        <div className={`${!props.reservable ? "opacity-70" : ""} py-4 px-4`}>
-          <p className="font-bold text-lg">{props.title}</p>
-          <div className="flex justify-between mt-2 text-slate-600 flex-wrap">
+        <div className={`${!props.reservable ? "opacity-70" : ""} px-4 py-4`}>
+          <p className="text-lg font-bold">{props.title}</p>
+          <div className="mt-2 flex flex-wrap justify-between text-slate-600">
             <p className="my-1">{props.duration}</p>
             <p className="my-1">{props.capacity} ظرفیت خالی</p>
           </div>
