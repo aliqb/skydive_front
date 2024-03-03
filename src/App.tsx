@@ -52,6 +52,7 @@ import AdminUserDocument from "./pages/adminPanel/pages/userManagement/userDetai
 import AdminJumpRecords from "./pages/adminPanel/pages/userManagement/userDetail/AdminJumpRecords";
 import AdminUserWallet from "./pages/adminPanel/pages/userManagement/userDetail/AdminUserWallet";
 import EditUserPage from "./pages/adminPanel/pages/userManagement/EditUserPage";
+import ReportsGrid from "./pages/adminPanel/pages/reports/ReportsGrid";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -139,7 +140,9 @@ function App() {
             </Route>
             <Route Component={Settings} path="settings"></Route>
             <Route Component={SendMessage} path="sendMessage"></Route>
-            <Route Component={Reports} path="reports"></Route>
+            <Route Component={Reports} path="reports">
+              <Route Component={ReportsGrid} path="tickets"></Route>
+            </Route>
           </Route>
         </Routes>
       </Router>
