@@ -24,7 +24,7 @@ const FlightTicketCard: React.FC<FlightTicketCardProps> = (props) => {
         ticketMembers: [],
         ticketTypeId: props.ticketTypeId,
         type: "",
-        flightDate: " ",
+        flightDate: "",
       },
     );
   }, [aggregatedTickets, props, getAggregate]);

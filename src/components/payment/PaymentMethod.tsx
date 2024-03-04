@@ -5,7 +5,7 @@ interface PaymentMethodProp {
   subtitle?: string;
   icon: React.ReactNode;
   isActive?: boolean;
-  onSelect: (id:string) => void;
+  onSelect: (id: string) => void;
   id: string;
 }
 const PaymentMethod: React.FC<PaymentMethodProp> = ({
@@ -14,26 +14,27 @@ const PaymentMethod: React.FC<PaymentMethodProp> = ({
   icon,
   isActive = false,
   onSelect,
-  id
+  id,
 }) => {
   function onClick() {
     onSelect(id);
   }
   return (
     <button className="block w-full" onClick={onClick}>
-      <SDCard className={`${isActive ? 'border-green-600' : 'border-gray-300'} flex my-2 border  items-center`}>
-        <div className="ml-8">
-          {icon}
-        </div>
+      <SDCard
+        className={`${isActive ? "border-green-600" : "border-gray-300"} my-2 flex items-center  border`}
+      >
+        <div className="ml-8">{icon}</div>
         <div>
-          <p className="font-semibold text-lg mb-2">{title}</p>
-          <p className="text-slate-600 text-right">{subtitle}</p>
+          <p className="mb-2 text-lg font-semibold">{title}</p>
+          <p className="text-right text-slate-600">{subtitle}</p>
         </div>
+        <div></div>
         <div className="mr-auto">
           {isActive ? (
             <BsCheckCircleFill size="2.5rem" color="green" />
           ) : (
-            <div className="rounded-full w-10 h-10  border-gray-300 border-2 "></div>
+            <div className="h-10 w-10 rounded-full  border-2 border-gray-300 "></div>
           )}
         </div>
       </SDCard>

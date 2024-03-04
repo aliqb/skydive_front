@@ -15,16 +15,20 @@ const PaymentPage: React.FC = () => {
   const [method, setMethod] = useState<string>("");
   const [acceptRules, setAcceptRules] = useState<boolean>(false);
   const eventId = useAppSelector(
-    (state) => state.basket.basket?.skyDiveEventId
+    (state) => state.basket.basket?.skyDiveEventId,
   );
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const [payPending, setPayPedning] = useState<boolean>(false);
+  const [payPending, setPayPending] = useState<boolean>(false);
   const [walletSubtitle, setWalletSubtitle] = useState<string>("");
 
   const { sendRequest: sendPayRequest } = useAPi<null, BaseResponse<null>>();
   const { sendRequest: sendCheckRequest } = useAPi<null, BaseResponse<null>>();
+  const { sendRequest: sendZarinPalRequest } = useAPi<
+    null,
+    BaseResponse<null>
+  >();
   const { sendRequest: getWalletRequest } = useAPi<
     null,
     BaseResponse<WalletData>
@@ -38,7 +42,7 @@ const PaymentPage: React.FC = () => {
       (response) => {
         const balanceString = response.content.balance.toLocaleString();
         setWalletSubtitle(balanceString + " ریال");
-      }
+      },
     );
   }, [getWalletRequest]);
 
@@ -55,18 +59,21 @@ const PaymentPage: React.FC = () => {
   }
 
   function onPay(methodId: string) {
-    setPayPedning(true);
+    setPayPending(true);
     sendCheckRequest(
       {
         url: "/ShoppingCarts/CheckTickets",
       },
       () => {
         payBasket(methodId);
+        if (methodId === "zarinpal") {
+          onZarinPalClicked();
+        }
       },
       (error) => {
         toast.error(error?.message);
-        setPayPedning(false);
-      }
+        setPayPending(false);
+      },
     );
   }
   function payBasket(methodId: string) {
@@ -86,8 +93,8 @@ const PaymentPage: React.FC = () => {
       onFinishPayment,
       (error) => {
         toast.error(error?.message);
-        setPayPedning(true);
-      }
+        setPayPending(true);
+      },
     );
   }
 
@@ -100,29 +107,44 @@ const PaymentPage: React.FC = () => {
       onFinishPayment,
       (error) => {
         toast.error(error?.message);
-        setPayPedning(true);
-      }
+        setPayPending(true);
+      },
     );
   }
 
   function onFinishPayment(payResponse: BaseResponse<null>) {
     toast.success(payResponse.message);
     dispatch(basketActions.reset());
-    setPayPedning(true);
+    setPayPending(true);
     navigate("/tickets");
   }
 
+  function onZarinPalClicked() {
+    sendZarinPalRequest(
+      {
+        url: "/ShoppingCarts/Checkout",
+        method: "post",
+      },
+      (response) => {
+        console.log(response);
+      },
+      (error) => {
+        toast.error(error?.message);
+      },
+    );
+  }
+
   return (
-    <div className="flex flex-wrap mt-1  pb-3 lg:px-20 xl:px-28 pt-4">
-      <SDCard className="border border-gray-200 w-full lg:w-2/3">
-        <p className="text-slate-600 font-semibold mb-5">روش پرداخت</p>
+    <div className="mt-1 flex flex-wrap  pb-3 pt-4 lg:px-20 xl:px-28">
+      <SDCard className="w-full border border-gray-200 lg:w-2/3">
+        <p className="mb-5 font-semibold text-slate-600">روش پرداخت</p>
         <PaymentMethod
           title="پرداخت آنلاین"
-          subtitle="سامان"
+          subtitle="زرین پال"
           icon={<FaWallet size="2.2rem" color="rgb(54 63 75)" />}
-          id="saman"
+          id="zarinpal"
           onSelect={onSelectMethod}
-          isActive={method === "saman"}
+          isActive={method === "zarinpal"}
         />
         <PaymentMethod
           title="استفاده از اعتبار کیف پول"
@@ -133,7 +155,7 @@ const PaymentPage: React.FC = () => {
           isActive={method === "wallet"}
         />
 
-        <div className="flex items-center mr-4 mt-4 ">
+        <div className="mr-4 mt-4 flex items-center ">
           <input
             id="red-radio"
             type="radio"
@@ -141,7 +163,7 @@ const PaymentPage: React.FC = () => {
             checked={acceptRules}
             onChange={onChangeAcceptance}
             name="colored-radio"
-            className="w-6 h-6 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            className="h-6 w-6 border-gray-300 bg-gray-100 text-primary-600 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600"
           />
           <label
             htmlFor="red-radio"
@@ -150,22 +172,22 @@ const PaymentPage: React.FC = () => {
             <Link
               to={`/events/${eventId}/terms`}
               target="_blank"
-              className="inline-block ml-1 text-blue-600"
+              className="ml-1 inline-block text-blue-600"
             >
               قوانین و شرایط
             </Link>
             را مطالعه کرده‌ام و می‌پذیرم.
           </label>
         </div>
-        <div className="flex mt-10 text-slate-600">
-          <button onClick={goBack} className="flex items-cetner m-auto">
+        <div className="mt-10 flex text-slate-600">
+          <button onClick={goBack} className="m-auto flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-6 h-6"
+              className="h-6 w-6"
             >
               <path
                 strokeLinecap="round"
@@ -177,13 +199,16 @@ const PaymentPage: React.FC = () => {
           </button>
         </div>
       </SDCard>
-      <aside className="relative w-full pt-4 lg:pt-0 lg:w-1/3">
+      <aside className="relative w-full pt-4 lg:w-1/3 lg:pt-0">
         <div className="lg:px-3">
           <Basket
             inPayment={true}
             canPay={!!method && acceptRules}
             isPaying={payPending}
             onPayClick={() => onPay(method)}
+            onZarinPalClicked={
+              method === "zarinpal" ? onZarinPalClicked : undefined
+            }
           />
         </div>
       </aside>
