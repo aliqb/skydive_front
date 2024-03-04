@@ -24,14 +24,15 @@ const FlightTicketCard: React.FC<FlightTicketCardProps> = (props) => {
         ticketMembers: [],
         ticketTypeId: props.ticketTypeId,
         type: "",
-      }
+        flightDate: "",
+      },
     );
   }, [aggregatedTickets, props, getAggregate]);
   return (
     <div
       className={`${
         props.className || ""
-      } flex flex-col justify-center items-center  font-semibold w-full py-8 text-lg`}
+      } flex w-full flex-col items-center  justify-center py-8 text-lg font-semibold`}
     >
       <p className="mb-1 text-slate-600">بلیت‌ {props.ticketType}</p>
       <p className="mb-5 text-slate-600">
