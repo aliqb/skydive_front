@@ -53,6 +53,7 @@ import AdminJumpRecords from "./pages/adminPanel/pages/userManagement/userDetail
 import AdminUserWallet from "./pages/adminPanel/pages/userManagement/userDetail/AdminUserWallet";
 import EditUserPage from "./pages/adminPanel/pages/userManagement/EditUserPage";
 import ReportsGrid from "./pages/adminPanel/pages/reports/ReportsGrid";
+import PaymentStatus from "./pages/Payment/PaymentStatus";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -100,6 +101,7 @@ function App() {
             <Route Component={JumpRecordsPage} path="jumps"></Route>
             <Route Component={PaymentPage} path="payment"></Route>
           </Route>
+          <Route Component={PaymentStatus} path="payment-status"></Route>
           <Route Component={AuthContainer} path="auth">
             <Route Component={UsernameLoginPage} path=""></Route>
             <Route Component={PasswordLoginPage} path="password"></Route>

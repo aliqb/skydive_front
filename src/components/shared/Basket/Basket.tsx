@@ -75,11 +75,11 @@ const Basket: React.FC<BasketProps> = ({
             </div>
           </div>
           {inPayment ? (
-            <div className="top-shadow fixed -bottom-1 right-0 flex w-full items-center   justify-between  bg-white p-3 px-6 pb-4 lg:static lg:p-0 lg:shadow-none">
+            <div className="top-shadow fixed bottom-1 right-0 flex w-full items-center   justify-between  bg-white p-3 px-6 pb-4 lg:static lg:p-0 lg:shadow-none">
               <SDButton
                 disabled={!canPay || isPaying}
                 color="success"
-                className="w-40 max-w-md lg:w-full"
+                className="w-40 max-w-md items-center lg:w-full "
                 type="button"
                 onClick={() => {
                   onPayClick && onPayClick();
