@@ -12,18 +12,20 @@ interface BasketProps {
   canPay?: boolean;
   onPayClick?: () => void;
   isPaying?: boolean;
+  onZarinPalClicked?: () => void;
 }
 const Basket: React.FC<BasketProps> = ({
   inPayment = false,
   canPay = true,
   onPayClick,
   isPaying = false,
+  onZarinPalClicked,
 }) => {
   const basketState = useAppSelector((state) => state.basket);
   const { aggregatedTickets } = useBasketTickets();
 
   const emptyMessage = (
-    <p className="text-center mt-5">سبد خرید شما خالی است.</p>
+    <p className="mt-5 text-center">سبد خرید شما خالی است.</p>
   );
 
   const body = (
@@ -42,7 +44,7 @@ const Basket: React.FC<BasketProps> = ({
             })}
 
           <div className="border-b border-gray-200 py-4">
-            <div className="flex justify-between px-1 mb-4">
+            <div className="mb-4 flex justify-between px-1">
               <p className="font-semibold">جمع:</p>
               <p>
                 <NumberWithSeperator
@@ -62,7 +64,7 @@ const Basket: React.FC<BasketProps> = ({
             </div>
           </div>
           <div className="py-4">
-            <div className="flex justify-between px-1 mb-4">
+            <div className="mb-4 flex justify-between px-1">
               <p className="font-semibold">قابل پرداخت:</p>
               <p>
                 <NumberWithSeperator
@@ -73,13 +75,16 @@ const Basket: React.FC<BasketProps> = ({
             </div>
           </div>
           {inPayment ? (
-            <div className="fixed -bottom-1 bg-white w-full right-0 p-3 pb-4   top-shadow  px-6 flex justify-between items-center lg:static lg:shadow-none lg:p-0">
+            <div className="top-shadow fixed -bottom-1 right-0 flex w-full items-center   justify-between  bg-white p-3 px-6 pb-4 lg:static lg:p-0 lg:shadow-none">
               <SDButton
                 disabled={!canPay || isPaying}
                 color="success"
-                className="w-40 lg:w-full max-w-md"
+                className="w-40 max-w-md lg:w-full"
                 type="button"
-                onClick={onPayClick}
+                onClick={() => {
+                  onPayClick && onPayClick();
+                  onZarinPalClicked && onZarinPalClicked();
+                }}
               >
                 {isPaying && <SDSpinner />}
                 پرداخت
@@ -107,7 +112,7 @@ const Basket: React.FC<BasketProps> = ({
     </>
   );
 
-  const errorMessage = <p className="text-center mt-5">{basketState.error}</p>;
+  const errorMessage = <p className="mt-5 text-center">{basketState.error}</p>;
 
   const laodingContainer = (
     <div className="flex justify-center pt-6">
@@ -121,8 +126,8 @@ const Basket: React.FC<BasketProps> = ({
         inPayment && "mb-10"
       } mb-0 border border-gray-200 text-black`}
     >
-      <div className="text-center border-b border-gray-400 pb-5">
-        <p className="text-xl font-semibold text-slate-600 mb-3">
+      <div className="border-b border-gray-400 pb-5 text-center">
+        <p className="mb-3 text-xl font-semibold text-slate-600">
           سبد خرید شما
         </p>
         {basketState.basket && basketState.basket.items.length > 0 && (
