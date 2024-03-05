@@ -66,9 +66,6 @@ const PaymentPage: React.FC = () => {
       },
       () => {
         payBasket(methodId);
-        if (methodId === "zarinpal") {
-          onZarinPalClicked();
-        }
       },
       (error) => {
         toast.error(error?.message);
@@ -120,13 +117,15 @@ const PaymentPage: React.FC = () => {
   }
 
   function onZarinPalClicked() {
+    setPayPending(true);
     sendZarinPalRequest(
       {
         url: "/ShoppingCarts/Checkout",
         method: "post",
       },
       (response) => {
-        console.log(response);
+        window.location.href = response.message;
+        setPayPending(false);
       },
       (error) => {
         toast.error(error?.message);
@@ -205,7 +204,13 @@ const PaymentPage: React.FC = () => {
             inPayment={true}
             canPay={!!method && acceptRules}
             isPaying={payPending}
-            onPayClick={() => onPay(method)}
+            onPayClick={() => {
+              if (method === "zarinpal") {
+                onZarinPalClicked();
+              } else {
+                onPay(method);
+              }
+            }}
             onZarinPalClicked={
               method === "zarinpal" ? onZarinPalClicked : undefined
             }
