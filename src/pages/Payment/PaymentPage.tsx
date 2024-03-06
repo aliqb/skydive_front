@@ -211,9 +211,6 @@ const PaymentPage: React.FC = () => {
                 onPay(method);
               }
             }}
-            onZarinPalClicked={
-              method === "zarinpal" ? onZarinPalClicked : undefined
-            }
           />
         </div>
       </aside>
