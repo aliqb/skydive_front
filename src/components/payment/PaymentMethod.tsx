@@ -19,8 +19,10 @@ const PaymentMethod: React.FC<PaymentMethodProp> = ({ title, subtitle, icon, isA
         <div className="ml-8">{icon}</div>
         <div>
           <p className="mb-2 text-lg font-semibold">{title}</p>
-          <p className="text-right text-slate-600">{subtitle}</p>
-          <ZarinPalLogo />
+          <div className="align-center flex justify-start">
+            {id === 'zarinpal' && <ZarinPalLogo />}
+            <p className="mt-3 text-right text-slate-600">{subtitle}</p>
+          </div>
         </div>
         <div></div>
         <div className="mr-auto">{isActive ? <BsCheckCircleFill size="2.5rem" color="green" /> : <div className="h-10 w-10 rounded-full  border-2 border-gray-300 "></div>}</div>

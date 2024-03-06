@@ -135,7 +135,9 @@ const PaymentStatus: React.FC = () => {
             </div>
           </div>
         ) : (
-          <SDSpinner size={20} />
+          <div className="mt-5">
+            <SDSpinner size={20} />
+          </div>
         )}
       </SDCard>
     </>

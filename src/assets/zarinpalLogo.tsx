@@ -1,19 +1,30 @@
-import React, { useEffect } from 'react'
+import React, { useRef } from 'react'
 
 const ZarinPalLogo: React.FC = () => {
-  useEffect(() => {
-    const script = document.createElement('script')
-    script.src = 'https://www.zarinpal.com/webservice/TrustCode'
-    script.type = 'text/javascript'
-    script.async = true
-    document.body.appendChild(script)
+  const zarinPalRef = useRef<HTMLDivElement>(null)
 
-    return () => {
-      document.body.removeChild(script)
-    }
-  }, [])
-
-  return null
+  function showZPTrust() {
+    window.open('https://www.zarinpal.com/trustPage/' + window.location.hostname, undefined, 'width=450, height=600, scrollbars=no, resizable=no')
+  }
+  return (
+    <>
+      <style>
+        {`
+        #zarinpal {
+          margin: auto;
+        }
+        #zarinpal img {
+          width: 40px;
+        }
+      `}
+      </style>
+      <div id="zarinpal" ref={zarinPalRef}>
+        <a onClick={showZPTrust} title="دروازه پرداخت معتبر">
+          <img src="https://cdn.zarinpal.com/badges/trustLogo/1.svg" alt="دروازه پرداخت معتبر" />
+        </a>
+      </div>
+    </>
+  )
 }
 
 export default ZarinPalLogo
