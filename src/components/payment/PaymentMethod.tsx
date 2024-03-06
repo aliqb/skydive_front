@@ -1,44 +1,29 @@
-import SDCard from "../shared/Card";
-import { BsCheckCircleFill } from "react-icons/bs";
+import SDCard from '../shared/Card'
+import { BsCheckCircleFill } from 'react-icons/bs'
 interface PaymentMethodProp {
-  title: string;
-  subtitle?: string;
-  icon: React.ReactNode;
-  isActive?: boolean;
-  onSelect: (id: string) => void;
-  id: string;
+  title: string
+  subtitle?: string
+  icon: React.ReactNode
+  isActive?: boolean
+  onSelect: (id: string) => void
+  id: string
 }
-const PaymentMethod: React.FC<PaymentMethodProp> = ({
-  title,
-  subtitle,
-  icon,
-  isActive = false,
-  onSelect,
-  id,
-}) => {
+const PaymentMethod: React.FC<PaymentMethodProp> = ({ title, subtitle, icon, isActive = false, onSelect, id }) => {
   function onClick() {
-    onSelect(id);
+    onSelect(id)
   }
   return (
     <button className="block w-full" onClick={onClick}>
-      <SDCard
-        className={`${isActive ? "border-green-600" : "border-gray-300"} my-2 flex items-center  border`}
-      >
+      <SDCard className={`${isActive ? 'border-green-600' : 'border-gray-300'} my-2 flex items-center  border`}>
         <div className="ml-8">{icon}</div>
         <div>
           <p className="mb-2 text-lg font-semibold">{title}</p>
           <p className="text-right text-slate-600">{subtitle}</p>
         </div>
         <div></div>
-        <div className="mr-auto">
-          {isActive ? (
-            <BsCheckCircleFill size="2.5rem" color="green" />
-          ) : (
-            <div className="h-10 w-10 rounded-full  border-2 border-gray-300 "></div>
-          )}
-        </div>
+        <div className="mr-auto">{isActive ? <BsCheckCircleFill size="2.5rem" color="green" /> : <div className="h-10 w-10 rounded-full  border-2 border-gray-300 "></div>}</div>
       </SDCard>
     </button>
-  );
-};
-export default PaymentMethod;
+  )
+}
+export default PaymentMethod
