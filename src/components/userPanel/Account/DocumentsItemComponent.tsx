@@ -24,6 +24,8 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
   disable,
 }) => {
   const documentData = useAppSelector((state) => state.account[field]);
+  const required = documentData.required === undefined || documentData.required === true
+  console.log(title,documentData.required)
   const maxFileSize = useAppSelector(
     (state) => state.generalSettings.generalSettings?.fileSizeLimitation
   );
@@ -54,7 +56,7 @@ const DocumentItemComponent: React.FC<DocumentItemProps> = ({
       <div className="w-full xs:w-1/2">
         <p className="text-slate-500 text-center text-lg font-semibold xs:text-base xs:text-right">
           {title}
-          {(!documentData?.fileId ||
+          { required && (!documentData?.fileId ||
             (documentData.withDate && !documentData?.expirationDate)) && (
             <span className="text-red-600 mr-1">*</span>
           )}

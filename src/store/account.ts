@@ -17,12 +17,14 @@ const expireRangeMessage = 'حداقل مدت اعتبار رعایت نشده �
 
 function getLastDocument(
   documents: DocumentItem[] | null,
-  withDate?: boolean
+  withDate?: boolean,
+  required = true
 ): DocumentItemModel {
   const defaultDoc: DocumentItemModel = {
     fileId: '',
     withDate: withDate,
-    validationMessage: fileMessage,
+    validationMessage: required ? fileMessage : '',
+    required: required
   };
   if (!documents) {
     return defaultDoc;
@@ -62,12 +64,18 @@ function getValidationMessage(
   documentItemModel: DocumentItemModel,
   timeStamp?: number
 ): string {
+  console.log(documentItemModel.required)
+  // if (documentItemModel.required === false){
+  //   return ''
+  // }
+  let message = ''
+  const required = documentItemModel.required === undefined || documentItemModel.required === true
   if (!documentItemModel.fileId) {
-    return fileMessage;
+    message = required ? fileMessage : '';
   }
   if (documentItemModel.withDate) {
     if (!documentItemModel.expirationDate) {
-      return expireMessage;
+      message = required ?  expireMessage : '';
     }
     if (timeStamp) {
       const expireDateObejct = new DateObject({
@@ -78,11 +86,11 @@ function getValidationMessage(
       });
       const expirationJSDate = expireDateObejct.toDate();
       if (expirationJSDate.getTime() < timeStamp) {
-        return expireRangeMessage;
+        message = expireRangeMessage;
       }
     }
   }
-  return '';
+  return message;
 }
 
 function getRelatedTimeStamp(
@@ -109,9 +117,9 @@ interface AccountState {
 
 const initialState: AccountState = {
   personalInfo: null,
-  medicalDocument: { fileId: '', withDate: true },
+  medicalDocument: { fileId: '', withDate: true, required: false },
   logBookDocument: { fileId: '' },
-  attorneyDocument: { fileId: '', withDate: true },
+  attorneyDocument: { fileId: '', withDate: true, required:false },
   nationalCardDocument: { fileId: '' },
   anyDocChange: false,
   maxAttornyTimeStamp: 0,
@@ -137,9 +145,9 @@ const accountSlice = createSlice({
     },
     setDocuments: (state, action: PayloadAction<DocumentsList>) => {
       const payload = action.payload;
-      state.medicalDocument = getLastDocument(payload.medicalDocuments, true);
+      state.medicalDocument = getLastDocument(payload.medicalDocuments, true, false);
       state.logBookDocument = getLastDocument(payload.logBookDocuments);
-      state.attorneyDocument = getLastDocument(payload.attorneyDocuments, true);
+      state.attorneyDocument = getLastDocument(payload.attorneyDocuments, true, false);
       state.nationalCardDocument = getLastDocument(
         payload.nationalCardDocuments
       );
