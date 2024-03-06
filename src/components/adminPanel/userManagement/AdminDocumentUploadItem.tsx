@@ -30,10 +30,10 @@ const AdminDocumentUploadItem: React.FC<AdminDocumentUploadItemProps> = ({
   );
   function onFileUpload(id: string) {
     localDocumentData.fileId = id;
-    if (documentData.withDate && !expirationDate) {
-      localDocumentData.validationMessage =
-        "تاریخ انقضا برای این مدرک الزامی است.";
-    }
+    // if (documentData.withDate && !expirationDate) {
+    //   localDocumentData.validationMessage =
+    //     "تاریخ انقضا برای این مدرک الزامی است.";
+    // }
     onChange(localDocumentData);
   }
 
