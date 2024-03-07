@@ -157,7 +157,7 @@ const Account: React.FC = () => {
               }
             : undefined,
         attorneyDocument:
-          accountState.attorneyDocument && accountState.attorneyDocument
+          accountState.attorneyDocument && accountState.attorneyDocument.fileId
             ? {
                 fileId: accountState.attorneyDocument.fileId,
                 expirationDate: accountState.attorneyDocument.expirationDate,
