@@ -29,7 +29,7 @@ const UserDetailPage: React.FC = () => {
 
   // const {sendRequest: sendTypesRequest}
   const { sendRequest: sendCheckRequest, isPending: checkPending } = useAPi<CheckUserInfoRequest, BaseResponse<null>>()
-  const { sendRequest: deleteRequest, isPending: deletePending } = useAPi<CheckUserInfoRequest, BaseResponse<null>>()
+  const { sendRequest: deleteRequest } = useAPi<CheckUserInfoRequest, BaseResponse<null>>()
   const [ConfirmModal, confirmation] = useConfirm(' این کاربر حذف خواهد شد. آیا مطمئن هستید؟ ', 'حذف کردن کاربر')
 
   function approveInfo(id: string) {
