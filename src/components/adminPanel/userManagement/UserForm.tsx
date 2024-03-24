@@ -1,31 +1,21 @@
-import { useForm } from "react-hook-form";
-import {
-  UserDatail,
-  UserRequest,
-  userType,
-} from "../../../models/usermanagement.models";
-import SDButton from "../../shared/Button";
-import UserFormInput from "./UserFormInput";
-import { useEffect, useRef, useState } from "react";
-import useAPi from "../../../hooks/useApi";
-import { BaseResponse } from "../../../models/shared.models";
-import UserFormSelect from "./UserFormSelect";
-import { Regexes } from "../../../utils/shared";
-import ResetUserPasswordModal from "./ResetUserPasswordModal";
-import {
-  birthDateBaseNowValidation,
-  heighttRangeOptions,
-  nationalCodeValidator,
-  phoneInputValidator,
-  weightRangeOptions,
-} from "../../../utils/validations";
+import { useForm } from 'react-hook-form'
+import { UserDatail, UserRequest, userType } from '../../../models/usermanagement.models'
+import SDButton from '../../shared/Button'
+import UserFormInput from './UserFormInput'
+import { useEffect, useRef, useState } from 'react'
+import useAPi from '../../../hooks/useApi'
+import { BaseResponse } from '../../../models/shared.models'
+import UserFormSelect from './UserFormSelect'
+import { Regexes } from '../../../utils/shared'
+import ResetUserPasswordModal from './ResetUserPasswordModal'
+import { birthDateBaseNowValidation, heightRangeOptions, nationalCodeValidator, phoneInputValidator, weightRangeOptions } from '../../../utils/validations'
 
 interface UserFormProps {
-  userDetail?: UserDatail;
-  onSubmit: (data: UserRequest, afterSubmit: () => void) => void;
+  userDetail?: UserDatail
+  onSubmit: (data: UserRequest, afterSubmit: () => void) => void
 }
 
-const UserForm: React.FC<UserFormProps> = (props) => {
+const UserForm: React.FC<UserFormProps> = props => {
   const {
     register,
     formState: { errors: formErrors },
@@ -34,31 +24,28 @@ const UserForm: React.FC<UserFormProps> = (props) => {
     reset,
     watch,
   } = useForm<UserRequest>({
-    mode: "onTouched",
-  });
+    mode: 'onTouched',
+  })
 
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [showPasswordModal, setShowPasswordModal] = useState<boolean>(false);
-  const mobileRef = useRef<string | undefined>();
-  const { sendRequest: sendUserTypesRequest, data: userTypes } = useAPi<
-    null,
-    BaseResponse<userType[]>
-  >();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+  const [showPasswordModal, setShowPasswordModal] = useState<boolean>(false)
+  const mobileRef = useRef<string | undefined>()
+  const { sendRequest: sendUserTypesRequest, data: userTypes } = useAPi<null, BaseResponse<userType[]>>()
 
-  mobileRef.current = watch("phone", "");
+  mobileRef.current = watch('phone', '')
 
   useEffect(() => {
     function getUserTypes() {
       sendUserTypesRequest({
-        url: "/UserTypes",
+        url: '/UserTypes',
         params: {
           pageSize: 10000,
           pageIndex: 1,
         },
-      });
+      })
     }
-    getUserTypes();
-  }, [props.userDetail, sendUserTypesRequest]);
+    getUserTypes()
+  }, [props.userDetail, sendUserTypesRequest])
 
   useEffect(() => {
     function setFormValue(userDetail: UserDatail) {
@@ -77,41 +64,32 @@ const UserForm: React.FC<UserFormProps> = (props) => {
         username: userDetail.username,
         userTypeId: userDetail.userTypeId,
         weight: userDetail.weight,
-      });
+      })
     }
 
     if (props.userDetail) {
-      setFormValue(props.userDetail);
+      setFormValue(props.userDetail)
     }
-  }, [props.userDetail, userTypes, reset]);
+  }, [props.userDetail, userTypes, reset])
 
   function openPasswordModal() {
-    setShowPasswordModal(true);
+    setShowPasswordModal(true)
   }
 
   function onSubmit(data: UserRequest) {
-    setIsSubmitting(true);
+    setIsSubmitting(true)
     props.onSubmit(data, () => {
-      setIsSubmitting(false);
-    });
+      setIsSubmitting(false)
+    })
   }
 
   return (
     <>
-      {props.userDetail && (
-        <ResetUserPasswordModal
-          userId={props.userDetail.id}
-          showModal={showPasswordModal}
-          onCloseModal={() => setShowPasswordModal(false)}
-        />
-      )}
-      <form
-        className="  text-slate-800 lg:px-8"
-        onSubmit={handleSubmit(onSubmit)}
-      >
+      {props.userDetail && <ResetUserPasswordModal userId={props.userDetail.id} showModal={showPasswordModal} onCloseModal={() => setShowPasswordModal(false)} />}
+      <form className="  text-slate-800 lg:px-8" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-wrap justify-between">
           <div className="flex  w-full md:w-1/2 ">
-            <div className="font-semibold flex flex-col  md:pl-6 ml-6 border-l w-1/2 md:w-auto md:min-w-max">
+            <div className="ml-6 flex w-1/2  flex-col border-l font-semibold md:w-auto md:min-w-max md:pl-6">
               <label htmlFor="firstName" className="mb-6 h-12 leading-[3rem]">
                 نام
               </label>
@@ -121,10 +99,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
               <label htmlFor="userTypeId" className="mb-6 h-12 leading-[3rem]">
                 نوع حساب کاربری
               </label>
-              <label
-                htmlFor="nationalCode"
-                className="mb-6 h-12 leading-[3rem]"
-              >
+              <label htmlFor="nationalCode" className="mb-6 h-12 leading-[3rem]">
                 کد ملی
               </label>
               <label htmlFor="birthDate" className="mb-6 h-12 leading-[3rem]">
@@ -137,7 +112,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 آدرس
               </label>
             </div>
-            <div className=" flex flex-col w-1/2 text-center md:text-right">
+            <div className=" flex w-1/2 flex-col text-center md:text-right">
               <UserFormInput
                 register={register}
                 name="firstName"
@@ -145,7 +120,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 options={{
                   pattern: {
                     value: Regexes.persianName,
-                    message: "نام باید فارسی باشد.",
+                    message: 'نام باید فارسی باشد.',
                   },
                 }}
               />
@@ -156,16 +131,11 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 options={{
                   pattern: {
                     value: Regexes.persianName,
-                    message: "نام خانوادگی باید فارسی باشد.",
+                    message: 'نام خانوادگی باید فارسی باشد.',
                   },
                 }}
               />
-              <UserFormSelect
-                name="userTypeId"
-                register={register}
-                errors={formErrors}
-                options={{ required: "فیلد الزامی است." }}
-              >
+              <UserFormSelect name="userTypeId" register={register} errors={formErrors} options={{ required: 'فیلد الزامی است.' }}>
                 <option value=""></option>;
                 {userTypes?.content &&
                   userTypes.content.map((item, index) => {
@@ -173,7 +143,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                       <option key={index} value={item.id}>
                         {item.title}
                       </option>
-                    );
+                    )
                   })}
               </UserFormSelect>
               <UserFormInput
@@ -181,10 +151,10 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 register={register}
                 name="nationalCode"
                 options={{
-                  required: "فیلد الزامی است.",
+                  required: 'فیلد الزامی است.',
                   pattern: {
                     value: /^\d{10}$/,
-                    message: "کد ملی باید 10 رقم باشد.",
+                    message: 'کد ملی باید 10 رقم باشد.',
                   },
                 }}
                 errors={formErrors}
@@ -193,7 +163,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 control={control}
                 name="birthDate"
                 options={{
-                  required: "فیلد الزامی است.",
+                  required: 'فیلد الزامی است.',
                 }}
                 errors={formErrors}
                 type="date"
@@ -201,22 +171,12 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 baseNowValidationOptions={birthDateBaseNowValidation}
               />
 
-              <UserFormInput
-                name="cityAndState"
-                register={register}
-                errors={formErrors}
-                options={{}}
-              ></UserFormInput>
-              <UserFormInput
-                register={register}
-                name="address"
-                errors={formErrors}
-                options={{}}
-              />
+              <UserFormInput name="cityAndState" register={register} errors={formErrors} options={{}}></UserFormInput>
+              <UserFormInput register={register} name="address" errors={formErrors} options={{}} />
             </div>
           </div>
-          <div className="flex  w-full md:w-1/2 justify-end">
-            <div className="font-semibold flex flex-col  md:pl-6 ml-6 border-l w-1/2 md:w-auto  md:min-w-max">
+          <div className="flex  w-full justify-end md:w-1/2">
+            <div className="ml-6 flex w-1/2  flex-col border-l font-semibold md:w-auto md:min-w-max  md:pl-6">
               <label htmlFor="userCode" className="mb-6 h-12 leading-[3rem]">
                 کد کابر
               </label>
@@ -239,48 +199,36 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 وزن
               </label>
             </div>
-            <div className=" flex flex-col w-1/2 text-center md:text-right">
+            <div className=" flex w-1/2 flex-col text-center md:text-right">
               <UserFormInput
                 name="userCode"
                 //   register={register}
                 disabled={true}
                 errors={formErrors}
                 ltr={true}
-                defaultValue={props.userDetail?.userCode || ""}
+                defaultValue={props.userDetail?.userCode || ''}
               />
               <UserFormInput
                 register={register}
                 name="username"
                 ltr={true}
                 options={{
-                  required: "فیلد الزامی است.",
+                  required: 'فیلد الزامی است.',
                   pattern: {
                     value: Regexes.username,
-                    message:
-                      "نام کاربری فقط باید شامل اعداد و حروف انگلیسی باشد.",
+                    message: 'نام کاربری فقط باید شامل اعداد و حروف انگلیسی باشد.',
                   },
                   minLength: {
                     value: 5,
-                    message: "نام کاربری حداقل باید 5 کاراکتر باشد.",
+                    message: 'نام کاربری حداقل باید 5 کاراکتر باشد.',
                   },
                 }}
                 errors={formErrors}
               />
               {props.userDetail ? (
-                <div className="mb-6 h-12 flex flex-col justify-center">
-                  <SDButton
-                    className="w-12 h-12"
-                    color="light"
-                    onClick={openPasswordModal}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-6 h-6 ml-2 stroke-slate-800"
-                    >
+                <div className="mb-6 flex h-12 flex-col justify-center">
+                  <SDButton className="h-12 w-12" color="light" onClick={openPasswordModal}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="ml-2 h-6 w-6 stroke-slate-800">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -295,11 +243,10 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                   name="password"
                   errors={formErrors}
                   options={{
-                    required: "فیلد الزامی است.",
+                    required: 'فیلد الزامی است.',
                     pattern: {
                       value: Regexes.password,
-                      message:
-                        "رمز عبور حداقل 6 کاراکتر و شامل اعداد و حروف انگلیسی باشد.",
+                      message: 'رمز عبور حداقل 6 کاراکتر و شامل اعداد و حروف انگلیسی باشد.',
                     },
                   }}
                   type="password"
@@ -314,7 +261,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 options={{
                   pattern: {
                     value: /^\S+@\S+$/i,
-                    message: "مقدار وارد شده صحیح نیست.",
+                    message: 'مقدار وارد شده صحیح نیست.',
                   },
                 }}
               />
@@ -326,39 +273,23 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 {...phoneInputValidator}
                 ltr={true}
                 options={{
-                  required: "فیلد اجباری است.",
+                  required: 'فیلد اجباری است.',
                   pattern: {
                     value: Regexes.mobile,
-                    message: "شماره موبایل صحیح نیست.",
+                    message: 'شماره موبایل صحیح نیست.',
                   },
                 }}
               />
-              <UserFormInput
-                register={register}
-                name="height"
-                numeric={true}
-                errors={formErrors}
-                options={heighttRangeOptions}
-                ltr={true}
-              />
-              <UserFormInput
-                register={register}
-                name="weight"
-                numeric={true}
-                errors={formErrors}
-                options={weightRangeOptions}
-                ltr={true}
-              />
+              <UserFormInput register={register} name="height" numeric={true} errors={formErrors} options={heightRangeOptions} ltr={true} />
+              <UserFormInput register={register} name="weight" numeric={true} errors={formErrors} options={weightRangeOptions} ltr={true} />
             </div>
           </div>
         </div>
         <div className="mt-10">
-          <h6 className="font-bold text-lg">اطلاعات تماس اضطراری</h6>
-          <div className="pt-5 flex flex-wrap justify-between">
+          <h6 className="text-lg font-bold">اطلاعات تماس اضطراری</h6>
+          <div className="flex flex-wrap justify-between pt-5">
             <div className="flex w-full pb-6 md:w-1/2   lg:w-5/12">
-              <label className="font-semibold ml-12 h-12 leading-[3rem]  w-2">
-                نام
-              </label>
+              <label className="ml-12 h-12 w-2 font-semibold  leading-[3rem]">نام</label>
               <UserFormInput
                 register={register}
                 name="emergencyContact"
@@ -366,15 +297,13 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 options={{
                   pattern: {
                     value: Regexes.persianName,
-                    message: "نام باید فارسی باشد.",
+                    message: 'نام باید فارسی باشد.',
                   },
                 }}
               />
             </div>
             <div className="flex w-full pb-6 md:w-1/2   lg:w-5/12">
-              <label className="font-semibold ml-12 h-12 leading-[3rem]  w-2">
-                موبایل
-              </label>
+              <label className="ml-12 h-12 w-2 font-semibold  leading-[3rem]">موبایل</label>
               <UserFormInput
                 register={register}
                 name="emergencyPhone"
@@ -385,13 +314,13 @@ const UserForm: React.FC<UserFormProps> = (props) => {
                 options={{
                   pattern: {
                     value: Regexes.mobile,
-                    message: "شماره موبایل صحیح نیست.",
+                    message: 'شماره موبایل صحیح نیست.',
                   },
-                  validate: (value) => {
-                    if (value !== mobileRef.current || value === "") {
-                      return true;
+                  validate: value => {
+                    if (value !== mobileRef.current || value === '') {
+                      return true
                     }
-                    return "شماره موبایل اضطراری نمی‌تواند با شماره موبایل کاربر یکسان باشد.";
+                    return 'شماره موبایل اضطراری نمی‌تواند با شماره موبایل کاربر یکسان باشد.'
                   },
                 }}
               />
@@ -399,18 +328,13 @@ const UserForm: React.FC<UserFormProps> = (props) => {
           </div>
         </div>
         <div className="my-3 flex">
-          <SDButton
-            color="primary2"
-            type="submit"
-            className="mr-auto"
-            disabled={isSubmitting}
-          >
+          <SDButton color="primary2" type="submit" className="mr-auto" disabled={isSubmitting}>
             ذخیره
           </SDButton>
         </div>
       </form>
     </>
-  );
-};
+  )
+}
 
-export default UserForm;
+export default UserForm

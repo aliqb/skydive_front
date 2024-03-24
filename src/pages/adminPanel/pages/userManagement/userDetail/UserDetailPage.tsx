@@ -1,80 +1,91 @@
-import { useState } from "react";
-import { Link, NavLink, Outlet, useParams } from "react-router-dom";
-import SDButton from "../../../../../components/shared/Button";
-import SDCard from "../../../../../components/shared/Card";
-import useAPi from "../../../../../hooks/useApi";
-import {
-  BaseResponse,
-  UserStatuses,
-} from "../../../../../models/shared.models";
-import { CheckUserInfoRequest } from "../../../../../models/usermanagement.models";
-import { useEffect } from "react";
-import UserStatusLabel from "../../../../../components/shared/UserStatusLabel";
-import SDSpinner from "../../../../../components/shared/Spinner";
-import { toast } from "react-toastify";
-import {
-  useAppDispatch,
-  useAppSelector,
-} from "../../../../../hooks/reduxHooks";
-import {
-  fetchUserDetail,
-  usermanagementActions,
-} from "../../../../../store/usermanagement";
-import CheckInfoMessageModal from "../../../../../components/adminPanel/userManagement/CheckInfoMessageModal";
+import { useState } from 'react'
+import { Link, NavLink, Outlet, useParams, useNavigate } from 'react-router-dom'
+import SDButton from '../../../../../components/shared/Button'
+import SDCard from '../../../../../components/shared/Card'
+import useAPi from '../../../../../hooks/useApi'
+import { BaseResponse, UserStatuses } from '../../../../../models/shared.models'
+import { CheckUserInfoRequest } from '../../../../../models/usermanagement.models'
+import { useEffect } from 'react'
+import UserStatusLabel from '../../../../../components/shared/UserStatusLabel'
+import SDSpinner from '../../../../../components/shared/Spinner'
+import { toast } from 'react-toastify'
+import { useAppDispatch, useAppSelector } from '../../../../../hooks/reduxHooks'
+import { fetchUserDetail, usermanagementActions } from '../../../../../store/usermanagement'
+import CheckInfoMessageModal from '../../../../../components/adminPanel/userManagement/CheckInfoMessageModal'
+import useConfirm from '../../../../../hooks/useConfirm'
 
 const UserDetailPage: React.FC = () => {
-  const params = useParams();
+  const params = useParams()
+  const navigate = useNavigate()
 
   // const { sendRequest, isPending, data } = useAPi<
   //   null,
   //   BaseResponse<UserDatail>
   // >();
 
-  const userManagementState = useAppSelector((state) => state.userManagement);
-  const [showMessageModal, setShowMessageModal] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
+  const userManagementState = useAppSelector(state => state.userManagement)
+  const [showMessageModal, setShowMessageModal] = useState<boolean>(false)
+  const dispatch = useAppDispatch()
 
   // const {sendRequest: sendTypesRequest}
-  const { sendRequest: sendCheckRequest, isPending: checkPending } = useAPi<
-    CheckUserInfoRequest,
-    BaseResponse<null>
-  >();
+  const { sendRequest: sendCheckRequest, isPending: checkPending } = useAPi<CheckUserInfoRequest, BaseResponse<null>>()
+  const { sendRequest: deleteRequest, isPending: deletePending } = useAPi<CheckUserInfoRequest, BaseResponse<null>>()
+  const [ConfirmModal, confirmation] = useConfirm(' این کاربر حذف خواهد شد. آیا مطمئن هستید؟ ', 'حذف کردن کاربر')
 
   function approveInfo(id: string) {
     // if(userManagementState.userDetail.ty)
-    checkInfo(id, true);
+    checkInfo(id, true)
   }
 
   function rejectInfo() {
-    setShowMessageModal(true);
+    setShowMessageModal(true)
+  }
+
+  async function OnDeleteUser(userId: string) {
+    const confirm = await confirmation()
+    if (confirm) {
+      deleteRequest(
+        {
+          method: 'delete',
+          url: `/Admin/RemoveUser/${userId}`,
+        },
+        response => {
+          toast.success(response.message)
+          navigate('/admin/users')
+        },
+        error => {
+          toast.error(error?.message)
+        }
+      )
+    }
   }
 
   function onMessageClose(submitted: boolean, userId: string) {
     if (submitted) {
-      dispatch(fetchUserDetail(userId));
+      dispatch(fetchUserDetail(userId))
     }
-    setShowMessageModal(false);
+    setShowMessageModal(false)
   }
 
   function checkInfo(id: string, confirm: boolean) {
     sendCheckRequest(
       {
-        url: "/Admin/CheckUserPersonalInformation",
+        url: '/Admin/CheckUserPersonalInformation',
         data: {
           id: id,
           isConfirmed: confirm,
-          message: "",
+          message: '',
         },
-        method: "put",
+        method: 'put',
       },
-      (response) => {
-        toast.success(response.message);
-        dispatch(fetchUserDetail(id));
+      response => {
+        toast.success(response.message)
+        dispatch(fetchUserDetail(id))
       },
-      (error) => {
-        toast.error(error?.message);
+      error => {
+        toast.error(error?.message)
       }
-    );
+    )
   }
 
   // const getUserDetail = useCallback(
@@ -88,21 +99,17 @@ const UserDetailPage: React.FC = () => {
 
   useEffect(() => {
     // getUserDetail(params.userId as string);
-    dispatch(fetchUserDetail(params.userId as string));
+    dispatch(fetchUserDetail(params.userId as string))
     return () => {
-      dispatch(usermanagementActions.resetUserDetail());
-    };
-  }, [params.userId, dispatch]);
+      dispatch(usermanagementActions.resetUserDetail())
+    }
+  }, [params.userId, dispatch])
 
   return (
     <>
-      <CheckInfoMessageModal
-        showModal={showMessageModal}
-        userId={params.userId as string}
-        onCloseModal={(submitted) =>
-          onMessageClose(submitted, params.userId as string)
-        }
-      />
+      <ConfirmModal />
+
+      <CheckInfoMessageModal showModal={showMessageModal} userId={params.userId as string} onCloseModal={submitted => onMessageClose(submitted, params.userId as string)} />
       <SDCard className="px-0">
         {userManagementState.loading && (
           <div className="flex justify-center py-24">
@@ -110,27 +117,15 @@ const UserDetailPage: React.FC = () => {
           </div>
         )}
         {userManagementState.userDetail && !userManagementState.loading && (
-          <div className="px-2 xs:px-8 mb-10">
-            <div className="flex gap-4 my-5 justify-center">
-              <p className="text-slate-800 font-semibold">وضعیت حساب کاربری</p>
-              {userManagementState.userDetail && (
-                <UserStatusLabel
-                  status={userManagementState.userDetail.userStatus}
-                  display={userManagementState.userDetail.userStatusDisplay}
-                />
-              )}
+          <div className="mb-10 px-2 xs:px-8">
+            <div className="my-5 flex justify-center gap-4">
+              <p className="font-semibold text-slate-800">وضعیت حساب کاربری</p>
+              {userManagementState.userDetail && <UserStatusLabel status={userManagementState.userDetail.userStatus} display={userManagementState.userDetail.userStatusDisplay} />}
             </div>
             <div className="flex gap-3">
               <Link to="edit">
                 <SDButton color="primary2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6 ml-2"
-                  >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="ml-2 h-6 w-6">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -140,15 +135,8 @@ const UserDetailPage: React.FC = () => {
                   ویرایش
                 </SDButton>
               </Link>
-              <SDButton color="failure">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6 ml-2"
-                >
+              <SDButton color="failure" onClick={() => OnDeleteUser(params.userId as string)}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="ml-2 h-6 w-6">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -157,8 +145,7 @@ const UserDetailPage: React.FC = () => {
                 </svg>
                 حذف
               </SDButton>
-              {userManagementState.userDetail.userStatus ===
-                UserStatuses.PENDING && (
+              {userManagementState.userDetail.userStatus === UserStatuses.PENDING && (
                 <>
                   <SDButton
                     color="success"
@@ -166,45 +153,16 @@ const UserDetailPage: React.FC = () => {
                       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                       approveInfo(userManagementState.userDetail!.id)
                     }
-                    disabled={
-                      checkPending ||
-                      !userManagementState.userDetail.documentsConfirmed
-                    }
+                    disabled={checkPending || !userManagementState.userDetail.documentsConfirmed}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-6 h-6 ml-2"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M4.5 12.75l6 6 9-13.5"
-                      />
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="ml-2 h-6 w-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                     </svg>
                     تأیید اطلاعات
                   </SDButton>
-                  <SDButton
-                    color="failure"
-                    onClick={rejectInfo}
-                    disabled={checkPending}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-6 h-6 ml-2"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-                      />
+                  <SDButton color="failure" onClick={rejectInfo} disabled={checkPending}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="ml-2 h-6 w-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
                     </svg>
                     عدم تأیید اطلاعات
                   </SDButton>
@@ -214,8 +172,8 @@ const UserDetailPage: React.FC = () => {
 
             <main className=" mt-10 text-slate-800">
               <div className="flex flex-wrap justify-between">
-                <div className="flex lg:pl-12 w-full md:w-1/2   lg:w-5/12">
-                  <div className="font-semibold flex flex-col  md:pl-6 ml-6 border-l w-1/2 md:w-auto md:min-w-max">
+                <div className="flex w-full md:w-1/2 lg:w-5/12   lg:pl-12">
+                  <div className="ml-6 flex w-1/2  flex-col border-l font-semibold md:w-auto md:min-w-max md:pl-6">
                     <p className="pb-6">نام</p>
                     <p className="pb-6">نام خانوادگی</p>
                     <p className="pb-6">نوع حساب کاربری</p>
@@ -224,33 +182,18 @@ const UserDetailPage: React.FC = () => {
                     <p className="pb-6">محل اقامت</p>
                     <p className="pb-6">آدرس</p>
                   </div>
-                  <div className=" flex flex-col w-1/2 text-center md:text-right">
-                    <p className="pb-6">
-                      {userManagementState.userDetail.firstName}
-                    </p>
-                    <p className="pb-6">
-                      {" "}
-                      {userManagementState.userDetail.lastName}
-                    </p>
-                    <p className="pb-6">
-                      {userManagementState.userDetail.userTypeDisplay}
-                    </p>
-                    <p className="pb-6">
-                      {userManagementState.userDetail.nationalCode}
-                    </p>
-                    <p className="pb-6">
-                      {userManagementState.userDetail.birthDate}
-                    </p>
-                    <p className="pb-6">
-                      {userManagementState.userDetail.cityAndState}
-                    </p>
-                    <p className="pb-6">
-                      {userManagementState.userDetail.address}
-                    </p>
+                  <div className=" flex w-1/2 flex-col text-center md:text-right">
+                    <p className="pb-6">{userManagementState.userDetail.firstName}</p>
+                    <p className="pb-6"> {userManagementState.userDetail.lastName}</p>
+                    <p className="pb-6">{userManagementState.userDetail.userTypeDisplay}</p>
+                    <p className="pb-6">{userManagementState.userDetail.nationalCode}</p>
+                    <p className="pb-6">{userManagementState.userDetail.birthDate}</p>
+                    <p className="pb-6">{userManagementState.userDetail.cityAndState}</p>
+                    <p className="pb-6">{userManagementState.userDetail.address}</p>
                   </div>
                 </div>
-                <div className="flex md:pl-12 w-full md:w-1/2  lg:w-5/12">
-                  <div className="font-semibold flex flex-col  md:pl-6 ml-6 border-l w-1/2 md:w-auto  md:min-w-max">
+                <div className="flex w-full md:w-1/2 md:pl-12  lg:w-5/12">
+                  <div className="ml-6 flex w-1/2  flex-col border-l font-semibold md:w-auto md:min-w-max  md:pl-6">
                     <p className="pb-6">کد کاربر</p>
                     <p className="pb-6">نام کاربری</p>
                     <p className="pb-6">رمز عبور</p>
@@ -259,39 +202,26 @@ const UserDetailPage: React.FC = () => {
                     <p className="pb-6">قد</p>
                     <p className="pb-6">وزن</p>
                   </div>
-                  <div className=" flex flex-col w-1/2 text-center md:text-right">
-                    <p className="pb-6">
-                      {userManagementState.userDetail.userCode}
-                    </p>
-                    <p className="pb-6">
-                      {" "}
-                      {userManagementState.userDetail.username}
-                    </p>
+                  <div className=" flex w-1/2 flex-col text-center md:text-right">
+                    <p className="pb-6">{userManagementState.userDetail.userCode}</p>
+                    <p className="pb-6"> {userManagementState.userDetail.username}</p>
                     <p className="pb-6">•••••••</p>
-                    <p className="pb-6">
-                      {userManagementState.userDetail.email}
-                    </p>
-                    <p className="pb-6">
-                      {userManagementState.userDetail.phone}
-                    </p>
-                    <p className="pb-6">
-                      {userManagementState.userDetail.height}
-                    </p>
-                    <p className="pb-6">
-                      {userManagementState.userDetail.weight}
-                    </p>
+                    <p className="pb-6">{userManagementState.userDetail.email}</p>
+                    <p className="pb-6">{userManagementState.userDetail.phone}</p>
+                    <p className="pb-6">{userManagementState.userDetail.height}</p>
+                    <p className="pb-6">{userManagementState.userDetail.weight}</p>
                   </div>
                 </div>
               </div>
               <div className="mt-10">
-                <h6 className="font-bold text-lg">اطلاعات تماس اضطراری</h6>
-                <div className="pt-5 flex flex-wrap justify-between">
+                <h6 className="text-lg font-bold">اطلاعات تماس اضطراری</h6>
+                <div className="flex flex-wrap justify-between pt-5">
                   <div className="flex w-full pb-6 md:w-1/2   lg:w-5/12">
-                    <p className="font-semibold ml-12">نام</p>
+                    <p className="ml-12 font-semibold">نام</p>
                     <p>{userManagementState.userDetail.emergencyContact}</p>
                   </div>
                   <div className="flex w-full pb-6 md:w-1/2   lg:w-5/12">
-                    <p className="font-semibold ml-12">موبایل</p>
+                    <p className="ml-12 font-semibold">موبایل</p>
                     <p>{userManagementState.userDetail.emergencyPhone}</p>
                   </div>
                 </div>
@@ -304,22 +234,22 @@ const UserDetailPage: React.FC = () => {
             <li className="flex-grow text-center">
               <NavLink
                 end={true}
-                className={(nav) =>
+                className={nav =>
                   `${
-                    nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
-                  } pb-4 block hover:border-b-2 text-gray-500 hover:text-gray-600 hover:border-gray-300  transition-all ease-linear duration-75`
+                    nav.isActive && 'border-b-2 !border-blue-500 !text-blue-500'
+                  } block pb-4 text-gray-500 transition-all duration-75 ease-linear  hover:border-b-2 hover:border-gray-300 hover:text-gray-600`
                 }
-                to={""}
+                to={''}
               >
                 بلیت‌ها
               </NavLink>
             </li>
             <li className="flex-grow text-center">
               <NavLink
-                className={(nav) =>
+                className={nav =>
                   `${
-                    nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
-                  } pb-4 block hover:border-b-2 text-gray-500 hover:text-blue-400 hover:border-blue-300  transition-all ease-linear duration-75`
+                    nav.isActive && 'border-b-2 !border-blue-500 !text-blue-500'
+                  } block pb-4 text-gray-500 transition-all duration-75 ease-linear  hover:border-b-2 hover:border-blue-300 hover:text-blue-400`
                 }
                 to="transactions"
               >
@@ -328,10 +258,10 @@ const UserDetailPage: React.FC = () => {
             </li>
             <li className="flex-grow text-center">
               <NavLink
-                className={(nav) =>
+                className={nav =>
                   `${
-                    nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
-                  } pb-4 block hover:border-b-2 text-gray-500 hover:text-blue-400 hover:border-blue-300  transition-all ease-linear duration-75`
+                    nav.isActive && 'border-b-2 !border-blue-500 !text-blue-500'
+                  } block pb-4 text-gray-500 transition-all duration-75 ease-linear  hover:border-b-2 hover:border-blue-300 hover:text-blue-400`
                 }
                 to="documents"
               >
@@ -340,10 +270,10 @@ const UserDetailPage: React.FC = () => {
             </li>
             <li className="flex-grow text-center">
               <NavLink
-                className={(nav) =>
+                className={nav =>
                   `${
-                    nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
-                  } pb-4 block hover:border-b-2 text-gray-500 hover:text-blue-400 hover:border-blue-300  transition-all ease-linear duration-75`
+                    nav.isActive && 'border-b-2 !border-blue-500 !text-blue-500'
+                  } block pb-4 text-gray-500 transition-all duration-75 ease-linear  hover:border-b-2 hover:border-blue-300 hover:text-blue-400`
                 }
                 to="jumps"
               >
@@ -352,10 +282,10 @@ const UserDetailPage: React.FC = () => {
             </li>
             <li className="flex-grow text-center">
               <NavLink
-                className={(nav) =>
+                className={nav =>
                   `${
-                    nav.isActive && "border-b-2 !border-blue-500 !text-blue-500"
-                  } pb-4 block hover:border-b-2 text-gray-500 hover:text-blue-400 hover:border-blue-300  transition-all ease-linear duration-75`
+                    nav.isActive && 'border-b-2 !border-blue-500 !text-blue-500'
+                  } block pb-4 text-gray-500 transition-all duration-75 ease-linear  hover:border-b-2 hover:border-blue-300 hover:text-blue-400`
                 }
                 to="wallet"
               >
@@ -367,6 +297,6 @@ const UserDetailPage: React.FC = () => {
         <Outlet></Outlet>
       </SDCard>
     </>
-  );
-};
-export default UserDetailPage;
+  )
+}
+export default UserDetailPage
